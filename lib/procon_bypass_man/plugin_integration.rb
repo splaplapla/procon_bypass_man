@@ -1,0 +1,2 @@
+module ProconBypassMan::PluginIntegration
+end
