@@ -1,4 +1,6 @@
 class ProconBypassMan::Runner
+  class ProConRejected < StandardError; end
+
   def initialize(gadget: , procon: )
     @gadget = gadget
     @procon = procon
