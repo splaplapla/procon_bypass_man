@@ -18,7 +18,9 @@ module ProconBypassMan
 
   def self.logger(text)
     # TODO replace Logger
-    pp "1: #{text}"
-    pp "2: #{text.bytes.map{|x| x.to_s(16).rjust(2, "0") }.join}"
+    pp "pure: #{text}"
+    pp "converted: #{text.bytes.map{|x| x.to_s(16).rjust(2, "0") }.join}"
+    pp "unpack(bin): #{text.unpack("b*")}"
+    pp "unpack(Hex): #{text.unpack("H*")}"
   end
 end
