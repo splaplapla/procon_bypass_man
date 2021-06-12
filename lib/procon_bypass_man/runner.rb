@@ -2,6 +2,9 @@ class ProconBypassMan::Runner
   def initialize(gadget: , procon: )
     @gadget = gadget
     @procon = procon
+
+    @will_interval_0_0_1 = 0
+    @will_interval_1_6 = 0
   end
 
   def run
@@ -12,6 +15,12 @@ class ProconBypassMan::Runner
   private
 
   def main_loop
+    Thread.new do
+      sleep(10)
+      @will_interval_0_0_1 = 0.01
+      @will_interval_1_6 = 1.6
+    end
+
     Thread.new do
       loop do
         input = nil
@@ -26,8 +35,9 @@ class ProconBypassMan::Runner
           ProconBypassMan.logger(">>> #{output.b}")
           @procon.write_nonblock(input)
           sleep(0.0)
+          sleep(@will_interval_1_6)
         rescue IO::EAGAINWaitReadable
-          sleep(0.0)
+          sleep(@will_interval_1_6)
         end
       rescue Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError => e
         raise ProConRejected.new(e)
@@ -45,8 +55,10 @@ class ProconBypassMan::Runner
         end
         begin
           ProconBypassMan.logger("<<< #{output.b}")
-          @gadget.write_nonblock(output)
-          sleep(0.0)
+          @gadget.write_nonblock(
+            ProconBypassMan::Processor.new(output).process
+          )
+          sleep(@will_interval_0_0_1)
         rescue IO::EAGAINWaitReadable
           sleep(0.0)
         end
