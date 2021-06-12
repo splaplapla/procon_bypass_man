@@ -56,6 +56,9 @@ module ProconBypassMan::Runner
     end
 
     loop { sleep(5) }
+  ensure
+    @gadget&.close
+    @procon&.close
   end
 
   def first_negotiation
