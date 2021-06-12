@@ -18,9 +18,8 @@ module ProconBypassMan
 
   def self.logger(prefix=nil, text)
     # TODO replace Logger
-    pp "pure: #{text}"
-    pp "unpack(bin): #{text.unpack("b*")}"
+    # pp "pure: #{text}"
+    # pp "unpack(bin): #{text.unpack("b*")}"
     pp "unpack(Hex): #{text.unpack("H*")}"
-      # .pack("H*")
   end
 end

@@ -28,7 +28,7 @@ class ProconBypassMan::Runner
         begin
           # NOTE read and writeを分けたほうがいいかも
           input = @gadget.read_nonblock(128)
-          ProconBypassMan.logger(">>> ", input.b)
+          # ProconBypassMan.logger(">>> ", input.b)
           @procon.write_nonblock(input)
           sleep(@will_interval_1_6)
         rescue IO::EAGAINWaitReadable
