@@ -18,6 +18,6 @@ module ProconBypassMan
 
   def self.logger(text)
     # TODO replace Logger
-    puts text
+    pp text
   end
 end
