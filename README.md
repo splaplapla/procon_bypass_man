@@ -1,28 +1,27 @@
 # ProconBypassMan
-
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/procon_bypass_man`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+* プロコンを連射機にするベースのライブラリです
+* 連射機能は各プラグインを使ってください
+* plugins
+    * https://github.com/splaspla-hacker/procon_bypass_man-splatoon2
 
 ## Installation
 
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'procon_bypass_man'
+gem 'procon_bypass_man', github: 'splaspla-hacker/procon_bypass_man'
 ```
 
 And then execute:
 
     $ bundle install
 
-Or install it yourself as:
-
-    $ gem install procon_bypass_man
-
 ## Usage
-
-TODO: Write usage instructions here
+```
+ProconBypassMan.run do
+  plugin :splatoon2
+end
+```
 
 ## Development
 
