@@ -21,20 +21,15 @@ class ProconBypassMan::Runner
       @will_interval_1_6 = 1.6
     end
 
+    # gadget => procon
+    # 遅くていい
     Thread.new do
       loop do
-        input = nil
         begin
+          # NOTE read and writeを分けたほうがいいかも
           input = @gadget.read_nonblock(128)
-        rescue IO::EAGAINWaitReadable
-          sleep(0.1)
-          retry
-        end
-
-        begin
-          ProconBypassMan.logger(">>> #{output.b}")
+          ProconBypassMan.logger(">>> #{input.b}")
           @procon.write_nonblock(input)
-          sleep(0.0)
           sleep(@will_interval_1_6)
         rescue IO::EAGAINWaitReadable
           sleep(@will_interval_1_6)
@@ -44,15 +39,17 @@ class ProconBypassMan::Runner
       end
     end
 
+    # procon => gadget
+    # シビア
     Thread.new do
       loop do
         output = nil
         begin
           output = @procon.read_nonblock(128)
         rescue IO::EAGAINWaitReadable
-          sleep(0.0)
           retry
         end
+
         begin
           ProconBypassMan.logger("<<< #{output.b}")
           @gadget.write_nonblock(
@@ -60,7 +57,6 @@ class ProconBypassMan::Runner
           )
           sleep(@will_interval_0_0_1)
         rescue IO::EAGAINWaitReadable
-          sleep(0.0)
         end
       rescue Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError => e
         raise ProConRejected.new(e)
