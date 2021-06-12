@@ -1,6 +1,4 @@
 class ProconBypassMan::Processor
-  @@pushed_map = {}
-
   # @return [String] binary
   def initialize(binary)
     @binary = binary
@@ -12,17 +10,8 @@ class ProconBypassMan::Processor
       return @binary
     end
 
-    procon = ProconBypassMan::Procon.new(@binary)
-    if procon.pushed_zr?
-      if @@pushed_map[:zr] = !!@@pushed_map[:zr]
-        procon.unpush(:zr)
-      end
-      puts "ZRが押されています"
-    end
-    if procon.pushed_down?
-      puts "downが押されています"
-    end
-
+    procon = ProconBypassMan::Procon.input(@binary)
+    procon.apply!
     @binary = procon.to_binary
   end
 end

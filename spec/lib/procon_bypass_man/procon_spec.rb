@@ -26,4 +26,24 @@ describe ProconBypassMan::Procon do
       it { expect(subject).to eq(false) }
     end
   end
+
+  describe 'ZRを押しっぱなしのときは出力をZRをトグルすること' do
+    let(:data) { "3012818a8000b0377246f8750988f5c70bfb011400e9ff180083f5d00bf9011100ecff190088f5d10bf9011000f1ff1c00000000000000000000000000000000".freeze }
+    it do
+      procon = ProconBypassMan::Procon.new(binary.dup)
+      procon.apply!
+      expect(procon.pushed_zr?).to eq(true)
+      expect(ProconBypassMan::Procon.new(procon.to_binary).pushed_zr?).to eq(true)
+
+      procon = ProconBypassMan::Procon.new(binary.dup)
+      procon.apply!
+      expect(procon.pushed_zr?).to eq(true)
+      expect(ProconBypassMan::Procon.new(procon.to_binary).pushed_zr?).to eq(false)
+
+      procon = ProconBypassMan::Procon.new(binary.dup)
+      procon.apply!
+      expect(procon.pushed_zr?).to eq(true)
+      expect(ProconBypassMan::Procon.new(procon.to_binary).pushed_zr?).to eq(true)
+    end
+  end
 end
