@@ -73,7 +73,7 @@ class ProconBypassMan::Runner
     loop do
       begin
         input = @gadget.read_nonblock(128)
-        ProconBypassMan.logger(">>> #{output.b}")
+        ProconBypassMan.logger(">>> #{input.b}")
         @procon.write_nonblock(input)
         if input[0] == "\x80".b && input[1] == "\x01".b
           ProconBypassMan.logger("first negotiation is over")
