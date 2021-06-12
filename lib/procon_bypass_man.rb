@@ -11,7 +11,7 @@ module ProconBypassMan
 
   def self.run
     registry = ProconBypassMan::DeviceRegistry.new
-    yield(ProconBypassMan::PluginIntegration.instance)
+    yield(ProconBypassMan::PluginIntegration.instance) if block_given?
     Runner.new(gadget: registry.gadget, procon: registry.procon).run
   end
 
