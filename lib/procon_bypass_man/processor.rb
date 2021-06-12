@@ -12,6 +12,6 @@ class ProconBypassMan::Processor
 
     procon = ProconBypassMan::Procon.input(@binary)
     procon.apply!
-    @binary = procon.to_binary
+    procon.to_binary
   end
 end
