@@ -1,2 +1,0 @@
-module ProconBypassMan::Connector
-end

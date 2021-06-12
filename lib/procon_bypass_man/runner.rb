@@ -1,4 +1,4 @@
-module ProconBypassMan::Runner
+class ProconBypassMan::Runner
   def initialize(gadget: , procon: )
     @gadget = gadget
     @procon = procon

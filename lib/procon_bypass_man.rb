@@ -1,6 +1,7 @@
 require_relative "procon_bypass_man/version"
-require_relative "procon_bypass_man/has_devices"
+require_relative "procon_bypass_man/device_registry"
 require_relative "procon_bypass_man/runner"
+require_relative "procon_bypass_man/plugin_integration"
 
 STDOUT.sync = true
 Thread.abort_on_exception = true
@@ -8,13 +9,10 @@ Thread.abort_on_exception = true
 module ProconBypassMan
   class Error < StandardError; end
 
-  include HasDevices
-
   def self.run
-    instance = new
-    instance.init_devices
+    registry = ProconBypassMan::DeviceRegistry.new
     yield(ProconBypassMan::PluginIntegration.instance)
-    Runner.new(gadget: instance.gadget, procon: procon).run
+    Runner.new(gadget: registry.gadget, procon: registry.procon).run
   end
 
   def self.logger(text)

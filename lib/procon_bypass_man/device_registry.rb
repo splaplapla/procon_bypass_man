@@ -1,4 +1,4 @@
-module ProconBypassMan::HasDevices
+class ProconBypassMan::DeviceRegistry
   PROCON_PATH = "/dev/hidraw0"
   PROCON2_PATH = "/dev/hidraw1"
 
@@ -8,6 +8,10 @@ module ProconBypassMan::HasDevices
 
   def procon
     @procon
+  end
+
+  def initialize
+    init_devices
   end
 
   # @return [void]
