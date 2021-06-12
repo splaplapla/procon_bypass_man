@@ -28,7 +28,9 @@ GEM
     rspec-support (3.10.2)
 
 PLATFORMS
+  arm-linux
   arm64-darwin-20
+  armv7l-linux
 
 DEPENDENCIES
   procon_bypass_man!
@@ -37,4 +39,4 @@ DEPENDENCIES
   rspec
 
 BUNDLED WITH
-   2.2.16
+   2.2.20
