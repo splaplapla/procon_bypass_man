@@ -1,6 +1,7 @@
 require_relative "procon_bypass_man/version"
 require_relative "procon_bypass_man/device_registry"
 require_relative "procon_bypass_man/runner"
+require_relative "procon_bypass_man/processor"
 require_relative "procon_bypass_man/plugin_integration"
 
 STDOUT.sync = true
