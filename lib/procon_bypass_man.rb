@@ -18,7 +18,7 @@ module ProconBypassMan
 
   def self.logger(text)
     # TODO replace Logger
-    pp text
-    pp text.bytes.map{|x| x.to_s(16).rjust(2, "0") }.join
+    pp "1: #{text}"
+    pp "2: #{text.bytes.map{|x| x.to_s(16).rjust(2, "0") }.join}"
   end
 end
