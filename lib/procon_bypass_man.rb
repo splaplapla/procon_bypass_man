@@ -16,11 +16,11 @@ module ProconBypassMan
     Runner.new(gadget: registry.gadget, procon: registry.procon).run
   end
 
-  def self.logger(text)
+  def self.logger(prefix=nil, text)
     # TODO replace Logger
     pp "pure: #{text}"
-    pp "converted: #{text.bytes.map{|x| x.to_s(16).rjust(2, "0") }.join}"
     pp "unpack(bin): #{text.unpack("b*")}"
     pp "unpack(Hex): #{text.unpack("H*")}"
+      # .pack("H*")
   end
 end
