@@ -1,30 +1,28 @@
 class ProconBypassMan::Processor
+  @@pushed_map = {}
+
   # @return [String] binary
   def initialize(binary)
     @binary = binary
   end
 
-  # @return [String]
+  # @return [String] 加工後の入力データ
   def process
-    binding.pry
-    # 入力データ
-    if @binary[0] == "\x30".b
+    unless @binary[0] == "\x30".b
+      return @binary
     end
 
-    # ZR	R	SR(right)	SL(right)	A	B	X	Y
-    bit3 = @binary[3]
-    if bit3.unpack("H*").first.to_i(16).to_s(2).reverse[7] == "1"
+    procon = ProconBypassMan::Procon.new(@binary)
+    if procon.pushed_zr?
+      if @@pushed_map[:zr] = !!@@pushed_map[:zr]
+        procon.unpush(:zr)
+      end
       puts "ZRが押されています"
     end
-
-    # Grip	(none)	Cap	Home	ThumbL	ThumbR	+	-
-    bit4 = @binary[4]
-    # ZL	L	SL(left)	SR(left)	Left	Right	Up	Down
-    bit5 = @binary[5]
-    if bit5.unpack("H*").first.to_i(16).to_s(2).reverse[0] == "1"
+    if procon.pushed_down?
       puts "downが押されています"
     end
 
-    @binary
+    @binary = procon.to_binary
   end
 end
