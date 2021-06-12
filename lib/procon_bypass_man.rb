@@ -8,7 +8,7 @@ STDOUT.sync = true
 Thread.abort_on_exception = true
 
 module ProconBypassMan
-  class Error < StandardError; end
+  class ProConRejected < StandardError; end
 
   def self.run
     registry = ProconBypassMan::DeviceRegistry.new

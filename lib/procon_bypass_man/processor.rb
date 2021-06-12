@@ -1,4 +1,4 @@
-module ProconBypassMan::Processor
+class ProconBypassMan::Processor
   # @return [String] binary
   def initialize(binary)
     @binary = binary

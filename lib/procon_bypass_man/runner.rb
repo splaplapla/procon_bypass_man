@@ -1,6 +1,4 @@
 class ProconBypassMan::Runner
-  class ProConRejected < StandardError; end
-
   def initialize(gadget: , procon: )
     @gadget = gadget
     @procon = procon
@@ -37,7 +35,7 @@ class ProconBypassMan::Runner
           sleep(@will_interval_1_6)
         end
       rescue Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError => e
-        raise ProConRejected.new(e)
+        raise ProconBypassMan::ProConRejected.new(e)
       end
     end
 
@@ -61,7 +59,7 @@ class ProconBypassMan::Runner
         rescue IO::EAGAINWaitReadable
         end
       rescue Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError => e
-        raise ProConRejected.new(e)
+        raise ProconBypassMan::ProConRejected.new(e)
       end
     end
 
