@@ -13,18 +13,31 @@ class ProconBypassMan::Procon
 
   # TODO BYTES_MAPから組み立てる
   BUTTONS_MAP = {
+    l: { byte_position: 5, bit_position: 6 },
+    r: { byte_position: 3, bit_position: 6 },
     zr: { byte_position: 3, bit_position: 7 },
-    down: { byte_position: 5, bit_position: 0 }
+    zl: { byte_position: 5, bit_position: 7 },
+    up: { byte_position: 5, bit_position: 1 },
+    down: { byte_position: 5, bit_position: 0 },
+    right: { byte_position: 5, bit_position: 2 },
+    left: { byte_position: 5, bit_position: 3 },
   }
 
   @@status = {}
+  @@current_layer = :up
+  @@layers_map = {
+    up: { flip_buttons: [:zr, :down] },
+    down: { flip_buttons: [:zr, :down] },
+    right: { flip_buttons: [] },
+    left: { flip_buttons: [] },
+  }
   @@compiled = false
 
   attr_accessor :binary
 
   def self.compile!
     return if @@compiled
-    flip_buttons.each do |button|
+    BUTTONS_MAP.each do |button, value|
       define_method "pushed_#{button}?" do
         pushed_button?(button)
       end
@@ -34,7 +47,7 @@ class ProconBypassMan::Procon
 
   # TODO plugin経由で差し込めるようにする
   def self.flip_buttons
-    [:zr, :down]
+    @@layers_map[@@current_layer][:flip_buttons]
   end
 
   def self.input(binary)
@@ -50,7 +63,29 @@ class ProconBypassMan::Procon
     @@status
   end
 
+  def next_layer
+    case
+    when pushed_up?
+      :up
+    when pushed_right?
+      :right
+    when pushed_left?
+      :left
+    when pushed_down?
+      :down
+    end
+  end
+
+  def change_layer?
+    (pushed_r? && pushed_l? && pushed_zr? && pushed_zl?) || \
+      (pushed_up? || pushed_right? || pushed_left? || pushed_down?)
+  end
+
   def apply!
+    if change_layer?
+      @@current_layer = next_layer
+    end
+
     flip_buttons.each do |button|
       if pushed_button?(button)
         status[button] = !status[button]
