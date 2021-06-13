@@ -4,7 +4,7 @@
 
 ## 使うハードウェア
 * プロコン
-* Switch
+* Switch本体とドック
 * Raspberry Pi4
 
 ## Usage
