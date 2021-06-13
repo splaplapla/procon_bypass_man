@@ -1,4 +1,7 @@
 class ProconBypassMan::Procon
+  #3)  ZR	R	SR(right)	SL(right)	A	B	X	Y
+  #4)  Grip	(none)	Cap	Home	ThumbL	ThumbR	+	-
+  #5)  ZL	L	SL(left)	SR(left)	Left	Right	Up	Down
   BYTES_MAP = {
     0 => nil,
     1 => nil,
@@ -16,6 +19,8 @@ class ProconBypassMan::Procon
 
   @@status = {}
   @@compiled = false
+
+  attr_accessor :binary
 
   def self.compile!
     return if @@compiled
@@ -36,12 +41,9 @@ class ProconBypassMan::Procon
     new(binary)
   end
 
-  #3)  ZR	R	SR(right)	SL(right)	A	B	X	Y
-  #4)  Grip	(none)	Cap	Home	ThumbL	ThumbR	+	-
-  #5)  ZL	L	SL(left)	SR(left)	Left	Right	Up	Down
   def initialize(binary)
     self.class.compile! unless @@compiled
-    @binary = binary.dup
+    self.binary = binary.dup
   end
 
   def status
@@ -50,42 +52,32 @@ class ProconBypassMan::Procon
 
   # ここで入力を書き換える
   def apply!
-    # changes.each do |key, values|
-    # end
-
     flip_buttons.each do |button|
       if pushed_button?(button)
-        @@status[button] = !@@status[button]
+        status[button] = !status[button]
       else
-        @@status[button] = false
+        status[button] = false
       end
     end
 
-    @@status
-  end
-
-  def changes
-    c = []
-    c << { zr: [@@status[:zr], pushed_zr?] }
-    c << { down: [@@status[:down], pushed_down?] }
-    c.select { |_key, values| values.first != values.last }
+    status
   end
 
   def to_binary
     flip_buttons.each do |button|
-      if pushed_button?(button) && !@@status[button]
+      if pushed_button?(button) && !status[button]
         byte_position = BUTTONS_MAP[button][:byte_position]
-        value = @binary[byte_position].unpack("H*").first.to_i(16) - 2**BUTTONS_MAP[button][:bit_position]
-        @binary[byte_position] = ["%02X" % value.to_s].pack("H*")
+        value = binary[byte_position].unpack("H*").first.to_i(16) - 2**BUTTONS_MAP[button][:bit_position]
+        binary[byte_position] = ["%02X" % value.to_s].pack("H*")
       end
     end
-    @binary
+    binary
   end
 
   private
 
   def pushed_button?(button)
-    @binary[
+    binary[
       BUTTONS_MAP[button][:byte_position]
     ].unpack("H*").first.to_i(16).to_s(2).reverse[
       BUTTONS_MAP[button][:bit_position]
