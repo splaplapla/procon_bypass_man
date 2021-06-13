@@ -7,7 +7,7 @@ class ProconBypassMan::Procon
   #4)  Grip	(none)	Cap	Home	ThumbL	ThumbR	+	-
   #5)  ZL	L	SL(left)	SR(left)	Left	Right	Up	Down
   def initialize(binary)
-    @binary = binary
+    @binary = binary.dup
   end
 
   def self.input(binary)
