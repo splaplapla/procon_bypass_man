@@ -50,7 +50,6 @@ class ProconBypassMan::Procon
     @@status
   end
 
-  # ここで入力を書き換える
   def apply!
     flip_buttons.each do |button|
       if pushed_button?(button)
