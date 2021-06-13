@@ -1,8 +1,6 @@
 # ProconBypassMan
-* プロコンを連射機にするベースのライブラリです
-* 連射機能は各プラグインを使ってください
-* plugins
-    * https://github.com/splaspla-hacker/procon_bypass_man-splatoon2
+* プロコンを連射機にするツールです
+* 特定のタイトルに特化した振る舞いにしたい時は各プラグインを使ってください(TODO)
 
 ## Installation
 
@@ -29,9 +27,15 @@ sudo bundle install --path vendor/bundle --jobs 1000
 sudo bin/run
 ```
 
+## Plugins
+* https://github.com/splaspla-hacker/procon_bypass_man-splatoon2
+
 ### Callbacks
 ```
 ```
+
+## プラグインの作り方(TODO)
+
 
 ## Contributing
 
@@ -40,3 +44,12 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/[USERN
 ## License
 
 The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
+
+## TODO
+* pluginsの仕組み/pluginへ切り出す
+* layerを切り替えれる仕組み
+* ログをfluentdへ送信
+* モードを切り替え(プロセスの起動なしで、モードのon/offをしたい)
+  * webから入力できる
+  * 標準入力から受け取るか
+  * 特定のキーを入れるとスイッチできるようにする？
