@@ -1,5 +1,7 @@
 class ProconBypassMan::Procon
-  ZR = 128
+  KEY_ZR = 128
+  KEY_DOWN = 1
+
   @@status = {}
   #3)  ZR	R	SR(right)	SL(right)	A	B	X	Y
   #4)  Grip	(none)	Cap	Home	ThumbL	ThumbR	+	-
@@ -16,11 +18,6 @@ class ProconBypassMan::Procon
     @@status || {}
   end
 
-  def update_status
-    @@status[:zr] = pushed_zr?
-    @@status[:down] = pushed_down?
-  end
-
   # ここで入力を書き換える
   def apply!
     # changes.each do |key, values|
@@ -29,6 +26,12 @@ class ProconBypassMan::Procon
       @@status[:zr] = !@@status[:zr]
     else
       @@status[:zr] = false
+    end
+
+    if pushed_down?
+      @@status[:down] = !@@status[:down]
+    else
+      @@status[:down] = false
     end
 
     @@status
@@ -50,11 +53,14 @@ class ProconBypassMan::Procon
   end
 
   def to_binary
-    if @@status[:zr]
-      # no-op
-    else
-      binary3 = @binary[4].unpack("H*").first.to_i(16) - ZR
+    if !@@status[:zr]
+      binary3 = @binary[3].unpack("H*").first.to_i(16) - KEY_ZR
       @binary[3] = [binary3.to_s(16)].pack("H*")
+    end
+
+    if !@@status[:down]
+      binary5 = @binary[5].unpack("H*").first.to_i(16) - KEY_DOWN
+      @binary[5] = [binary5.to_s(16)].pack("H*")
     end
 
     @binary
