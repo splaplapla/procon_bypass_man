@@ -7,6 +7,12 @@
 * Switch本体とドック
 * Raspberry Pi4
 
+## 使うソフトウェア
+* 必須
+  * ruby-3.0.x
+* オプション
+  * fluentd
+
 ## Usage
 以下のファイルを用意して`sudo ruby hoge.rb`してください
 
