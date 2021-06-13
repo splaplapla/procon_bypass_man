@@ -53,14 +53,14 @@ class ProconBypassMan::Procon
   end
 
   def to_binary
-    if !@@status[:zr]
-      binary3 = @binary[3].unpack("H*").first.to_i(16) - KEY_ZR
-      @binary[3] = [binary3.to_s(16)].pack("H*")
+    if pushed_zr? && !@@status[:zr]
+      d_from_binary3 = @binary[3].unpack("H*").first.to_i(16) - KEY_ZR
+      @binary[3] = ["%02X" % d_from_binary3.to_s].pack("H*")
     end
 
-    if !@@status[:down]
-      binary5 = @binary[5].unpack("H*").first.to_i(16) - KEY_DOWN
-      @binary[5] = [binary5.to_s(16)].pack("H*")
+    if pushed_down? && !@@status[:down]
+      d_from_binary5 = @binary[5].unpack("H*").first.to_i(16) - KEY_DOWN
+      @binary[5] = ["%02X" % d_from_binary5.to_s].pack("H*")
     end
 
     @binary
