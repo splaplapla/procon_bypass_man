@@ -28,9 +28,9 @@ end
 
 # or
 ProconBypassMan.run do
-  plugin 'splaspla-hacker/procon_bypass_man-splatoon2' do
-    layer
-    layer do
+  layer
+  layer
+    plugin 'splaspla-hacker/procon_bypass_man-splatoon2' do
       flip :down, :zr
     end
   end
