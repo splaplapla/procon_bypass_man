@@ -9,12 +9,13 @@ class ProconBypassMan::Procon
   },
 
   # TODO BYTES_MAPから組み立てる
-  KEYS_MAP = {
+  BUTTONS_MAP = {
     zr: { byte_position: 3, bit_position: 7 },
     down: { byte_position: 5, bit_position: 0 }
   }
 
   @@status = {}
+
   #3)  ZR	R	SR(right)	SL(right)	A	B	X	Y
   #4)  Grip	(none)	Cap	Home	ThumbL	ThumbR	+	-
   #5)  ZL	L	SL(left)	SR(left)	Left	Right	Up	Down
@@ -27,7 +28,7 @@ class ProconBypassMan::Procon
   end
 
   def status
-    @@status || {}
+    @@status
   end
 
   # ここで入力を書き換える
@@ -57,24 +58,34 @@ class ProconBypassMan::Procon
   end
 
   def pushed_zr?
-    @binary[3].unpack("H*").first.to_i(16).to_s(2).reverse[7] == "1"
+    pushed_button?(:zr)
   end
 
   def pushed_down?
-    @binary[5].unpack("H*").first.to_i(16).to_s(2).reverse[0] == "1"
+    pushed_button?(:down)
   end
 
   def to_binary
     if pushed_zr? && !@@status[:zr]
-      d_from_binary3 = @binary[3].unpack("H*").first.to_i(16) - 2**KEYS_MAP[:zr][:bit_position]
+      d_from_binary3 = @binary[3].unpack("H*").first.to_i(16) - 2**BUTTONS_MAP[:zr][:bit_position]
       @binary[3] = ["%02X" % d_from_binary3.to_s].pack("H*")
     end
 
     if pushed_down? && !@@status[:down]
-      d_from_binary5 = @binary[5].unpack("H*").first.to_i(16) - 2**KEYS_MAP[:down][:bit_position]
+      d_from_binary5 = @binary[5].unpack("H*").first.to_i(16) - 2**BUTTONS_MAP[:down][:bit_position]
       @binary[5] = ["%02X" % d_from_binary5.to_s].pack("H*")
     end
 
     @binary
+  end
+
+  private
+
+  def pushed_button?(button)
+    @binary[
+      BUTTONS_MAP[button][:byte_position]
+    ].unpack("H*").first.to_i(16).to_s(2).reverse[
+      BUTTONS_MAP[button][:bit_position]
+    ] == '1'
   end
 end
