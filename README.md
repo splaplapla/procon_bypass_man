@@ -4,8 +4,6 @@
 
 ## Installation
 
-Add this line to your application's Gemfile:
-
 ```ruby
 gem 'procon_bypass_man', github: 'splaspla-hacker/procon_bypass_man'
 ```
@@ -21,20 +19,14 @@ ProconBypassMan.run do
 end
 ```
 
-## Development
-```
-sudo bundle install --path vendor/bundle --jobs 1000
-sudo bin/run
-```
-
 ## Plugins
 * https://github.com/splaspla-hacker/procon_bypass_man-splatoon2
 
-### Callbacks
-```
-```
-
 ## プラグインの作り方(TODO)
+スケルトンを出力するgeneratorを作るか、普通にgemで作るか
+
+```
+```
 
 
 ## Contributing
@@ -53,3 +45,14 @@ The gem is available as open source under the terms of the [MIT License](https:/
   * webから入力できる
   * 標準入力から受け取るか
   * 特定のキーを入れるとスイッチできるようにする？
+
+## 対応ハードウェア
+* プロコン
+* Switch
+* Raspberry Pi4
+
+## FAQ
+* どうやって動かすの?
+    * このツールはRaspberry Pi4をUSBガジェットモードで起動して有線でプロコンを接続して使います
+* ラズベリーパイ4のセットアップ方法は？
+    * Raspberry Pi4本体のセットアップがめんどいです。自力で調べてください
