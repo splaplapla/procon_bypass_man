@@ -15,7 +15,19 @@
 gem 'procon_bypass_man', github: 'splaspla-hacker/procon_bypass_man'
 
 ProconBypassMan.run do
-  plugin 'splaspla-hacker/procon_bypass_man-splatoon2'
+  plugin 'splaspla-hacker/procon_bypass_man-splatoon2' do
+    flip :down, :zr
+  end
+end
+
+# or
+ProconBypassMan.run do
+  plugin 'splaspla-hacker/procon_bypass_man-splatoon2' do
+    layer
+    layer do
+      flip :down, :zr
+    end
+  end
 end
 ```
 

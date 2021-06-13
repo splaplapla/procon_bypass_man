@@ -1,6 +1,18 @@
 class ProconBypassMan::Procon
-  KEY_ZR = 128
-  KEY_DOWN = 1
+  BYTES_MAP = {
+    0 => nil,
+    1 => nil,
+    2 => nil,
+    3 => [:zr, :r, :sr, :sl, :a, :b, :x, :y],
+    4 => [:grip, nil, :cap, :home, :thumbl, :thumbr, :plus, :minus],
+    5 => [:zl, :l, :sl, :sr, :left, :right, :up, :down],
+  },
+
+  # TODO BYTES_MAPから組み立てる
+  KEYS_MAP = {
+    zr: { byte_position: 3, bit_position: 7 },
+    down: { byte_position: 5, bit_position: 0 }
+  }
 
   @@status = {}
   #3)  ZR	R	SR(right)	SL(right)	A	B	X	Y
@@ -54,12 +66,12 @@ class ProconBypassMan::Procon
 
   def to_binary
     if pushed_zr? && !@@status[:zr]
-      d_from_binary3 = @binary[3].unpack("H*").first.to_i(16) - KEY_ZR
+      d_from_binary3 = @binary[3].unpack("H*").first.to_i(16) - 2**KEYS_MAP[:zr][:bit_position]
       @binary[3] = ["%02X" % d_from_binary3.to_s].pack("H*")
     end
 
     if pushed_down? && !@@status[:down]
-      d_from_binary5 = @binary[5].unpack("H*").first.to_i(16) - KEY_DOWN
+      d_from_binary5 = @binary[5].unpack("H*").first.to_i(16) - 2**KEYS_MAP[:down][:bit_position]
       @binary[5] = ["%02X" % d_from_binary5.to_s].pack("H*")
     end
 
