@@ -15,16 +15,33 @@ class ProconBypassMan::Procon
   }
 
   @@status = {}
+  @@compiled = false
+
+  def self.compile!
+    return if @@compiled
+    flip_buttons.each do |button|
+      define_method "pushed_#{button}?" do
+        pushed_button?(button)
+      end
+    end
+    @@compiled = true
+  end
+
+  # TODO plugin経由で差し込めるようにする
+  def self.flip_buttons
+    [:zr, :down]
+  end
+
+  def self.input(binary)
+    new(binary)
+  end
 
   #3)  ZR	R	SR(right)	SL(right)	A	B	X	Y
   #4)  Grip	(none)	Cap	Home	ThumbL	ThumbR	+	-
   #5)  ZL	L	SL(left)	SR(left)	Left	Right	Up	Down
   def initialize(binary)
+    self.class.compile! unless @@compiled
     @binary = binary.dup
-  end
-
-  def self.input(binary)
-    new(binary)
   end
 
   def status
@@ -37,7 +54,7 @@ class ProconBypassMan::Procon
     # end
 
     flip_buttons.each do |button|
-      if public_method("pushed_#{button}?")
+      if pushed_button?(button)
         @@status[button] = !@@status[button]
       else
         @@status[button] = false
@@ -54,25 +71,14 @@ class ProconBypassMan::Procon
     c.select { |_key, values| values.first != values.last }
   end
 
-  def pushed_zr?
-    pushed_button?(:zr)
-  end
-
-  def pushed_down?
-    pushed_button?(:down)
-  end
-
   def to_binary
-    if pushed_zr? && !@@status[:zr]
-      d_from_binary3 = @binary[3].unpack("H*").first.to_i(16) - 2**BUTTONS_MAP[:zr][:bit_position]
-      @binary[3] = ["%02X" % d_from_binary3.to_s].pack("H*")
+    flip_buttons.each do |button|
+      if pushed_button?(button) && !@@status[button]
+        byte_position = BUTTONS_MAP[button][:byte_position]
+        value = @binary[byte_position].unpack("H*").first.to_i(16) - 2**BUTTONS_MAP[button][:bit_position]
+        @binary[byte_position] = ["%02X" % value.to_s].pack("H*")
+      end
     end
-
-    if pushed_down? && !@@status[:down]
-      d_from_binary5 = @binary[5].unpack("H*").first.to_i(16) - 2**BUTTONS_MAP[:down][:bit_position]
-      @binary[5] = ["%02X" % d_from_binary5.to_s].pack("H*")
-    end
-
     @binary
   end
 
@@ -87,6 +93,6 @@ class ProconBypassMan::Procon
   end
 
   def flip_buttons
-    [:zr, :down]
+    self.class.flip_buttons
   end
 end
