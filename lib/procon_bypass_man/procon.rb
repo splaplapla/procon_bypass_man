@@ -73,6 +73,9 @@ class ProconBypassMan::Procon
       :left
     when pushed_down?
       :down
+    else
+      pp "おかしい"
+      :up
     end
   end
 
