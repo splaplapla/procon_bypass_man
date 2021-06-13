@@ -35,16 +35,13 @@ class ProconBypassMan::Procon
   def apply!
     # changes.each do |key, values|
     # end
-    if pushed_zr?
-      @@status[:zr] = !@@status[:zr]
-    else
-      @@status[:zr] = false
-    end
 
-    if pushed_down?
-      @@status[:down] = !@@status[:down]
-    else
-      @@status[:down] = false
+    flip_buttons.each do |button|
+      if public_method("pushed_#{button}?")
+        @@status[button] = !@@status[button]
+      else
+        @@status[button] = false
+      end
     end
 
     @@status
@@ -87,5 +84,9 @@ class ProconBypassMan::Procon
     ].unpack("H*").first.to_i(16).to_s(2).reverse[
       BUTTONS_MAP[button][:bit_position]
     ] == '1'
+  end
+
+  def flip_buttons
+    [:zr, :down]
   end
 end
