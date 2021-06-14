@@ -6,7 +6,7 @@ require "pry"
 
 ProconBypassMan.run do
   prefix_keys_for_changing_layer [:zr, :r, :zl, :l]
-  layer :up, mode: :normal do
+  layer :up, mode: :manual do
     flip [:down, :zr]
   end
   layer :right, mode: :random

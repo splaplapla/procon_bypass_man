@@ -9,7 +9,7 @@ describe ProconBypassMan do
             layer :up do
               flip [:l, :r]
             end
-            layer :down, mode: :normal do
+            layer :down, mode: :manual do
               flip [:r]
             end
             layer :right, mode: :random
@@ -17,11 +17,11 @@ describe ProconBypassMan do
           end
           expect(ProconBypassMan::Configuration.instance.layers[:up].flip_buttons).to eq([:l, :r])
           expect(ProconBypassMan::Configuration.instance.layers[:down].flip_buttons).to eq([:r])
-          expect(ProconBypassMan::Configuration.instance.layers[:down].mode).to eq(:normal)
+          expect(ProconBypassMan::Configuration.instance.layers[:down].mode).to eq(:manual)
           expect(ProconBypassMan::Configuration.instance.layers[:right].flip_buttons).to eq([])
           expect(ProconBypassMan::Configuration.instance.layers[:right].mode).to eq(:random)
           expect(ProconBypassMan::Configuration.instance.layers[:left].flip_buttons).to eq([])
-          expect(ProconBypassMan::Configuration.instance.layers[:left].mode).to eq(:normal)
+          expect(ProconBypassMan::Configuration.instance.layers[:left].mode).to eq(:manual)
         end
       end
       context 'has values' do

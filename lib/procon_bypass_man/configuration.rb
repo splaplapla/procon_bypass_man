@@ -2,7 +2,7 @@ module ProconBypassMan
   class Layer
     attr_accessor :mode
 
-    def initialize(mode: :normal, &block)
+    def initialize(mode: :manual, &block)
       self.mode = mode
       instance_eval(&block) if block_given?
     end
@@ -35,8 +35,8 @@ module ProconBypassMan
       }
     end
 
-    MODES = [:normal, :random]
-    def layer(direction, mode: :normal, &block)
+    MODES = [:manual, :random]
+    def layer(direction, mode: :manual, &block)
       raise("unknown mode") unless MODES.include?(mode)
 
       layer = Layer.new(mode: mode)
