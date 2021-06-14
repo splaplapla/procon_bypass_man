@@ -17,7 +17,9 @@ module ProconBypassMan
     end
 
     def layer(direction, &block)
-      self.layers[direction] = Layer.new.instance_eval(&block)
+      layer = Layer.new
+      layer.instance_eval(&block)
+      self.layers[direction] = layer
     end
 
     def prefix_keys_for_changing_layer(buttons)
