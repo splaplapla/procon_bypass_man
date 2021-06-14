@@ -20,8 +20,7 @@ module ProconBypassMan
       self.layers[direction] = Layer.new.instance_eval(&block)
     end
 
-    def prefix_keys_for_changing_layer(buttons=nil)
-      return @prefix_keys_for_changing_layer if buttons.nil?
+    def prefix_keys_for_changing_layer(buttons)
       @prefix_keys_for_changing_layer = buttons
     end
 

@@ -7,7 +7,7 @@ describe ProconBypassMan do
         it do
           described_class.configure do
             layer :up do
-              flip [:l]
+              flip [:l, :r]
             end
             layer :down do
               flip [:r]
@@ -19,7 +19,7 @@ describe ProconBypassMan do
               flip []
             end
           end
-          expect(ProconBypassMan::Configuration.instance.layers[:up]).to eq([:l])
+          expect(ProconBypassMan::Configuration.instance.layers[:up]).to eq([:l, :r])
           expect(ProconBypassMan::Configuration.instance.layers[:down]).to eq([:r])
           expect(ProconBypassMan::Configuration.instance.layers[:right]).to eq([])
           expect(ProconBypassMan::Configuration.instance.layers[:left]).to eq([])
