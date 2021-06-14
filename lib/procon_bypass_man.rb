@@ -13,12 +13,12 @@ module ProconBypassMan
   class ProConRejected < StandardError; end
 
   def self.configure(&block)
-    ProconBypassMan::Configuration.instance.instance_eval(&block) if block_given?
+    ProconBypassMan::Configuration.instance.instance_eval(&block)
   end
 
   def self.run(&block)
+    configure(&block) if block_given?
     registry = ProconBypassMan::DeviceRegistry.new
-    ProconBypassMan::Configuration.instance.instance_eval(&block) if block_given?
     Runner.new(gadget: registry.gadget, procon: registry.procon).run
   end
 
