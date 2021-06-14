@@ -3,25 +3,49 @@ require "spec_helper"
 describe ProconBypassMan do
   describe '.configure' do
     describe 'layer' do
-      it do
-        described_class.configure do
-          layer :up do
-            flip []
+      context 'has values' do
+        it do
+          described_class.configure do
+            layer :up do
+              flip [:l]
+            end
+            layer :down do
+              flip [:r]
+            end
+            layer :right do
+              flip []
+            end
+            layer :left do
+              flip []
+            end
           end
-          layer :down do
-            flip []
-          end
-          layer :right do
-            flip []
-          end
-          layer :left do
-            flip []
-          end
+          expect(ProconBypassMan::Configuration.instance.layers[:up]).to eq([:l])
+          expect(ProconBypassMan::Configuration.instance.layers[:down]).to eq([:r])
+          expect(ProconBypassMan::Configuration.instance.layers[:right]).to eq([])
+          expect(ProconBypassMan::Configuration.instance.layers[:left]).to eq([])
         end
-        expect(ProconBypassMan::Configuration.instance.layers[:up]).to eq([])
-        expect(ProconBypassMan::Configuration.instance.layers[:down]).to eq([])
-        expect(ProconBypassMan::Configuration.instance.layers[:right]).to eq([])
-        expect(ProconBypassMan::Configuration.instance.layers[:left]).to eq([])
+      end
+      context '全部空' do
+        it do
+          described_class.configure do
+            layer :up do
+              flip []
+            end
+            layer :down do
+              flip []
+            end
+            layer :right do
+              flip []
+            end
+            layer :left do
+              flip []
+            end
+          end
+          expect(ProconBypassMan::Configuration.instance.layers[:up]).to eq([])
+          expect(ProconBypassMan::Configuration.instance.layers[:down]).to eq([])
+          expect(ProconBypassMan::Configuration.instance.layers[:right]).to eq([])
+          expect(ProconBypassMan::Configuration.instance.layers[:left]).to eq([])
+        end
       end
     end
     describe 'prefix_keys_for_changing_layer' do
