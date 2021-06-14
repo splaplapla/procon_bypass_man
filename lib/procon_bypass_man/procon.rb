@@ -81,6 +81,9 @@ class ProconBypassMan::Procon
   def apply!
     if change_layer?
       @@current_layer = next_layer
+      # layer変更中はニュートラルにする
+      self.binary = [ProconBypassMan::ProconBinaries::NO_ACTION].pack("H*")
+      return
     end
 
     flip_buttons.each do |button|
