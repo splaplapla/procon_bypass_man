@@ -82,7 +82,7 @@ class ProconBypassMan::Procon
   }
 
   @@status = {}
-  @@random_mode_sequence = 0
+  @@auto_mode_sequence = 0
   @@current_layer = :up
   @@compiled = false
 
@@ -103,8 +103,8 @@ class ProconBypassMan::Procon
     ProconBypassMan::Configuration.instance.layers[@@current_layer].flip_buttons
   end
 
-  def self.random_mode?
-    ProconBypassMan::Configuration.instance.layers[@@current_layer].mode == :random
+  def self.auto_mode?
+    ProconBypassMan::Configuration.instance.layers[@@current_layer].mode == :auto
   end
 
   def self.input(binary)
@@ -150,23 +150,23 @@ class ProconBypassMan::Procon
     end
 
     case
-    when self.class.random_mode?
-      data = ProconBypassMan::Procon::Data::MEANINGLESS[@@random_mode_sequence]
+    when self.class.auto_mode?
+      data = ProconBypassMan::Procon::Data::MEANINGLESS[@@auto_mode_sequence]
       if data.nil?
-        @@random_mode_sequence = 0
-        data = ProconBypassMan::Procon::Data::MEANINGLESS[@@random_mode_sequence]
+        @@auto_mode_sequence = 0
+        data = ProconBypassMan::Procon::Data::MEANINGLESS[@@auto_mode_sequence]
       end
-      @@random_mode_sequence += 1
-      random_binary = [data].pack("H*")
-      self.binary[3] = random_binary[3]
-      self.binary[4] = random_binary[4]
-      self.binary[5] = random_binary[5]
-      self.binary[6] = random_binary[6]
-      self.binary[7] = random_binary[7]
-      self.binary[8] = random_binary[8]
-      self.binary[9] = random_binary[9]
-      self.binary[10] = random_binary[10]
-      self.binary[11] = random_binary[11]
+      @@auto_mode_sequence += 1
+      auto_binary = [data].pack("H*")
+      self.binary[3] = auto_binary[3]
+      self.binary[4] = auto_binary[4]
+      self.binary[5] = auto_binary[5]
+      self.binary[6] = auto_binary[6]
+      self.binary[7] = auto_binary[7]
+      self.binary[8] = auto_binary[8]
+      self.binary[9] = auto_binary[9]
+      self.binary[10] = auto_binary[10]
+      self.binary[11] = auto_binary[11]
       return
     else
       flip_buttons.each do |button|

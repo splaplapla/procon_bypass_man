@@ -9,7 +9,7 @@ ProconBypassMan.run do
   layer :up, mode: :manual do
     flip [:down, :zr]
   end
-  layer :right, mode: :random
+  layer :right, mode: :auto
   layer :left do
   end
   layer :down do

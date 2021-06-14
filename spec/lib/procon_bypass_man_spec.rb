@@ -3,7 +3,7 @@ require "spec_helper"
 describe ProconBypassMan do
   describe '.configure' do
     describe 'layer' do
-      context 'with random mode' do
+      context 'with auto mode' do
         it do
           described_class.configure do
             layer :up do
@@ -12,14 +12,14 @@ describe ProconBypassMan do
             layer :down, mode: :manual do
               flip [:r]
             end
-            layer :right, mode: :random
+            layer :right, mode: :auto
             layer :left
           end
           expect(ProconBypassMan::Configuration.instance.layers[:up].flip_buttons).to eq([:l, :r])
           expect(ProconBypassMan::Configuration.instance.layers[:down].flip_buttons).to eq([:r])
           expect(ProconBypassMan::Configuration.instance.layers[:down].mode).to eq(:manual)
           expect(ProconBypassMan::Configuration.instance.layers[:right].flip_buttons).to eq([])
-          expect(ProconBypassMan::Configuration.instance.layers[:right].mode).to eq(:random)
+          expect(ProconBypassMan::Configuration.instance.layers[:right].mode).to eq(:auto)
           expect(ProconBypassMan::Configuration.instance.layers[:left].flip_buttons).to eq([])
           expect(ProconBypassMan::Configuration.instance.layers[:left].mode).to eq(:manual)
         end
