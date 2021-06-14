@@ -1,5 +1,8 @@
 class ProconBypassMan::Layer
-  def initialize(&block)
+  attr_accessor :mode
+
+  def initialize(mode: :normal, &block)
+    self.mode = mode
     instance_eval(&block) if block_given?
   end
 

@@ -16,8 +16,11 @@ module ProconBypassMan
       }
     end
 
-    def layer(direction, &block)
-      layer = Layer.new
+    MODES = [:normal, :random]
+    def layer(direction, mode: :normal, &block)
+      raise("unknown mode") unless MODES.include?(mode)
+
+      layer = Layer.new(mode: mode)
       layer.instance_eval(&block)
       self.layers[direction] = layer
     end
