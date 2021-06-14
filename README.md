@@ -20,14 +20,14 @@
 # bundler inline
 gem 'procon_bypass_man', github: 'splaspla-hacker/procon_bypass_man'
 
-ProconBypassMan.run do
-  flip :down, :zr
-  plugin 'splaspla-hacker/procon_bypass_man-splatoon2' do
-    fast_return
-  end
-end
+# no support
+# ProconBypassMan.run do
+#   flip :down, :zr
+#   plugin 'splaspla-hacker/procon_bypass_man-splatoon2' do
+#     fast_return
+#   end
+# end
 
-# or
 ProconBypassMan.run do
   prefix_keys_for_changing_layer [:zr, :r, :zl, :l]
   layer :up do
