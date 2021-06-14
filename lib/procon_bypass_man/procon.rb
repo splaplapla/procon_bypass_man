@@ -1,4 +1,8 @@
 class ProconBypassMan::Procon
+  module Data
+    NO_ACTION = "30f28100800078c77448287509550274ff131029001b0022005a0271ff191028001e00210064027cff1410280020002100000000000000000000000000000000"
+  end
+
   #3)  ZR	R	SR(right)	SL(right)	A	B	X	Y
   #4)  Grip	(none)	Cap	Home	ThumbL	ThumbR	+	-
   #5)  ZL	L	SL(left)	SR(left)	Left	Right	Up	Down
@@ -82,7 +86,7 @@ class ProconBypassMan::Procon
     if change_layer?
       @@current_layer = next_layer
       # layer変更中はニュートラルにする
-      self.binary = [ProconBypassMan::ProconBinaries::NO_ACTION].pack("H*")
+      self.binary = [ProconBypassMan::Procon::Data::NO_ACTION].pack("H*")
       return
     end
 
