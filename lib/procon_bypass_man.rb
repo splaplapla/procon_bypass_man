@@ -11,9 +11,21 @@ Thread.abort_on_exception = true
 module ProconBypassMan
   class ProConRejected < StandardError; end
 
+  class Configuration
+    attr_accessor :prefix_keys_for_changing_layer
+
+    def self.instance
+      @@instance ||= new
+    end
+
+    def prefix_keys_for_changing_layer
+      @prefix_keys_for_changing_layer ||= [:zr, :r, :zl, :l]
+    end
+  end
+
   def self.run
     registry = ProconBypassMan::DeviceRegistry.new
-    yield(ProconBypassMan::PluginIntegration.instance) if block_given?
+    yield(Configuration.instance) if block_given?
     Runner.new(gadget: registry.gadget, procon: registry.procon).run
   end
 

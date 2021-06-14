@@ -80,7 +80,7 @@ class ProconBypassMan::Procon
   end
 
   def change_layer?
-    (pushed_r? && pushed_l? && pushed_zr? && pushed_zl?) && \
+    ProconBypassMan::Configuration.instance.prefix_keys_for_changing_layer.map { |b| pushed_button?(b) }.all? &&
       (pushed_up? || pushed_right? || pushed_left? || pushed_down?)
   end
 
