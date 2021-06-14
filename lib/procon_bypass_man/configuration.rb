@@ -1,4 +1,23 @@
 module ProconBypassMan
+  class Layer
+    attr_accessor :mode
+
+    def initialize(mode: :normal, &block)
+      self.mode = mode
+      instance_eval(&block) if block_given?
+    end
+
+    # @param [Array] buttons
+    def flip(buttons)
+      @flip = buttons
+    end
+
+    # @return [Array]
+    def flip_buttons
+      @flip || []
+    end
+  end
+
   class Configuration
     attr_accessor :layers
 
@@ -21,7 +40,7 @@ module ProconBypassMan
       raise("unknown mode") unless MODES.include?(mode)
 
       layer = Layer.new(mode: mode)
-      layer.instance_eval(&block)
+      layer.instance_eval(&block) if block_given?
       self.layers[direction] = layer
     end
 
