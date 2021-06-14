@@ -155,8 +155,8 @@ class ProconBypassMan::Procon
       if data.nil?
         @@random_mode_sequence = 0
         data = ProconBypassMan::Procon::Data::MEANINGLESS[@@random_mode_sequence]
-        @@random_mode_sequence += 1
       end
+      @@random_mode_sequence += 1
       random_binary = [data].pack("H*")
       self.binary[3] = random_binary[3]
       self.binary[4] = random_binary[4]
