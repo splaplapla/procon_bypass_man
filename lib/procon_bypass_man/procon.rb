@@ -82,6 +82,7 @@ class ProconBypassMan::Procon
   }
 
   @@status = {}
+  @@random_mode_sequence = 0
   @@current_layer = :up
   @@compiled = false
 
@@ -150,16 +151,22 @@ class ProconBypassMan::Procon
 
     case
     when self.class.random_mode?
-      random_data = [ProconBypassMan::Procon::Data::MEANINGLESS.sample].pack("H*")
-      self.binary[3] = random_data[3]
-      self.binary[4] = random_data[4]
-      self.binary[5] = random_data[5]
-      self.binary[6] = random_data[6]
-      self.binary[7] = random_data[7]
-      self.binary[8] = random_data[8]
-      self.binary[9] = random_data[9]
-      self.binary[10] = random_data[10]
-      self.binary[11] = random_data[11]
+      data = ProconBypassMan::Procon::Data::MEANINGLESS[@@random_mode_sequence]
+      if data.nil?
+        @@random_mode_sequence = 0
+        data = ProconBypassMan::Procon::Data::MEANINGLESS[@@random_mode_sequence]
+        @@random_mode_sequence += 1
+      end
+      random_binary = [data].pack("H*")
+      self.binary[3] = random_binary[3]
+      self.binary[4] = random_binary[4]
+      self.binary[5] = random_binary[5]
+      self.binary[6] = random_binary[6]
+      self.binary[7] = random_binary[7]
+      self.binary[8] = random_binary[8]
+      self.binary[9] = random_binary[9]
+      self.binary[10] = random_binary[10]
+      self.binary[11] = random_binary[11]
       return
     else
       flip_buttons.each do |button|
