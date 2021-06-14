@@ -25,12 +25,6 @@ class ProconBypassMan::Procon
 
   @@status = {}
   @@current_layer = :up
-  @@layers_map = {
-    up: { flip_buttons: [:zr, :down] },
-    down: { flip_buttons: [:zr, :down] },
-    right: { flip_buttons: [] },
-    left: { flip_buttons: [] },
-  }
   @@compiled = false
 
   attr_accessor :binary
@@ -47,7 +41,7 @@ class ProconBypassMan::Procon
 
   # TODO plugin経由で差し込めるようにする
   def self.flip_buttons
-    @@layers_map[@@current_layer][:flip_buttons]
+    ProconBypassMan::Configuration.instance.layers[@@current_layer].flip_buttons
   end
 
   def self.input(binary)
