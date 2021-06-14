@@ -4,4 +4,15 @@ require "bundler/setup"
 require "procon_bypass_man"
 require "pry"
 
-ProconBypassMan.run
+ProconBypassMan.run do
+  prefix_keys_for_changing_layer [:zr, :r, :zl, :l]
+  layer :up do
+    flip :down, :zr
+  end
+  layer :right do
+  end
+  layer :left do
+  end
+  layer :down do
+  end
+end
