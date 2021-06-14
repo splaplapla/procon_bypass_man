@@ -17,7 +17,7 @@ module ProconBypassMan
     ProconBypassMan::Configuration.instance.instance_eval(&block) if block_given?
   end
 
-  def self.run
+  def self.run(&block)
     registry = ProconBypassMan::DeviceRegistry.new
     ProconBypassMan::Configuration.instance.instance_eval(&block) if block_given?
     Runner.new(gadget: registry.gadget, procon: registry.procon).run
