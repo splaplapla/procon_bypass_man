@@ -4,6 +4,28 @@ describe ProconBypassMan::Procon do
   let(:binary) { [data].pack("H*") }
 
   before(:all) do
+    ProconBypassMan::Procon.reset_cvar!
+  end
+
+  context 'with macro' do
+    context 'y, bを押しているとき' do
+      let(:data) { "30778105800099277344e86b0a7909f4f5a8f4b500c5ff8dff6c09cdf5b8f49a00c5ff92ff6a0979f5eef46500d5ff9bff000000000000000000000000000000" }
+      before do
+        ProconBypassMan.configure do
+          prefix_keys_for_changing_layer [:zr]
+          layer :up do
+            macro :fast_return, if_pushed: [:y, :b]
+          end
+        end
+      end
+      it do
+        procon = ProconBypassMan::Procon.new(binary)
+        expect(procon.pushed_y?).to eq(true)
+        expect(procon.pushed_b?).to eq(true)
+        procon.apply!
+        expect(ProconBypassMan::Procon.new(procon.to_binary).pushed_y?).to eq(true)
+      end
+    end
   end
 
   context 'with force_neutral' do

@@ -1,10 +1,11 @@
 module ProconBypassMan
   class Layer
-    attr_accessor :mode, :flips, :macro
+    attr_accessor :mode, :flips, :macros
 
     def initialize(mode: :manual, &block)
       self.mode = mode
       self.flips = {}
+      self.macros = {}
       instance_eval(&block) if block_given?
     end
 
@@ -32,9 +33,7 @@ module ProconBypassMan
 
     PRESET_MACROS = [:fast_return]
     def macro(name, if_pushed: )
-      self.macro = {
-        name => { if_pushed: if_pushed },
-      }
+      self.macros[name] = { if_pushed: if_pushed }
     end
 
     # @return [Array]

@@ -33,11 +33,6 @@ class ProconBypassMan::Procon
     left: { byte_position: 5, bit_position: 3 },
   }
 
-  @@status = {}
-  @@auto_mode_sequence = 0
-  @@current_layer = :up
-  @@compiled = false
-
   attr_accessor :binary
 
   def self.compile!
@@ -50,9 +45,22 @@ class ProconBypassMan::Procon
     @@compiled = true
   end
 
+  def self.reset_cvar!
+    @@status = {}
+    @@auto_mode_sequence = 0
+    @@current_layer = :up
+    @@compiled = false
+    @@on_going_macro = nil
+  end
+  reset_cvar!
+
   # TODO plugin経由で差し込めるようにする
   def self.flip_buttons
     ProconBypassMan::Configuration.instance.layers[@@current_layer].flip_buttons
+  end
+
+  def self.macros
+    ProconBypassMan::Configuration.instance.layers[@@current_layer].macros
   end
 
   def self.auto_mode?
@@ -149,6 +157,25 @@ class ProconBypassMan::Procon
   end
 
   def to_binary
+    if @@on_going_macro
+      step = @@on_going_macro.next_step
+      @@on_going_macro = nil if @@on_going_macro.finish?
+      [ProconBypassMan::Procon::Data::NO_ACTION].pack("H*").tap do |no_action_binary|
+        byte_position = BUTTONS_MAP[step][:byte_position]
+        value = binary[byte_position].unpack("H*").first.to_i(16) + 2**BUTTONS_MAP[step][:bit_position]
+        no_action_binary[byte_position] = ["%02X" % value.to_s].pack("H*")
+        self.binary[3] = no_action_binary[3]
+        self.binary[4] = no_action_binary[4]
+        self.binary[5] = no_action_binary[5]
+      end
+      return binary
+    end
+    self.class.macros.each do |macro_name, option|
+      if option[:if_pushed].all? { |b| pushed_button?(b) }
+        @@on_going_macro = ProconBypassMan::MacroRegistry.load(macro_name)
+      end
+    end
+
     flip_buttons.each do |button, options|
       # 何もしないで常に連打
       if !options[:if_pushed] && status[button]
@@ -165,7 +192,6 @@ class ProconBypassMan::Procon
           value = binary[byte_position].unpack("H*").first.to_i(16) - 2**BUTTONS_MAP[button][:bit_position]
           binary[byte_position] = ["%02X" % value.to_s].pack("H*")
         end
-
         if options[:force_neutral] && pushed_button?(options[:force_neutral])
           button = options[:force_neutral]
           byte_position = BUTTONS_MAP[button][:byte_position]
