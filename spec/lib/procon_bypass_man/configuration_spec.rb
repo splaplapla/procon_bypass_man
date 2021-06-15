@@ -2,6 +2,16 @@ require "spec_helper"
 
 describe ProconBypassMan::Configuration do
   describe '.configure' do
+    context 'with macro' do
+      it do
+        ProconBypassMan.configure do
+          layer :up do
+            macro :fast_return, if_pushed: [:y, :b, :down]
+          end
+        end
+      end
+    end
+
     context 'with if_pushed' do
       it do
         ProconBypassMan.configure do
@@ -65,7 +75,7 @@ describe ProconBypassMan::Configuration do
 
     context '全部空' do
       it do
-        described_class.configure do
+        ProconBypassMan.configure do
           layer :up do
           end
           layer :down do
