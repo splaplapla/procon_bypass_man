@@ -27,12 +27,11 @@ module ProconBypassMan
       @@instance ||= new
     end
 
-    # TODO これ全部ブランクにする
     def initialize
-      @prefix_keys_for_changing_layer = [:zr, :r, :zl, :l]
+      @prefix_keys_for_changing_layer = []
       self.layers = {
-        up: Layer.new { flip [:down, :zr] },
-        down: Layer.new { flip [:down, :zr] },
+        up: Layer.new,
+        down: Layer.new,
         left: Layer.new,
         right: Layer.new,
       }
