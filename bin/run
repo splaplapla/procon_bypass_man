@@ -7,12 +7,14 @@ require "pry"
 ProconBypassMan.run do
   prefix_keys_for_changing_layer [:zr, :r, :zl, :l]
   layer :up, mode: :manual do
-    flip [:down, :zr]
+    flip :down, if_pushed: true
+    flip :zr, if_pushed: true
   end
   layer :right, mode: :auto
   layer :left do
+    # no-op
   end
   layer :down do
-    flip [:zl]
+    flip :zl
   end
 end

@@ -71,6 +71,7 @@ class ProconBypassMan::Procon
 
   # TODO BYTES_MAPから組み立てる
   BUTTONS_MAP = {
+    a: { byte_position: 3, bit_position: 3 },
     l: { byte_position: 5, bit_position: 6 },
     r: { byte_position: 3, bit_position: 6 },
     zr: { byte_position: 3, bit_position: 7 },
@@ -170,7 +171,12 @@ class ProconBypassMan::Procon
       return
     else
       flip_buttons.each do |button, options|
-        if pushed_button?(button)
+        unless options[:if_pushed]
+          status[button] = !status[button]
+          next
+        end
+
+        if options[:if_pushed] && pushed_button?(button)
           status[button] = !status[button]
         else
           status[button] = false
@@ -183,6 +189,15 @@ class ProconBypassMan::Procon
 
   def to_binary
     flip_buttons.each do |button, options|
+      # 何もしないで常に連打
+      if !options[:if_pushed] && status[button]
+        byte_position = BUTTONS_MAP[button][:byte_position]
+        value = binary[byte_position].unpack("H*").first.to_i(16) + 2**BUTTONS_MAP[button][:bit_position]
+        binary[byte_position] = ["%02X" % value.to_s].pack("H*")
+        next
+      end
+
+      # 押している時だけ連打
       if options[:if_pushed] && pushed_button?(button) && !status[button]
         byte_position = BUTTONS_MAP[button][:byte_position]
         value = binary[byte_position].unpack("H*").first.to_i(16) - 2**BUTTONS_MAP[button][:bit_position]

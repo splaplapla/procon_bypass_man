@@ -9,6 +9,7 @@ describe ProconBypassMan::Procon do
       layer :up do
         flip :down, if_pushed: true
         flip :zr, if_pushed: true
+        flip :a
       end
       layer :right, mode: :auto
       layer :left do
@@ -64,6 +65,31 @@ describe ProconBypassMan::Procon do
         expect(procon.pushed_zr?).to eq(true)
         expect(ProconBypassMan::Procon.new(procon.to_binary).pushed_zr?).to eq(true)
         expect(ProconBypassMan::Procon.new(procon.to_binary).pushed_down?).to eq(false)
+      end
+    end
+    context 'a, zr押していない' do
+      let(:data) { "30f28100800078c77448287509550274ff131029001b0022005a0271ff191028001e00210064027cff1410280020002100000000000000000000000000000000" }
+      it do
+        procon = ProconBypassMan::Procon.new(binary)
+        procon.apply!
+        expect(procon.pushed_zr?).to eq(false)
+        expect(ProconBypassMan::Procon.new(procon.to_binary).pushed_zr?).to eq(false)
+        expect(ProconBypassMan::Procon.new(procon.to_binary).pushed_down?).to eq(false)
+        expect(ProconBypassMan::Procon.new(procon.to_binary).pushed_a?).to eq(false)
+
+        procon = ProconBypassMan::Procon.new(binary)
+        procon.apply!
+        expect(procon.pushed_zr?).to eq(false)
+        expect(ProconBypassMan::Procon.new(procon.to_binary).pushed_zr?).to eq(false)
+        expect(ProconBypassMan::Procon.new(procon.to_binary).pushed_down?).to eq(false)
+        expect(ProconBypassMan::Procon.new(procon.to_binary).pushed_a?).to eq(true)
+
+        procon = ProconBypassMan::Procon.new(binary)
+        procon.apply!
+        expect(procon.pushed_zr?).to eq(false)
+        expect(ProconBypassMan::Procon.new(procon.to_binary).pushed_zr?).to eq(false)
+        expect(ProconBypassMan::Procon.new(procon.to_binary).pushed_down?).to eq(false)
+        expect(ProconBypassMan::Procon.new(procon.to_binary).pushed_a?).to eq(false)
       end
     end
     context 'zr押していない' do
