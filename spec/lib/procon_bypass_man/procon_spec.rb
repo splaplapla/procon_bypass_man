@@ -18,12 +18,32 @@ describe ProconBypassMan::Procon do
           end
         end
       end
-      it do
+      it "[:down, :a, :x, :down, :a]の順番で押していく" do
         procon = ProconBypassMan::Procon.new(binary)
         expect(procon.pushed_y?).to eq(true)
         expect(procon.pushed_b?).to eq(true)
         procon.apply!
-        expect(ProconBypassMan::Procon.new(procon.to_binary).pushed_y?).to eq(true)
+        procon = ProconBypassMan::Procon.new(procon.to_binary)
+        expect(procon.pushed_down?).to eq(true)
+
+        procon = ProconBypassMan::Procon.new(procon.to_binary)
+        expect(procon.pushed_down?).to eq(false)
+        expect(procon.pushed_a?).to eq(true)
+
+        procon = ProconBypassMan::Procon.new(procon.to_binary)
+        expect(procon.pushed_down?).to eq(false)
+        expect(procon.pushed_a?).to eq(false)
+        expect(procon.pushed_x?).to eq(true)
+
+        procon = ProconBypassMan::Procon.new(procon.to_binary)
+        expect(procon.pushed_a?).to eq(false)
+        expect(procon.pushed_x?).to eq(false)
+        expect(procon.pushed_down?).to eq(true)
+
+        procon = ProconBypassMan::Procon.new(procon.to_binary)
+        expect(procon.pushed_x?).to eq(false)
+        expect(procon.pushed_down?).to eq(false)
+        expect(procon.pushed_a?).to eq(true)
       end
     end
   end
