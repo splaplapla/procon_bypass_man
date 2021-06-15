@@ -172,7 +172,7 @@ class ProconBypassMan::Procon
   def to_binary
     if @@on_going_macro
       step = @@on_going_macro.next_step
-      if @@on_going_macro.finish? || step.nil?
+      if step.nil?
         @@on_going_macro = nil
         return(binary)
       end
