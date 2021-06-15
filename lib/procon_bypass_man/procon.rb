@@ -172,7 +172,10 @@ class ProconBypassMan::Procon
   def to_binary
     if @@on_going_macro
       step = @@on_going_macro.next_step
-      @@on_going_macro = nil if @@on_going_macro.finish?
+      if @@on_going_macro.finish? || step.nil?
+        @@on_going_macro = nil
+        return(binary)
+      end
       [ProconBypassMan::Procon::Data::NO_ACTION.dup].pack("H*").tap do |no_action_binary|
         byte_position = BUTTONS_MAP[step][:byte_position]
         value = 2**BUTTONS_MAP[step][:bit_position]
