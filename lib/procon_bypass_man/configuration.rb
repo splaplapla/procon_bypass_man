@@ -27,6 +27,7 @@ module ProconBypassMan
       @@instance ||= new
     end
 
+    # TODO これ全部ブランクにする
     def initialize
       @prefix_keys_for_changing_layer = [:zr, :r, :zl, :l]
       self.layers = {

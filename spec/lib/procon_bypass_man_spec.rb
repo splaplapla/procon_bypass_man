@@ -11,7 +11,7 @@ describe ProconBypassMan do
               flip :r
             end
             layer :down, mode: :manual do
-              flip :r
+              flip :r, if_pushed: [:zr, :zl]
             end
             layer :right, mode: :auto
             layer :left
@@ -20,6 +20,7 @@ describe ProconBypassMan do
           expect(ProconBypassMan::Configuration.instance.layers[:up].flip_buttons[:r]).to eq(if_pushed: false)
           expect(ProconBypassMan::Configuration.instance.layers[:up].flip_buttons.keys).to eq([:l, :r])
           expect(ProconBypassMan::Configuration.instance.layers[:down].flip_buttons.keys).to eq([:r])
+          expect(ProconBypassMan::Configuration.instance.layers[:down].flip_buttons[:r]).to eq(if_pushed: [:zr, :zl])
           expect(ProconBypassMan::Configuration.instance.layers[:down].mode).to eq(:manual)
           expect(ProconBypassMan::Configuration.instance.layers[:right].flip_buttons.keys).to eq([])
           expect(ProconBypassMan::Configuration.instance.layers[:right].mode).to eq(:auto)
