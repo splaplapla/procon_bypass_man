@@ -11,7 +11,16 @@ module ProconBypassMan
 
     # @param [Symbol] button
     def flip(button, if_pushed: false)
-      if_pushed = [button] if if_pushed.is_a?(TrueClass)
+      case if_pushed
+      when TrueClass
+        if_pushed = [button]
+      when Symbol
+        if_pushed = [if_pushed]
+      when Array, FalseClass
+        # sono mama
+      else
+        raise "not support class"
+      end
       self.flips[button] = { if_pushed: if_pushed }
     end
 

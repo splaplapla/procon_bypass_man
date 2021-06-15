@@ -8,9 +8,8 @@ ProconBypassMan.run do
   prefix_keys_for_changing_layer [:zr, :r, :zl, :l]
   layer :up, mode: :manual do
     flip :down, if_pushed: true
-    flip :zr, if_pushed: true
-    # :y, :bでzlを連打ではなく、 [:y, :b, :zl]にするべきでは？
-    flip :zl, if_pushed: [:y, :b]
+    flip :zr, if_pushed: :zr
+    flip :zl, if_pushed: [:y, :b, :zl]
   end
   layer :right, mode: :auto
   layer :left do
