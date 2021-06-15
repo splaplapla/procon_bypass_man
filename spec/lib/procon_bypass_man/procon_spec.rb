@@ -132,14 +132,7 @@ describe ProconBypassMan::Procon do
           procon = ProconBypassMan::Procon.new(binary)
           procon.apply!
           expect(procon.pushed_zr?).to eq(false)
-          expect(ProconBypassMan::Procon.new(procon.to_binary).pushed_zr?).to eq(false)
-          expect(ProconBypassMan::Procon.new(procon.to_binary).pushed_down?).to eq(false)
-          expect(ProconBypassMan::Procon.new(procon.to_binary).pushed_a?).to eq(false)
-          expect(ProconBypassMan::Procon.new(procon.to_binary).pushed_zl?).to eq(false)
-
-          procon = ProconBypassMan::Procon.new(binary)
-          procon.apply!
-          expect(procon.pushed_zr?).to eq(false)
+          expect(procon.pushed_a?).to eq(false)
           expect(ProconBypassMan::Procon.new(procon.to_binary).pushed_zr?).to eq(false)
           expect(ProconBypassMan::Procon.new(procon.to_binary).pushed_down?).to eq(false)
           expect(ProconBypassMan::Procon.new(procon.to_binary).pushed_a?).to eq(true)
@@ -151,6 +144,14 @@ describe ProconBypassMan::Procon do
           expect(ProconBypassMan::Procon.new(procon.to_binary).pushed_zr?).to eq(false)
           expect(ProconBypassMan::Procon.new(procon.to_binary).pushed_down?).to eq(false)
           expect(ProconBypassMan::Procon.new(procon.to_binary).pushed_a?).to eq(false)
+          expect(ProconBypassMan::Procon.new(procon.to_binary).pushed_zl?).to eq(false)
+
+          procon = ProconBypassMan::Procon.new(binary)
+          procon.apply!
+          expect(procon.pushed_zr?).to eq(false)
+          expect(ProconBypassMan::Procon.new(procon.to_binary).pushed_zr?).to eq(false)
+          expect(ProconBypassMan::Procon.new(procon.to_binary).pushed_down?).to eq(false)
+          expect(ProconBypassMan::Procon.new(procon.to_binary).pushed_a?).to eq(true)
           expect(ProconBypassMan::Procon.new(procon.to_binary).pushed_zl?).to eq(false)
         end
       end
