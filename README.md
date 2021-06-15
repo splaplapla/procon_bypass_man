@@ -39,7 +39,7 @@ ProconBypassMan.run do
     flip :down, if_pushed: true
     flip :zr
     flip :zl, if_pushed: [:y, :b]
-    macro :fast_return
+    macro :fast_return, if_pushed: [:y, :b, :down]
   end
   layer :right do
   end
