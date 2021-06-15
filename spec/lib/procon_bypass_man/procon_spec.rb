@@ -78,6 +78,7 @@ describe ProconBypassMan::Procon do
           expect(ProconBypassMan::Procon.new(procon.to_binary).pushed_zr?).to eq(false)
           expect(ProconBypassMan::Procon.new(procon.to_binary).pushed_down?).to eq(false)
           expect(ProconBypassMan::Procon.new(procon.to_binary).pushed_a?).to eq(false)
+          expect(ProconBypassMan::Procon.new(procon.to_binary).pushed_zl?).to eq(false)
 
           procon = ProconBypassMan::Procon.new(binary)
           procon.apply!
@@ -85,6 +86,7 @@ describe ProconBypassMan::Procon do
           expect(ProconBypassMan::Procon.new(procon.to_binary).pushed_zr?).to eq(false)
           expect(ProconBypassMan::Procon.new(procon.to_binary).pushed_down?).to eq(false)
           expect(ProconBypassMan::Procon.new(procon.to_binary).pushed_a?).to eq(true)
+          expect(ProconBypassMan::Procon.new(procon.to_binary).pushed_zl?).to eq(false)
 
           procon = ProconBypassMan::Procon.new(binary)
           procon.apply!
@@ -92,6 +94,12 @@ describe ProconBypassMan::Procon do
           expect(ProconBypassMan::Procon.new(procon.to_binary).pushed_zr?).to eq(false)
           expect(ProconBypassMan::Procon.new(procon.to_binary).pushed_down?).to eq(false)
           expect(ProconBypassMan::Procon.new(procon.to_binary).pushed_a?).to eq(false)
+          expect(ProconBypassMan::Procon.new(procon.to_binary).pushed_zl?).to eq(false)
+        end
+      end
+      context 'y, b押している' do
+        it do
+          # TODO
         end
       end
       context 'zr押していない' do
@@ -102,18 +110,21 @@ describe ProconBypassMan::Procon do
           expect(procon.pushed_zr?).to eq(false)
           expect(ProconBypassMan::Procon.new(procon.to_binary).pushed_zr?).to eq(false)
           expect(ProconBypassMan::Procon.new(procon.to_binary).pushed_down?).to eq(false)
+          expect(ProconBypassMan::Procon.new(procon.to_binary).pushed_zl?).to eq(false)
 
           procon = ProconBypassMan::Procon.new(binary)
           procon.apply!
           expect(procon.pushed_zr?).to eq(false)
           expect(ProconBypassMan::Procon.new(procon.to_binary).pushed_zr?).to eq(false)
           expect(ProconBypassMan::Procon.new(procon.to_binary).pushed_down?).to eq(false)
+          expect(ProconBypassMan::Procon.new(procon.to_binary).pushed_zl?).to eq(false)
 
           procon = ProconBypassMan::Procon.new(binary)
           procon.apply!
           expect(procon.pushed_zr?).to eq(false)
           expect(ProconBypassMan::Procon.new(procon.to_binary).pushed_zr?).to eq(false)
           expect(ProconBypassMan::Procon.new(procon.to_binary).pushed_down?).to eq(false)
+          expect(ProconBypassMan::Procon.new(procon.to_binary).pushed_zl?).to eq(false)
         end
       end
     end

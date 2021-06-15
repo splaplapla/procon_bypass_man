@@ -176,7 +176,7 @@ class ProconBypassMan::Procon
           next
         end
 
-        if options[:if_pushed] && pushed_button?(button)
+        if (options[:if_pushed] || options[:if_pushed].is_a?(Hash) && options[:if_pushed].all? { |b| pushed_button?(b)}) && pushed_button?(button)
           status[button] = !status[button]
         else
           status[button] = false
@@ -197,8 +197,9 @@ class ProconBypassMan::Procon
         next
       end
 
+
       # 押している時だけ連打
-      if options[:if_pushed] && pushed_button?(button) && !status[button]
+      if (options[:if_pushed] || options[:if_pushed].is_a?(Hash) && options[:if_pushed].is_a?(Hash) && options[:if_pushed].all? { |b| pushed_button?(b) }) && pushed_button?(button) && !status[button]
         byte_position = BUTTONS_MAP[button][:byte_position]
         value = binary[byte_position].unpack("H*").first.to_i(16) - 2**BUTTONS_MAP[button][:bit_position]
         binary[byte_position] = ["%02X" % value.to_s].pack("H*")
