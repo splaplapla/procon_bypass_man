@@ -30,18 +30,20 @@ gem 'procon_bypass_man', github: 'splaspla-hacker/procon_bypass_man'
 
 ProconBypassMan.run do
   prefix_keys_for_changing_layer [:zr, :r, :zl, :l]
-  layer :up do
+  plugin 'splaspla-hacker/procon_bypass_man-splatoon2' do
+    register_macro :fast_return
+    register_mode :guruguru
+  end
+
+  layer :up, mode: :manual do
     flip :down, if_pushed: true
-    flip :zr,   if_pushed: true
+    flip :zr
     flip :zl, if_pushed: [:y, :b]
-    plugin 'splaspla-hacker/procon_bypass_man-splatoon2' do
-      fast_return
-    end
+    macro :fast_return
   end
   layer :right do
   end
-  layer :left do
-  end
+  layer :left, mode: :guruguru
   layer :down do
     flip :zl, if_pushed: true
   end
