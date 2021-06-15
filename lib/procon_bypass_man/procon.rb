@@ -140,14 +140,17 @@ class ProconBypassMan::Procon
   end
 
   def change_layer?
-    ProconBypassMan::Configuration.instance.prefix_keys.map { |b| pushed_button?(b) }.all? &&
-      (pushed_up? || pushed_right? || pushed_left? || pushed_down?)
+    ProconBypassMan::Configuration.instance.prefix_keys.map { |b| pushed_button?(b) }.all?
+  end
+
+  def pushed_next_layer?
+    change_layer? && (pushed_up? || pushed_right? || pushed_left? || pushed_down?)
   end
 
   def apply!
+    # layer変更中はニュートラルにする
     if change_layer?
-      @@current_layer = next_layer
-      # layer変更中はニュートラルにする
+      @@current_layer = next_layer if pushed_next_layer?
       self.binary = [ProconBypassMan::Procon::Data::NO_ACTION].pack("H*")
       return
     end
