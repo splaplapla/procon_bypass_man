@@ -1,6 +1,6 @@
 module ProconBypassMan
   class Layer
-    attr_accessor :mode, :flips
+    attr_accessor :mode, :flips, :macro
 
     def initialize(mode: :manual, &block)
       self.mode = mode
@@ -28,6 +28,13 @@ module ProconBypassMan
         hash[:force_neutral] = force_neutral
       end
       self.flips[button] = hash
+    end
+
+    PRESET_MACROS = [:fast_return]
+    def macro(name, if_pushed: )
+      self.macro = {
+        name => { if_pushed: if_pushed },
+      }
     end
 
     # @return [Array]
