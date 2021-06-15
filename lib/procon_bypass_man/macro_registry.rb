@@ -17,7 +17,7 @@ class ProconBypassMan::MacroRegistry
   end
 
   PRESETS = {
-    fast_return: [:down, :a, :a, :x, :down, :a].freeze,
+    fast_return: [:down, :a, :a, :x, :down, :a, :a].freeze,
   }
 
   def self.load(name)
