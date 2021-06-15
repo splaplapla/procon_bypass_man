@@ -48,7 +48,7 @@ module ProconBypassMan
     end
 
     MODES = [:manual, :auto]
-    def layer(direction, mode: :manual, &block)
+    def layer(direction, mode: :manual, channel: nil, &block)
       raise("unknown mode") unless MODES.include?(mode)
 
       layer = Layer.new(mode: mode)
