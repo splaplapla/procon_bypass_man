@@ -169,7 +169,7 @@ class ProconBypassMan::Procon
       self.binary[11] = auto_binary[11]
       return
     else
-      flip_buttons.each do |button|
+      flip_buttons.each do |button, options|
         if pushed_button?(button)
           status[button] = !status[button]
         else
@@ -182,8 +182,8 @@ class ProconBypassMan::Procon
   end
 
   def to_binary
-    flip_buttons.each do |button|
-      if pushed_button?(button) && !status[button]
+    flip_buttons.each do |button, options|
+      if options[:if_pushed] && pushed_button?(button) && !status[button]
         byte_position = BUTTONS_MAP[button][:byte_position]
         value = binary[byte_position].unpack("H*").first.to_i(16) - 2**BUTTONS_MAP[button][:bit_position]
         binary[byte_position] = ["%02X" % value.to_s].pack("H*")

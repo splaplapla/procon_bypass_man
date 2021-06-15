@@ -3,6 +3,22 @@ require "spec_helper"
 describe ProconBypassMan::Procon do
   let(:binary) { [data].pack("H*") }
 
+  before do
+    ProconBypassMan.configure do
+      prefix_keys_for_changing_layer [:zr, :r, :zl, :l]
+      layer :up do
+        flip :down, if_pushed: true
+        flip :zr, if_pushed: true
+      end
+      layer :right, mode: :auto
+      layer :left do
+      end
+      layer :down do
+        flip :zl, if_pushed: true
+      end
+    end
+  end
+
   describe '#pushed_zr?' do
     subject { ProconBypassMan::Procon.new(binary).pushed_zr? }
     context 'zr押している' do
