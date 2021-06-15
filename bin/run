@@ -9,6 +9,7 @@ ProconBypassMan.run do
   layer :up, mode: :manual do
     flip :down, if_pushed: true
     flip :zr, if_pushed: true
+    # :y, :bでzlを連打ではなく、 [:y, :b, :zl]にするべきでは？
     flip :zl, if_pushed: [:y, :b]
   end
   layer :right, mode: :auto

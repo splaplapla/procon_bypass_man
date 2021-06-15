@@ -11,6 +11,7 @@ module ProconBypassMan
 
     # @param [Symbol] button
     def flip(button, if_pushed: false)
+      if_pushed = [button] if if_pushed.is_a?(TrueClass)
       self.flips[button] = { if_pushed: if_pushed }
     end
 

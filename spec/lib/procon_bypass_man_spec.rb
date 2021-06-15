@@ -31,7 +31,7 @@ describe ProconBypassMan do
             layer :right, mode: :auto
             layer :left
           end
-          expect(ProconBypassMan::Configuration.instance.layers[:up].flip_buttons[:l]).to eq(if_pushed: true)
+          expect(ProconBypassMan::Configuration.instance.layers[:up].flip_buttons[:l]).to eq(if_pushed: [:l])
           expect(ProconBypassMan::Configuration.instance.layers[:up].flip_buttons[:r]).to eq(if_pushed: false)
           expect(ProconBypassMan::Configuration.instance.layers[:up].flip_buttons.keys).to eq([:l, :r])
           expect(ProconBypassMan::Configuration.instance.layers[:down].flip_buttons.keys).to eq([:r])
