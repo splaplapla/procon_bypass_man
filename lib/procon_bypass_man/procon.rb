@@ -177,9 +177,6 @@ class ProconBypassMan::Procon
         return(binary)
       end
       [ProconBypassMan::Procon::Data::NO_ACTION.dup].pack("H*").tap do |no_action_binary|
-        if ENV["VERBOSE"]
-          pp "マクロです: #{step}!!!!!!!!!!!!!!!!!!!!"
-        end
         byte_position = BUTTONS_MAP[step][:byte_position]
         value = 2**BUTTONS_MAP[step][:bit_position]
         no_action_binary[byte_position] = ["%02X" % value.to_s].pack("H*")
