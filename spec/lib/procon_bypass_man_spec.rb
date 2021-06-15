@@ -7,20 +7,21 @@ describe ProconBypassMan do
         it do
           described_class.configure do
             layer :up do
-              flip [:l, :r]
+              flip :l
+              flip :r
             end
             layer :down, mode: :manual do
-              flip [:r]
+              flip :r
             end
             layer :right, mode: :auto
             layer :left
           end
-          expect(ProconBypassMan::Configuration.instance.layers[:up].flip_buttons).to eq([:l, :r])
-          expect(ProconBypassMan::Configuration.instance.layers[:down].flip_buttons).to eq([:r])
+          expect(ProconBypassMan::Configuration.instance.layers[:up].flip_buttons.keys).to eq([:l, :r])
+          expect(ProconBypassMan::Configuration.instance.layers[:down].flip_buttons.keys).to eq([:r])
           expect(ProconBypassMan::Configuration.instance.layers[:down].mode).to eq(:manual)
-          expect(ProconBypassMan::Configuration.instance.layers[:right].flip_buttons).to eq([])
+          expect(ProconBypassMan::Configuration.instance.layers[:right].flip_buttons.keys).to eq([])
           expect(ProconBypassMan::Configuration.instance.layers[:right].mode).to eq(:auto)
-          expect(ProconBypassMan::Configuration.instance.layers[:left].flip_buttons).to eq([])
+          expect(ProconBypassMan::Configuration.instance.layers[:left].flip_buttons.keys).to eq([])
           expect(ProconBypassMan::Configuration.instance.layers[:left].mode).to eq(:manual)
         end
       end
@@ -28,42 +29,37 @@ describe ProconBypassMan do
         it do
           described_class.configure do
             layer :up do
-              flip [:l, :r]
+              flip :l
+              flip :r
             end
             layer :down do
-              flip [:r]
+              flip :r
             end
             layer :right
-            layer :left do
-              flip []
-            end
+            layer :left
           end
-          expect(ProconBypassMan::Configuration.instance.layers[:up].flip_buttons).to eq([:l, :r])
-          expect(ProconBypassMan::Configuration.instance.layers[:down].flip_buttons).to eq([:r])
-          expect(ProconBypassMan::Configuration.instance.layers[:right].flip_buttons).to eq([])
-          expect(ProconBypassMan::Configuration.instance.layers[:left].flip_buttons).to eq([])
+          expect(ProconBypassMan::Configuration.instance.layers[:up].flip_buttons.keys).to eq([:l, :r])
+          expect(ProconBypassMan::Configuration.instance.layers[:down].flip_buttons.keys).to eq([:r])
+          expect(ProconBypassMan::Configuration.instance.layers[:right].flip_buttons.keys).to eq([])
+          expect(ProconBypassMan::Configuration.instance.layers[:left].flip_buttons.keys).to eq([])
         end
       end
       context '全部空' do
         it do
           described_class.configure do
             layer :up do
-              flip []
             end
             layer :down do
-              flip []
             end
             layer :right do
-              flip []
             end
             layer :left do
-              flip []
             end
           end
-          expect(ProconBypassMan::Configuration.instance.layers[:up].flip_buttons).to eq([])
-          expect(ProconBypassMan::Configuration.instance.layers[:down].flip_buttons).to eq([])
-          expect(ProconBypassMan::Configuration.instance.layers[:right].flip_buttons).to eq([])
-          expect(ProconBypassMan::Configuration.instance.layers[:left].flip_buttons).to eq([])
+          expect(ProconBypassMan::Configuration.instance.layers[:up].flip_buttons.keys).to eq([])
+          expect(ProconBypassMan::Configuration.instance.layers[:down].flip_buttons.keys).to eq([])
+          expect(ProconBypassMan::Configuration.instance.layers[:right].flip_buttons.keys).to eq([])
+          expect(ProconBypassMan::Configuration.instance.layers[:left].flip_buttons.keys).to eq([])
         end
       end
     end

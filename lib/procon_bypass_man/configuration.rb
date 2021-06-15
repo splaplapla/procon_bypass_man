@@ -1,20 +1,22 @@
 module ProconBypassMan
   class Layer
     attr_accessor :mode
+    attr_accessor :flips
 
     def initialize(mode: :manual, &block)
       self.mode = mode
+      self.flips = {}
       instance_eval(&block) if block_given?
     end
 
-    # @param [Array] buttons
-    def flip(buttons)
-      @flip = buttons
+    # @param [Symbol] button
+    def flip(button, if_pushed: false)
+      self.flips[button] = { if_pushed: if_pushed }
     end
 
     # @return [Array]
     def flip_buttons
-      @flip || []
+      flips || {}
     end
   end
 
