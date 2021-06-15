@@ -38,7 +38,7 @@ describe ProconBypassMan::Procon do
     end
   end
 
-  context 'プラグインなし' do
+  context '色々詰め込んでいる' do
     before do
       ProconBypassMan.configure do
         prefix_keys_for_changing_layer [:zr, :r, :zl, :l]
