@@ -140,6 +140,9 @@ class ProconBypassMan::Procon
   end
 
   def change_layer?
+    if ProconBypassMan::Configuration.instance.prefix_keys.empty?
+      raise "prefix_keysが未設定です"
+    end
     ProconBypassMan::Configuration.instance.prefix_keys.map { |b| pushed_button?(b) }.all?
   end
 
@@ -207,10 +210,19 @@ class ProconBypassMan::Procon
       end
 
       # 押している時だけ連打
-      if options[:if_pushed] && options[:if_pushed].all? { |b| pushed_button?(b) } && !status[button]
-        byte_position = BUTTONS_MAP[button][:byte_position]
-        value = binary[byte_position].unpack("H*").first.to_i(16) - 2**BUTTONS_MAP[button][:bit_position]
-        binary[byte_position] = ["%02X" % value.to_s].pack("H*")
+      if options[:if_pushed] && options[:if_pushed].all? { |b| pushed_button?(b) }
+        if !status[button]
+          byte_position = BUTTONS_MAP[button][:byte_position]
+          value = binary[byte_position].unpack("H*").first.to_i(16) - 2**BUTTONS_MAP[button][:bit_position]
+          binary[byte_position] = ["%02X" % value.to_s].pack("H*")
+        end
+
+        if options[:force_neutral] && pushed_button?(options[:force_neutral])
+          button = options[:force_neutral]
+          byte_position = BUTTONS_MAP[button][:byte_position]
+          value = binary[byte_position].unpack("H*").first.to_i(16) - 2**BUTTONS_MAP[button][:bit_position]
+          binary[byte_position] = ["%02X" % value.to_s].pack("H*")
+        end
       end
     end
     binary

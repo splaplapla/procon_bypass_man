@@ -7,13 +7,13 @@ describe ProconBypassMan do
         it do
           described_class.configure do
             layer :up do
-              flip :l, if_pushed: [:y, :b]
+              flip :l, if_pushed: [:y, :b], force_neutral: :y
             end
             layer :down
             layer :right
             layer :left
           end
-          expect(ProconBypassMan::Configuration.instance.layers[:up].flip_buttons[:l]).to eq(if_pushed: [:y, :b])
+          expect(ProconBypassMan::Configuration.instance.layers[:up].flip_buttons[:l]).to eq(if_pushed: [:y, :b], force_neutral: :y)
           expect(ProconBypassMan::Configuration.instance.layers[:up].flip_buttons.keys).to eq([:l])
         end
       end

@@ -9,7 +9,7 @@ module ProconBypassMan
     end
 
     # @param [Symbol] button
-    def flip(button, if_pushed: false, channel: nil)
+    def flip(button, if_pushed: false, channel: nil, force_neutral: nil)
       case if_pushed
       when TrueClass
         if_pushed = [button]
@@ -23,6 +23,9 @@ module ProconBypassMan
       hash = { if_pushed: if_pushed }
       if channel
         hash[:channel] = channel
+      end
+      if force_neutral
+        hash[:force_neutral] = force_neutral
       end
       self.flips[button] = hash
     end

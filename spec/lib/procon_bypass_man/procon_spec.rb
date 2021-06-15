@@ -3,6 +3,41 @@ require "spec_helper"
 describe ProconBypassMan::Procon do
   let(:binary) { [data].pack("H*") }
 
+  before(:all) do
+  end
+
+  context 'with force_neutral' do
+    before do
+      ProconBypassMan.configure do
+        prefix_keys_for_changing_layer [:zr, :r, :zl, :l]
+        layer :up do
+          flip :y, if_pushed: [:y], force_neutral: :b
+        end
+        layer :right
+        layer :left
+        layer :down
+      end
+    end
+    context 'y, bを押しているとき' do
+      let(:data) { "30778105800099277344e86b0a7909f4f5a8f4b500c5ff8dff6c09cdf5b8f49a00c5ff92ff6a0979f5eef46500d5ff9bff000000000000000000000000000000" }
+      it 'bは押していない' do
+        procon = ProconBypassMan::Procon.new(binary)
+        expect(procon.pushed_y?).to eq(true)
+        expect(procon.pushed_b?).to eq(true)
+        procon.apply!
+        expect(ProconBypassMan::Procon.new(procon.to_binary).pushed_y?).to eq(true)
+        expect(ProconBypassMan::Procon.new(procon.to_binary).pushed_b?).to eq(false)
+
+        procon = ProconBypassMan::Procon.new(binary)
+        expect(procon.pushed_y?).to eq(true)
+        expect(procon.pushed_b?).to eq(true)
+        procon.apply!
+        expect(ProconBypassMan::Procon.new(procon.to_binary).pushed_y?).to eq(false)
+        expect(ProconBypassMan::Procon.new(procon.to_binary).pushed_b?).to eq(false)
+      end
+    end
+  end
+
   context 'プラグインなし' do
     before do
       ProconBypassMan.configure do

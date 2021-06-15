@@ -8,8 +8,8 @@ ProconBypassMan.run do
   prefix_keys_for_changing_layer [:zr, :r, :zl, :l]
 
   layer :up, mode: :manual do
-    flip :zr, if_pushed: :zr, channel: 1
-    flip :zl, if_pushed: [:y, :b, :zl], channel: 1
+    flip :zr, if_pushed: :zr, force_neutral: :zl
+    flip :zl, if_pushed: [:y, :b, :zl]
     flip :down, if_pushed: true
   end
   layer :right, mode: :auto
