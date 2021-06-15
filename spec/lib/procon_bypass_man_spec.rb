@@ -3,6 +3,21 @@ require "spec_helper"
 describe ProconBypassMan do
   describe '.configure' do
     describe 'layer' do
+      context 'with if_pushed' do
+        it do
+          described_class.configure do
+            layer :up do
+              flip :l, if_pushed: [:y, :b]
+            end
+            layer :down
+            layer :right
+            layer :left
+          end
+          expect(ProconBypassMan::Configuration.instance.layers[:up].flip_buttons[:l]).to eq(if_pushed: [:y, :b])
+          expect(ProconBypassMan::Configuration.instance.layers[:up].flip_buttons.keys).to eq([:l])
+        end
+      end
+
       context 'with auto mode' do
         it do
           described_class.configure do
