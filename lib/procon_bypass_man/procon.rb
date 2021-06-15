@@ -121,8 +121,8 @@ class ProconBypassMan::Procon
     end
 
     if @@on_going_macro.nil?
-      self.class.macros.each do |macro_name, option|
-        if option[:if_pushed].all? { |b| pushed_button?(b) }
+      self.class.macros.each do |macro_name, options|
+        if options[:if_pushed].all? { |b| pushed_button?(b) }
           @@on_going_macro = ProconBypassMan::MacroRegistry.load(macro_name)
         end
       end
