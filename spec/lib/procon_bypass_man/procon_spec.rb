@@ -3,7 +3,7 @@ require "spec_helper"
 describe ProconBypassMan::Procon do
   let(:binary) { [data].pack("H*") }
 
-  before(:all) do
+  before(:each) do
     ProconBypassMan::Procon.reset_cvar!
   end
 
