@@ -23,7 +23,7 @@ describe ProconBypassMan do
           described_class.configure do
             layer :up do
               flip :l, if_pushed: true
-              flip :r
+              flip :r, channel: 1
             end
             layer :down, mode: :manual do
               flip :r, if_pushed: [:zr, :zl]
@@ -32,7 +32,7 @@ describe ProconBypassMan do
             layer :left
           end
           expect(ProconBypassMan::Configuration.instance.layers[:up].flip_buttons[:l]).to eq(if_pushed: [:l])
-          expect(ProconBypassMan::Configuration.instance.layers[:up].flip_buttons[:r]).to eq(if_pushed: false)
+          expect(ProconBypassMan::Configuration.instance.layers[:up].flip_buttons[:r]).to eq(if_pushed: false, channel: 1)
           expect(ProconBypassMan::Configuration.instance.layers[:up].flip_buttons.keys).to eq([:l, :r])
           expect(ProconBypassMan::Configuration.instance.layers[:down].flip_buttons.keys).to eq([:r])
           expect(ProconBypassMan::Configuration.instance.layers[:down].flip_buttons[:r]).to eq(if_pushed: [:zr, :zl])

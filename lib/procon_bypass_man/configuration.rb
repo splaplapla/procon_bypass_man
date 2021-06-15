@@ -1,7 +1,6 @@
 module ProconBypassMan
   class Layer
-    attr_accessor :mode
-    attr_accessor :flips
+    attr_accessor :mode, :flips
 
     def initialize(mode: :manual, &block)
       self.mode = mode
@@ -10,7 +9,7 @@ module ProconBypassMan
     end
 
     # @param [Symbol] button
-    def flip(button, if_pushed: false)
+    def flip(button, if_pushed: false, channel: nil)
       case if_pushed
       when TrueClass
         if_pushed = [button]
@@ -21,7 +20,11 @@ module ProconBypassMan
       else
         raise "not support class"
       end
-      self.flips[button] = { if_pushed: if_pushed }
+      hash = { if_pushed: if_pushed }
+      if channel
+        hash[:channel] = channel
+      end
+      self.flips[button] = hash
     end
 
     # @return [Array]
@@ -48,7 +51,7 @@ module ProconBypassMan
     end
 
     MODES = [:manual, :auto]
-    def layer(direction, mode: :manual, channel: nil, &block)
+    def layer(direction, mode: :manual, &block)
       raise("unknown mode") unless MODES.include?(mode)
 
       layer = Layer.new(mode: mode)
