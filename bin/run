@@ -11,6 +11,7 @@ ProconBypassMan.run do
     flip :zr, if_pushed: :zr, force_neutral: :zl
     flip :zl, if_pushed: [:y, :b, :zl]
     flip :down, if_pushed: true
+    macro :fast_return, if_pushed: [:y, :b, :down]
   end
   layer :right, mode: :auto
   layer :left do
