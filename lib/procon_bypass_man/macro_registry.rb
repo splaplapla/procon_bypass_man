@@ -17,11 +17,11 @@ class ProconBypassMan::MacroRegistry
   end
 
   PRESETS = {
-    fast_return: [:down, :a, :x, :down, :a], 
+    fast_return: [:down, :a, :a, :x, :down, :a].freeze,
   }
 
   def self.load(name)
     steps = PRESETS[name]
-    Macro.new(name: name, steps: PRESETS[name])
+    Macro.new(name: name, steps: PRESETS[name].dup)
   end
 end
