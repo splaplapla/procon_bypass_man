@@ -1,4 +1,7 @@
 class ProconBypassMan::Procon
+  require "procon_bypass_man/procon/layer_changeable"
+
+  include LayerChangeable
 
   #3)  ZR	R	SR(right)	SL(right)	A	B	X	Y
   #4)  Grip	(none)	Cap	Home	ThumbL	ThumbR	+	-
@@ -58,37 +61,7 @@ class ProconBypassMan::Procon
 
   def status; @@status; end
   def on_going_macro; @@on_going_macro; end
-
-  def current_layer
-    ProconBypassMan::Configuration.instance.layers[@@current_layer_key]
-  end
-
-  def next_layer_key
-    case
-    when pushed_up?
-      :up
-    when pushed_right?
-      :right
-    when pushed_left?
-      :left
-    when pushed_down?
-      :down
-    else
-      pp "おかしい"
-      :up
-    end
-  end
-
-  def change_layer?
-    if ProconBypassMan::Configuration.instance.prefix_keys.empty?
-      raise "prefix_keysが未設定です"
-    end
-    ProconBypassMan::Configuration.instance.prefix_keys.map { |b| pushed_button?(b) }.all?
-  end
-
-  def pushed_next_layer?
-    change_layer? && (pushed_up? || pushed_right? || pushed_left? || pushed_down?)
-  end
+  def current_layer_key; @@current_layer_key; end
 
   def apply!
     # layer変更中はニュートラルにする
