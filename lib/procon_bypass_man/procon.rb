@@ -7,10 +7,12 @@ class ProconBypassMan::Procon
   attr_accessor :user_operation
 
   def self.reset_cvar!
-    @@status = {}
-    @@auto_mode_sequence = 0
-    @@current_layer_key = :up
-    @@on_going_macro = ProconBypassMan::MacroRegistry.load(:null)
+    @@status = {
+      buttons: {},
+      auto_mode_sequence: 0,
+      current_layer_key: :up,
+      on_going_macro: ProconBypassMan::MacroRegistry.load(:null),
+    }
   end
   reset_cvar!
 
@@ -18,9 +20,10 @@ class ProconBypassMan::Procon
     self.user_operation = ProconBypassMan::Procon::UserOperation.new(binary.dup)
   end
 
-  def status; @@status; end
-  def on_going_macro; @@on_going_macro; end
-  def current_layer_key; @@current_layer_key; end
+  def status; @@status[:buttons]; end
+  def on_going_macro; @@status[:on_going_macro]; end
+  def current_layer_key; @@status[:current_layer_key]; end
+  def auto_mode_sequence; @@status[:auto_mode_sequence]; end
 
   def current_layer
     ProconBypassMan::Configuration.instance.layers[current_layer_key]
@@ -29,27 +32,27 @@ class ProconBypassMan::Procon
   def apply!
     # layer変更中はニュートラルにする
     if user_operation.change_layer?
-      @@current_layer_key = user_operation.next_layer_key if user_operation.pushed_next_layer?
+      @@status[:current_layer_key] = user_operation.next_layer_key if user_operation.pushed_next_layer?
       user_operation.set_no_action!
       return
     end
 
-    if @@on_going_macro.finished?
+    if on_going_macro.finished?
       current_layer.macros.each do |macro_name, options|
         if options[:if_pushed].all? { |b| user_operation.pushed_button?(b) }
-          @@on_going_macro = ProconBypassMan::MacroRegistry.load(macro_name)
+          @@status[:on_going_macro] = ProconBypassMan::MacroRegistry.load(macro_name)
         end
       end
     end
 
     case
     when current_layer.mode == :auto
-      data = ProconBypassMan::Procon::Data::MEANINGLESS[@@auto_mode_sequence]
+      data = ProconBypassMan::Procon::Data::MEANINGLESS[auto_mode_sequence]
       if data.nil?
-        @@auto_mode_sequence = 0
-        data = ProconBypassMan::Procon::Data::MEANINGLESS[@@auto_mode_sequence]
+        auto_mode_sequence = 0
+        data = ProconBypassMan::Procon::Data::MEANINGLESS[auto_mode_sequence]
       end
-      @@auto_mode_sequence += 1
+      auto_mode_sequence += 1
       auto_binary = [data].pack("H*")
       user_operation.binary[3] = auto_binary[3]
       user_operation.binary[4] = auto_binary[4]
@@ -80,8 +83,8 @@ class ProconBypassMan::Procon
   end
 
   def to_binary
-    if @@on_going_macro.on_going?
-      step = @@on_going_macro.next_step or return(user_operation.binary)
+    if on_going_macro.on_going?
+      step = on_going_macro.next_step or return(user_operation.binary)
       user_operation.push_button_only(step)
       return user_operation.binary
     end
