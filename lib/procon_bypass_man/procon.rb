@@ -62,7 +62,6 @@ class ProconBypassMan::Procon
       user_operation.binary[11] = auto_binary[11]
       return
     else
-      consumed_channel_table = {}
       current_layer.flip_buttons.each do |button, options|
         unless options[:if_pushed]
           status[button] = !status[button]
@@ -70,10 +69,7 @@ class ProconBypassMan::Procon
         end
 
         if options[:if_pushed] && options[:if_pushed].all? { |b| user_operation.pushed_button?(b) }
-          # 同じチャンネルで操作済みのときはステータスを更新しない
-          next if consumed_channel_table[options[:channel]]
           status[button] = !status[button]
-          consumed_channel_table[options[:channel]] = true if options[:channel]
         else
           status[button] = false
         end
