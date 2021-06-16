@@ -64,17 +64,8 @@ class ProconBypassMan::Procon
     self.binary = binary.dup
   end
 
-  def status
-    @@status
-  end
-
-  def on_going_macro
-    @@on_going_macro
-  end
-
-  def auto_mode?
-    current_layer.mode == :auto
-  end
+  def status; @@status; end
+  def on_going_macro; @@on_going_macro; end
 
   def current_layer
     ProconBypassMan::Configuration.instance.layers[@@current_layer_key]
@@ -124,7 +115,7 @@ class ProconBypassMan::Procon
     end
 
     case
-    when auto_mode?
+    when current_layer.mode == :auto
       data = ProconBypassMan::Procon::Data::MEANINGLESS[@@auto_mode_sequence]
       if data.nil?
         @@auto_mode_sequence = 0
