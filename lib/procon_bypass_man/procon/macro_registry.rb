@@ -29,7 +29,7 @@ class ProconBypassMan::Procon::MacroRegistry
     if @@macro_plugins[klass.mode_name]
       raise "すでに登録済みです"
     end
-    @@macro_plugins[klass.mode_name] = klass.binaries
+    @@macro_plugins[klass.mode_name] = klass.steps
   end
 
   def self.load(name)

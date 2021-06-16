@@ -74,6 +74,10 @@ module ProconBypassMan
       ProconBypassMan::Procon::ModeRegistry.install_plugin(klass)
     end
 
+    def install_macro_plugin(klass)
+      ProconBypassMan::Procon::MacroRegistry.install_plugin(klass)
+    end
+
     def prefix_keys_for_changing_layer(buttons)
       @prefix_keys_for_changing_layer = buttons
     end

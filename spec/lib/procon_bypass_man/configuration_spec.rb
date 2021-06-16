@@ -2,17 +2,32 @@ require "spec_helper"
 
 describe ProconBypassMan::Configuration do
   describe '.configure' do
+    context 'with install macro plugin' do
+      it do
+        class AMacroPlugin
+          def self.mode_name; :the_macro; end
+          def self.steps; [:a, :b]; end
+        end
+        ProconBypassMan.configure do
+          install_macro_plugin(AMacroPlugin)
+          layer :up do
+            macro :the_macro, if_pushed: [:a, :y]
+          end
+        end
+        expect(ProconBypassMan::Procon::MacroRegistry.plugins).to eq(the_macro: [:a, :b])
+      end
+    end
     context 'with install mode plugin' do
       it do
         class AModePlugin
           def self.mode_name; :foo; end
-          def self.binaries; [:a]; end
+          def self.binaries; ['a']; end
         end
         ProconBypassMan.configure do
           install_mode_plugin(AModePlugin)
           layer :up, mode: AModePlugin.mode_name
         end
-        expect(ProconBypassMan::Procon::ModeRegistry.plugins).to eq(foo: [:a])
+        expect(ProconBypassMan::Procon::ModeRegistry.plugins).to eq(foo: ['a'])
       end
     end
     context 'with macro' do
