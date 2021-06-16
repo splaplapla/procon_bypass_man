@@ -17,7 +17,7 @@ class ProconBypassMan::Procon::ModeRegistry
     end
   end
 
-  PaRESETS = {
+  PRESETS = {
     guruguru: {
       binaries: ProconBypassMan::Procon::Data::MEANINGLESS,
     }
