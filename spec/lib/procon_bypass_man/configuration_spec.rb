@@ -2,6 +2,19 @@ require "spec_helper"
 
 describe ProconBypassMan::Configuration do
   describe '.configure' do
+    context 'with install mode plugin' do
+      it do
+        class AModePlugin
+          def self.mode_name; :foo; end
+          def self.binaries; [:a]; end
+        end
+        ProconBypassMan.configure do
+          install_mode_plugin(AModePlugin)
+          layer :up, mode: AModePlugin.mode_name
+        end
+        expect(ProconBypassMan::Procon::ModeRegistry.plugins).to eq(foo: [:a])
+      end
+    end
     context 'with macro' do
       it do
         ProconBypassMan.configure do

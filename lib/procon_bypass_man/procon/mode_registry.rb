@@ -1,6 +1,6 @@
 class ProconBypassMan::Procon::ModeRegistry
   class Mode
-    attr_accessor :binaries
+    attr_accessor :binaries, :source_binaries
 
     def initialize(binaries: )
       self.binaries = binaries
@@ -24,7 +24,24 @@ class ProconBypassMan::Procon::ModeRegistry
   }
 
   def self.load(name)
-    binaries = PRESETS[name] || raise("unknown mode")
+    binaries = PRESETS[name] || @@plugins[name] || raise("unknown mode")
     Mode.new(binaries: binaries.dup)
   end
+
+  def self.reset!
+    @@plugins = {}
+  end
+
+  def self.plugins
+    @@plugins
+  end
+
+  def self.install_plugin(klass)
+    if @@plugins[klass.mode_name]
+      raise "すでに登録済みです"
+    end
+    @@plugins[klass.mode_name] = klass.binaries
+  end
+
+  reset!
 end

@@ -19,21 +19,26 @@
 ```ruby
 # bundler inline
 gem 'procon_bypass_man', github: 'splaspla-hacker/procon_bypass_man'
+gem 'procon_bypass_man-splatoon2', github: 'splaspla-hacker/procon_bypass_man-splatoon2'
+require 'procon_bypass_man'
+require 'procon_bypass_man-splatoon2'
 
-# no support
-# ProconBypassMan.run do
-#   flip :down, :zr
-#   plugin 'splaspla-hacker/procon_bypass_man-splatoon2' do
-#     fast_return
-#   end
-# end
+
+module Splatoon2GuruguruMode
+  # @return [Symbol]
+  def self.plugin_name
+    :guruguru
+  end
+
+  # @return [Array<String>]
+  def binaries
+    [...]
+  end
+end
 
 ProconBypassMan.run do
   prefix_keys_for_changing_layer [:zr, :r, :zl, :l]
-  plugin 'splaspla-hacker/procon_bypass_man-splatoon2' do
-    register_macro :fast_return
-    register_mode :guruguru
-  end
+  install_plugin Splatoon2GuruguruMode
 
   layer :up, mode: :manual do
     flip :zr, if_pushed: :zr, force_neutral: :zl
@@ -43,7 +48,7 @@ ProconBypassMan.run do
   end
   layer :right do
   end
-  layer :left, mode: :guruguru
+  layer :left, mode: :splatoon2_something_mode
   layer :down do
     flip :zl, if_pushed: true
   end
@@ -56,8 +61,24 @@ end
 ## プラグインの作り方(TODO)
 スケルトンを出力するgeneratorを作るか、普通にgemで作るか
 
+### モード
+
 ```
+module Splatoon2GuruguruMode
+  # @return [Symbol]
+  def self.plugin_name
+    :guruguru
+  end
+
+  # @return [Array<String>]
+  def binaries
+    [...]
+  end
+end
 ```
+
+### マクロ
+TODOo
 
 ## FAQ
 ### ソフトウェアについて
@@ -79,6 +100,7 @@ end
 * ケーブルの抜き差しなし再接続
 * ラズパイのプロビジョニングを楽にしたい
 * 設定ファイルのlintを作る
+* レコーディング機能(プロコンの入力をマクロとして登録ができる)
 
 ## Contributing
 

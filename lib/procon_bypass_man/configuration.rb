@@ -61,11 +61,17 @@ module ProconBypassMan
 
     MODES = [:manual, :auto]
     def layer(direction, mode: :manual, &block)
-      raise("unknown mode") unless MODES.include?(mode)
+      unless (MODES + ProconBypassMan::Procon::ModeRegistry.plugins.keys).include?(mode)
+        raise("unknown mode")
+      end
 
       layer = Layer.new(mode: mode)
       layer.instance_eval(&block) if block_given?
       self.layers[direction] = layer
+    end
+
+    def install_mode_plugin(klass)
+      ProconBypassMan::Procon::ModeRegistry.install_plugin(klass)
     end
 
     def prefix_keys_for_changing_layer(buttons)
