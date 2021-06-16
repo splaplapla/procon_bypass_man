@@ -5,7 +5,7 @@ describe ProconBypassMan::Procon::ModeRegistry do
   describe '.load' do
     it do
       module Hoge2Mode
-        def self.mode_name
+        def self.name
           :hoge
         end
 
@@ -24,7 +24,7 @@ describe ProconBypassMan::Procon::ModeRegistry do
   describe '.install_plugin' do
     it do
       module HogeMode
-        def self.mode_name
+        def self.name
           :hoge
         end
 

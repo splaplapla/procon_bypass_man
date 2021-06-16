@@ -26,10 +26,10 @@ class ProconBypassMan::Procon::MacroRegistry
   }
 
   def self.install_plugin(klass)
-    if @@macro_plugins[klass.mode_name]
+    if @@macro_plugins[klass.name]
       raise "すでに登録済みです"
     end
-    @@macro_plugins[klass.mode_name] = klass.steps
+    @@macro_plugins[klass.name] = klass.steps
   end
 
   def self.load(name)

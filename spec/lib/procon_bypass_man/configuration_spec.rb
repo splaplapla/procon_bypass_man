@@ -5,7 +5,7 @@ describe ProconBypassMan::Configuration do
     context 'with install macro plugin' do
       it do
         class AMacroPlugin
-          def self.mode_name; :the_macro; end
+          def self.name; :the_macro; end
           def self.steps; [:a, :b]; end
         end
         ProconBypassMan.configure do
@@ -20,12 +20,12 @@ describe ProconBypassMan::Configuration do
     context 'with install mode plugin' do
       it do
         class AModePlugin
-          def self.mode_name; :foo; end
+          def self.name; :foo; end
           def self.binaries; ['a']; end
         end
         ProconBypassMan.configure do
           install_mode_plugin(AModePlugin)
-          layer :up, mode: AModePlugin.mode_name
+          layer :up, mode: AModePlugin.name
         end
         expect(ProconBypassMan::Procon::ModeRegistry.plugins).to eq(foo: ['a'])
       end

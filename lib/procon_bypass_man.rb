@@ -30,7 +30,7 @@ module ProconBypassMan
     pp "unpack(Hex): #{text.unpack("H*")}"
   end
 
-  def reset!
+  def self.reset!
     ProconBypassMan::Procon::MacroRegistry.reset!
     ProconBypassMan::Procon::ModeRegistry.reset!
     ProconBypassMan::Procon.reset!

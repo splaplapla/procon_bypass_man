@@ -35,7 +35,7 @@ end
 
 module Splatoon2TheMode
   # @return [Symbol]
-  def self.plugin_name
+  def self.name
     :splatoon2_something_mode
   end
 
@@ -69,7 +69,7 @@ require 'procon_bypass_man'
 
 module Splatoon2TheMode
   # @return [Symbol]
-  def self.plugin_name
+  def self.name
     :splatoon2_something_mode
   end
 
@@ -81,7 +81,7 @@ end
 
 module Splatoon2TheMacro
   # @return [Symbol]
-  def self.plugin_name
+  def self.name
     :splatoon2_fast_return
   end
 
@@ -117,7 +117,7 @@ end
 ```ruby
 module Splatoon2GuruguruMode
   # @return [Symbol]
-  def self.plugin_name
+  def self.name
     :guruguru
   end
 
@@ -132,7 +132,7 @@ end
 ```ruby
 module Splatoon2GuruguruMacro
   # @return [Symbol]
-  def self.plugin_name
+  def self.name
     :guruguru
   end
 

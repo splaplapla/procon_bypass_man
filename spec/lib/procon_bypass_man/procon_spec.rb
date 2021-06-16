@@ -4,7 +4,34 @@ describe ProconBypassMan::Procon do
   let(:binary) { [data].pack("H*") }
 
   before(:each) do
-    ProconBypassMan::Procon.reset_cvar!
+    ProconBypassMan.reset!
+  end
+
+  context 'with mode' do
+    let(:data) { "30f28100800078c77448287509550274ff131029001b0022005a0271ff191028001e00210064027cff1410280020002100000000000000000000000000000000" } # no_action
+    let(:pressed_y_and_b) { "30778105800099277344e86b0a7909f4f5a8f4b500c5ff8dff6c09cdf5b8f49a00c5ff92ff6a0979f5eef46500d5ff9bff000000000000000000000000000000" }
+    let(:not_pressed_y_and_b) { "30f28100800078c77448287509550274ff131029001b0022005a0271ff191028001e00210064027cff1410280020002100000000000000000000000000000000" }
+    it do
+      plugin = OpenStruct.new(name: :hoge, binaries: [ pressed_y_and_b, not_pressed_y_and_b ])
+      ProconBypassMan.configure do
+        install_mode_plugin(plugin)
+        prefix_keys_for_changing_layer [:zr]
+        layer :up, mode: plugin.name
+      end
+      procon = ProconBypassMan::Procon.new(binary)
+      procon.apply!
+      expect(procon.to_binary).to eq(pressed_y_and_b)
+
+      procon = ProconBypassMan::Procon.new(binary)
+      procon.apply!
+      procon.to_binary
+      expect(procon.to_binary).to eq(not_pressed_y_and_b)
+
+      procon = ProconBypassMan::Procon.new(binary)
+      procon.apply!
+      procon.to_binary
+      expect(procon.to_binary).to eq(pressed_y_and_b)
+    end
   end
 
   context 'with macro' do
