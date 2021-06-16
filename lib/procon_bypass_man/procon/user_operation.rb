@@ -45,10 +45,11 @@ class ProconBypassMan::Procon
     end
 
     def merge(target_binary: )
+      b = binary.dup
       (3..11).each do |byte_position|
-        binary[byte_position] = target_binary[byte_position]
+        b[byte_position] = target_binary[byte_position]
       end
-      binary
+      self.binary = b
     end
   end
 end
