@@ -35,7 +35,7 @@ end
 
 ProconBypassMan.run do
   prefix_keys_for_changing_layer [:zr, :r, :zl, :l]
-  install_plugin(Splatoon2TheMode)
+  install_mode_plugin(Splatoon2TheMode)
 
   layer :up, mode: :manual do
     flip :zr, if_pushed: :zr, force_neutral: :zl
