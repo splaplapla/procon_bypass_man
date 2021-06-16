@@ -10,7 +10,7 @@ class ProconBypassMan::Processor
       return @binary
     end
 
-    procon = ProconBypassMan::Procon.input(@binary)
+    procon = ProconBypassMan::Procon.new(@binary)
     procon.apply!
     procon.to_binary
   end

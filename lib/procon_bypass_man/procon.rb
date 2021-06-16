@@ -50,10 +50,6 @@ class ProconBypassMan::Procon
   end
   reset_cvar!
 
-  def self.input(binary)
-    new(binary)
-  end
-
   def initialize(binary)
     self.class.compile! unless @@compiled
     self.binary = binary.dup
