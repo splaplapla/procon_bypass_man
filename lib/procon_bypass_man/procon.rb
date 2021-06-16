@@ -13,6 +13,7 @@ class ProconBypassMan::Procon
       buttons: {},
       current_layer_key: :up,
       on_going_macro: MacroRegistry.load(:null),
+      on_going_mode: :manual,
     }
   end
   def self.reset!; reset_cvar!; end
@@ -60,8 +61,10 @@ class ProconBypassMan::Procon
         end
       end
     else
-      mode = ProconBypassMan::Procon::ModeRegistry.load(current_layer.mode)
-      self.user_operation = ProconBypassMan::Procon::UserOperation.new(mode.next_binary.dup)
+      unless @@status[:on_going_mode].name == current_layer.mode
+        @@status[:on_going_mode] = ProconBypassMan::Procon::ModeRegistry.load(current_layer.mode)
+      end
+      self.user_operation = ProconBypassMan::Procon::UserOperation.new(@@status[:on_going_mode].next_binary.dup)
       return
     end
 

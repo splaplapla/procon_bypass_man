@@ -13,7 +13,6 @@ describe ProconBypassMan::Procon::ModeRegistry do
           [:a, :b, :y]
         end
       end
-
       ::ProconBypassMan::Procon::ModeRegistry.install_plugin(Hoge2Mode)
       mode = ProconBypassMan::Procon::ModeRegistry.load(:hoge)
       expect(mode.next_binary).to eq(:a)

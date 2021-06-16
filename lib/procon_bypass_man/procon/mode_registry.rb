@@ -1,8 +1,9 @@
 class ProconBypassMan::Procon::ModeRegistry
   class Mode
-    attr_accessor :binaries, :source_binaries
+    attr_accessor :name, :binaries, :source_binaries
 
-    def initialize(binaries: )
+    def initialize(name: , binaries: )
+      self.name = name
       self.binaries = binaries
       self.source_binaries = binaries.dup
     end
@@ -32,7 +33,7 @@ class ProconBypassMan::Procon::ModeRegistry
 
   def self.load(name)
     binaries = PRESETS[name] || plugins[name] || raise("unknown mode")
-    Mode.new(binaries: binaries.dup)
+    Mode.new(name: name, binaries: binaries.dup)
   end
 
   def self.reset!
