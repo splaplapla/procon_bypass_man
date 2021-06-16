@@ -13,7 +13,7 @@ ProconBypassMan.run do
     flip :down, if_pushed: :down
     macro :fast_return, if_pushed: [:y, :b, :down]
   end
-  layer :right, mode: :guruguru
+  layer :right, mode: :auto
   layer :left do
     # no-op
   end
