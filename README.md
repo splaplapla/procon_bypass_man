@@ -36,9 +36,9 @@ ProconBypassMan.run do
   end
 
   layer :up, mode: :manual do
+    flip :zr, if_pushed: :zr, force_neutral: :zl
+    flip :zl, if_pushed: [:y, :b, :zl]
     flip :down, if_pushed: true
-    flip :zr
-    flip :zl, if_pushed: [:y, :b]
     macro :fast_return, if_pushed: [:y, :b, :down]
   end
   layer :right do
@@ -69,6 +69,8 @@ end
 * pluginsの仕組み/pluginへ切り出す
 * ログをfluentdへ送信
 * 設定ファイルをwebから反映できる
+* プロセスの再起動なしで設定の再読み込み
+* ケーブルの抜き差しなし再接続
 
 ## Contributing
 
