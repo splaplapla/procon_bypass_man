@@ -23,24 +23,24 @@ class ProconBypassMan::Procon::ModeRegistry
     }
   }
 
+  def self.install_plugin(klass)
+    if @@mode_plugins[klass.mode_name]
+      raise "すでに登録済みです"
+    end
+    @@mode_plugins[klass.mode_name] = klass.binaries
+  end
+
   def self.load(name)
-    binaries = PRESETS[name] || @@plugins[name] || raise("unknown mode")
+    binaries = PRESETS[name] || plugins[name] || raise("unknown mode")
     Mode.new(binaries: binaries.dup)
   end
 
   def self.reset!
-    @@plugins = {}
+    @@mode_plugins = {}
   end
 
   def self.plugins
-    @@plugins
-  end
-
-  def self.install_plugin(klass)
-    if @@plugins[klass.mode_name]
-      raise "すでに登録済みです"
-    end
-    @@plugins[klass.mode_name] = klass.binaries
+    @@mode_plugins
   end
 
   reset!

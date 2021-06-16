@@ -15,7 +15,8 @@ class ProconBypassMan::Procon
       on_going_macro: MacroRegistry.load(:null),
     }
   end
-  reset_cvar!
+  def self.reset!; reset_cvar!; end
+  reset!
 
   def initialize(binary)
     self.user_operation = ProconBypassMan::Procon::UserOperation.new(binary.dup)
