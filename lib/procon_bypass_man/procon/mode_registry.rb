@@ -12,9 +12,9 @@ class ProconBypassMan::Procon::ModeRegistry
       binary = binaries.shift
       unless binary
         self.binaries = source_binaries.dup
-        return binaries.shift
+        return binaries.shift.dup
       end
-      return binary
+      return binary.dup
     end
   end
 
