@@ -1,39 +1,14 @@
 class ProconBypassMan::Procon
   require "procon_bypass_man/procon/layer_changeable"
+  require "procon_bypass_man/procon/button_collection"
 
   include LayerChangeable
-
-  #3)  ZR	R	SR(right)	SL(right)	A	B	X	Y
-  #4)  Grip	(none)	Cap	Home	ThumbL	ThumbR	+	-
-  #5)  ZL	L	SL(left)	SR(left)	Left	Right	Up	Down
-  #6)  analog[0]
-  #7)  analog[1]
-  #8)  analog[2]
-  #9)  analog[3]
-  #a)  analog[4]
-  #b)  analog[5]
-  BYTES_MAP = {
-    0 => nil,
-    1 => nil,
-    2 => nil,
-    3 => [:zr, :r, :sr, :sl, :a, :b, :x, :y],
-    4 => [:grip, :_undefined_key, :cap, :home, :thumbl, :thumbr, :plus, :minus],
-    5 => [:zl, :l, :sl, :sr, :left, :right, :up, :down],
-  }
-
-  BUTTONS_MAP = BYTES_MAP.reduce({}) { |acc, value|
-    next acc if value[1].nil?
-    value[1].reverse.each.with_index do |button, index|
-      acc[button] = { byte_position: value[0], bit_position: index }
-    end
-    acc
-  }
 
   attr_accessor :binary
 
   def self.compile!
     return if @@compiled
-    BUTTONS_MAP.each do |button, value|
+    ButtonCollection::BUTTONS_MAP.each do |button, value|
       define_method "pushed_#{button}?" do
         pushed_button?(button)
       end
@@ -124,8 +99,9 @@ class ProconBypassMan::Procon
         return(binary)
       end
       [ProconBypassMan::Procon::Data::NO_ACTION.dup].pack("H*").tap do |no_action_binary|
-        byte_position = BUTTONS_MAP[step][:byte_position]
-        value = 2**BUTTONS_MAP[step][:bit_position]
+        ButtonCollection.load(step).byte_position
+        byte_position = ButtonCollection.load(step).byte_position
+        value = 2**ButtonCollection.load(step).bit_position
         no_action_binary[byte_position] = ["%02X" % value.to_s].pack("H*")
         self.binary[3] = no_action_binary[3]
         self.binary[4] = no_action_binary[4]
@@ -137,8 +113,8 @@ class ProconBypassMan::Procon
     current_layer.flip_buttons.each do |button, options|
       # 何もしないで常に連打
       if !options[:if_pushed] && status[button]
-        byte_position = BUTTONS_MAP[button][:byte_position]
-        value = binary[byte_position].unpack("H*").first.to_i(16) + 2**BUTTONS_MAP[button][:bit_position]
+        byte_position = ButtonCollection.load(button).byte_position
+        value = binary[byte_position].unpack("H*").first.to_i(16) + 2**ButtonCollection.load(button).bit_position
         binary[byte_position] = ["%02X" % value.to_s].pack("H*")
         next
       end
@@ -146,14 +122,14 @@ class ProconBypassMan::Procon
       # 押している時だけ連打
       if options[:if_pushed] && options[:if_pushed].all? { |b| pushed_button?(b) }
         if !status[button]
-          byte_position = BUTTONS_MAP[button][:byte_position]
-          value = binary[byte_position].unpack("H*").first.to_i(16) - 2**BUTTONS_MAP[button][:bit_position]
+          byte_position = ButtonCollection.load(button).byte_position
+          value = binary[byte_position].unpack("H*").first.to_i(16) - 2**ButtonCollection.load(button).bit_position
           binary[byte_position] = ["%02X" % value.to_s].pack("H*")
         end
         if options[:force_neutral] && pushed_button?(options[:force_neutral])
           button = options[:force_neutral]
-          byte_position = BUTTONS_MAP[button][:byte_position]
-          value = binary[byte_position].unpack("H*").first.to_i(16) - 2**BUTTONS_MAP[button][:bit_position]
+          byte_position = ButtonCollection.load(button).byte_position
+          value = binary[byte_position].unpack("H*").first.to_i(16) - 2**ButtonCollection.load(button).bit_position
           binary[byte_position] = ["%02X" % value.to_s].pack("H*")
         end
       end
@@ -165,9 +141,9 @@ class ProconBypassMan::Procon
 
   def pushed_button?(button)
     binary[
-      BUTTONS_MAP[button][:byte_position]
+      ButtonCollection.load(button).byte_position
     ].unpack("H*").first.to_i(16).to_s(2).reverse[
-      BUTTONS_MAP[button][:bit_position]
+      ButtonCollection.load(button).bit_position
     ] == '1'
   end
 end
