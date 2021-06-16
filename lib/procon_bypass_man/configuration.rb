@@ -59,7 +59,7 @@ module ProconBypassMan
       }
     end
 
-    MODES = [:manual, :auto]
+    MODES = [:manual, :auto, :guruguru]
     def layer(direction, mode: :manual, &block)
       unless (MODES + ProconBypassMan::Procon::ModeRegistry.plugins.keys).include?(mode)
         raise("unknown mode")
