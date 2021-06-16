@@ -1,32 +1,24 @@
 class ProconBypassMan::Procon
   require "procon_bypass_man/procon/layer_changeable"
   require "procon_bypass_man/procon/button_collection"
+  require "procon_bypass_man/procon/pushed_button_helper"
 
   include LayerChangeable
+  include PushedButtonHelper::Static
+  extend PushedButtonHelper::Dynamic
 
   attr_accessor :binary
-
-  def self.compile!
-    return if @@compiled
-    ButtonCollection::BUTTONS_MAP.each do |button, value|
-      define_method "pushed_#{button}?" do
-        pushed_button?(button)
-      end
-    end
-    @@compiled = true
-  end
 
   def self.reset_cvar!
     @@status = {}
     @@auto_mode_sequence = 0
     @@current_layer_key = :up
-    @@compiled = false
     @@on_going_macro = nil
   end
   reset_cvar!
 
   def initialize(binary)
-    self.class.compile! unless @@compiled
+    self.class.compile_if_not_compile_yet!
     self.binary = binary.dup
   end
 
@@ -135,15 +127,5 @@ class ProconBypassMan::Procon
       end
     end
     binary
-  end
-
-  private
-
-  def pushed_button?(button)
-    binary[
-      ButtonCollection.load(button).byte_position
-    ].unpack("H*").first.to_i(16).to_s(2).reverse[
-      ButtonCollection.load(button).bit_position
-    ] == '1'
   end
 end
