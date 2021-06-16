@@ -14,24 +14,16 @@ class ProconBypassMan::Procon
     1 => nil,
     2 => nil,
     3 => [:zr, :r, :sr, :sl, :a, :b, :x, :y],
-    4 => [:grip, nil, :cap, :home, :thumbl, :thumbr, :plus, :minus],
+    4 => [:grip, :_undefined_key, :cap, :home, :thumbl, :thumbr, :plus, :minus],
     5 => [:zl, :l, :sl, :sr, :left, :right, :up, :down],
-  },
+  }
 
-  # TODO BYTES_MAPから組み立てる
-  BUTTONS_MAP = {
-    a: { byte_position: 3, bit_position: 3 },
-    b: { byte_position: 3, bit_position: 2 },
-    y: { byte_position: 3, bit_position: 0 },
-    x: { byte_position: 3, bit_position: 1 },
-    l: { byte_position: 5, bit_position: 6 },
-    r: { byte_position: 3, bit_position: 6 },
-    zr: { byte_position: 3, bit_position: 7 },
-    zl: { byte_position: 5, bit_position: 7 },
-    up: { byte_position: 5, bit_position: 1 },
-    down: { byte_position: 5, bit_position: 0 },
-    right: { byte_position: 5, bit_position: 2 },
-    left: { byte_position: 5, bit_position: 3 },
+  BUTTONS_MAP = BYTES_MAP.reduce({}) { |acc, value|
+    next acc if value[1].nil?
+    value[1].reverse.each.with_index do |button, index|
+      acc[button] = { byte_position: value[0], bit_position: index }
+    end
+    acc
   }
 
   attr_accessor :binary
