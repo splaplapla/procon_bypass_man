@@ -1,4 +1,5 @@
 class ProconBypassMan::Procon
+  require "procon_bypass_man/procon/macro_registry"
   require "procon_bypass_man/procon/layer_changeable"
   require "procon_bypass_man/procon/button_collection"
   require "procon_bypass_man/procon/pushed_button_helper"
@@ -11,7 +12,7 @@ class ProconBypassMan::Procon
       buttons: {},
       auto_mode_sequence: 0,
       current_layer_key: :up,
-      on_going_macro: ProconBypassMan::MacroRegistry.load(:null),
+      on_going_macro: MacroRegistry.load(:null),
     }
   end
   reset_cvar!
@@ -30,7 +31,6 @@ class ProconBypassMan::Procon
   end
 
   def apply!
-    # layer変更中はニュートラルにする
     if user_operation.change_layer?
       @@status[:current_layer_key] = user_operation.next_layer_key if user_operation.pushed_next_layer?
       user_operation.set_no_action!
@@ -40,13 +40,26 @@ class ProconBypassMan::Procon
     if on_going_macro.finished?
       current_layer.macros.each do |macro_name, options|
         if options[:if_pushed].all? { |b| user_operation.pushed_button?(b) }
-          @@status[:on_going_macro] = ProconBypassMan::MacroRegistry.load(macro_name)
+          @@status[:on_going_macro] = MacroRegistry.load(macro_name)
         end
       end
     end
 
-    case
-    when current_layer.mode == :auto
+    case current_layer.mode
+    when :manual
+      current_layer.flip_buttons.each do |button, options|
+        unless options[:if_pushed]
+          status[button] = !status[button]
+          next
+        end
+
+        if options[:if_pushed] && options[:if_pushed].all? { |b| user_operation.pushed_button?(b) }
+          status[button] = !status[button]
+        else
+          status[button] = false
+        end
+      end
+    else
       data = ProconBypassMan::Procon::Data::MEANINGLESS[auto_mode_sequence]
       if data.nil?
         auto_mode_sequence = 0
@@ -64,19 +77,6 @@ class ProconBypassMan::Procon
       user_operation.binary[10] = auto_binary[10]
       user_operation.binary[11] = auto_binary[11]
       return
-    else
-      current_layer.flip_buttons.each do |button, options|
-        unless options[:if_pushed]
-          status[button] = !status[button]
-          next
-        end
-
-        if options[:if_pushed] && options[:if_pushed].all? { |b| user_operation.pushed_button?(b) }
-          status[button] = !status[button]
-        else
-          status[button] = false
-        end
-      end
     end
 
     status

@@ -1,4 +1,4 @@
-class ProconBypassMan::MacroRegistry
+class ProconBypassMan::Procon::MacroRegistry
   class Macro
     attr_accessor :name, :steps
 
