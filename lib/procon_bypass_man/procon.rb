@@ -2,12 +2,9 @@ class ProconBypassMan::Procon
   require "procon_bypass_man/procon/layer_changeable"
   require "procon_bypass_man/procon/button_collection"
   require "procon_bypass_man/procon/pushed_button_helper"
+  require "procon_bypass_man/procon/user_operation"
 
-  include LayerChangeable
-  include PushedButtonHelper::Static
-  extend PushedButtonHelper::Dynamic
-
-  attr_accessor :binary
+  attr_accessor :user_operation
 
   def self.reset_cvar!
     @@status = {}
@@ -18,25 +15,28 @@ class ProconBypassMan::Procon
   reset_cvar!
 
   def initialize(binary)
-    self.class.compile_if_not_compile_yet!
-    self.binary = binary.dup
+    self.user_operation = ProconBypassMan::Procon::UserOperation.new(binary.dup)
   end
 
   def status; @@status; end
   def on_going_macro; @@on_going_macro; end
   def current_layer_key; @@current_layer_key; end
 
+  def current_layer
+    ProconBypassMan::Configuration.instance.layers[current_layer_key]
+  end
+
   def apply!
     # layer変更中はニュートラルにする
-    if change_layer?
-      @@current_layer_key = next_layer_key if pushed_next_layer?
-      self.binary = [ProconBypassMan::Procon::Data::NO_ACTION].pack("H*")
+    if user_operation.change_layer?
+      @@current_layer_key = user_operation.next_layer_key if user_operation.pushed_next_layer?
+      user_operation.set_no_action!
       return
     end
 
     if @@on_going_macro.nil?
       current_layer.macros.each do |macro_name, options|
-        if options[:if_pushed].all? { |b| pushed_button?(b) }
+        if options[:if_pushed].all? { |b| user_operation.pushed_button?(b) }
           @@on_going_macro = ProconBypassMan::MacroRegistry.load(macro_name)
         end
       end
@@ -51,15 +51,15 @@ class ProconBypassMan::Procon
       end
       @@auto_mode_sequence += 1
       auto_binary = [data].pack("H*")
-      self.binary[3] = auto_binary[3]
-      self.binary[4] = auto_binary[4]
-      self.binary[5] = auto_binary[5]
-      self.binary[6] = auto_binary[6]
-      self.binary[7] = auto_binary[7]
-      self.binary[8] = auto_binary[8]
-      self.binary[9] = auto_binary[9]
-      self.binary[10] = auto_binary[10]
-      self.binary[11] = auto_binary[11]
+      user_operation.binary[3] = auto_binary[3]
+      user_operation.binary[4] = auto_binary[4]
+      user_operation.binary[5] = auto_binary[5]
+      user_operation.binary[6] = auto_binary[6]
+      user_operation.binary[7] = auto_binary[7]
+      user_operation.binary[8] = auto_binary[8]
+      user_operation.binary[9] = auto_binary[9]
+      user_operation.binary[10] = auto_binary[10]
+      user_operation.binary[11] = auto_binary[11]
       return
     else
       consumed_channel_table = {}
@@ -69,7 +69,7 @@ class ProconBypassMan::Procon
           next
         end
 
-        if options[:if_pushed] && options[:if_pushed].all? { |b| pushed_button?(b) }
+        if options[:if_pushed] && options[:if_pushed].all? { |b| user_operation.pushed_button?(b) }
           # 同じチャンネルで操作済みのときはステータスを更新しない
           next if consumed_channel_table[options[:channel]]
           status[button] = !status[button]
@@ -88,44 +88,40 @@ class ProconBypassMan::Procon
       step = @@on_going_macro.next_step
       if step.nil?
         @@on_going_macro = nil
-        return(binary)
+        return(user_operation.binary)
       end
-      [ProconBypassMan::Procon::Data::NO_ACTION.dup].pack("H*").tap do |no_action_binary|
-        ButtonCollection.load(step).byte_position
-        byte_position = ButtonCollection.load(step).byte_position
-        value = 2**ButtonCollection.load(step).bit_position
-        no_action_binary[byte_position] = ["%02X" % value.to_s].pack("H*")
-        self.binary[3] = no_action_binary[3]
-        self.binary[4] = no_action_binary[4]
-        self.binary[5] = no_action_binary[5]
-      end
-      return binary
+      user_operation.push_button_only(step)
+      return user_operation.binary
     end
 
     current_layer.flip_buttons.each do |button, options|
       # 何もしないで常に連打
       if !options[:if_pushed] && status[button]
-        byte_position = ButtonCollection.load(button).byte_position
-        value = binary[byte_position].unpack("H*").first.to_i(16) + 2**ButtonCollection.load(button).bit_position
-        binary[byte_position] = ["%02X" % value.to_s].pack("H*")
+        user_operation.push_button(button)
         next
       end
 
       # 押している時だけ連打
-      if options[:if_pushed] && options[:if_pushed].all? { |b| pushed_button?(b) }
+      if options[:if_pushed] && options[:if_pushed].all? { |b| user_operation.pushed_button?(b) }
         if !status[button]
-          byte_position = ButtonCollection.load(button).byte_position
-          value = binary[byte_position].unpack("H*").first.to_i(16) - 2**ButtonCollection.load(button).bit_position
-          binary[byte_position] = ["%02X" % value.to_s].pack("H*")
+          user_operation.unpush_button(button)
         end
-        if options[:force_neutral] && pushed_button?(options[:force_neutral])
+        if options[:force_neutral] && user_operation.pushed_button?(options[:force_neutral])
           button = options[:force_neutral]
-          byte_position = ButtonCollection.load(button).byte_position
-          value = binary[byte_position].unpack("H*").first.to_i(16) - 2**ButtonCollection.load(button).bit_position
-          binary[byte_position] = ["%02X" % value.to_s].pack("H*")
+          user_operation.unpush_button(button)
         end
       end
     end
-    binary
+    user_operation.binary
+  end
+
+  private
+
+  def method_missing(name)
+    if name.to_s =~ /\Apushed_[a-z]+\?\z/
+      user_operation.public_send(name)
+    else
+      super
+    end
   end
 end

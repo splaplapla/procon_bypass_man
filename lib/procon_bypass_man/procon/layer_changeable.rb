@@ -1,8 +1,4 @@
 module ProconBypassMan::Procon::LayerChangeable
-  def current_layer
-    ProconBypassMan::Configuration.instance.layers[current_layer_key]
-  end
-
   def next_layer_key
     case
     when pushed_up?
