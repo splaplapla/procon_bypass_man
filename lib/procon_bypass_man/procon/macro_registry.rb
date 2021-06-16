@@ -26,7 +26,7 @@ class ProconBypassMan::Procon::MacroRegistry
   }
 
   def self.load(name)
-    steps = PRESETS[name]
+    steps = PRESETS[name] || raise("unknown macro")
     Macro.new(name: name, steps: PRESETS[name].dup)
   end
 end

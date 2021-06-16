@@ -10,7 +10,6 @@ class ProconBypassMan::Procon
   def self.reset_cvar!
     @@status = {
       buttons: {},
-      auto_mode_sequence: 0,
       current_layer_key: :up,
       on_going_macro: MacroRegistry.load(:null),
     }
@@ -24,7 +23,6 @@ class ProconBypassMan::Procon
   def status; @@status[:buttons]; end
   def on_going_macro; @@status[:on_going_macro]; end
   def current_layer_key; @@status[:current_layer_key]; end
-  def auto_mode_sequence; @@status[:auto_mode_sequence]; end
 
   def current_layer
     ProconBypassMan::Configuration.instance.layers[current_layer_key]
@@ -60,22 +58,8 @@ class ProconBypassMan::Procon
         end
       end
     else
-      data = ProconBypassMan::Procon::Data::MEANINGLESS[auto_mode_sequence]
-      if data.nil?
-        auto_mode_sequence = 0
-        data = ProconBypassMan::Procon::Data::MEANINGLESS[auto_mode_sequence]
-      end
-      auto_mode_sequence += 1
-      auto_binary = [data].pack("H*")
-      user_operation.binary[3] = auto_binary[3]
-      user_operation.binary[4] = auto_binary[4]
-      user_operation.binary[5] = auto_binary[5]
-      user_operation.binary[6] = auto_binary[6]
-      user_operation.binary[7] = auto_binary[7]
-      user_operation.binary[8] = auto_binary[8]
-      user_operation.binary[9] = auto_binary[9]
-      user_operation.binary[10] = auto_binary[10]
-      user_operation.binary[11] = auto_binary[11]
+      mode = ProconBypassMan::Procon::ModeRegistry.load(current_layer.mode)
+      self.user_operation = ProconBypassMan::Procon::UserOperation.new(mode.next_binary.dup)
       return
     end
 
