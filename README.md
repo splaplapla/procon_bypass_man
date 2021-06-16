@@ -19,15 +19,12 @@
 ```ruby
 # bundler inline
 gem 'procon_bypass_man', github: 'splaspla-hacker/procon_bypass_man'
-gem 'procon_bypass_man-splatoon2', github: 'splaspla-hacker/procon_bypass_man-splatoon2'
 require 'procon_bypass_man'
-require 'procon_bypass_man-splatoon2'
 
-
-module Splatoon2GuruguruMode
+module Splatoon2TheMode
   # @return [Symbol]
   def self.plugin_name
-    :guruguru
+    :splatoon2_something_mode
   end
 
   # @return [Array<String>]
@@ -38,7 +35,7 @@ end
 
 ProconBypassMan.run do
   prefix_keys_for_changing_layer [:zr, :r, :zl, :l]
-  install_plugin Splatoon2GuruguruMode
+  install_plugin(Splatoon2TheMode)
 
   layer :up, mode: :manual do
     flip :zr, if_pushed: :zr, force_neutral: :zl
