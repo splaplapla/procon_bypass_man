@@ -25,6 +25,7 @@ class ProconBypassMan::Procon
 
   def status; @@status[:buttons]; end
   def on_going_macro; @@status[:on_going_macro]; end
+  def on_going_mode; @@status[:on_going_mode]; end
   def current_layer_key; @@status[:current_layer_key]; end
 
   def current_layer
@@ -73,6 +74,10 @@ class ProconBypassMan::Procon
 
   # @return [String<binary>]
   def to_binary
+    if on_going_mode.name != :manual
+      return user_operation.binary
+    end
+
     if on_going_macro.on_going?
       step = on_going_macro.next_step or return(user_operation.binary)
       user_operation.push_button_only(step)
