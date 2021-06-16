@@ -10,7 +10,7 @@ class ProconBypassMan::Procon
     @@status = {}
     @@auto_mode_sequence = 0
     @@current_layer_key = :up
-    @@on_going_macro = nil
+    @@on_going_macro = ProconBypassMan::MacroRegistry.load(:null)
   end
   reset_cvar!
 
@@ -34,7 +34,7 @@ class ProconBypassMan::Procon
       return
     end
 
-    if @@on_going_macro.nil?
+    if @@on_going_macro.finished?
       current_layer.macros.each do |macro_name, options|
         if options[:if_pushed].all? { |b| user_operation.pushed_button?(b) }
           @@on_going_macro = ProconBypassMan::MacroRegistry.load(macro_name)
@@ -80,12 +80,8 @@ class ProconBypassMan::Procon
   end
 
   def to_binary
-    if @@on_going_macro
-      step = @@on_going_macro.next_step
-      if step.nil?
-        @@on_going_macro = nil
-        return(user_operation.binary)
-      end
+    if @@on_going_macro.on_going?
+      step = @@on_going_macro.next_step or return(user_operation.binary)
       user_operation.push_button_only(step)
       return user_operation.binary
     end

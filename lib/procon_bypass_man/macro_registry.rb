@@ -11,12 +11,17 @@ class ProconBypassMan::MacroRegistry
       steps.shift
     end
 
-    def finish?
+    def finished?
       steps.empty?
+    end
+
+    def on_going?
+      !finished?
     end
   end
 
   PRESETS = {
+    null: [],
     fast_return: [:down, :a, :a, :x, :down, :a, :a].freeze,
   }
 
