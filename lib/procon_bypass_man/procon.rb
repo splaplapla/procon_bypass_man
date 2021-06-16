@@ -13,7 +13,7 @@ class ProconBypassMan::Procon
       buttons: {},
       current_layer_key: :up,
       on_going_macro: MacroRegistry.load(:null),
-      on_going_mode: :manual,
+      on_going_mode: ModeRegistry.load(:manual),
     }
   end
   def self.reset!; reset_cvar!; end

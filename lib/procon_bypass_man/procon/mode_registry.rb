@@ -22,6 +22,7 @@ class ProconBypassMan::Procon::ModeRegistry
     guruguru: {
       binaries: ProconBypassMan::Procon::Data::MEANINGLESS,
     }
+    manual: { binaries: [] },
   }
 
   def self.install_plugin(klass)
