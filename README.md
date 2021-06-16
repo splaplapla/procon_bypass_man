@@ -33,22 +33,76 @@ module Splatoon2TheMode
   end
 end
 
+module Splatoon2TheMode
+  # @return [Symbol]
+  def self.plugin_name
+    :splatoon2_something_mode
+  end
+
+  # @return [Array<String>]
+  def binaries
+    [...]
+  end
+end
+
 ProconBypassMan.run do
   prefix_keys_for_changing_layer [:zr, :r, :zl, :l]
+
+  layer :up, mode: :manual do
+    flip :zr, if_pushed: :zr, force_neutral: :zl
+    flip :zl, if_pushed: [:y, :b, :zl]
+    flip :down, if_pushed: true
+  end
+  layer :right do
+  end
+  layer :left
+  layer :down do
+    flip :zl, if_pushed: true
+  end
+end
+```
+
+### プラグインを使った設定例
+```ruby
+gem 'procon_bypass_man', github: 'splaspla-hacker/procon_bypass_man'
+require 'procon_bypass_man'
+
+module Splatoon2TheMode
+  # @return [Symbol]
+  def self.plugin_name
+    :splatoon2_something_mode
+  end
+
+  # @return [Array<String>]
+  def binaries
+    [...]
+  end
+end
+
+module Splatoon2TheMacro
+  # @return [Symbol]
+  def self.plugin_name
+    :splatoon2_fast_return
+  end
+
+  # @return [Array<String>]
+  def binaries
+    [...]
+  end
+end
+
+ProconBypassMan.run do
+  prefix_keys_for_changing_layer [:zr, :r, :zl, :l]
+  install_macro_plugin(Splatoon2TheMacro)
   install_mode_plugin(Splatoon2TheMode)
 
   layer :up, mode: :manual do
     flip :zr, if_pushed: :zr, force_neutral: :zl
     flip :zl, if_pushed: [:y, :b, :zl]
     flip :down, if_pushed: true
-    macro :fast_return, if_pushed: [:y, :b, :down]
-  end
-  layer :right do
+    macro :splatoon2_fast_return, if_pushed: [:y, :b, :down]
   end
   layer :left, mode: :splatoon2_something_mode
-  layer :down do
-    flip :zl, if_pushed: true
-  end
 end
 ```
 
@@ -60,7 +114,7 @@ end
 
 ### モード
 
-```
+```ruby
 module Splatoon2GuruguruMode
   # @return [Symbol]
   def self.plugin_name
@@ -75,7 +129,20 @@ end
 ```
 
 ### マクロ
-TODOo
+```ruby
+module Splatoon2GuruguruMacro
+  # @return [Symbol]
+  def self.plugin_name
+    :guruguru
+  end
+
+  # @return [Array<Symbol>]
+  def step
+    [...]
+  end
+end
+```
+
 
 ## FAQ
 ### ソフトウェアについて
