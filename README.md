@@ -21,30 +21,6 @@
 gem 'procon_bypass_man', github: 'splaspla-hacker/procon_bypass_man'
 require 'procon_bypass_man'
 
-module Splatoon2TheMode
-  # @return [Symbol]
-  def self.plugin_name
-    :splatoon2_something_mode
-  end
-
-  # @return [Array<String>]
-  def binaries
-    [...]
-  end
-end
-
-module Splatoon2TheMode
-  # @return [Symbol]
-  def self.name
-    :splatoon2_something_mode
-  end
-
-  # @return [Array<String>]
-  def binaries
-    [...]
-  end
-end
-
 ProconBypassMan.run do
   prefix_keys_for_changing_layer [:zr, :r, :zl, :l]
 
@@ -113,7 +89,6 @@ end
 スケルトンを出力するgeneratorを作るか、普通にgemで作るか
 
 ### モード
-
 ```ruby
 module Splatoon2GuruguruMode
   # @return [Symbol]
@@ -142,7 +117,6 @@ module Splatoon2GuruguruMacro
   end
 end
 ```
-
 
 ## FAQ
 ### ソフトウェアについて
