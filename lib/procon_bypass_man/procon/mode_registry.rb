@@ -21,7 +21,7 @@ class ProconBypassMan::Procon::ModeRegistry
   PRESETS = {
     guruguru: {
       binaries: ProconBypassMan::Procon::Data::MEANINGLESS,
-    }
+    },
     manual: { binaries: [] },
   }
 
