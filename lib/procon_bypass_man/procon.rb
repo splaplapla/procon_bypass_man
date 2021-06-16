@@ -49,24 +49,11 @@ class ProconBypassMan::Procon
   def self.reset_cvar!
     @@status = {}
     @@auto_mode_sequence = 0
-    @@current_layer = :up
+    @@current_layer_key = :up
     @@compiled = false
     @@on_going_macro = nil
   end
   reset_cvar!
-
-  # TODO plugin経由で差し込めるようにする
-  def self.flip_buttons
-    ProconBypassMan::Configuration.instance.layers[@@current_layer].flip_buttons
-  end
-
-  def self.macros
-    ProconBypassMan::Configuration.instance.layers[@@current_layer].macros
-  end
-
-  def self.auto_mode?
-    ProconBypassMan::Configuration.instance.layers[@@current_layer].mode == :auto
-  end
 
   def self.input(binary)
     new(binary)
@@ -85,7 +72,15 @@ class ProconBypassMan::Procon
     @@on_going_macro
   end
 
-  def next_layer
+  def auto_mode?
+    current_layer.mode == :auto
+  end
+
+  def current_layer
+    ProconBypassMan::Configuration.instance.layers[@@current_layer_key]
+  end
+
+  def next_layer_key
     case
     when pushed_up?
       :up
@@ -115,13 +110,13 @@ class ProconBypassMan::Procon
   def apply!
     # layer変更中はニュートラルにする
     if change_layer?
-      @@current_layer = next_layer if pushed_next_layer?
+      @@current_layer_key = next_layer_key if pushed_next_layer?
       self.binary = [ProconBypassMan::Procon::Data::NO_ACTION].pack("H*")
       return
     end
 
     if @@on_going_macro.nil?
-      self.class.macros.each do |macro_name, options|
+      current_layer.macros.each do |macro_name, options|
         if options[:if_pushed].all? { |b| pushed_button?(b) }
           @@on_going_macro = ProconBypassMan::MacroRegistry.load(macro_name)
         end
@@ -129,7 +124,7 @@ class ProconBypassMan::Procon
     end
 
     case
-    when self.class.auto_mode?
+    when auto_mode?
       data = ProconBypassMan::Procon::Data::MEANINGLESS[@@auto_mode_sequence]
       if data.nil?
         @@auto_mode_sequence = 0
@@ -149,7 +144,7 @@ class ProconBypassMan::Procon
       return
     else
       consumed_channel_table = {}
-      flip_buttons.each do |button, options|
+      current_layer.flip_buttons.each do |button, options|
         unless options[:if_pushed]
           status[button] = !status[button]
           next
@@ -187,7 +182,7 @@ class ProconBypassMan::Procon
       return binary
     end
 
-    flip_buttons.each do |button, options|
+    current_layer.flip_buttons.each do |button, options|
       # 何もしないで常に連打
       if !options[:if_pushed] && status[button]
         byte_position = BUTTONS_MAP[button][:byte_position]
@@ -222,9 +217,5 @@ class ProconBypassMan::Procon
     ].unpack("H*").first.to_i(16).to_s(2).reverse[
       BUTTONS_MAP[button][:bit_position]
     ] == '1'
-  end
-
-  def flip_buttons
-    self.class.flip_buttons
   end
 end
