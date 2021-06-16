@@ -64,13 +64,14 @@ class ProconBypassMan::Procon
       unless @@status[:on_going_mode].name == current_layer.mode
         @@status[:on_going_mode] = ProconBypassMan::Procon::ModeRegistry.load(current_layer.mode)
       end
-      self.user_operation = ProconBypassMan::Procon::UserOperation.new(@@status[:on_going_mode].next_binary)
+      self.user_operation.merge(target_binary: [@@status[:on_going_mode].next_binary].pack("H*"))
       return
     end
 
     status
   end
 
+  # @return [String<binary>]
   def to_binary
     if on_going_macro.on_going?
       step = on_going_macro.next_step or return(user_operation.binary)

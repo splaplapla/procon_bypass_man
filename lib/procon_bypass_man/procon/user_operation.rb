@@ -17,7 +17,7 @@ class ProconBypassMan::Procon
     end
 
     def set_no_action!
-      self.binary = [ProconBypassMan::Procon::Data::NO_ACTION].pack("H*")
+      self.binary = ProconBypassMan::Procon::Data::NO_ACTION
     end
 
     def unpush_button(button)
@@ -42,6 +42,13 @@ class ProconBypassMan::Procon
         binary[4] = no_action_binary[4]
         binary[5] = no_action_binary[5]
       end
+    end
+
+    def merge(target_binary: )
+      (3..11).each do |byte_position|
+        binary[byte_position] = target_binary[byte_position]
+      end
+      binary
     end
   end
 end

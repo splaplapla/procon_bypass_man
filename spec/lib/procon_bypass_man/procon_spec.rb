@@ -20,17 +20,20 @@ describe ProconBypassMan::Procon do
       end
       procon = ProconBypassMan::Procon.new(binary)
       procon.apply!
-      expect(procon.to_binary).to eq(pressed_y_and_b)
+      expect(ProconBypassMan::Procon.new(procon.to_binary).pushed_y?).to eq(true)
+      expect(ProconBypassMan::Procon.new(procon.to_binary).pushed_b?).to eq(true)
 
       procon = ProconBypassMan::Procon.new(binary)
       procon.apply!
       procon.to_binary
-      expect(procon.to_binary).to eq(not_pressed_y_and_b)
+      expect(ProconBypassMan::Procon.new(procon.to_binary).pushed_y?).to eq(false)
+      expect(ProconBypassMan::Procon.new(procon.to_binary).pushed_b?).to eq(false)
 
       procon = ProconBypassMan::Procon.new(binary)
       procon.apply!
       procon.to_binary
-      expect(procon.to_binary).to eq(pressed_y_and_b)
+      expect(ProconBypassMan::Procon.new(procon.to_binary).pushed_y?).to eq(true)
+      expect(ProconBypassMan::Procon.new(procon.to_binary).pushed_b?).to eq(true)
     end
   end
 
