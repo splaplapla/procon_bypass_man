@@ -17,7 +17,9 @@
   * fluentd
 
 ## Usage
-以下のファイルを用意して`sudo ruby hoge.rb`してください
+* 以下のファイルを用意して`sudo ruby hoge.rb`してください
+* 設定ファイルの例
+  * https://github.com/jiikko/procon_bypass_man_sample
 
 ```ruby
 # bundler inline
