@@ -10,7 +10,7 @@ module ProconBypassMan::Procon::LayerChangeable
     when pressed_down?
       :down
     else
-      pp "おかしい"
+      ProconBypassMan.logger.warn("next_layer_key is unknown")
       :up
     end
   end

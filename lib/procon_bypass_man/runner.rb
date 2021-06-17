@@ -50,7 +50,7 @@ class ProconBypassMan::Runner
         end
 
         begin
-          ProconBypassMan.logger.debug("<<< #{output.unpack("H*")}")
+          ProconBypassMan.logger.debug { "<<< #{output.unpack("H*")}" }
           @gadget.write_nonblock(
             ProconBypassMan::Processor.new(output).process
           )
@@ -72,7 +72,7 @@ class ProconBypassMan::Runner
     loop do
       begin
         input = @gadget.read_nonblock(128)
-        ProconBypassMan.logger.debug(">>> #{input.unpack("H*")}")
+        ProconBypassMan.logger.debug { ">>> #{input.unpack("H*")}" }
         @procon.write_nonblock(input)
         if input[0] == "\x80".b && input[1] == "\x01".b
           ProconBypassMan.logger.info("first negotiation is over")
