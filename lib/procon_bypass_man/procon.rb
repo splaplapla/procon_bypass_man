@@ -33,7 +33,6 @@ class ProconBypassMan::Procon
   end
 
   def apply!
-    pp @@status
     if user_operation.change_layer?
       @@status[:current_layer_key] = user_operation.next_layer_key if user_operation.pushed_next_layer?
       user_operation.set_no_action!
@@ -50,6 +49,7 @@ class ProconBypassMan::Procon
 
     case current_layer.mode
     when :manual
+      @@status[:on_going_mode] = ModeRegistry.load(:manual)
       current_layer.flip_buttons.each do |button, options|
         unless options[:if_pushed]
           status[button] = !status[button]
