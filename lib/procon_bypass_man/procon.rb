@@ -33,6 +33,7 @@ class ProconBypassMan::Procon
   end
 
   def apply!
+    pp @@status
     if user_operation.change_layer?
       @@status[:current_layer_key] = user_operation.next_layer_key if user_operation.pushed_next_layer?
       user_operation.set_no_action!
