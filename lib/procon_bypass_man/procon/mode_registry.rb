@@ -12,15 +12,15 @@ class ProconBypassMan::Procon::ModeRegistry
       binary = binaries.shift
       unless binary
         self.binaries = source_binaries.dup
-        return binaries.shift.dup
+        return binaries.shift
       end
-      return binary.dup
+      return binary
     end
   end
 
   PRESETS = {
     guruguru: {
-      binaries: ProconBypassMan::Procon::Data::MEANINGLESS,
+      binaries: ProconBypassMan::Procon::Data::MEANINGLESS.map{|x| [x].pack("H*") },
     },
     manual: { binaries: [] },
   }
