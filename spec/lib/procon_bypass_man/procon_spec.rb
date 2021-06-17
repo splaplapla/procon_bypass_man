@@ -181,15 +181,68 @@ describe ProconBypassMan::Procon do
         let(:data) { "306991c080c4c987734758740af2011c03ef0f5bffe2ffedffe8013403e00f70fff0fff4ffe8014a03cb0f6effeefff2ff000000000000000000000000000000" }
         it 'ニュートラルになる' do
           procon = ProconBypassMan::Procon.new(binary)
+          expect(procon.current_layer_key).to eq(:up)
+          expect(procon.current_layer.mode).to eq(:manual)
           expect(procon.user_operation.change_layer?).to eq(true)
           expect(procon.user_operation.next_layer_key).to eq(:right)
-          procon.apply!
+          procon.apply! # change layer
+
+          expect(procon.current_layer_key).to eq(:right)
+          expect(procon.current_layer.mode).to eq(:auto)
           expect(procon.pushed_a?).to eq(false)
           expect(procon.pushed_b?).to eq(false)
           expect(procon.pushed_y?).to eq(false)
           expect(procon.pushed_x?).to eq(false)
           expect(procon.pushed_l?).to eq(false)
           expect(procon.pushed_right?).to eq(false)
+
+          procon = ProconBypassMan::Procon.new(binary)
+          procon.user_operation.push_button(:up)
+          procon.apply! # change layer
+          expect(procon.current_layer_key).to eq(:up)
+          expect(procon.current_layer.mode).to eq(:manual)
+          expect(procon.user_operation.change_layer?).to eq(false)
+
+          # zrを押す
+          pushed_zr_data = "3012818a8000b0377246f8750988f5c70bfb011400e9ff180083f5d00bf9011100ecff190088f5d10bf9011000f1ff1c00000000000000000000000000000000"
+          pushed_zr_binary = [pushed_zr_data].pack("H*")
+          procon = ProconBypassMan::Procon.new(pushed_zr_binary)
+          procon.apply!
+          procon.to_binary
+          expect(procon.pushed_zr?).to eq(true)
+
+          procon = ProconBypassMan::Procon.new(pushed_zr_binary)
+          procon.apply!
+          procon.to_binary
+          expect(procon.pushed_zr?).to eq(false)
+
+          procon = ProconBypassMan::Procon.new(pushed_zr_binary)
+          procon.apply!
+          procon.to_binary
+          expect(procon.pushed_zr?).to eq(true)
+
+          # change layer
+          procon = ProconBypassMan::Procon.new(binary)
+          procon.user_operation.push_button(:down)
+          procon.user_operation.unpush_button(:right)
+          procon.apply! # change layer
+          expect(procon.current_layer_key).to eq(:down)
+          expect(procon.current_layer.mode).to eq(:manual)
+          expect(procon.user_operation.change_layer?).to eq(false)
+
+          procon = ProconBypassMan::Procon.new(pushed_zr_binary)
+          procon.user_operation.push_button(:zl)
+          procon.apply!
+          procon.to_binary
+          expect(procon.current_layer_key).to eq(:down)
+          expect(procon.pushed_zl?).to eq(true)
+
+          procon = ProconBypassMan::Procon.new(pushed_zr_binary)
+          procon.user_operation.push_button(:zl)
+          procon.apply!
+          procon.to_binary
+          expect(procon.current_layer_key).to eq(:down)
+          expect(procon.pushed_zl?).to eq(false)
         end
       end
     end
