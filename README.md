@@ -159,6 +159,7 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/[USERN
 ```
 ProconBypassMan.tap do |pbm|
   pbm.logger = STDOUT
+  pbm.logger.level = :debug
 pbm
 ```
 
