@@ -12,6 +12,29 @@ describe ProconBypassMan::Procon do
     let(:pressed_y_and_b) { "30778105800099277344e86b0a7909f4f5a8f4b500c5ff8dff6c09cdf5b8f49a00c5ff92ff6a0979f5eef46500d5ff9bff000000000000000000000000000000" }
     let(:not_pressed_y_and_b) { "30f28100800078c77448287509550274ff131029001b0022005a0271ff191028001e00210064027cff1410280020002100000000000000000000000000000000" }
     it 'modeのbinariesを繰り返すこと' do
+      ProconBypassMan.configure do
+        prefix_keys_for_changing_layer [:zr, :r, :zl, :l]
+        layer :up, mode: :manual do
+          flip :zr, if_pushed: :zr, force_neutral: :zl
+          flip :zl, if_pushed: [:y, :b, :zl]
+          flip :down, if_pushed: :down
+          macro :fast_return, if_pushed: [:y, :b, :down]
+        end
+        layer :right, mode: :guruguru
+      end
+      %w(
+        306791c080c4c877734558740aed017b03b20f84fff8fff8ffee01a203990f9cfffffffcffed01c1038c0fb8ff04000100000000000000000000000000000000"
+        306991c080c4c987734758740af2011c03ef0f5bffe2ffedffe8013403e00f70fff0fff4ffe8014a03cb0f6effeefff2ff000000000000000000000000000000"
+        306c91c080c0c897734938740a4d02b502f70f43ffbeffceff2f02d7020f1045ffc7ffddff1902ec020c1045ffc9ffddff000000000000000000000000000000"
+        307091c080c0c877734928740ac901a102ca1057ffe2ffb1ff59024502601046ffcbffb9ff8d024802b50f45ffc4ffbdff000000000000000000000000000000"
+        307591c08000c897734c68740cf801b802cb0fafff2800e5ff0d02aa02ec0fb2ff1a00e3fff701c6022d10abff0900ddff000000000000000000000000000000"
+      ).each do |d|
+        procon = ProconBypassMan::Procon.new([d].pack("H*"))
+        procon.apply!
+        procon.to_binary
+      end
+    end
+    it 'modeのbinariesを繰り返すこと' do
       plugin = OpenStruct.new(name: :hoge, binaries: [ pressed_y_and_b, not_pressed_y_and_b ])
       ProconBypassMan.configure do
         install_mode_plugin(plugin)
