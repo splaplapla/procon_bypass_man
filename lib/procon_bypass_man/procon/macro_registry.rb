@@ -15,7 +15,7 @@ class ProconBypassMan::Procon::MacroRegistry
       steps.empty?
     end
 
-    def on_going?
+    def ongoing?
       !finished?
     end
   end

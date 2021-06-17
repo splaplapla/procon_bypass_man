@@ -12,8 +12,8 @@ class ProconBypassMan::Procon
     @@status = {
       buttons: {},
       current_layer_key: :up,
-      on_going_macro: MacroRegistry.load(:null),
-      on_going_mode: ModeRegistry.load(:manual),
+      ongoing_macro: MacroRegistry.load(:null),
+      ongoing_mode: ModeRegistry.load(:manual),
     }
   end
   def self.reset!; reset_cvar!; end
@@ -24,8 +24,8 @@ class ProconBypassMan::Procon
   end
 
   def status; @@status[:buttons]; end
-  def on_going_macro; @@status[:on_going_macro]; end
-  def on_going_mode; @@status[:on_going_mode]; end
+  def ongoing_macro; @@status[:ongoing_macro]; end
+  def ongoing_mode; @@status[:ongoing_mode]; end
   def current_layer_key; @@status[:current_layer_key]; end
 
   def current_layer
@@ -39,17 +39,17 @@ class ProconBypassMan::Procon
       return
     end
 
-    if on_going_macro.finished?
+    if ongoing_macro.finished?
       current_layer.macros.each do |macro_name, options|
         if options[:if_pushed].all? { |b| user_operation.pushed_button?(b) }
-          @@status[:on_going_macro] = MacroRegistry.load(macro_name)
+          @@status[:ongoing_macro] = MacroRegistry.load(macro_name)
         end
       end
     end
 
     case current_layer.mode
     when :manual
-      @@status[:on_going_mode] = ModeRegistry.load(:manual)
+      @@status[:ongoing_mode] = ModeRegistry.load(:manual)
       current_layer.flip_buttons.each do |button, options|
         unless options[:if_pushed]
           status[button] = !status[button]
@@ -63,10 +63,10 @@ class ProconBypassMan::Procon
         end
       end
     else
-      unless @@status[:on_going_mode].name == current_layer.mode
-        @@status[:on_going_mode] = ProconBypassMan::Procon::ModeRegistry.load(current_layer.mode)
+      unless @@status[:ongoing_mode].name == current_layer.mode
+        @@status[:ongoing_mode] = ProconBypassMan::Procon::ModeRegistry.load(current_layer.mode)
       end
-      if(binary = @@status[:on_going_mode].next_binary)
+      if(binary = @@status[:ongoing_mode].next_binary)
         self.user_operation.merge(target_binary: binary)
       end
       return
@@ -77,12 +77,12 @@ class ProconBypassMan::Procon
 
   # @return [String<binary>]
   def to_binary
-    if on_going_mode.name != :manual
+    if ongoing_mode.name != :manual
       return user_operation.binary
     end
 
-    if on_going_macro.on_going?
-      step = on_going_macro.next_step or return(user_operation.binary)
+    if ongoing_macro.ongoing?
+      step = ongoing_macro.next_step or return(user_operation.binary)
       user_operation.push_button_only(step)
       return user_operation.binary
     end
