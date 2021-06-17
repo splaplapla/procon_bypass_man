@@ -35,7 +35,7 @@ describe ProconBypassMan::Procon do
       end
     end
     it 'modeのbinariesを繰り返すこと' do
-      plugin = OpenStruct.new(name: :hoge, binaries: [ pressed_y_and_b, not_pressed_y_and_b ])
+      plugin = OpenStruct.new(name: :hoge, binaries: [pressed_y_and_b, not_pressed_y_and_b])
       ProconBypassMan.configure do
         install_mode_plugin(plugin)
         prefix_keys_for_changing_layer [:zr]

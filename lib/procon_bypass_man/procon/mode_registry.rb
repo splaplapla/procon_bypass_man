@@ -19,10 +19,8 @@ class ProconBypassMan::Procon::ModeRegistry
   end
 
   PRESETS = {
-    guruguru: {
-      binaries: ProconBypassMan::Procon::Data::MEANINGLESS.map{|x| [x].pack("H*") },
-    },
-    manual: { binaries: [] },
+    guruguru: ProconBypassMan::Procon::Data::MEANINGLESS.map{|x| [x].pack("H*") },
+    manual: [],
   }
 
   def self.install_plugin(klass)
@@ -33,8 +31,8 @@ class ProconBypassMan::Procon::ModeRegistry
   end
 
   def self.load(name)
-    binaries = PRESETS[name] || plugins[name] || raise("unknown mode")
-    Mode.new(name: name, binaries: binaries.dup)
+    list = PRESETS[name] || plugins[name] || raise("unknown mode")
+    Mode.new(name: name, binaries: list.dup)
   end
 
   def self.reset!
