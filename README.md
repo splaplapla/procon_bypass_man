@@ -1,11 +1,14 @@
 # ProconBypassMan
-* プロコンを連射機にするツールです
+* プロコンを連射機にしたり、マクロを実行できるツールです
+    * 設定ファイルはrubyスクリプトで記述します
 * 特定のタイトルに特化した振る舞いにしたい時は各プラグインを使ってください(TODO)
 
 ## 使うハードウェア
 * プロコン
 * Switch本体とドック
 * Raspberry Pi4
+    * 他のシリーズは未確認です
+* データ通信が可能なUSBケーブル
 
 ## 使うソフトウェア
 * 必須
@@ -81,6 +84,9 @@ ProconBypassMan.run do
   layer :left, mode: :splatoon2_something_mode
 end
 ```
+
+* 設定ファイルの例
+  * https://github.com/jiikko/procon_bypass_man_sample
 
 ## Plugins
 * https://github.com/splaspla-hacker/procon_bypass_man-splatoon2
