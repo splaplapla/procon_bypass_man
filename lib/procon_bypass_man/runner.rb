@@ -47,6 +47,9 @@ class ProconBypassMan::Runner
         end
       rescue Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError => e
         raise ProconBypassMan::ProConRejected.new(e)
+      ensure
+        @gadget&.close
+        @procon&.close
       end
     end
 
@@ -78,13 +81,13 @@ class ProconBypassMan::Runner
         end
       rescue Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError => e
         raise ProconBypassMan::ProConRejected.new(e)
+      ensure
+        @gadget&.close
+        @procon&.close
       end
     end
 
     loop { sleep(5) }
-  ensure
-    @gadget&.close
-    @procon&.close
   end
 
   def first_negotiation
