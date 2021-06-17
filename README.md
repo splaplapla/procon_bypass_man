@@ -28,15 +28,15 @@ ProconBypassMan.run do
   prefix_keys_for_changing_layer [:zr, :r, :zl, :l]
 
   layer :up, mode: :manual do
-    flip :zr, if_pushed: :zr, force_neutral: :zl
-    flip :zl, if_pushed: [:y, :b, :zl]
-    flip :down, if_pushed: true
+    flip :zr, if_pressed: :zr, force_neutral: :zl
+    flip :zl, if_pressed: [:y, :b, :zl]
+    flip :down, if_pressed: true
   end
   layer :right do
   end
   layer :left
   layer :down do
-    flip :zl, if_pushed: true
+    flip :zl, if_pressed: true
   end
 end
 ```
@@ -76,10 +76,10 @@ ProconBypassMan.run do
   install_mode_plugin(Splatoon2TheMode)
 
   layer :up, mode: :manual do
-    flip :zr, if_pushed: :zr, force_neutral: :zl
-    flip :zl, if_pushed: [:y, :b, :zl]
-    flip :down, if_pushed: true
-    macro :splatoon2_fast_return, if_pushed: [:y, :b, :down]
+    flip :zr, if_pressed: :zr, force_neutral: :zl
+    flip :zl, if_pressed: [:y, :b, :zl]
+    flip :down, if_pressed: true
+    macro :splatoon2_fast_return, if_pressed: [:y, :b, :down]
   end
   layer :left, mode: :splatoon2_something_mode
 end

@@ -11,7 +11,7 @@ describe ProconBypassMan::Configuration do
         ProconBypassMan.configure do
           install_macro_plugin(AMacroPlugin)
           layer :up do
-            macro :the_macro, if_pushed: [:a, :y]
+            macro :the_macro, if_pressed: [:a, :y]
           end
         end
         expect(ProconBypassMan::Procon::MacroRegistry.plugins).to eq(the_macro: [:a, :b])
@@ -34,23 +34,23 @@ describe ProconBypassMan::Configuration do
       it do
         ProconBypassMan.configure do
           layer :up do
-            macro :fast_return, if_pushed: [:y, :b, :down]
+            macro :fast_return, if_pressed: [:y, :b, :down]
           end
         end
       end
     end
 
-    context 'with if_pushed' do
+    context 'with if_pressed' do
       it do
         ProconBypassMan.configure do
           layer :up do
-            flip :l, if_pushed: [:y, :b], force_neutral: :y
+            flip :l, if_pressed: [:y, :b], force_neutral: :y
           end
           layer :down
           layer :right
           layer :left
         end
-        expect(ProconBypassMan::Configuration.instance.layers[:up].flip_buttons[:l]).to eq(if_pushed: [:y, :b], force_neutral: :y)
+        expect(ProconBypassMan::Configuration.instance.layers[:up].flip_buttons[:l]).to eq(if_pressed: [:y, :b], force_neutral: :y)
         expect(ProconBypassMan::Configuration.instance.layers[:up].flip_buttons.keys).to eq([:l])
       end
     end
@@ -59,21 +59,21 @@ describe ProconBypassMan::Configuration do
       it do
         ProconBypassMan.configure do
           layer :up do
-            flip :l, if_pushed: true
+            flip :l, if_pressed: true
             flip :r, channel: 1
           end
           layer :down, mode: :manual do
-            flip :r, if_pushed: [:zr, :zl]
+            flip :r, if_pressed: [:zr, :zl]
           end
           layer :right, mode: :auto
           layer :left
         end
-        expect(ProconBypassMan::Configuration.instance.layers[:up].flip_buttons[:l]).to eq(if_pushed: [:l])
-        expect(ProconBypassMan::Configuration.instance.layers[:up].flip_buttons[:r]).to eq(if_pushed: false, channel: 1)
+        expect(ProconBypassMan::Configuration.instance.layers[:up].flip_buttons[:l]).to eq(if_pressed: [:l])
+        expect(ProconBypassMan::Configuration.instance.layers[:up].flip_buttons[:r]).to eq(if_pressed: false, channel: 1)
         expect(ProconBypassMan::Configuration.instance.layers[:up].flip_buttons.keys).to eq([:l, :r])
         expect(ProconBypassMan::Configuration.instance.layers[:up].mode).to eq(:manual)
         expect(ProconBypassMan::Configuration.instance.layers[:down].flip_buttons.keys).to eq([:r])
-        expect(ProconBypassMan::Configuration.instance.layers[:down].flip_buttons[:r]).to eq(if_pushed: [:zr, :zl])
+        expect(ProconBypassMan::Configuration.instance.layers[:down].flip_buttons[:r]).to eq(if_pressed: [:zr, :zl])
         expect(ProconBypassMan::Configuration.instance.layers[:down].mode).to eq(:manual)
         expect(ProconBypassMan::Configuration.instance.layers[:right].flip_buttons.keys).to eq([])
         expect(ProconBypassMan::Configuration.instance.layers[:right].mode).to eq(:auto)

@@ -15,10 +15,10 @@ describe ProconBypassMan::Procon do
       ProconBypassMan.configure do
         prefix_keys_for_changing_layer [:zr, :r, :zl, :l]
         layer :up, mode: :manual do
-          flip :zr, if_pushed: :zr, force_neutral: :zl
-          flip :zl, if_pushed: [:y, :b, :zl]
-          flip :down, if_pushed: :down
-          macro :fast_return, if_pushed: [:y, :b, :down]
+          flip :zr, if_pressed: :zr, force_neutral: :zl
+          flip :zl, if_pressed: [:y, :b, :zl]
+          flip :down, if_pressed: :down
+          macro :fast_return, if_pressed: [:y, :b, :down]
         end
         layer :right, mode: :guruguru
       end
@@ -43,20 +43,20 @@ describe ProconBypassMan::Procon do
       end
       procon = ProconBypassMan::Procon.new(binary)
       procon.apply!
-      expect(ProconBypassMan::Procon.new(procon.to_binary).pushed_y?).to eq(true)
-      expect(ProconBypassMan::Procon.new(procon.to_binary).pushed_b?).to eq(true)
+      expect(ProconBypassMan::Procon.new(procon.to_binary).pressed_y?).to eq(true)
+      expect(ProconBypassMan::Procon.new(procon.to_binary).pressed_b?).to eq(true)
 
       procon = ProconBypassMan::Procon.new(binary)
       procon.apply!
       procon.to_binary
-      expect(ProconBypassMan::Procon.new(procon.to_binary).pushed_y?).to eq(false)
-      expect(ProconBypassMan::Procon.new(procon.to_binary).pushed_b?).to eq(false)
+      expect(ProconBypassMan::Procon.new(procon.to_binary).pressed_y?).to eq(false)
+      expect(ProconBypassMan::Procon.new(procon.to_binary).pressed_b?).to eq(false)
 
       procon = ProconBypassMan::Procon.new(binary)
       procon.apply!
       procon.to_binary
-      expect(ProconBypassMan::Procon.new(procon.to_binary).pushed_y?).to eq(true)
-      expect(ProconBypassMan::Procon.new(procon.to_binary).pushed_b?).to eq(true)
+      expect(ProconBypassMan::Procon.new(procon.to_binary).pressed_y?).to eq(true)
+      expect(ProconBypassMan::Procon.new(procon.to_binary).pressed_b?).to eq(true)
     end
     it "can't modify frozen Stringが起きないこと" do
       plugin = OpenStruct.new(name: :hoge, binaries: [ pressed_y_and_b, not_pressed_y_and_b ])
@@ -64,7 +64,7 @@ describe ProconBypassMan::Procon do
         install_mode_plugin(plugin)
         prefix_keys_for_changing_layer [:zr]
         layer :up do
-          flip :down, if_pushed: :down
+          flip :down, if_pressed: :down
         end
         layer :right, mode: plugin.name
       end
@@ -87,40 +87,40 @@ describe ProconBypassMan::Procon do
         ProconBypassMan.configure do
           prefix_keys_for_changing_layer [:zr]
           layer :up do
-            macro :fast_return, if_pushed: [:y, :b]
+            macro :fast_return, if_pressed: [:y, :b]
           end
         end
       end
       it "[:down, :a, :a, :x, :down, :a, :a]の順番で押していく" do
         procon = ProconBypassMan::Procon.new(binary)
-        expect(procon.pushed_y?).to eq(true)
-        expect(procon.pushed_b?).to eq(true)
+        expect(procon.pressed_y?).to eq(true)
+        expect(procon.pressed_b?).to eq(true)
         procon.apply!
         procon = ProconBypassMan::Procon.new(procon.to_binary)
-        expect(procon.pushed_down?).to eq(true)
+        expect(procon.pressed_down?).to eq(true)
 
         procon = ProconBypassMan::Procon.new(procon.to_binary)
-        expect(procon.pushed_down?).to eq(false)
-        expect(procon.pushed_a?).to eq(true)
+        expect(procon.pressed_down?).to eq(false)
+        expect(procon.pressed_a?).to eq(true)
 
         procon = ProconBypassMan::Procon.new(procon.to_binary)
-        expect(procon.pushed_down?).to eq(false)
-        expect(procon.pushed_a?).to eq(true)
+        expect(procon.pressed_down?).to eq(false)
+        expect(procon.pressed_a?).to eq(true)
 
         procon = ProconBypassMan::Procon.new(procon.to_binary)
-        expect(procon.pushed_down?).to eq(false)
-        expect(procon.pushed_a?).to eq(false)
-        expect(procon.pushed_x?).to eq(true)
+        expect(procon.pressed_down?).to eq(false)
+        expect(procon.pressed_a?).to eq(false)
+        expect(procon.pressed_x?).to eq(true)
 
         procon = ProconBypassMan::Procon.new(procon.to_binary)
-        expect(procon.pushed_a?).to eq(false)
-        expect(procon.pushed_x?).to eq(false)
-        expect(procon.pushed_down?).to eq(true)
+        expect(procon.pressed_a?).to eq(false)
+        expect(procon.pressed_x?).to eq(false)
+        expect(procon.pressed_down?).to eq(true)
 
         procon = ProconBypassMan::Procon.new(procon.to_binary)
-        expect(procon.pushed_x?).to eq(false)
-        expect(procon.pushed_down?).to eq(false)
-        expect(procon.pushed_a?).to eq(true)
+        expect(procon.pressed_x?).to eq(false)
+        expect(procon.pressed_down?).to eq(false)
+        expect(procon.pressed_a?).to eq(true)
       end
     end
   end
@@ -130,7 +130,7 @@ describe ProconBypassMan::Procon do
       ProconBypassMan.configure do
         prefix_keys_for_changing_layer [:zr, :r, :zl, :l]
         layer :up do
-          flip :y, if_pushed: [:y], force_neutral: :b
+          flip :y, if_pressed: [:y], force_neutral: :b
         end
         layer :right
         layer :left
@@ -141,18 +141,18 @@ describe ProconBypassMan::Procon do
       let(:data) { "30778105800099277344e86b0a7909f4f5a8f4b500c5ff8dff6c09cdf5b8f49a00c5ff92ff6a0979f5eef46500d5ff9bff000000000000000000000000000000" }
       it 'bは押していない' do
         procon = ProconBypassMan::Procon.new(binary)
-        expect(procon.pushed_y?).to eq(true)
-        expect(procon.pushed_b?).to eq(true)
+        expect(procon.pressed_y?).to eq(true)
+        expect(procon.pressed_b?).to eq(true)
         procon.apply!
-        expect(ProconBypassMan::Procon.new(procon.to_binary).pushed_y?).to eq(true)
-        expect(ProconBypassMan::Procon.new(procon.to_binary).pushed_b?).to eq(false)
+        expect(ProconBypassMan::Procon.new(procon.to_binary).pressed_y?).to eq(true)
+        expect(ProconBypassMan::Procon.new(procon.to_binary).pressed_b?).to eq(false)
 
         procon = ProconBypassMan::Procon.new(binary)
-        expect(procon.pushed_y?).to eq(true)
-        expect(procon.pushed_b?).to eq(true)
+        expect(procon.pressed_y?).to eq(true)
+        expect(procon.pressed_b?).to eq(true)
         procon.apply!
-        expect(ProconBypassMan::Procon.new(procon.to_binary).pushed_y?).to eq(false)
-        expect(ProconBypassMan::Procon.new(procon.to_binary).pushed_b?).to eq(false)
+        expect(ProconBypassMan::Procon.new(procon.to_binary).pressed_y?).to eq(false)
+        expect(ProconBypassMan::Procon.new(procon.to_binary).pressed_b?).to eq(false)
       end
     end
   end
@@ -162,16 +162,16 @@ describe ProconBypassMan::Procon do
       ProconBypassMan.configure do
         prefix_keys_for_changing_layer [:zr, :r, :zl, :l]
         layer :up do
-          flip :down, if_pushed: true
-          flip :zr, if_pushed: true
+          flip :down, if_pressed: true
+          flip :zr, if_pressed: true
           flip :a
-          flip :zl, if_pushed: [:y, :b]
+          flip :zl, if_pressed: [:y, :b]
         end
         layer :right, mode: :auto
         layer :left do
         end
         layer :down do
-          flip :zl, if_pushed: true
+          flip :zl, if_pressed: true
         end
       end
     end
@@ -189,66 +189,66 @@ describe ProconBypassMan::Procon do
 
           expect(procon.current_layer_key).to eq(:right)
           expect(procon.current_layer.mode).to eq(:auto)
-          expect(procon.pushed_a?).to eq(false)
-          expect(procon.pushed_b?).to eq(false)
-          expect(procon.pushed_y?).to eq(false)
-          expect(procon.pushed_x?).to eq(false)
-          expect(procon.pushed_l?).to eq(false)
-          expect(procon.pushed_right?).to eq(false)
+          expect(procon.pressed_a?).to eq(false)
+          expect(procon.pressed_b?).to eq(false)
+          expect(procon.pressed_y?).to eq(false)
+          expect(procon.pressed_x?).to eq(false)
+          expect(procon.pressed_l?).to eq(false)
+          expect(procon.pressed_right?).to eq(false)
 
           procon = ProconBypassMan::Procon.new(binary)
-          procon.user_operation.push_button(:up)
+          procon.user_operation.press_button(:up)
           procon.apply! # change layer
           expect(procon.current_layer_key).to eq(:up)
           expect(procon.current_layer.mode).to eq(:manual)
           expect(procon.user_operation.change_layer?).to eq(false)
 
           # zrを押す
-          pushed_zr_data = "3012818a8000b0377246f8750988f5c70bfb011400e9ff180083f5d00bf9011100ecff190088f5d10bf9011000f1ff1c00000000000000000000000000000000"
-          pushed_zr_binary = [pushed_zr_data].pack("H*")
-          procon = ProconBypassMan::Procon.new(pushed_zr_binary)
+          pressed_zr_data = "3012818a8000b0377246f8750988f5c70bfb011400e9ff180083f5d00bf9011100ecff190088f5d10bf9011000f1ff1c00000000000000000000000000000000"
+          pressed_zr_binary = [pressed_zr_data].pack("H*")
+          procon = ProconBypassMan::Procon.new(pressed_zr_binary)
           procon.apply!
           procon.to_binary
-          expect(procon.pushed_zr?).to eq(true)
+          expect(procon.pressed_zr?).to eq(true)
 
-          procon = ProconBypassMan::Procon.new(pushed_zr_binary)
+          procon = ProconBypassMan::Procon.new(pressed_zr_binary)
           procon.apply!
           procon.to_binary
-          expect(procon.pushed_zr?).to eq(false)
+          expect(procon.pressed_zr?).to eq(false)
 
-          procon = ProconBypassMan::Procon.new(pushed_zr_binary)
+          procon = ProconBypassMan::Procon.new(pressed_zr_binary)
           procon.apply!
           procon.to_binary
-          expect(procon.pushed_zr?).to eq(true)
+          expect(procon.pressed_zr?).to eq(true)
 
           # change layer
           procon = ProconBypassMan::Procon.new(binary)
-          procon.user_operation.push_button(:down)
-          procon.user_operation.unpush_button(:right)
+          procon.user_operation.press_button(:down)
+          procon.user_operation.unpress_button(:right)
           procon.apply! # change layer
           expect(procon.current_layer_key).to eq(:down)
           expect(procon.current_layer.mode).to eq(:manual)
           expect(procon.user_operation.change_layer?).to eq(false)
 
-          procon = ProconBypassMan::Procon.new(pushed_zr_binary)
-          procon.user_operation.push_button(:zl)
+          procon = ProconBypassMan::Procon.new(pressed_zr_binary)
+          procon.user_operation.press_button(:zl)
           procon.apply!
           procon.to_binary
           expect(procon.current_layer_key).to eq(:down)
-          expect(procon.pushed_zl?).to eq(true)
+          expect(procon.pressed_zl?).to eq(true)
 
-          procon = ProconBypassMan::Procon.new(pushed_zr_binary)
-          procon.user_operation.push_button(:zl)
+          procon = ProconBypassMan::Procon.new(pressed_zr_binary)
+          procon.user_operation.press_button(:zl)
           procon.apply!
           procon.to_binary
           expect(procon.current_layer_key).to eq(:down)
-          expect(procon.pushed_zl?).to eq(false)
+          expect(procon.pressed_zl?).to eq(false)
         end
       end
     end
 
-    describe '#pushed_zr?' do
-      subject { ProconBypassMan::Procon.new(binary).pushed_zr? }
+    describe '#pressed_zr?' do
+      subject { ProconBypassMan::Procon.new(binary).pressed_zr? }
       context 'zr押している' do
         let(:data) { "3012818a8000b0377246f8750988f5c70bfb011400e9ff180083f5d00bf9011100ecff190088f5d10bf9011000f1ff1c00000000000000000000000000000000" }
         it { expect(subject).to eq(true) }
@@ -259,8 +259,8 @@ describe ProconBypassMan::Procon do
       end
     end
 
-    describe '#pushed_down?' do
-      subject { ProconBypassMan::Procon.new(binary).pushed_down? }
+    describe '#pressed_down?' do
+      subject { ProconBypassMan::Procon.new(binary).pressed_down? }
       context 'zr押していない' do
         let(:data) { "30f28100800078c77448287509550274ff131029001b0022005a0271ff191028001e00210064027cff1410280020002100000000000000000000000000000000" }
         it { expect(subject).to eq(false) }
@@ -277,21 +277,21 @@ describe ProconBypassMan::Procon do
         it do
           procon = ProconBypassMan::Procon.new(binary)
           procon.apply!
-          expect(procon.pushed_zr?).to eq(true)
-          expect(ProconBypassMan::Procon.new(procon.to_binary).pushed_zr?).to eq(true)
-          expect(ProconBypassMan::Procon.new(procon.to_binary).pushed_down?).to eq(false)
+          expect(procon.pressed_zr?).to eq(true)
+          expect(ProconBypassMan::Procon.new(procon.to_binary).pressed_zr?).to eq(true)
+          expect(ProconBypassMan::Procon.new(procon.to_binary).pressed_down?).to eq(false)
 
           procon = ProconBypassMan::Procon.new(binary)
           procon.apply!
-          expect(procon.pushed_zr?).to eq(true)
-          expect(ProconBypassMan::Procon.new(procon.to_binary).pushed_zr?).to eq(false)
-          expect(ProconBypassMan::Procon.new(procon.to_binary).pushed_down?).to eq(false)
+          expect(procon.pressed_zr?).to eq(true)
+          expect(ProconBypassMan::Procon.new(procon.to_binary).pressed_zr?).to eq(false)
+          expect(ProconBypassMan::Procon.new(procon.to_binary).pressed_down?).to eq(false)
 
           procon = ProconBypassMan::Procon.new(binary)
           procon.apply!
-          expect(procon.pushed_zr?).to eq(true)
-          expect(ProconBypassMan::Procon.new(procon.to_binary).pushed_zr?).to eq(true)
-          expect(ProconBypassMan::Procon.new(procon.to_binary).pushed_down?).to eq(false)
+          expect(procon.pressed_zr?).to eq(true)
+          expect(ProconBypassMan::Procon.new(procon.to_binary).pressed_zr?).to eq(true)
+          expect(ProconBypassMan::Procon.new(procon.to_binary).pressed_down?).to eq(false)
         end
       end
       context 'a, zr押していない' do
@@ -299,28 +299,28 @@ describe ProconBypassMan::Procon do
         it do
           procon = ProconBypassMan::Procon.new(binary)
           procon.apply!
-          expect(procon.pushed_zr?).to eq(false)
-          expect(procon.pushed_a?).to eq(false)
-          expect(ProconBypassMan::Procon.new(procon.to_binary).pushed_zr?).to eq(false)
-          expect(ProconBypassMan::Procon.new(procon.to_binary).pushed_down?).to eq(false)
-          expect(ProconBypassMan::Procon.new(procon.to_binary).pushed_a?).to eq(true)
-          expect(ProconBypassMan::Procon.new(procon.to_binary).pushed_zl?).to eq(false)
+          expect(procon.pressed_zr?).to eq(false)
+          expect(procon.pressed_a?).to eq(false)
+          expect(ProconBypassMan::Procon.new(procon.to_binary).pressed_zr?).to eq(false)
+          expect(ProconBypassMan::Procon.new(procon.to_binary).pressed_down?).to eq(false)
+          expect(ProconBypassMan::Procon.new(procon.to_binary).pressed_a?).to eq(true)
+          expect(ProconBypassMan::Procon.new(procon.to_binary).pressed_zl?).to eq(false)
 
           procon = ProconBypassMan::Procon.new(binary)
           procon.apply!
-          expect(procon.pushed_zr?).to eq(false)
-          expect(ProconBypassMan::Procon.new(procon.to_binary).pushed_zr?).to eq(false)
-          expect(ProconBypassMan::Procon.new(procon.to_binary).pushed_down?).to eq(false)
-          expect(ProconBypassMan::Procon.new(procon.to_binary).pushed_a?).to eq(false)
-          expect(ProconBypassMan::Procon.new(procon.to_binary).pushed_zl?).to eq(false)
+          expect(procon.pressed_zr?).to eq(false)
+          expect(ProconBypassMan::Procon.new(procon.to_binary).pressed_zr?).to eq(false)
+          expect(ProconBypassMan::Procon.new(procon.to_binary).pressed_down?).to eq(false)
+          expect(ProconBypassMan::Procon.new(procon.to_binary).pressed_a?).to eq(false)
+          expect(ProconBypassMan::Procon.new(procon.to_binary).pressed_zl?).to eq(false)
 
           procon = ProconBypassMan::Procon.new(binary)
           procon.apply!
-          expect(procon.pushed_zr?).to eq(false)
-          expect(ProconBypassMan::Procon.new(procon.to_binary).pushed_zr?).to eq(false)
-          expect(ProconBypassMan::Procon.new(procon.to_binary).pushed_down?).to eq(false)
-          expect(ProconBypassMan::Procon.new(procon.to_binary).pushed_a?).to eq(true)
-          expect(ProconBypassMan::Procon.new(procon.to_binary).pushed_zl?).to eq(false)
+          expect(procon.pressed_zr?).to eq(false)
+          expect(ProconBypassMan::Procon.new(procon.to_binary).pressed_zr?).to eq(false)
+          expect(ProconBypassMan::Procon.new(procon.to_binary).pressed_down?).to eq(false)
+          expect(ProconBypassMan::Procon.new(procon.to_binary).pressed_a?).to eq(true)
+          expect(ProconBypassMan::Procon.new(procon.to_binary).pressed_zl?).to eq(false)
         end
       end
       context 'y, b押している' do
@@ -333,24 +333,24 @@ describe ProconBypassMan::Procon do
         it do
           procon = ProconBypassMan::Procon.new(binary)
           procon.apply!
-          expect(procon.pushed_zr?).to eq(false)
-          expect(ProconBypassMan::Procon.new(procon.to_binary).pushed_zr?).to eq(false)
-          expect(ProconBypassMan::Procon.new(procon.to_binary).pushed_down?).to eq(false)
-          expect(ProconBypassMan::Procon.new(procon.to_binary).pushed_zl?).to eq(false)
+          expect(procon.pressed_zr?).to eq(false)
+          expect(ProconBypassMan::Procon.new(procon.to_binary).pressed_zr?).to eq(false)
+          expect(ProconBypassMan::Procon.new(procon.to_binary).pressed_down?).to eq(false)
+          expect(ProconBypassMan::Procon.new(procon.to_binary).pressed_zl?).to eq(false)
 
           procon = ProconBypassMan::Procon.new(binary)
           procon.apply!
-          expect(procon.pushed_zr?).to eq(false)
-          expect(ProconBypassMan::Procon.new(procon.to_binary).pushed_zr?).to eq(false)
-          expect(ProconBypassMan::Procon.new(procon.to_binary).pushed_down?).to eq(false)
-          expect(ProconBypassMan::Procon.new(procon.to_binary).pushed_zl?).to eq(false)
+          expect(procon.pressed_zr?).to eq(false)
+          expect(ProconBypassMan::Procon.new(procon.to_binary).pressed_zr?).to eq(false)
+          expect(ProconBypassMan::Procon.new(procon.to_binary).pressed_down?).to eq(false)
+          expect(ProconBypassMan::Procon.new(procon.to_binary).pressed_zl?).to eq(false)
 
           procon = ProconBypassMan::Procon.new(binary)
           procon.apply!
-          expect(procon.pushed_zr?).to eq(false)
-          expect(ProconBypassMan::Procon.new(procon.to_binary).pushed_zr?).to eq(false)
-          expect(ProconBypassMan::Procon.new(procon.to_binary).pushed_down?).to eq(false)
-          expect(ProconBypassMan::Procon.new(procon.to_binary).pushed_zl?).to eq(false)
+          expect(procon.pressed_zr?).to eq(false)
+          expect(ProconBypassMan::Procon.new(procon.to_binary).pressed_zr?).to eq(false)
+          expect(ProconBypassMan::Procon.new(procon.to_binary).pressed_down?).to eq(false)
+          expect(ProconBypassMan::Procon.new(procon.to_binary).pressed_zl?).to eq(false)
         end
       end
     end

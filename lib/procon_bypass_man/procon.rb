@@ -3,7 +3,7 @@ class ProconBypassMan::Procon
   require "procon_bypass_man/procon/macro_registry"
   require "procon_bypass_man/procon/layer_changeable"
   require "procon_bypass_man/procon/button_collection"
-  require "procon_bypass_man/procon/pushed_button_helper"
+  require "procon_bypass_man/procon/pressed_button_helper"
   require "procon_bypass_man/procon/user_operation"
 
   attr_accessor :user_operation
@@ -34,14 +34,14 @@ class ProconBypassMan::Procon
 
   def apply!
     if user_operation.change_layer?
-      @@status[:current_layer_key] = user_operation.next_layer_key if user_operation.pushed_next_layer?
+      @@status[:current_layer_key] = user_operation.next_layer_key if user_operation.pressed_next_layer?
       user_operation.set_no_action!
       return
     end
 
     if ongoing_macro.finished?
       current_layer.macros.each do |macro_name, options|
-        if options[:if_pushed].all? { |b| user_operation.pushed_button?(b) }
+        if options[:if_pressed].all? { |b| user_operation.pressed_button?(b) }
           @@status[:ongoing_macro] = MacroRegistry.load(macro_name)
         end
       end
@@ -51,12 +51,12 @@ class ProconBypassMan::Procon
     when :manual
       @@status[:ongoing_mode] = ModeRegistry.load(:manual)
       current_layer.flip_buttons.each do |button, options|
-        unless options[:if_pushed]
+        unless options[:if_pressed]
           status[button] = !status[button]
           next
         end
 
-        if options[:if_pushed] && options[:if_pushed].all? { |b| user_operation.pushed_button?(b) }
+        if options[:if_pressed] && options[:if_pressed].all? { |b| user_operation.pressed_button?(b) }
           status[button] = !status[button]
         else
           status[button] = false
@@ -83,25 +83,25 @@ class ProconBypassMan::Procon
 
     if ongoing_macro.ongoing?
       step = ongoing_macro.next_step or return(user_operation.binary)
-      user_operation.push_button_only(step)
+      user_operation.press_button_only(step)
       return user_operation.binary
     end
 
     current_layer.flip_buttons.each do |button, options|
       # 何もしないで常に連打
-      if !options[:if_pushed] && status[button]
-        user_operation.push_button(button)
+      if !options[:if_pressed] && status[button]
+        user_operation.press_button(button)
         next
       end
 
       # 押している時だけ連打
-      if options[:if_pushed] && options[:if_pushed].all? { |b| user_operation.pushed_button?(b) }
+      if options[:if_pressed] && options[:if_pressed].all? { |b| user_operation.pressed_button?(b) }
         if !status[button]
-          user_operation.unpush_button(button)
+          user_operation.unpress_button(button)
         end
-        if options[:force_neutral] && user_operation.pushed_button?(options[:force_neutral])
+        if options[:force_neutral] && user_operation.pressed_button?(options[:force_neutral])
           button = options[:force_neutral]
-          user_operation.unpush_button(button)
+          user_operation.unpress_button(button)
         end
       end
     end
@@ -111,7 +111,7 @@ class ProconBypassMan::Procon
   private
 
   def method_missing(name)
-    if name.to_s =~ /\Apushed_[a-z]+\?\z/
+    if name.to_s =~ /\Apressed_[a-z]+\?\z/
       user_operation.public_send(name)
     else
       super

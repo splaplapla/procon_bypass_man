@@ -10,18 +10,18 @@ module ProconBypassMan
     end
 
     # @param [Symbol] button
-    def flip(button, if_pushed: false, channel: nil, force_neutral: nil)
-      case if_pushed
+    def flip(button, if_pressed: false, channel: nil, force_neutral: nil)
+      case if_pressed
       when TrueClass
-        if_pushed = [button]
+        if_pressed = [button]
       when Symbol
-        if_pushed = [if_pushed]
+        if_pressed = [if_pressed]
       when Array, FalseClass
         # sono mama
       else
         raise "not support class"
       end
-      hash = { if_pushed: if_pushed }
+      hash = { if_pressed: if_pressed }
       if channel
         hash[:channel] = channel
       end
@@ -32,8 +32,8 @@ module ProconBypassMan
     end
 
     PRESET_MACROS = [:fast_return]
-    def macro(name, if_pushed: )
-      self.macros[name] = { if_pushed: if_pushed }
+    def macro(name, if_pressed: )
+      self.macros[name] = { if_pressed: if_pressed }
     end
 
     # @return [Array]

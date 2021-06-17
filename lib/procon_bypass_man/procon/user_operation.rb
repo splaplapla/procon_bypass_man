@@ -28,19 +28,19 @@ class ProconBypassMan::Procon
       end
     end
 
-    def unpush_button(button)
+    def unpress_button(button)
       byte_position = ButtonCollection.load(button).byte_position
       value = binary[byte_position].unpack("H*").first.to_i(16) - 2**ButtonCollection.load(button).bit_position
       binary[byte_position] = ["%02X" % value.to_s].pack("H*")
     end
 
-    def push_button(button)
+    def press_button(button)
       byte_position = ButtonCollection.load(button).byte_position
       value = binary[byte_position].unpack("H*").first.to_i(16) + 2**ButtonCollection.load(button).bit_position
       binary[byte_position] = ["%02X" % value.to_s].pack("H*")
     end
 
-    def push_button_only(button)
+    def press_button_only(button)
       [ProconBypassMan::Procon::Data::NO_ACTION.dup].pack("H*").tap do |no_action_binary|
         ButtonCollection.load(button).byte_position
         byte_position = ButtonCollection.load(button).byte_position
