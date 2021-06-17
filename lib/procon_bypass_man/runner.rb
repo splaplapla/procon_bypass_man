@@ -28,7 +28,6 @@ class ProconBypassMan::Runner
         begin
           # NOTE read and writeを分けたほうがいいかも
           input = @gadget.read_nonblock(128)
-          # ProconBypassMan.logger(">>> ", input.b)
           @procon.write_nonblock(input)
           sleep(@will_interval_1_6)
         rescue IO::EAGAINWaitReadable
@@ -51,7 +50,7 @@ class ProconBypassMan::Runner
         end
 
         begin
-          ProconBypassMan.logger("<<< ", output.b)
+          ProconBypassMan.logger.debug("<<< #{output.unpack("H*")}")
           @gadget.write_nonblock(
             ProconBypassMan::Processor.new(output).process
           )
@@ -73,10 +72,10 @@ class ProconBypassMan::Runner
     loop do
       begin
         input = @gadget.read_nonblock(128)
-        ProconBypassMan.logger(">>> ", input.b)
+        ProconBypassMan.logger.debug(">>> #{input.unpack("H*")}")
         @procon.write_nonblock(input)
         if input[0] == "\x80".b && input[1] == "\x01".b
-          ProconBypassMan.logger("first negotiation is over")
+          ProconBypassMan.logger.info("first negotiation is over")
           break
         end
       rescue IO::EAGAINWaitReadable

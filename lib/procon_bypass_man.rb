@@ -1,3 +1,5 @@
+require "logger"
+
 require_relative "procon_bypass_man/version"
 require_relative "procon_bypass_man/device_registry"
 require_relative "procon_bypass_man/runner"
@@ -23,11 +25,16 @@ module ProconBypassMan
     Runner.new(gadget: registry.gadget, procon: registry.procon).run
   end
 
-  def self.logger(prefix=nil, text)
-    # TODO replace Logger
-    # pp "pure: #{text}"
-    # pp "unpack(bin): #{text.unpack("b*")}"
-    pp "unpack(Hex): #{text.unpack("H*")}"
+  def self.logger=(dev)
+    @@logger = Logger.new(dev)
+  end
+
+  def self.logger
+    if @@logger
+      @@logger
+    else
+      Logger.new(nil)
+    end
   end
 
   def self.reset!
