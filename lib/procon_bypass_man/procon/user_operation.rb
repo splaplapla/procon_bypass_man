@@ -11,13 +11,21 @@ class ProconBypassMan::Procon
       @binary = binary
     end
 
+    ASCII_ENCODING = "ASCII-8BIT"
     # @depilicate
     def binary=(binary)
+      unless binary.encoding.name == ASCII_ENCODING
+        raise "おかしいです"
+      end
       @binary = binary
     end
 
     def set_no_action!
-      self.binary = ProconBypassMan::Procon::Data::NO_ACTION.dup
+      [ProconBypassMan::Procon::Data::NO_ACTION.dup].pack("H*").tap do |no_action_binary|
+        binary[3] = no_action_binary[3]
+        binary[4] = no_action_binary[4]
+        binary[5] = no_action_binary[5]
+      end
     end
 
     def unpush_button(button)

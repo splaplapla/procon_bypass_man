@@ -179,10 +179,17 @@ describe ProconBypassMan::Procon do
     describe 'change_layer?' do
       context 'zr, r, zl, l, :rightを押しているとき' do
         let(:data) { "306991c080c4c987734758740af2011c03ef0f5bffe2ffedffe8013403e00f70fff0fff4ffe8014a03cb0f6effeefff2ff000000000000000000000000000000" }
-        it do
+        it 'ニュートラルになる' do
           procon = ProconBypassMan::Procon.new(binary)
           expect(procon.user_operation.change_layer?).to eq(true)
           expect(procon.user_operation.next_layer_key).to eq(:right)
+          procon.apply!
+          expect(procon.pushed_a?).to eq(false)
+          expect(procon.pushed_b?).to eq(false)
+          expect(procon.pushed_y?).to eq(false)
+          expect(procon.pushed_x?).to eq(false)
+          expect(procon.pushed_l?).to eq(false)
+          expect(procon.pushed_right?).to eq(false)
         end
       end
     end
