@@ -71,6 +71,7 @@ describe ProconBypassMan::Configuration do
         expect(ProconBypassMan::Configuration.instance.layers[:up].flip_buttons[:l]).to eq(if_pushed: [:l])
         expect(ProconBypassMan::Configuration.instance.layers[:up].flip_buttons[:r]).to eq(if_pushed: false, channel: 1)
         expect(ProconBypassMan::Configuration.instance.layers[:up].flip_buttons.keys).to eq([:l, :r])
+        expect(ProconBypassMan::Configuration.instance.layers[:up].mode).to eq(:manual)
         expect(ProconBypassMan::Configuration.instance.layers[:down].flip_buttons.keys).to eq([:r])
         expect(ProconBypassMan::Configuration.instance.layers[:down].flip_buttons[:r]).to eq(if_pushed: [:zr, :zl])
         expect(ProconBypassMan::Configuration.instance.layers[:down].mode).to eq(:manual)
