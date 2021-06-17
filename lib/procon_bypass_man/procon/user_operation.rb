@@ -17,7 +17,7 @@ class ProconBypassMan::Procon
     end
 
     def set_no_action!
-      self.binary = ProconBypassMan::Procon::Data::NO_ACTION
+      self.binary = ProconBypassMan::Procon::Data::NO_ACTION.dup
     end
 
     def unpush_button(button)
