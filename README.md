@@ -17,9 +17,7 @@
   * fluentd
 
 ## Usage
-* 以下のファイルを用意して`sudo ruby hoge.rb`してください
-* 設定ファイルの例
-  * https://github.com/jiikko/procon_bypass_man_sample
+以下のファイルを用意して`sudo ruby hoge.rb`してください
 
 ```ruby
 # bundler inline
@@ -39,6 +37,89 @@ ProconBypassMan.run do
   layer :left
   layer :down do
     flip :zl, if_pressed: true
+  end
+end
+```
+
+### プラグインを使った設定例
+```ruby
+gem 'procon_bypass_man', github: 'splaspla-hacker/procon_bypass_man'
+require 'procon_bypass_man'
+
+module Splatoon2TheMode
+  # @return [Symbol]
+  def self.name
+    :splatoon2_something_mode
+  end
+
+  # @return [Array<String>]
+  def binaries
+    [...]
+  end
+end
+
+module Splatoon2TheMacro
+  # @return [Symbol]
+  def self.name
+    :splatoon2_fast_return
+  end
+
+  # @return [Array<String>]
+  def binaries
+    [...]
+  end
+end
+
+ProconBypassMan.run do
+  prefix_keys_for_changing_layer [:zr, :r, :zl, :l]
+  install_macro_plugin(Splatoon2TheMacro)
+  install_mode_plugin(Splatoon2TheMode)
+
+  layer :up, mode: :manual do
+    flip :zr, if_pressed: :zr, force_neutral: :zl
+    flip :zl, if_pressed: [:y, :b, :zl]
+    flip :down, if_pressed: true
+    macro :splatoon2_fast_return, if_pressed: [:y, :b, :down]
+  end
+  layer :left, mode: :splatoon2_something_mode
+end
+```
+
+* 設定ファイルの例
+  * https://github.com/jiikko/procon_bypass_man_sample
+
+## Plugins
+* https://github.com/splaspla-hacker/procon_bypass_man-splatoon2
+
+## プラグインの作り方(TODO)
+スケルトンを出力するgeneratorを作るか、普通にgemで作るか
+
+### モード
+```ruby
+module Splatoon2GuruguruMode
+  # @return [Symbol]
+  def self.name
+    :guruguru
+  end
+
+  # @return [Array<String>]
+  def binaries
+    [...]
+  end
+end
+```
+
+### マクロ
+```ruby
+module Splatoon2GuruguruMacro
+  # @return [Symbol]
+  def self.name
+    :guruguru
+  end
+
+  # @return [Array<Symbol>]
+  def step
+    [...]
   end
 end
 ```
