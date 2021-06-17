@@ -176,6 +176,17 @@ describe ProconBypassMan::Procon do
       end
     end
 
+    describe 'change_layer?' do
+      context 'zr, r, zl, l, :rightを押しているとき' do
+        let(:data) { "306991c080c4c987734758740af2011c03ef0f5bffe2ffedffe8013403e00f70fff0fff4ffe8014a03cb0f6effeefff2ff000000000000000000000000000000" }
+        it do
+          procon = ProconBypassMan::Procon.new(binary)
+          expect(procon.user_operation.change_layer?).to eq(true)
+          expect(procon.user_operation.next_layer_key).to eq(:right)
+        end
+      end
+    end
+
     describe '#pushed_zr?' do
       subject { ProconBypassMan::Procon.new(binary).pushed_zr? }
       context 'zr押している' do
