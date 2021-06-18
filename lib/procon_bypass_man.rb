@@ -8,7 +8,6 @@ require_relative "procon_bypass_man/processor"
 require_relative "procon_bypass_man/procon/data"
 require_relative "procon_bypass_man/procon"
 require_relative "procon_bypass_man/configuration"
-require_relative "procon_bypass_man/plugin_integration"
 
 STDOUT.sync = true
 Thread.abort_on_exception = true
