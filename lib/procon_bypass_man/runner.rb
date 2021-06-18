@@ -23,7 +23,7 @@ class ProconBypassMan::Runner
       $will_interval_1_6 = 1.6
     end
 
-    ProconBypassMan::IoMonitor.start!
+    ProconBypassMan::IOMonitor.start!
     # gadget => procon
     # 遅くていい
     Thread.new do

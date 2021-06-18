@@ -7,7 +7,7 @@ require "pry"
 ProconBypassMan.tap do |pbm|
   pbm.logger = "./app.log"
   pbm.logger.level = :debug
-pbm
+end
 
 ProconBypassMan.run do
   prefix_keys_for_changing_layer [:zr, :r, :zl, :l]

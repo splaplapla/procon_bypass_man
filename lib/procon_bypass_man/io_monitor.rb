@@ -48,12 +48,14 @@ module ProconBypassMan
     # ここで集計する
     def self.start!
       Thread.start do
-        line = @@list.map { |counter|
-          "#{counter.label}(#{Aggregation.format(counter.previous_table)})"
-        }.join(", ")
-        sleep 0.7
-        print "\r"
-        print line
+        loop do
+          line = @@list.map { |counter|
+            "#{counter.label}(#{Aggregation.format(counter.previous_table)})"
+          }.join(", ")
+          sleep 0.7
+          print "\r"
+          print line
+        end
       end
     end
 
