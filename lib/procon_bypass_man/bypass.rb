@@ -9,15 +9,13 @@ class ProconBypassMan::Bypass
   def send_gadget_to_procon!
     monitor.record(:start_function)
     begin
-      # TODO callbackクラス的なオブジェクトでラップする
       monitor.record(:before_read)
-      # NOTE read and writeを分けたほうがいいかも
       input = self.gadget.read_nonblock(128)
       monitor.record(:after_read)
-    rescue IO::EAGAINWaitReadable
-      monitor.record(:eagain_wait_readable_on_read)
-      retry
-    end
+    #rescue IO::EAGAINWaitReadable
+    #  monitor.record(:eagain_wait_readable_on_read)
+    #  retry
+    #end
 
     begin
       monitor.record(:before_write)
