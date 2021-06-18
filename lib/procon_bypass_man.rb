@@ -30,7 +30,7 @@ module ProconBypassMan
   end
 
   def self.logger
-    if @@logger
+    if defined?(@@logger)
       @@logger
     else
       Logger.new(nil)

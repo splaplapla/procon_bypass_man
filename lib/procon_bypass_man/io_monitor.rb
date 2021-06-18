@@ -1,18 +1,6 @@
 module ProconBypassMan
   class Counter
-    def before_read!
-    end
-
-    def after_read!
-    end
-
-    def before_write!
-    end
-
-    def after_write!
-    end
-
-    def eagain_wait_readable!
+    def record(event_name)
     end
   end
 
@@ -20,10 +8,9 @@ module ProconBypassMan
     @@list = []
 
     def self.new(label: )
-      @@list << Counter.new
-    end
-
-    def record(event_name)
+      counter = Counter.new
+      @@list << counter
+      counter
     end
 
     # ここで集計する
