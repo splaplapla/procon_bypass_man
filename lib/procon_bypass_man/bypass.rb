@@ -1,5 +1,5 @@
 class ProconBypassMan::Bypass
-  attr_accessor :gadget, :procon, monitor
+  attr_accessor :gadget, :procon, :monitor
   def initialize(gadget: , procon: , monitor: )
     self.gadget = gadget
     self.procon = procon

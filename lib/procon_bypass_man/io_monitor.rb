@@ -16,7 +16,7 @@ module ProconBypassMan
     end
   end
 
-  module IOMonitoring
+  module IOMonitor
     @@list = []
 
     def self.new(label: )
@@ -26,6 +26,7 @@ module ProconBypassMan
     def record(event_name)
     end
 
+    # ここで集計する
     def self.start!
       Thread.start do
         @@list.each do |list|
