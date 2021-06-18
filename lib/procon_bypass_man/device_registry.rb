@@ -12,6 +12,11 @@ class ProconBypassMan::DeviceRegistry
 
   def initialize
     init_devices
+
+    at_exit do
+      @gadget&.close
+      @procon&.close
+    end
   end
 
   # @return [void]

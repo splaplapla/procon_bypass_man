@@ -35,9 +35,6 @@ class ProconBypassMan::Runner
         rescue Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError => e
           raise ProconBypassMan::ProConRejected.new(e)
         end
-      ensure
-        @gadget&.close
-        @procon&.close
       end
     end
 
@@ -52,9 +49,6 @@ class ProconBypassMan::Runner
         rescue Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError => e
           raise ProconBypassMan::ProConRejected.new(e)
         end
-      ensure
-        @gadget&.close
-        @procon&.close
       end
     end
 
