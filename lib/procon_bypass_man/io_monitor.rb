@@ -50,6 +50,10 @@ module ProconBypassMan
       Thread.start do
         max_output_length = 0
         loop do
+          unless @@list.all? { |x| x.previous_table.is_a?(Hash) }
+            sleep 0.5
+            next
+          end
           line = @@list.map { |counter|
             "#{counter.label}(#{Aggregation.format(counter.previous_table)})"
           }.join(", ")
