@@ -12,12 +12,11 @@ class ProconBypassMan::Bypass
       monitor.record(:before_read)
       input = self.gadget.read_nonblock(128)
       monitor.record(:after_read)
-    #rescue IO::EAGAINWaitReadable
-    #  monitor.record(:eagain_wait_readable_on_read)
-    #  retry
-    #end
+      #rescue IO::EAGAINWaitReadable
+      #  monitor.record(:eagain_wait_readable_on_read)
+      #  retry
+      #end
 
-    begin
       monitor.record(:before_write)
       self.procon.write_nonblock(input)
       monitor.record(:after_write)
