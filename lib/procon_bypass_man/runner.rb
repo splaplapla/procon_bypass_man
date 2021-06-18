@@ -45,9 +45,7 @@ class ProconBypassMan::Runner
       monitor = ProconBypassMan::IOMonitor.new(label: "procon -> switch")
       bypass = ProconBypassMan::Bypass.new(gadget: @gadget, procon: @procon, monitor: monitor)
       loop do
-        io_stats do
-          bypass.send_procon_to_gadget!
-        end
+        bypass.send_procon_to_gadget!
       rescue Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError => e
         raise ProconBypassMan::ProConRejected.new(e)
       ensure
