@@ -29,10 +29,12 @@ class ProconBypassMan::Runner
     Thread.new do
       monitor = ProconBypassMan::IOMonitor.new(label: "switch -> procon")
       bypass = ProconBypassMan::Bypass.new(gadget: @gadget, procon: @procon, monitor: monitor)
-      loop do
-        bypass.send_gadget_to_procon!
-      rescue Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError => e
-        raise ProconBypassMan::ProConRejected.new(e)
+      begin
+        loop do
+          bypass.send_gadget_to_procon!
+        rescue Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError => e
+          raise ProconBypassMan::ProConRejected.new(e)
+        end
       ensure
         @gadget&.close
         @procon&.close
@@ -44,10 +46,12 @@ class ProconBypassMan::Runner
     Thread.new do
       monitor = ProconBypassMan::IOMonitor.new(label: "procon -> switch")
       bypass = ProconBypassMan::Bypass.new(gadget: @gadget, procon: @procon, monitor: monitor)
-      loop do
-        bypass.send_procon_to_gadget!
-      rescue Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError => e
-        raise ProconBypassMan::ProConRejected.new(e)
+      begin
+        loop do
+          bypass.send_procon_to_gadget!
+        rescue Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError => e
+          raise ProconBypassMan::ProConRejected.new(e)
+        end
       ensure
         @gadget&.close
         @procon&.close
