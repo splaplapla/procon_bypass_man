@@ -27,7 +27,7 @@ class ProconBypassMan::Runner
     # gadget => procon
     # 遅くていい
     Thread.new do
-      monitor = ProconBypassMan::IOMonitor.new(label: "gadget => procon")
+      monitor = ProconBypassMan::IOMonitor.new(label: "switch -> procon")
       bypass = ProconBypassMan::Bypass.new(gadget: @gadget, procon: @procon, monitor: monitor)
       loop do
         bypass.send_gadget_to_procon!
@@ -42,7 +42,7 @@ class ProconBypassMan::Runner
     # procon => gadget
     # シビア
     Thread.new do
-      monitor = ProconBypassMan::IOMonitor.new(label: "procon => gadget")
+      monitor = ProconBypassMan::IOMonitor.new(label: "procon -> switch")
       bypass = ProconBypassMan::Bypass.new(gadget: @gadget, procon: @procon, monitor: monitor)
       loop do
         io_stats do

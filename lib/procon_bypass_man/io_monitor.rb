@@ -22,6 +22,16 @@ module ProconBypassMan
     end
   end
 
+  module Aggregation
+    def self.aggregate(table)
+      start_function = table[:start_function] || 0
+      end_function = table[:end_function] || 0
+      eagain_wait_readable_on_read = table[:eagain_wait_readable_on_read] || 0
+      eagain_wait_readable_on_write = table[:eagain_wait_readable_on_write] || 0
+      "(#{(end_function * 100 / start_function.to_f).floor(1)}%(#{end_function}/#{start_function}), loss: #{eagain_wait_readable_on_read}, #{eagain_wait_readable_on_write})"
+    end
+  end
+
   module IOMonitor
     def self.new(label: )
       counter = Counter.new
@@ -37,10 +47,10 @@ module ProconBypassMan
     # ここで集計する
     def self.start!
       Thread.start do
-        @@list.each do |list|
-          # 集計
+        @@list.map do |counter|
+          Aggregation.aggregate(counter.previous_table)
         end
-        sleep 1
+        sleep 0.7
 
         print "\r"
         print "なんらか"
