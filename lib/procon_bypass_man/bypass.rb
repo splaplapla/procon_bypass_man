@@ -27,6 +27,7 @@ class ProconBypassMan::Bypass
     rescue IO::EAGAINWaitReadable
       monitor.record(:eagain_wait_readable_on_write)
       sleep($will_interval_1_6)
+      return
     end
     monitor.record(:end_function)
   end
@@ -51,6 +52,7 @@ class ProconBypassMan::Bypass
       sleep($will_interval_0_0_1)
     rescue IO::EAGAINWaitReadable
       monitor.record(:eagain_wait_readable_on_write)
+      return
     end
     monitor.record(:end_function)
   end
