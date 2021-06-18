@@ -1,6 +1,20 @@
 module ProconBypassMan
   class Counter
+    attr_accessor :table
+    def initialize
+      self.table = {}
+    end
+
     def record(event_name)
+      key = Time.now.strftime("%H").to_i
+      if @table[key].nil?
+        @table[key] = {}
+      end
+      if @table[key][event_name].nil?
+        @table[key][event_name] = 1
+      else
+        @table[key][event_name] += 1
+      end
     end
   end
 
