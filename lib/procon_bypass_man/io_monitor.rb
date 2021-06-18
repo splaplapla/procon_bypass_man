@@ -29,7 +29,7 @@ module ProconBypassMan
       end_function = table[:end_function] || 0
       eagain_wait_readable_on_read = table[:eagain_wait_readable_on_read] || 0
       eagain_wait_readable_on_write = table[:eagain_wait_readable_on_write] || 0
-      "(#{(end_function * 100 / start_function.to_f).floor(1)}%(#{end_function}/#{start_function}), loss: #{eagain_wait_readable_on_read}, #{eagain_wait_readable_on_write})"
+      "(#{(end_function / start_function.to_f * 100).floor(1)}%(#{end_function}/#{start_function}), loss: #{eagain_wait_readable_on_read}, #{eagain_wait_readable_on_write})"
     end
   end
 
@@ -48,11 +48,14 @@ module ProconBypassMan
     # ここで集計する
     def self.start!
       Thread.start do
+        max_output_length = 0
         loop do
           line = @@list.map { |counter|
             "#{counter.label}(#{Aggregation.format(counter.previous_table)})"
           }.join(", ")
+          max_output_length = line.length
           sleep 0.7
+          print " " * max_output_length
           print "\r"
           print line
         end
