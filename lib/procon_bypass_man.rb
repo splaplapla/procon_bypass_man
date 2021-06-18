@@ -41,5 +41,6 @@ module ProconBypassMan
     ProconBypassMan::Procon::MacroRegistry.reset!
     ProconBypassMan::Procon::ModeRegistry.reset!
     ProconBypassMan::Procon.reset!
+    ProconBypassMan::IOMonitor.reset!
   end
 end
