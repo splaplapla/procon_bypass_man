@@ -5,8 +5,8 @@ class ProconBypassMan::Runner
     @gadget = gadget
     @procon = procon
 
-    @will_interval_0_0_1 = 0
-    @will_interval_1_6 = 0
+    $will_interval_0_0_1 = 0
+    $will_interval_1_6 = 0
   end
 
   def run
