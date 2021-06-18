@@ -1,19 +1,23 @@
 module ProconBypassMan
   class Counter
-    attr_accessor :table
+    attr_accessor :table, :previous_table
+
     def initialize
       self.table = {}
     end
 
+    # アクティブなバケットは1つだけ
     def record(event_name)
-      key = Time.now.strftime("%H").to_i
-      if @table[key].nil?
-        @table[key] = {}
+      key = Time.now.strftime("%S").to_i
+      if table[key].nil?
+        self.previous_table = table.values.first
+        self.table = {}
+        table[key] = {}
       end
-      if @table[key][event_name].nil?
-        @table[key][event_name] = 1
+      if table[key][event_name].nil?
+        table[key][event_name] = 1
       else
-        @table[key][event_name] += 1
+        table[key][event_name] += 1
       end
     end
   end
