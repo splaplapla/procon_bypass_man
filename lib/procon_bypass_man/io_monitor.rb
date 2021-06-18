@@ -16,14 +16,17 @@ module ProconBypassMan
     end
   end
 
-  module IOStats
+  module IOMonitoring
     @@list = []
 
     def self.new(label: )
       @@list << Counter.new
     end
 
-    def self.start_monitoring!
+    def record(event_name)
+    end
+
+    def self.start!
       Thread.start do
         @@list.each do |list|
           # 集計

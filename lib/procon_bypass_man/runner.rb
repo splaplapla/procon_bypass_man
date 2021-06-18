@@ -1,4 +1,4 @@
-require_relative "io_stats"
+require_relative "io_monitor"
 
 class ProconBypassMan::Runner
   def initialize(gadget: , procon: )
@@ -19,32 +19,18 @@ class ProconBypassMan::Runner
   def main_loop
     Thread.new do
       sleep(10)
-      @will_interval_0_0_1 = 0.01
-      @will_interval_1_6 = 1.6
+      $will_interval_0_0_1 = 0.01
+      $will_interval_1_6 = 1.6
     end
 
-    io_stats1 = ProconBypassMan::IOStatus.new(label: "gadget => procon")
-    io_stats2 = ProconBypassMan::IOStatus.new(label: "procon => gadget")
-    ProconBypassMan::IOStatus.start_monitoring!
+    ProconBypassMan::IoMonitor.start!
     # gadget => procon
     # 遅くていい
     Thread.new do
-      io_stats = io_stats1
+      monitor = ProconBypassMan::IOMonitor.new(label: "gadget => procon")
+      bypass = ProconBypassMan::Bypass.new(gadget: @gadget, procon: @procon, monitor: monitor)
       loop do
-        begin
-          # TODO callbackクラス的なオブジェクトでラップする
-          io_stats.before_read!
-          # NOTE read and writeを分けたほうがいいかも
-          input = @gadget.read_nonblock(128)
-          io_stats.after_read!
-          io_stats.before_write!
-          @procon.write_nonblock(input)
-          io_stats.after_write!
-          sleep(@will_interval_1_6)
-        rescue IO::EAGAINWaitReadable
-          io_stats.eagain_wait_readable!
-          sleep(@will_interval_1_6)
-        end
+        bypass.send_gadget_to_procon!
       rescue Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError => e
         raise ProconBypassMan::ProConRejected.new(e)
       ensure
@@ -56,28 +42,11 @@ class ProconBypassMan::Runner
     # procon => gadget
     # シビア
     Thread.new do
-      io_stats = io_stats2
+      monitor = ProconBypassMan::IOMonitor.new(label: "procon => gadget")
+      bypass = ProconBypassMan::Bypass.new(gadget: @gadget, procon: @procon, monitor: monitor)
       loop do
-        output = nil
-        begin
-          io_stats.before_read!
-          output = @procon.read_nonblock(128)
-          io_stats.after_read!
-        rescue IO::EAGAINWaitReadable
-          io_stats.eagain_wait_readable!
-          retry
-        end
-
-        begin
-          ProconBypassMan.logger.debug { "<<< #{output.unpack("H*")}" }
-          io_stats.before_write!
-          @gadget.write_nonblock(
-            ProconBypassMan::Processor.new(output).process
-          )
-          io_stats.after_write!
-          sleep(@will_interval_0_0_1)
-        rescue IO::EAGAINWaitReadable
-          io_stats.eagain_wait_readable!
+        io_stats do
+          bypass.send_procon_to_gadget!
         end
       rescue Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError => e
         raise ProconBypassMan::ProConRejected.new(e)
