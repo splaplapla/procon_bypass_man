@@ -1,8 +1,9 @@
 module ProconBypassMan
   class Counter
-    attr_accessor :table, :previous_table
+    attr_accessor :label, :table, :previous_table
 
-    def initialize
+    def initialize(label: )
+      self.label = label
       self.table = {}
     end
 
@@ -23,7 +24,7 @@ module ProconBypassMan
   end
 
   module Aggregation
-    def self.aggregate(table)
+    def self.format(table)
       start_function = table[:start_function] || 0
       end_function = table[:end_function] || 0
       eagain_wait_readable_on_read = table[:eagain_wait_readable_on_read] || 0
@@ -34,7 +35,7 @@ module ProconBypassMan
 
   module IOMonitor
     def self.new(label: )
-      counter = Counter.new
+      counter = Counter.new(label: label)
       @@list << counter
       counter
     end
@@ -47,13 +48,12 @@ module ProconBypassMan
     # ここで集計する
     def self.start!
       Thread.start do
-        @@list.map do |counter|
-          Aggregation.aggregate(counter.previous_table)
-        end
+        line = @@list.map { |counter|
+          "#{counter.label}(#{Aggregation.format(counter.previous_table)})"
+        }.join(", ")
         sleep 0.7
-
         print "\r"
-        print "なんらか"
+        print line
       end
     end
 

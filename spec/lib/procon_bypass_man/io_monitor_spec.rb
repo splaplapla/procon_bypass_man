@@ -55,7 +55,7 @@ describe ProconBypassMan::IOMonitor do
           eagain_wait_readable_on_write: 2,
           end_function: 16,
         }
-        expect(ProconBypassMan::Aggregation.aggregate(table)).to eq("(26.6%(16/60), loss: 3, 2)")
+        expect(ProconBypassMan::Aggregation.format(table)).to eq("(26.6%(16/60), loss: 3, 2)")
       end
     end
   end
