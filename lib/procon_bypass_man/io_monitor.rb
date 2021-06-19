@@ -51,12 +51,12 @@ module ProconBypassMan
         max_output_length = 0
         loop do
           list = @@list.dup
-          unless list.all? { |x| previous_table.is_a?(Hash) }
+          unless list.all? { |x| x.previous_table.is_a?(Hash) }
             sleep 0.5
             next
           end
           line = list.map { |counter|
-            "#{counter.label}(#{Aggregation.format(previous_table)})"
+            "#{counter.label}(#{Aggregation.format(counter.previous_table)})"
           }.join(", ")
           max_output_length = line.length
           sleep 0.7
