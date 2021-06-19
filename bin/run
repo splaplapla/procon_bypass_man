@@ -8,7 +8,6 @@ gemfile do
   gem 'procon_bypass_man-splatoon2', github: 'splaspla-hacker/procon_bypass_man-splatoon2'
 end
 
-require "bundler/setup"
 require "procon_bypass_man"
 require "procon_bypass_man-splatoon2"
 
@@ -21,8 +20,8 @@ fast_return = ProconBypassMan::Splatoon2::Macro::FastReturn
 guruguru = ProconBypassMan::Splatoon2::Mode::Guruguru
 
 ProconBypassMan.run do
-  load_macro_plugin ProconBypassMan::Splatoon2::Macro::FastReturn
-  load_mode_plugin ProconBypassMan::Splatoon2::Mode::Guruguru
+  load_macro_plugin fast_return
+  load_mode_plugin guruguru
 
   prefix_keys_for_changing_layer [:zr, :r, :zl, :l]
 
@@ -30,9 +29,9 @@ ProconBypassMan.run do
     flip :zr, if_pressed: :zr, force_neutral: :zl
     flip :zl, if_pressed: [:y, :b, :zl]
     flip :down, if_pressed: :down
-    macro fast_return, if_pressed: [:y, :b, :down]
+    macro fast_return.name, if_pressed: [:y, :b, :down]
   end
-  layer :right, mode: guruguru
+  layer :right, mode: guruguru.name
   layer :left do
     # no-op
   end
