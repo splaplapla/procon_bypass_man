@@ -102,7 +102,7 @@ https://github.com/splaspla-hacker/procon_bypass_man-splatoon2 を見てみて�
 * どうやって動かすの?
     * このツールはRaspberry Pi4をUSBガジェットモードで起動して有線でプロコンとSwitchに接続して使います
 * ラズベリーパイ4のセットアップ方法は？
-    * Raspberry Pi4本体のセットアップがめんどいです。(TODO)
+    * https://github.com/splaspla-hacker/procon_bypass_man/tree/master/docs/setup_raspi.md
 * モード, マクロの違いは？
     * modeはProconの入力をそのまま再現するため機能。レイヤーを切り替えるまで繰り返し続ける
     * マクロは特定のキーを順番に入れていく機能。キーの入力が終わったらマクロは終了する
