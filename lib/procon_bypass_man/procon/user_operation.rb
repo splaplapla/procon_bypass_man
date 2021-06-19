@@ -21,11 +21,10 @@ class ProconBypassMan::Procon
     end
 
     def set_no_action!
-      [ProconBypassMan::Procon::Data::NO_ACTION.dup].pack("H*").tap do |no_action_binary|
-        binary[3] = no_action_binary[3]
-        binary[4] = no_action_binary[4]
-        binary[5] = no_action_binary[5]
-      end
+      zero = ["0"].pack("H*")
+      binary[3] = zero
+      binary[4] = zero
+      binary[5] = zero
     end
 
     def unpress_button(button)
