@@ -57,7 +57,7 @@ module ProconBypassMan
             next
           end
           line = list.map { |counter|
-            "#{counter.label}(#{counter.formated_previous_table)})"
+            "#{counter.label}(#{counter.formated_previous_table})"
           }.join(", ")
           max_output_length = line.length
           sleep 0.7
