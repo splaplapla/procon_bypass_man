@@ -34,7 +34,7 @@ class ProconBypassMan::Bypass
     output = nil
     begin
       monitor.record(:before_read)
-      output = @procon.read_nonblock(128)
+      output = self.procon.read_nonblock(128)
       monitor.record(:after_read)
     rescue IO::EAGAINWaitReadable
       monitor.record(:eagain_wait_readable_on_read)
