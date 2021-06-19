@@ -56,11 +56,17 @@ class ProconBypassMan::Procon
     end
 
     def merge(target_binary: )
-      b = binary.dup
-      (3..11).each do |byte_position|
-        b[byte_position] = target_binary[byte_position]
-      end
-      self.binary = b
+      tb = [target_binary].pack("H*")
+      binary[3] = tb[3]
+      binary[4] = tb[4]
+      binary[5] = tb[5]
+      binary[6] = tb[6]
+      binary[7] = tb[7]
+      binary[8] = tb[8]
+      binary[9] = tb[9]
+      binary[10] = tb[10]
+      binary[11] = tb[11]
+      self.binary
     end
   end
 end
