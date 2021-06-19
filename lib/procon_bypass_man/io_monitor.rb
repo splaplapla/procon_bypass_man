@@ -23,14 +23,13 @@ module ProconBypassMan
       end
       self
     end
-  end
 
-  module Aggregation
-    def self.format(table)
-      start_function = table[:start_function] || 0
-      end_function = table[:end_function] || 0
-      eagain_wait_readable_on_read = table[:eagain_wait_readable_on_read] || 0
-      eagain_wait_readable_on_write = table[:eagain_wait_readable_on_write] || 0
+    def formated_previous_table
+      t = previous_table.dup
+      start_function = t[:start_function] || 0
+      end_function = t[:end_function] || 0
+      eagain_wait_readable_on_read = t[:eagain_wait_readable_on_read] || 0
+      eagain_wait_readable_on_write = t[:eagain_wait_readable_on_write] || 0
       "(#{(end_function / start_function.to_f * 100).floor(1)}%(#{end_function}/#{start_function}), loss: #{eagain_wait_readable_on_read}, #{eagain_wait_readable_on_write})"
     end
   end
@@ -58,7 +57,7 @@ module ProconBypassMan
             next
           end
           line = list.map { |counter|
-            "#{counter.label}(#{Aggregation.format(counter.previous_table)})"
+            "#{counter.label}(#{counter.formated_previous_table)})"
           }.join(", ")
           max_output_length = line.length
           sleep 0.7

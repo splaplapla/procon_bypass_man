@@ -43,21 +43,20 @@ describe ProconBypassMan::IOMonitor do
     end
   end
 
-  describe 'Aggregation' do
-    context do
-      it do
-        table = {
-          start_function: 60,
-          before_read: 28,
-          after_read: 27,
-          before_write: 20,
-          after_write: 18,
-          eagain_wait_readable_on_read: 3,
-          eagain_wait_readable_on_write: 2,
-          end_function: 16,
-        }
-        expect(ProconBypassMan::Aggregation.format(table)).to eq("(26.6%(16/60), loss: 3, 2)")
-      end
+  describe '#formated_previous_table' do
+    it do
+      monitor = ProconBypassMan::IOMonitor.new(label: "hai")
+      monitor.previous_table = {
+        start_function: 60,
+        before_read: 28,
+        after_read: 27,
+        before_write: 20,
+        after_write: 18,
+        eagain_wait_readable_on_read: 3,
+        eagain_wait_readable_on_write: 2,
+        end_function: 16,
+      }
+      expect(monitor.formated_previous_table).to eq("(26.6%(16/60), loss: 3, 2)")
     end
   end
 end
