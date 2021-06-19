@@ -85,7 +85,7 @@ end
 ## Plugins
 * https://github.com/splaspla-hacker/procon_bypass_man-splatoon2
 
-## プラグインの作り方(TODO)
+## プラグインの作り方
 https://github.com/splaspla-hacker/procon_bypass_man-splatoon2 を見てみてください
 
 ### モード
