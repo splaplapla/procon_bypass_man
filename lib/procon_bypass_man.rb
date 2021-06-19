@@ -23,6 +23,13 @@ module ProconBypassMan
     configure(&block) if block_given?
     registry = ProconBypassMan::DeviceRegistry.new
     Runner.new(gadget: registry.gadget, procon: registry.procon).run
+
+    trap("SIGINT") do
+      $will_terminate_token = true
+      registry.gadget&.close
+      registry.procon&.close
+      exit 1
+    end
   end
 
   def self.logger=(dev)

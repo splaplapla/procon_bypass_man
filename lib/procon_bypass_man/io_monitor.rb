@@ -62,7 +62,7 @@ module ProconBypassMan
           print " " * max_output_length
           print "\r"
           print line
-          break if $will_interval_token
+          break if $will_terminate_token
         end
       end
     end

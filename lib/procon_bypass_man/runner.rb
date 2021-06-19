@@ -10,18 +10,11 @@ class ProconBypassMan::Runner
   end
 
   def run
-    trap("SIGINT") do
-      will_terminate
-    end
     first_negotiation
     main_loop
   end
 
   private
-
-  def will_terminate
-    $will_interval_token = true
-  end
 
   def main_loop
     Thread.new do
@@ -40,9 +33,9 @@ class ProconBypassMan::Runner
         loop do
           bypass.send_gadget_to_procon!
         rescue Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError => e
+          break if $will_terminate_token
           raise ProconBypassMan::ProConRejected.new(e)
         end
-        break if $will_interval_token
       end
     end
 
@@ -55,9 +48,9 @@ class ProconBypassMan::Runner
         loop do
           bypass.send_procon_to_gadget!
         rescue Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError => e
+          break if $will_terminate_token
           raise ProconBypassMan::ProConRejected.new(e)
         end
-        break if $will_interval_token
       end
     end
 
@@ -74,7 +67,7 @@ class ProconBypassMan::Runner
           ProconBypassMan.logger.info("first negotiation is over")
           break
         end
-        break if $will_interval_token
+        break if $will_terminate_token
       rescue IO::EAGAINWaitReadable
       end
     end
