@@ -10,6 +10,7 @@ class ProconBypassMan::Bypass
     monitor.record(:start_function)
     begin
       input = self.gadget.read_nonblock(128)
+      ProconBypassMan.logger.debug { ">>> #{output.unpack("H*")}" }
       #rescue IO::EAGAINWaitReadable
       #  monitor.record(:eagain_wait_readable_on_read)
       #  return if $will_terminate_token
