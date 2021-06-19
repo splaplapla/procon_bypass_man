@@ -121,6 +121,7 @@ https://github.com/splaspla-hacker/procon_bypass_man-splatoon2 を見てみて�
 * 起動時に設定ファイルのlintを行う(サブスレッドが起動してから死ぬとかなしいのでメインスレッドで落としたい)
 * レコーディング機能(プロコンの入力をマクロとして登録ができる)
 * swtichとの接続完了はIOを見て判断する
+* keyのremap
 
 ## Contributing
 
