@@ -1,10 +1,12 @@
+require_relative "io_monitor"
+
 class ProconBypassMan::Runner
   def initialize(gadget: , procon: )
     @gadget = gadget
     @procon = procon
 
-    @will_interval_0_0_1 = 0
-    @will_interval_1_6 = 0
+    $will_interval_0_0_1 = 0
+    $will_interval_1_6 = 0
   end
 
   def run
@@ -15,72 +17,94 @@ class ProconBypassMan::Runner
   private
 
   def main_loop
+    # TODO 接続確立完了をswitchを読み取るようにして、この暫定で接続完了sleepを消す
     Thread.new do
       sleep(10)
-      @will_interval_0_0_1 = 0.01
-      @will_interval_1_6 = 1.6
+      $will_interval_0_0_1 = 0.01
+      $will_interval_1_6 = 1.6
+      $is_stable = true
     end
+    $is_stable = false
 
+    ProconBypassMan::IOMonitor.start!
     # gadget => procon
     # 遅くていい
-    Thread.new do
-      loop do
-        begin
-          # NOTE read and writeを分けたほうがいいかも
-          input = @gadget.read_nonblock(128)
-          # ProconBypassMan.logger(">>> ", input.b)
-          @procon.write_nonblock(input)
-          sleep(@will_interval_1_6)
-        rescue IO::EAGAINWaitReadable
-          sleep(@will_interval_1_6)
+    monitor1 = ProconBypassMan::IOMonitor.new(label: "switch -> procon")
+    monitor2 = ProconBypassMan::IOMonitor.new(label: "procon -> switch")
+    t1 = Thread.new do
+      bypass = ProconBypassMan::Bypass.new(gadget: @gadget, procon: @procon, monitor: monitor1)
+      begin
+        loop do
+          break if $will_terminate_token
+          bypass.send_gadget_to_procon!
+        rescue Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError => e
+          raise ProconBypassMan::ProConRejected.new(e)
         end
-      rescue Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError => e
-        raise ProconBypassMan::ProConRejected.new(e)
+        ProconBypassMan.logger.info "Thread1を終了します"
       end
     end
 
     # procon => gadget
     # シビア
-    Thread.new do
-      loop do
-        output = nil
-        begin
-          output = @procon.read_nonblock(128)
-        rescue IO::EAGAINWaitReadable
-          retry
+    t2 = Thread.new do
+      bypass = ProconBypassMan::Bypass.new(gadget: @gadget, procon: @procon, monitor: monitor2)
+      begin
+        loop do
+          break if $will_terminate_token
+          bypass.send_procon_to_gadget!
+        rescue Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError => e
+          raise ProconBypassMan::ProConRejected.new(e)
         end
-
-        begin
-          ProconBypassMan.logger("<<< ", output.b)
-          @gadget.write_nonblock(
-            ProconBypassMan::Processor.new(output).process
-          )
-          sleep(@will_interval_0_0_1)
-        rescue IO::EAGAINWaitReadable
-        end
-      rescue Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError => e
-        raise ProconBypassMan::ProConRejected.new(e)
+        ProconBypassMan.logger.info "Thread2を終了します"
       end
     end
 
-    loop { sleep(5) }
-  ensure
-    @gadget&.close
-    @procon&.close
+    self_read, self_write = IO.pipe
+    %w(TERM INT).each do |sig|
+      begin
+        trap sig do
+          self_write.puts(sig)
+        end
+      rescue ArgumentError
+        puts "Signal #{sig} not supported"
+      end
+    end
+
+    begin
+      while readable_io = IO.select([self_read])
+        signal = readable_io.first[0].gets.strip
+        handle_signal(signal)
+      end
+    rescue Interrupt
+      $will_terminate_token = true
+      [t1, t2].each(&:join)
+      @gadget&.close
+      @procon&.close
+      exit 1
+    end
   end
 
   def first_negotiation
     loop do
       begin
         input = @gadget.read_nonblock(128)
-        ProconBypassMan.logger(">>> ", input.b)
+        ProconBypassMan.logger.debug { ">>> #{input.unpack("H*")}" }
         @procon.write_nonblock(input)
         if input[0] == "\x80".b && input[1] == "\x01".b
-          ProconBypassMan.logger("first negotiation is over")
+          ProconBypassMan.logger.info("first negotiation is over")
           break
         end
+        break if $will_terminate_token
       rescue IO::EAGAINWaitReadable
       end
+    end
+  end
+
+  def handle_signal(sig)
+    ProconBypassMan.logger.info "#{sig}を受け取りました"
+    case sig
+    when 'INT', 'TERM'
+      raise Interrupt
     end
   end
 end

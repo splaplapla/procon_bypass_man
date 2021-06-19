@@ -22,7 +22,6 @@ class ProconBypassMan::Procon::MacroRegistry
 
   PRESETS = {
     null: [],
-    fast_return: [:down, :a, :a, :x, :down, :a, :a].freeze,
   }
 
   def self.install_plugin(klass)

@@ -8,10 +8,15 @@ class ProconBypassMan::Procon
 
     def initialize(binary)
       self.class.compile_if_not_compile_yet!
+      unless binary.encoding.name == ASCII_ENCODING
+        raise "おかしいです"
+      end
       @binary = binary
     end
 
+    ZERO_BIT = ["0"].pack("H*").freeze
     ASCII_ENCODING = "ASCII-8BIT"
+
     # @depilicate
     def binary=(binary)
       unless binary.encoding.name == ASCII_ENCODING
@@ -21,11 +26,9 @@ class ProconBypassMan::Procon
     end
 
     def set_no_action!
-      [ProconBypassMan::Procon::Data::NO_ACTION.dup].pack("H*").tap do |no_action_binary|
-        binary[3] = no_action_binary[3]
-        binary[4] = no_action_binary[4]
-        binary[5] = no_action_binary[5]
-      end
+      binary[3] = ZERO_BIT
+      binary[4] = ZERO_BIT
+      binary[5] = ZERO_BIT
     end
 
     def unpress_button(button)
@@ -53,11 +56,17 @@ class ProconBypassMan::Procon
     end
 
     def merge(target_binary: )
-      b = binary.dup
-      (3..11).each do |byte_position|
-        b[byte_position] = target_binary[byte_position]
-      end
-      self.binary = b
+      tb = [target_binary].pack("H*")
+      binary[3] = tb[3]
+      binary[4] = tb[4]
+      binary[5] = tb[5]
+      binary[6] = tb[6]
+      binary[7] = tb[7]
+      binary[8] = tb[8]
+      binary[9] = tb[9]
+      binary[10] = tb[10]
+      binary[11] = tb[11]
+      self.binary
     end
   end
 end

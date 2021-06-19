@@ -1,5 +1,8 @@
+require "logger"
+
 require_relative "procon_bypass_man/version"
 require_relative "procon_bypass_man/device_registry"
+require_relative "procon_bypass_man/bypass"
 require_relative "procon_bypass_man/runner"
 require_relative "procon_bypass_man/processor"
 require_relative "procon_bypass_man/procon/data"
@@ -22,16 +25,22 @@ module ProconBypassMan
     Runner.new(gadget: registry.gadget, procon: registry.procon).run
   end
 
-  def self.logger(prefix=nil, text)
-    # TODO replace Logger
-    # pp "pure: #{text}"
-    # pp "unpack(bin): #{text.unpack("b*")}"
-    pp "unpack(Hex): #{text.unpack("H*")}"
+  def self.logger=(dev)
+    @@logger = Logger.new(dev, 5, 1024 * 10) # 5世代まで残して, 10MBでローテーション
+  end
+
+  def self.logger
+    if defined?(@@logger)
+      @@logger
+    else
+      Logger.new(nil)
+    end
   end
 
   def self.reset!
     ProconBypassMan::Procon::MacroRegistry.reset!
     ProconBypassMan::Procon::ModeRegistry.reset!
     ProconBypassMan::Procon.reset!
+    ProconBypassMan::IOMonitor.reset!
   end
 end

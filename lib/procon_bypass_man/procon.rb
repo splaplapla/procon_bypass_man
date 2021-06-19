@@ -63,10 +63,10 @@ class ProconBypassMan::Procon
         end
       end
     else
-      unless @@status[:ongoing_mode].name == current_layer.mode
+      unless ongoing_mode.name == current_layer.mode
         @@status[:ongoing_mode] = ProconBypassMan::Procon::ModeRegistry.load(current_layer.mode)
       end
-      if(binary = @@status[:ongoing_mode].next_binary)
+      if(binary = ongoing_mode.next_binary)
         self.user_operation.merge(target_binary: binary)
       end
       return

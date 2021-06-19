@@ -1,7 +1,7 @@
 # ProconBypassMan
 * プロコンを連射機にしたり、マクロを実行できるツールです
     * 設定ファイルはrubyスクリプトで記述します
-* 特定のタイトルに特化した振る舞いにしたい時は各プラグインを使ってください(TODO)
+* 特定のタイトルに特化した振る舞いにしたい時は各プラグインを使ってください
 
 ## 使うハードウェア
 * プロコン
@@ -13,24 +13,24 @@
 ## 使うソフトウェア
 * 必須
   * ruby-3.0.x
-* オプション
-  * fluentd
 
 ## Usage
-* 以下のファイルを用意して`sudo ruby hoge.rb`してください
-* 設定ファイルの例
-  * https://github.com/jiikko/procon_bypass_man_sample
+* 以下のファイルを用意して`sudo`をつけて実行してください
+    * ex) `sudo bin/run.rb`
 
 ```ruby
 # bundler inline
-gem 'procon_bypass_man', github: 'splaspla-hacker/procon_bypass_man'
-require 'procon_bypass_man'
+require 'bundler/inline'
+
+gemfile do
+  gem 'procon_bypass_man', github: 'splaspla-hacker/procon_bypass_man', branch: "0.1.1"
+end
 
 ProconBypassMan.run do
   prefix_keys_for_changing_layer [:zr, :r, :zl, :l]
 
-  layer :up, mode: :manual do
-    flip :zr, if_pressed: :zr, force_neutral: :zl
+  layer :up do
+    flip :zr, if_pressed: :zr
     flip :zl, if_pressed: [:y, :b, :zl]
     flip :down, if_pressed: true
   end
@@ -42,6 +42,60 @@ ProconBypassMan.run do
   end
 end
 ```
+
+### プラグインを使った設定例
+```ruby
+#!/usr/bin/env ruby
+
+require 'bundler/inline'
+
+gemfile do
+  gem 'procon_bypass_man', github: 'splaspla-hacker/procon_bypass_man', branch: "0.1.1"
+  gem 'procon_bypass_man-splatoon2', github: 'splaspla-hacker/procon_bypass_man-splatoon2', branch: "master"
+end
+
+fast_return = ProconBypassMan::Splatoon2::Macro::FastReturn
+guruguru = ProconBypassMan::Splatoon2::Mode::Guruguru
+
+ProconBypassMan.run do
+  install_macro_plugin fast_return
+  install_mode_plugin guruguru
+
+  prefix_keys_for_changing_layer [:zr, :r, :zl, :l]
+
+  layer :up, mode: :manual do
+    flip :zr, if_pressed: :zr, force_neutral: :zl
+    flip :zl, if_pressed: [:y, :b, :zl]
+    flip :down, if_pressed: :down
+    macro fast_return.name, if_pressed: [:y, :b, :down]
+  end
+  layer :right, mode: guruguru.name
+  layer :left do
+    # no-op
+  end
+  layer :down do
+    flip :zl
+  end
+end
+```
+
+* 設定ファイルの例
+  * https://github.com/jiikko/procon_bypass_man_sample
+
+## Plugins
+* https://github.com/splaspla-hacker/procon_bypass_man-splatoon2
+
+## プラグインの作り方(TODO)
+https://github.com/splaspla-hacker/procon_bypass_man-splatoon2 を見てみてください
+
+### モード
+* name, binariesの持つオブジェクトを定義してください
+* binariesには、Proconが出力するバイナリに対して16進数化した文字列を配列で定義してください
+
+### マクロ
+* name, stepsの持つメソッドをオブジェクトを定義してください
+* stepsには、プロコンで入力ができるキーを配列で定義してください
+  * 現在はintervalは設定できません
 
 ## FAQ
 ### ソフトウェアについて
@@ -66,11 +120,19 @@ end
 * ラズパイのプロビジョニングを楽にしたい
 * 起動時に設定ファイルのlintを行う(サブスレッドが起動してから死ぬとかなしいのでメインスレッドで落としたい)
 * レコーディング機能(プロコンの入力をマクロとして登録ができる)
-* たまに数秒ハングアップする問題を直す
+* swtichとの接続完了はIOを見て判断する
 
 ## Contributing
 
 Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/procon_bypass_man. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/[USERNAME]/procon_bypass_man/blob/master/CODE_OF_CONDUCT.md).
+
+### ロギング
+```
+ProconBypassMan.tap do |pbm|
+  pbm.logger = STDOUT
+  pbm.logger.level = :debug
+pbm
+```
 
 ## License
 
