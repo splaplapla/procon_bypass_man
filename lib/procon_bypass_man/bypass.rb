@@ -29,7 +29,7 @@ class ProconBypassMan::Bypass
     monitor.record(:start_function)
     output = nil
     begin
-      sleep(0.02)
+      sleep($will_interval_0_0_1)
       output = self.procon.read_nonblock(128)
     rescue IO::EAGAINWaitReadable
       monitor.record(:eagain_wait_readable_on_read)
