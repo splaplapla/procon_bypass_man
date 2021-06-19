@@ -21,8 +21,18 @@ describe ProconBypassMan::Procon do
           ]
         end
       end
+      module FastReturn
+        def self.name
+          :fast_return
+        end
+
+        def self.steps
+          [:down, :a, :a, :x, :down, :a, :a].freeze
+        end
+      end
       ProconBypassMan.configure do
         install_mode_plugin G
+        install_macro_plugin FastReturn
         prefix_keys_for_changing_layer [:zr, :r, :zl, :l]
         layer :up, mode: :manual do
           flip :zr, if_pressed: :zr, force_neutral: :zl
@@ -94,7 +104,17 @@ describe ProconBypassMan::Procon do
     context 'y, bを押しているとき' do
       let(:data) { "30778105800099277344e86b0a7909f4f5a8f4b500c5ff8dff6c09cdf5b8f49a00c5ff92ff6a0979f5eef46500d5ff9bff000000000000000000000000000000" }
       before do
+        module FastReturn
+          def self.name
+            :fast_return
+          end
+
+          def self.steps
+            [:down, :a, :a, :x, :down, :a, :a].freeze
+          end
+        end
         ProconBypassMan.configure do
+          install_macro_plugin FastReturn
           prefix_keys_for_changing_layer [:zr]
           layer :up do
             macro :fast_return, if_pressed: [:y, :b]
