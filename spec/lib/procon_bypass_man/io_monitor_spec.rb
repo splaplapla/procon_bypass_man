@@ -3,6 +3,7 @@ require "spec_helper"
 describe ProconBypassMan::IOMonitor do
   before(:each) do
     ProconBypassMan::IOMonitor.reset!
+    $is_stable = true
   end
 
   describe '.new' do
