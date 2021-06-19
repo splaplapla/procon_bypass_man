@@ -12,6 +12,7 @@ class ProconBypassMan::Bypass
       input = self.gadget.read_nonblock(128)
       #rescue IO::EAGAINWaitReadable
       #  monitor.record(:eagain_wait_readable_on_read)
+      #  return if $will_terminate_token
       #  retry
       #end
 
@@ -33,6 +34,7 @@ class ProconBypassMan::Bypass
       output = self.procon.read_nonblock(128)
     rescue IO::EAGAINWaitReadable
       monitor.record(:eagain_wait_readable_on_read)
+      return if $will_terminate_token
       retry
     end
 
