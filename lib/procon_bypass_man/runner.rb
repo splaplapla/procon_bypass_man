@@ -35,11 +35,10 @@ class ProconBypassMan::Runner
       bypass = ProconBypassMan::Bypass.new(gadget: @gadget, procon: @procon, monitor: monitor1)
       begin
         loop do
+          break if $will_terminate_token
           bypass.send_gadget_to_procon!
         rescue Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError => e
           raise ProconBypassMan::ProConRejected.new(e)
-        ensure
-          break if $will_terminate_token
         end
         ProconBypassMan.logger.info "Thread1を終了します"
       end
@@ -51,11 +50,10 @@ class ProconBypassMan::Runner
       bypass = ProconBypassMan::Bypass.new(gadget: @gadget, procon: @procon, monitor: monitor2)
       begin
         loop do
+          break if $will_terminate_token
           bypass.send_procon_to_gadget!
         rescue Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError => e
           raise ProconBypassMan::ProConRejected.new(e)
-        ensure
-          break if $will_terminate_token
         end
         ProconBypassMan.logger.info "Thread2を終了します"
       end
