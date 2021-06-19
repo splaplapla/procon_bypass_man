@@ -31,33 +31,50 @@ class ProconBypassMan::Runner
     # 遅くていい
     monitor1 = ProconBypassMan::IOMonitor.new(label: "switch -> procon")
     monitor2 = ProconBypassMan::IOMonitor.new(label: "procon -> switch")
-    Thread.new do
+    t1 = Thread.new do
       bypass = ProconBypassMan::Bypass.new(gadget: @gadget, procon: @procon, monitor: monitor1)
       begin
         loop do
           bypass.send_gadget_to_procon!
         rescue Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError => e
-          break if $will_terminate_token
           raise ProconBypassMan::ProConRejected.new(e)
+        ensure
+          break if $will_terminate_token
         end
       end
     end
 
     # procon => gadget
     # シビア
-    Thread.new do
+    t2 = Thread.new do
       bypass = ProconBypassMan::Bypass.new(gadget: @gadget, procon: @procon, monitor: monitor2)
       begin
         loop do
           bypass.send_procon_to_gadget!
         rescue Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError => e
-          break if $will_terminate_token
           raise ProconBypassMan::ProConRejected.new(e)
+        ensure
+          break if $will_terminate_token
         end
       end
     end
 
-    loop { sleep(5) }
+    trap("SIGINT") do
+      $will_terminate_token = true
+      [t1, t2].each(&:join)
+      @gadget&.close
+      @procon&.close
+      $terminated = true
+    end
+
+    loop do
+      sleep(60)
+    rescue Interrupt
+      loop do # リソースの開放が完了されるまでを待つ
+        exit 1 if $terminated
+        sleep(1)
+      end
+    end
   end
 
   def first_negotiation
