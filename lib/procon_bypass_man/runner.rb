@@ -61,24 +61,28 @@ class ProconBypassMan::Runner
       end
     end
 
-    trap("SIGINT") do
-      ProconBypassMan.logger.info "SIGINTを受け取りました"
+    self_read, self_write = IO.pipe
+    %w(TERM INT).each do |sig|
+      begin
+        trap sig do
+          self_write.puts(sig)
+        end
+      rescue ArgumentError
+        puts "Signal #{sig} not supported"
+      end
+    end
+
+    begin
+      while readable_io = IO.select([self_read])
+        signal = readable_io.first[0].gets.strip
+        handle_signal(signal)
+      end
+    rescue Interrupt
       $will_terminate_token = true
       [t1, t2].each(&:join)
       @gadget&.close
       @procon&.close
-      ProconBypassMan.logger.info "終了する準備ができました"
-      $terminated = true
-    end
-
-    loop do
-      sleep(60)
-    rescue Interrupt
-      ProconBypassMan.logger.info "リソースの開放が完了されるまでを待ちます"
-      loop do
-        exit 1 if defined?($terminated) && $terminated
-        sleep(1)
-      end
+      exit 1
     end
   end
 
@@ -95,6 +99,14 @@ class ProconBypassMan::Runner
         break if $will_terminate_token
       rescue IO::EAGAINWaitReadable
       end
+    end
+  end
+
+  def handle_signal(sig)
+    ProconBypassMan.logger.info "#{sig}を受け取りました"
+    case sig
+    when 'INT', 'TERM'
+      raise Interrupt
     end
   end
 end
