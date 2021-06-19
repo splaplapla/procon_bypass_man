@@ -21,14 +21,17 @@ class ProconBypassMan::Runner
       sleep(10)
       $will_interval_0_0_1 = 0.01
       $will_interval_1_6 = 1.6
+      $is_stable = true
     end
+    $is_stable = false
 
     ProconBypassMan::IOMonitor.start!
     # gadget => procon
     # 遅くていい
+    monitor1 = ProconBypassMan::IOMonitor.new(label: "switch -> procon")
+    monitor2 = ProconBypassMan::IOMonitor.new(label: "procon -> switch")
     Thread.new do
-      monitor = ProconBypassMan::IOMonitor.new(label: "switch -> procon")
-      bypass = ProconBypassMan::Bypass.new(gadget: @gadget, procon: @procon, monitor: monitor)
+      bypass = ProconBypassMan::Bypass.new(gadget: @gadget, procon: @procon, monitor: monitor1)
       begin
         loop do
           bypass.send_gadget_to_procon!
@@ -42,8 +45,7 @@ class ProconBypassMan::Runner
     # procon => gadget
     # シビア
     Thread.new do
-      monitor = ProconBypassMan::IOMonitor.new(label: "procon -> switch")
-      bypass = ProconBypassMan::Bypass.new(gadget: @gadget, procon: @procon, monitor: monitor)
+      bypass = ProconBypassMan::Bypass.new(gadget: @gadget, procon: @procon, monitor: monitor2)
       begin
         loop do
           bypass.send_procon_to_gadget!
