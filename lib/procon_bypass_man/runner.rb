@@ -17,11 +17,9 @@ class ProconBypassMan::Runner
   private
 
   def main_loop
-    first_connection_queue = Queue.new
     # TODO 接続確立完了をswitchを読み取るようにして、この暫定で接続完了sleepを消す
     Thread.new do
-      first_connection_queue.pop
-      sleep(3)
+      sleep(10)
       $will_interval_0_0_1 = 0.01
       $will_interval_1_6 = 1.6
       $is_stable = true
@@ -39,7 +37,7 @@ class ProconBypassMan::Runner
       begin
         loop do
           break if $will_terminate_token
-          bypass.send_gadget_to_procon!(queue: first_connection_queue)
+          bypass.send_gadget_to_procon!
         rescue Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError => e
           raise ProconBypassMan::ProConRejected.new(e)
         end
