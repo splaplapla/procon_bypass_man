@@ -90,7 +90,7 @@ https://github.com/splaspla-hacker/procon_bypass_man-splatoon2 を見てみて�
 
 ### モード
 * name, binariesの持つオブジェクトを定義してください
-* binariesには、Proconが出力するバイナリを16進数にした値を配列で定義してください
+* binariesには、Proconが出力するバイナリに対して16進数化した文字列を配列で定義してください
 
 ### マクロ
 * name, stepsの持つメソッドをオブジェクトを定義してください
