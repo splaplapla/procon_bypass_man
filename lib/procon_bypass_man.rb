@@ -26,7 +26,7 @@ module ProconBypassMan
   end
 
   def self.logger=(dev)
-    @@logger = Logger.new(dev, 5, 1024 * 10) # 5世代まで残して, 10MBでローテーション
+    @@logger = Logger.new(dev, 5, 1024 * 1024 * 10) # 5世代まで残して, 10MBでローテーション
   end
 
   def self.logger
