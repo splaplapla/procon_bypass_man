@@ -12,7 +12,17 @@ describe ProconBypassMan::Procon do
     let(:pressed_y_and_b) { "30778105800099277344e86b0a7909f4f5a8f4b500c5ff8dff6c09cdf5b8f49a00c5ff92ff6a0979f5eef46500d5ff9bff000000000000000000000000000000" }
     let(:not_pressed_y_and_b) { "30f28100800078c77448287509550274ff131029001b0022005a0271ff191028001e00210064027cff1410280020002100000000000000000000000000000000" }
     it 'modeのbinariesを繰り返すこと' do
+      module G
+        def self.name
+          :guruguru
+        end
+        def self.binaries
+          [ "306791c080c4c877734558740aed017b03b20f84fff8fff8ffee01a203990f9cfffffffcffed01c1038c0fb8ff04000100000000000000000000000000000000",
+          ]
+        end
+      end
       ProconBypassMan.configure do
+        install_mode_plugin G
         prefix_keys_for_changing_layer [:zr, :r, :zl, :l]
         layer :up, mode: :manual do
           flip :zr, if_pressed: :zr, force_neutral: :zl
@@ -20,7 +30,7 @@ describe ProconBypassMan::Procon do
           flip :down, if_pressed: :down
           macro :fast_return, if_pressed: [:y, :b, :down]
         end
-        layer :right, mode: :guruguru
+        layer :right, mode: G.name
       end
       %w(
         306791c080c4c877734558740aed017b03b20f84fff8fff8ffee01a203990f9cfffffffcffed01c1038c0fb8ff04000100000000000000000000000000000000
@@ -159,7 +169,12 @@ describe ProconBypassMan::Procon do
 
   context '色々詰め込んでいる' do
     before do
+      class AModePlugin
+        def self.name; :foo; end
+        def self.binaries; ['a']; end
+      end
       ProconBypassMan.configure do
+        install_mode_plugin AModePlugin
         prefix_keys_for_changing_layer [:zr, :r, :zl, :l]
         layer :up do
           flip :down, if_pressed: true
@@ -167,7 +182,7 @@ describe ProconBypassMan::Procon do
           flip :a
           flip :zl, if_pressed: [:y, :b]
         end
-        layer :right, mode: :auto
+        layer :right, mode: :foo
         layer :left do
         end
         layer :down do
@@ -188,7 +203,7 @@ describe ProconBypassMan::Procon do
           procon.apply! # change layer
 
           expect(procon.current_layer_key).to eq(:right)
-          expect(procon.current_layer.mode).to eq(:auto)
+          expect(procon.current_layer.mode).to eq(:foo)
           expect(procon.pressed_a?).to eq(false)
           expect(procon.pressed_b?).to eq(false)
           expect(procon.pressed_y?).to eq(false)

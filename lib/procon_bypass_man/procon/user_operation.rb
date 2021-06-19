@@ -8,10 +8,15 @@ class ProconBypassMan::Procon
 
     def initialize(binary)
       self.class.compile_if_not_compile_yet!
+      unless binary.encoding.name == ASCII_ENCODING
+        raise "おかしいです"
+      end
       @binary = binary
     end
 
+    ZERO_BIT = ["0"].pack("H*").freeze
     ASCII_ENCODING = "ASCII-8BIT"
+
     # @depilicate
     def binary=(binary)
       unless binary.encoding.name == ASCII_ENCODING
@@ -21,10 +26,9 @@ class ProconBypassMan::Procon
     end
 
     def set_no_action!
-      zero = ["0"].pack("H*")
-      binary[3] = zero
-      binary[4] = zero
-      binary[5] = zero
+      binary[3] = ZERO_BIT
+      binary[4] = ZERO_BIT
+      binary[5] = ZERO_BIT
     end
 
     def unpress_button(button)

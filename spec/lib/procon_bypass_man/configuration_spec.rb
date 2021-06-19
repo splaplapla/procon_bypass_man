@@ -1,6 +1,10 @@
 require "spec_helper"
 
 describe ProconBypassMan::Configuration do
+  before(:each) do
+    ProconBypassMan.reset!
+  end
+
   describe '.configure' do
     context 'with install macro plugin' do
       it do
@@ -55,9 +59,14 @@ describe ProconBypassMan::Configuration do
       end
     end
 
-    context 'with auto mode' do
+    context 'with some mode' do
       it do
+        class AModePlugin
+          def self.name; :foo; end
+          def self.binaries; ['a']; end
+        end
         ProconBypassMan.configure do
+          install_mode_plugin AModePlugin
           layer :up do
             flip :l, if_pressed: true
             flip :r, channel: 1
@@ -65,7 +74,7 @@ describe ProconBypassMan::Configuration do
           layer :down, mode: :manual do
             flip :r, if_pressed: [:zr, :zl]
           end
-          layer :right, mode: :auto
+          layer :right, mode: :foo
           layer :left
         end
         expect(ProconBypassMan::Configuration.instance.layers[:up].flip_buttons[:l]).to eq(if_pressed: [:l])
@@ -76,7 +85,7 @@ describe ProconBypassMan::Configuration do
         expect(ProconBypassMan::Configuration.instance.layers[:down].flip_buttons[:r]).to eq(if_pressed: [:zr, :zl])
         expect(ProconBypassMan::Configuration.instance.layers[:down].mode).to eq(:manual)
         expect(ProconBypassMan::Configuration.instance.layers[:right].flip_buttons.keys).to eq([])
-        expect(ProconBypassMan::Configuration.instance.layers[:right].mode).to eq(:auto)
+        expect(ProconBypassMan::Configuration.instance.layers[:right].mode).to eq(:foo)
         expect(ProconBypassMan::Configuration.instance.layers[:left].flip_buttons.keys).to eq([])
         expect(ProconBypassMan::Configuration.instance.layers[:left].mode).to eq(:manual)
       end
