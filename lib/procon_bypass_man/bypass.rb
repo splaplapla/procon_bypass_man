@@ -6,7 +6,8 @@ class ProconBypassMan::Bypass
     self.monitor = monitor
   end
 
-  def send_gadget_to_procon!
+  @@connected = false
+  def send_gadget_to_procon!(queue: nil)
     monitor.record(:start_function)
     begin
       input = self.gadget.read_nonblock(128)
@@ -16,6 +17,12 @@ class ProconBypassMan::Bypass
       #  return if $will_terminate_token
       #  retry
       #end
+
+      # これが返ってきたら接続完了とみなす
+      if (input[0] == "\x10".b) && (input.size == 10) && queue && !@@connected
+        queue.push(true)
+        @@connected = true
+      end
 
       self.procon.write_nonblock(input)
       sleep($will_interval_1_6)
