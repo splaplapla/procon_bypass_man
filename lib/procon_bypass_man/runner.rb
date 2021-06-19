@@ -21,6 +21,7 @@ class ProconBypassMan::Runner
     # TODO 接続確立完了をswitchを読み取るようにして、この暫定で接続完了sleepを消す
     Thread.new do
       first_connection_queue.pop
+      sleep(3)
       $will_interval_0_0_1 = 0.01
       $will_interval_1_6 = 1.6
       $is_stable = true
@@ -32,6 +33,7 @@ class ProconBypassMan::Runner
     # 遅くていい
     monitor1 = ProconBypassMan::IOMonitor.new(label: "switch -> procon")
     monitor2 = ProconBypassMan::IOMonitor.new(label: "procon -> switch")
+    ProconBypassMan.logger.info "Thread1を起動します"
     t1 = Thread.new do
       bypass = ProconBypassMan::Bypass.new(gadget: @gadget, procon: @procon, monitor: monitor1)
       begin
@@ -47,6 +49,7 @@ class ProconBypassMan::Runner
 
     # procon => gadget
     # シビア
+    ProconBypassMan.logger.info "Thread2を起動します"
     t2 = Thread.new do
       bypass = ProconBypassMan::Bypass.new(gadget: @gadget, procon: @procon, monitor: monitor2)
       begin
@@ -71,6 +74,7 @@ class ProconBypassMan::Runner
       end
     end
 
+    ProconBypassMan.logger.info "graceful shutdownの準備ができました"
     begin
       while readable_io = IO.select([self_read])
         signal = readable_io.first[0].gets.strip
