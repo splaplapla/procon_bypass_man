@@ -5,6 +5,7 @@ class ProconBypassMan::Runner
     @gadget = gadget
     @procon = procon
 
+    $will_interval_0_0_0_1 = 0
     $will_interval_0_0_1 = 0
     $will_interval_1_6 = 0
   end
@@ -20,6 +21,7 @@ class ProconBypassMan::Runner
     Thread.new do
       sleep(10)
       $will_interval_0_0_1 = 0.01
+      $will_interval_0_0_0_1 = 0.001
       $will_interval_1_6 = 1.6
       $is_stable = true
     end
