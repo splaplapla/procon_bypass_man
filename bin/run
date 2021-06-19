@@ -1,15 +1,12 @@
 #!/usr/bin/env ruby
 
-
 require 'bundler/inline'
 
 gemfile do
   source 'https://rubygems.org'
-  gem 'procon_bypass_man-splatoon2', github: 'splaspla-hacker/procon_bypass_man-splatoon2'
+  gem 'procon_bypass_man', github: 'splaspla-hacker/procon_bypass_man', branch: "edge"
+  gem 'procon_bypass_man-splatoon2', github: 'splaspla-hacker/procon_bypass_man-splatoon2', branch: "master"
 end
-
-require "procon_bypass_man"
-require "procon_bypass_man-splatoon2"
 
 ProconBypassMan.tap do |pbm|
   pbm.logger = "./app.log"
@@ -20,8 +17,8 @@ fast_return = ProconBypassMan::Splatoon2::Macro::FastReturn
 guruguru = ProconBypassMan::Splatoon2::Mode::Guruguru
 
 ProconBypassMan.run do
-  load_macro_plugin fast_return
-  load_mode_plugin guruguru
+  install_macro_plugin fast_return
+  install_mode_plugin guruguru
 
   prefix_keys_for_changing_layer [:zr, :r, :zl, :l]
 

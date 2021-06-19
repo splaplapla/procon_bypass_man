@@ -1,7 +1,7 @@
 # ProconBypassMan
 * プロコンを連射機にしたり、マクロを実行できるツールです
     * 設定ファイルはrubyスクリプトで記述します
-* 特定のタイトルに特化した振る舞いにしたい時は各プラグインを使ってください(TODO)
+* 特定のタイトルに特化した振る舞いにしたい時は各プラグインを使ってください
 
 ## 使うハードウェア
 * プロコン
@@ -13,24 +13,24 @@
 ## 使うソフトウェア
 * 必須
   * ruby-3.0.x
-* オプション
-  * fluentd
 
 ## Usage
-* 以下のファイルを用意して`sudo ruby hoge.rb`してください
-* 設定ファイルの例
-  * https://github.com/jiikko/procon_bypass_man_sample
+* 以下のファイルを用意して`sudo`をつけて実行してください
+    * ex) `sudo bin/run.rb`
 
 ```ruby
 # bundler inline
-gem 'procon_bypass_man', github: 'splaspla-hacker/procon_bypass_man'
-require 'procon_bypass_man'
+require 'bundler/inline'
+
+gemfile do
+  gem 'procon_bypass_man', github: 'splaspla-hacker/procon_bypass_man', branch: "0.1.1"
+end
 
 ProconBypassMan.run do
   prefix_keys_for_changing_layer [:zr, :r, :zl, :l]
 
-  layer :up, mode: :manual do
-    flip :zr, if_pressed: :zr, force_neutral: :zl
+  layer :up do
+    flip :zr, if_pressed: :zr
     flip :zl, if_pressed: [:y, :b, :zl]
     flip :down, if_pressed: true
   end
@@ -45,45 +45,37 @@ end
 
 ### プラグインを使った設定例
 ```ruby
-gem 'procon_bypass_man', github: 'splaspla-hacker/procon_bypass_man'
-require 'procon_bypass_man'
+#!/usr/bin/env ruby
 
-module Splatoon2TheMode
-  # @return [Symbol]
-  def self.name
-    :splatoon2_something_mode
-  end
+require 'bundler/inline'
 
-  # @return [Array<String>]
-  def binaries
-    [...]
-  end
+gemfile do
+  gem 'procon_bypass_man', github: 'splaspla-hacker/procon_bypass_man', branch: "0.1.1"
+  gem 'procon_bypass_man-splatoon2', github: 'splaspla-hacker/procon_bypass_man-splatoon2', branch: "master"
 end
 
-module Splatoon2TheMacro
-  # @return [Symbol]
-  def self.name
-    :splatoon2_fast_return
-  end
-
-  # @return [Array<String>]
-  def binaries
-    [...]
-  end
-end
+fast_return = ProconBypassMan::Splatoon2::Macro::FastReturn
+guruguru = ProconBypassMan::Splatoon2::Mode::Guruguru
 
 ProconBypassMan.run do
+  install_macro_plugin fast_return
+  install_mode_plugin guruguru
+
   prefix_keys_for_changing_layer [:zr, :r, :zl, :l]
-  install_macro_plugin(Splatoon2TheMacro)
-  install_mode_plugin(Splatoon2TheMode)
 
   layer :up, mode: :manual do
     flip :zr, if_pressed: :zr, force_neutral: :zl
     flip :zl, if_pressed: [:y, :b, :zl]
-    flip :down, if_pressed: true
-    macro :splatoon2_fast_return, if_pressed: [:y, :b, :down]
+    flip :down, if_pressed: :down
+    macro fast_return.name, if_pressed: [:y, :b, :down]
   end
-  layer :left, mode: :splatoon2_something_mode
+  layer :right, mode: guruguru.name
+  layer :left do
+    # no-op
+  end
+  layer :down do
+    flip :zl
+  end
 end
 ```
 
@@ -94,37 +86,16 @@ end
 * https://github.com/splaspla-hacker/procon_bypass_man-splatoon2
 
 ## プラグインの作り方(TODO)
-スケルトンを出力するgeneratorを作るか、普通にgemで作るか
+https://github.com/splaspla-hacker/procon_bypass_man-splatoon2 を見てみてください
 
 ### モード
-```ruby
-module Splatoon2GuruguruMode
-  # @return [Symbol]
-  def self.name
-    :guruguru
-  end
-
-  # @return [Array<String>]
-  def binaries
-    [...]
-  end
-end
-```
+* name, binariesの持つオブジェクトを定義してください
+* binariesには、Proconが出力するバイナリを16進数にした値を配列で定義してください
 
 ### マクロ
-```ruby
-module Splatoon2GuruguruMacro
-  # @return [Symbol]
-  def self.name
-    :guruguru
-  end
-
-  # @return [Array<Symbol>]
-  def step
-    [...]
-  end
-end
-```
+* name, stepsの持つメソッドをオブジェクトを定義してください
+* stepsには、プロコンで入力ができるキーを配列で定義してください
+  * 現在はintervalは設定できません
 
 ## FAQ
 ### ソフトウェアについて
