@@ -101,6 +101,8 @@ https://github.com/splaspla-hacker/procon_bypass_man-splatoon2 を見てみて�
 ### ソフトウェアについて
 * どうやって動かすの?
     * このツールはRaspberry Pi4をUSBガジェットモードで起動して有線でプロコンとSwitchに接続して使います
+* どうやって使うの？
+    * ケーブルでそれらを接続した状態で、Raspberry Pi4にsshして本プログラムを起動することで使用します
 * ラズベリーパイ4のセットアップ方法は？
     * https://github.com/splaspla-hacker/procon_bypass_man/tree/master/docs/setup_raspi.md
 * モード, マクロの違いは？
