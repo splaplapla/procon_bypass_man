@@ -41,6 +41,7 @@ class ProconBypassMan::Runner
         ensure
           break if $will_terminate_token
         end
+        ProconBypassMan.logger.info "Thread1を終了します"
       end
     end
 
@@ -56,22 +57,26 @@ class ProconBypassMan::Runner
         ensure
           break if $will_terminate_token
         end
+        ProconBypassMan.logger.info "Thread2を終了します"
       end
     end
 
     trap("SIGINT") do
+      ProconBypassMan.logger.info "SIGINTを受け取りました"
       $will_terminate_token = true
       [t1, t2].each(&:join)
       @gadget&.close
       @procon&.close
+      ProconBypassMan.logger.info "終了する準備ができました"
       $terminated = true
     end
 
     loop do
       sleep(60)
     rescue Interrupt
-      loop do # リソースの開放が完了されるまでを待つ
-        exit 1 if $terminated
+      ProconBypassMan.logger.info "リソースの開放が完了されるまでを待ちます"
+      loop do
+        exit 1 if defined?($terminated) && $terminated
         sleep(1)
       end
     end
