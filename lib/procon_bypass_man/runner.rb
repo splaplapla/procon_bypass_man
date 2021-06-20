@@ -26,6 +26,9 @@ class ProconBypassMan::Runner
       end
     end
 
+    FileUtils.mkdir_p "tmp"
+    File.write "tmp/pid", $$
+
     loop do
       main_loop_pid = fork { main_loop }
 
@@ -36,7 +39,6 @@ class ProconBypassMan::Runner
         end
       rescue InterruptForRestart
         $will_terminate_token = true
-        [t1, t2].each(&:join)
         Process.kill("TERM", main_loop_pid)
         Process.wait
         ProconBypassMan.logger.info("Reloading config file")
@@ -44,7 +46,6 @@ class ProconBypassMan::Runner
         ProconBypassMan.logger.info("バイパス処理を再開します")
       rescue Interrupt
         $will_terminate_token = true
-        [t1, t2].each(&:join)
         Process.kill("TERM", main_loop_pid)
         Process.wait
         @gadget&.close
@@ -117,6 +118,10 @@ class ProconBypassMan::Runner
         signal = readable_io.first[0].gets.strip
         handle_signal(signal)
       end
+    rescue InterruptForRestart
+      $will_terminate_token = true
+      [t1, t2].each(&:join)
+      exit 1
     rescue Interrupt
       $will_terminate_token = true
       [t1, t2].each(&:join)
