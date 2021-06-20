@@ -109,11 +109,11 @@ class ProconBypassMan::Runner
           self_write.puts(sig)
         end
       rescue ArgumentError
-        puts "Signal #{sig} not supported"
+        puts "プロセスでSignal #{sig} not supported"
       end
     end
 
-    ProconBypassMan.logger.info "graceful shutdownの準備ができました"
+    ProconBypassMan.logger.info "子プロセスでgraceful shutdownの準備ができました"
     begin
       while readable_io = IO.select([self_read])
         signal = readable_io.first[0].gets.strip
@@ -149,7 +149,7 @@ class ProconBypassMan::Runner
   end
 
   def handle_signal(sig)
-    ProconBypassMan.logger.info "#{sig}を受け取りました"
+    ProconBypassMan.logger.info "子プロセスで#{sig}を受け取りました"
     case sig
     when 'USR2'
       raise InterruptForRestart
