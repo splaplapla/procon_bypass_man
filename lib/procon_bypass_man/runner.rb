@@ -30,6 +30,7 @@ class ProconBypassMan::Runner
     File.write "tmp/pid", $$
 
     loop do
+      $will_terminate_token = false
       main_loop_pid = fork { main_loop }
 
       begin
