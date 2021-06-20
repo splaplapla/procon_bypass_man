@@ -149,7 +149,7 @@ class ProconBypassMan::Runner
   end
 
   def handle_signal(sig)
-    ProconBypassMan.logger.info "子プロセスで#{sig}を受け取りました"
+    ProconBypassMan.logger.info "#{$$}で#{sig}を受け取りました"
     case sig
     when 'USR2'
       raise InterruptForRestart
