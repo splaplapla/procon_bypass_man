@@ -119,10 +119,6 @@ class ProconBypassMan::Runner
         signal = readable_io.first[0].gets.strip
         handle_signal(signal)
       end
-    rescue InterruptForRestart
-      $will_terminate_token = true
-      [t1, t2].each(&:join)
-      exit 1
     rescue Interrupt
       $will_terminate_token = true
       [t1, t2].each(&:join)
