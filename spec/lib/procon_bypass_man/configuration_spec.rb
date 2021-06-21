@@ -6,6 +6,33 @@ describe ProconBypassMan::Configuration do
   end
 
   describe '.configure' do
+    context 'with setting_path' do
+      after(:each) { setting&.close }
+      let(:setting_content) do
+        <<~EOH
+          version: 1.0
+          setting: |-
+            prefix_keys_for_changing_layer [:zr, :r, :zl, :l]
+            layer :up do
+              flip :zr, if_pressed: :zr
+            end
+        EOH
+      end
+      let(:setting) do
+        require "tempfile"
+        file = Tempfile.new(["", ".yml"])
+        file.write setting_content
+        file.seek 0
+        file
+      end
+      it do
+        ProconBypassMan.configure(setting_path: setting.path)
+        expect(ProconBypassMan::Configuration.instance.prefix_keys).to eq([:zr, :r, :zl, :l])
+        expect(ProconBypassMan::Configuration.instance.layers[:up].flip_buttons).to eq(zr: { if_pressed: [:zr] })
+        expect(ProconBypassMan::Configuration.instance.layers[:down].flips).to eq({})
+      end
+    end
+
     context 'with install macro plugin' do
       it do
         class AMacroPlugin
@@ -129,14 +156,14 @@ describe ProconBypassMan::Configuration do
         expect(ProconBypassMan::Configuration.instance.layers[:left].flip_buttons.keys).to eq([])
       end
     end
-  end
 
-  describe 'prefix_keys_for_changing_layer' do
-    it do
-      ProconBypassMan.configure do
-        prefix_keys_for_changing_layer [:zr]
+    describe 'prefix_keys_for_changing_layer' do
+      it do
+        ProconBypassMan.configure do
+          prefix_keys_for_changing_layer [:zr]
+        end
+        expect(ProconBypassMan::Configuration.instance.prefix_keys).to eq([:zr])
       end
-      expect(ProconBypassMan::Configuration.instance.prefix_keys).to eq([:zr])
     end
   end
 end

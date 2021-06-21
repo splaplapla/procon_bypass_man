@@ -26,9 +26,7 @@ gemfile do
   gem 'procon_bypass_man', github: 'splaspla-hacker/procon_bypass_man', branch: "0.1.1"
 end
 
-ProconBypassMan.run do
-  setting_path "./setting.yml"
-end
+ProconBypassMan.run(setting_path "./setting.yml")
 ```
 
 setting.yml
@@ -61,9 +59,7 @@ gemfile do
   gem 'procon_bypass_man-splatoon2', github: 'splaspla-hacker/procon_bypass_man-splatoon2', branch: "0.1.0"
 end
 
-ProconBypassMan.run do
-  setting_path "./setting.yml"
-end
+ProconBypassMan.run(setting_path "./setting.yml")
 ```
 setting.yml
 
