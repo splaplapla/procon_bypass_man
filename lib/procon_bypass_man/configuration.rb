@@ -43,7 +43,7 @@ module ProconBypassMan
   end
 
   class Configuration
-    attr_accessor :layers
+    attr_accessor :layers, :setting_path
 
     def self.instance
       @@instance ||= new

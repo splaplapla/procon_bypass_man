@@ -30,6 +30,7 @@ describe ProconBypassMan::Configuration do
         expect(ProconBypassMan::Configuration.instance.prefix_keys).to eq([:zr, :r, :zl, :l])
         expect(ProconBypassMan::Configuration.instance.layers[:up].flip_buttons).to eq(zr: { if_pressed: [:zr] })
         expect(ProconBypassMan::Configuration.instance.layers[:down].flips).to eq({})
+        expect(ProconBypassMan::Configuration.instance.setting_path).to eq(setting.path)
       end
     end
 
