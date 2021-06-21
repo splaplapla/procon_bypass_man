@@ -48,6 +48,7 @@ module ProconBypassMan
         ProconBypassMan::Configuration.instance.setting_path = setting_path
         yaml = YAML.load_file(setting_path) or raise "読み込みに失敗しました"
         ProconBypassMan::Configuration.instance.reset!
+        ProconBypassMan.reset!
         case yaml["version"]
         when 1.0, nil
           ProconBypassMan::Configuration.instance.instance_eval(yaml["setting"])

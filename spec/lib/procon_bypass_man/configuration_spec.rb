@@ -8,11 +8,16 @@ describe ProconBypassMan::Configuration do
   describe 'Loader' do
     describe '.load' do
       context '2回loadするとき' do
+        class ::AMacroPlugin
+          def self.name; :the_macro; end
+          def self.steps; [:a, :b]; end
+        end
         after(:each) { first_setting&.close; second_setting&.close }
         let(:first_setting_content) do
           <<~EOH
           version: 1.0
           setting: |-
+            install_macro_plugin(AMacroPlugin)
             prefix_keys_for_changing_layer [:zr, :r, :zl, :l]
             layer :up do
               flip :zr, if_pressed: :zr
@@ -23,6 +28,7 @@ describe ProconBypassMan::Configuration do
           <<~EOH
           version: 1.0
           setting: |-
+            install_macro_plugin(AMacroPlugin)
             prefix_keys_for_changing_layer [:a]
             layer :up do
               flip :b, if_pressed: :b
