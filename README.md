@@ -27,8 +27,16 @@ gemfile do
 end
 
 ProconBypassMan.run do
-  prefix_keys_for_changing_layer [:zr, :r, :zl, :l]
+  setting_path "./setting.yml"
+end
+```
 
+setting.yml
+
+```yml
+version: 1.0
+setting: |-
+  prefix_keys_for_changing_layer [:zr, :r, :zl, :l]
   layer :up do
     flip :zr, if_pressed: :zr
     flip :zl, if_pressed: [:y, :b, :zl]
@@ -40,7 +48,6 @@ ProconBypassMan.run do
   layer :down do
     flip :zl, if_pressed: true
   end
-end
 ```
 
 ### プラグインを使った設定例
@@ -54,10 +61,18 @@ gemfile do
   gem 'procon_bypass_man-splatoon2', github: 'splaspla-hacker/procon_bypass_man-splatoon2', branch: "0.1.0"
 end
 
-fast_return = ProconBypassMan::Splatoon2::Macro::FastReturn
-guruguru = ProconBypassMan::Splatoon2::Mode::Guruguru
-
 ProconBypassMan.run do
+  setting_path "./setting.yml"
+end
+```
+setting.yml
+
+```yml
+version: 1.0
+setting: |-
+  fast_return = ProconBypassMan::Splatoon2::Macro::FastReturn
+  guruguru = ProconBypassMan::Splatoon2::Mode::Guruguru
+
   install_macro_plugin fast_return
   install_mode_plugin guruguru
 
@@ -76,7 +91,6 @@ ProconBypassMan.run do
   layer :down do
     flip :zl
   end
-end
 ```
 
 * 設定ファイルの例
