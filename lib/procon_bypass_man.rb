@@ -24,15 +24,7 @@ module ProconBypassMan
     if block_given?
       ProconBypassMan::Configuration.instance.instance_eval(&block)
     else
-      ProconBypassMan::Configuration.instance.setting_path = setting_path
-      yaml = YAML.load_file(setting_path) or raise "読み込みに失敗しました"
-      case yaml["version"]
-      when 1.0, nil
-        ProconBypassMan::Configuration.instance.instance_eval(yaml["setting"])
-      else
-        logger.warn "不明なバージョンです。failoverします"
-        ProconBypassMan::Configuration.instance.instance_eval(yaml["setting"])
-      end
+      ProconBypassMan::Configuration::Loader.load(setting_path: setting_path)
     end
   end
 

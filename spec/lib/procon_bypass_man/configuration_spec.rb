@@ -5,6 +5,56 @@ describe ProconBypassMan::Configuration do
     ProconBypassMan.reset!
   end
 
+  describe 'Loader' do
+    describe '.load' do
+      context '2回loadするとき' do
+        after(:each) { first_setting&.close; second_setting&.close }
+        let(:first_setting_content) do
+          <<~EOH
+          version: 1.0
+          setting: |-
+            prefix_keys_for_changing_layer [:zr, :r, :zl, :l]
+            layer :up do
+              flip :zr, if_pressed: :zr
+            end
+          EOH
+        end
+        let(:second_setting_content) do
+          <<~EOH
+          version: 1.0
+          setting: |-
+            prefix_keys_for_changing_layer [:a]
+            layer :up do
+              flip :b, if_pressed: :b
+            end
+          EOH
+        end
+        let(:first_setting) do
+          require "tempfile"
+          file = Tempfile.new(["", ".yml"])
+          file.write first_setting_content
+          file.seek 0
+          file
+        end
+        let(:second_setting) do
+          require "tempfile"
+          file = Tempfile.new(["", ".yml"])
+          file.write second_setting_content
+          file.seek 0
+          file
+        end
+        it '2回目の設定が設定されていること' do
+          ProconBypassMan::Configuration::Loader.load(setting_path: first_setting.path)
+          expect(ProconBypassMan::Configuration.instance.prefix_keys).to eq([:zr, :r, :zl, :l])
+          expect(ProconBypassMan::Configuration.instance.layers[:up].flip_buttons).to eq(zr: { if_pressed: [:zr] })
+          ProconBypassMan::Configuration::Loader.load(setting_path: second_setting.path)
+          expect(ProconBypassMan::Configuration.instance.prefix_keys).to eq([:a])
+          expect(ProconBypassMan::Configuration.instance.layers[:up].flip_buttons).to eq(b: { if_pressed: [:b] })
+        end
+      end
+    end
+  end
+
   describe '.configure' do
     context 'with setting_path' do
       after(:each) { setting&.close }

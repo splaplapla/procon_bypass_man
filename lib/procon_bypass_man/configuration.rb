@@ -43,6 +43,21 @@ module ProconBypassMan
   end
 
   class Configuration
+    module Loader
+      def self.load(setting_path: )
+        ProconBypassMan::Configuration.instance.setting_path = setting_path
+        yaml = YAML.load_file(setting_path) or raise "読み込みに失敗しました"
+        ProconBypassMan::Configuration.instance.reset!
+        case yaml["version"]
+        when 1.0, nil
+          ProconBypassMan::Configuration.instance.instance_eval(yaml["setting"])
+        else
+          logger.warn "不明なバージョンです。failoverします"
+          ProconBypassMan::Configuration.instance.instance_eval(yaml["setting"])
+        end
+      end
+    end
+
     attr_accessor :layers, :setting_path
 
     def self.instance
@@ -50,13 +65,7 @@ module ProconBypassMan
     end
 
     def initialize
-      @prefix_keys_for_changing_layer = []
-      self.layers = {
-        up: Layer.new,
-        down: Layer.new,
-        left: Layer.new,
-        right: Layer.new,
-      }
+      reset!
     end
 
     MODES = [:manual]
@@ -84,6 +93,16 @@ module ProconBypassMan
 
     def prefix_keys
       @prefix_keys_for_changing_layer
+    end
+
+    def reset!
+      @prefix_keys_for_changing_layer = []
+      self.layers = {
+        up: Layer.new,
+        down: Layer.new,
+        left: Layer.new,
+        right: Layer.new,
+      }
     end
   end
 end
