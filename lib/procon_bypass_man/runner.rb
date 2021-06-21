@@ -43,7 +43,7 @@ class ProconBypassMan::Runner
         Process.kill("TERM", main_loop_pid)
         Process.wait
         ProconBypassMan.logger.info("Reloading config file")
-        # reload config
+        ProconBypassMan::Configuration::Loader.reload_setting
         ProconBypassMan.logger.info("バイパス処理を再開します")
       rescue Interrupt
         $will_terminate_token = true

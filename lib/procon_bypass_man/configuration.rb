@@ -56,6 +56,10 @@ module ProconBypassMan
           ProconBypassMan::Configuration.instance.instance_eval(yaml["setting"])
         end
       end
+
+      def self.reload_setting
+        self.load(setting_path: ProconBypassMan::Configuration.instance.setting_path)
+      end
     end
 
     attr_accessor :layers, :setting_path
