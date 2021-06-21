@@ -29,7 +29,7 @@ module ProconBypassMan
   end
 
   def self.run(setting_path: nil, &block)
-    configure(&block)
+    configure(setting_path: setting_path, &block)
     registry = ProconBypassMan::DeviceRegistry.new
     Runner.new(gadget: registry.gadget, procon: registry.procon).run
   end
