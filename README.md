@@ -138,6 +138,7 @@ https://github.com/splaspla-hacker/procon_bypass_man-splatoon2 を見てみて�
 * keyのremap
 * webページから設定ファイルを変更できるようにする(sshしたくない)
     * webサーバのデーモンとPBMはプロセスを分ける(NOTE)
+* プロセスを停止するときにtmp/pidを削除する
 
 ## Contributing
 
