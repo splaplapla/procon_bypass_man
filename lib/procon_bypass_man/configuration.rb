@@ -43,6 +43,16 @@ module ProconBypassMan
   end
 
   class Configuration
+    module Validator
+      def valid?
+        true
+      end
+
+      def invalid?
+        !valid?
+      end
+    end
+
     module Loader
       def self.load(setting_path: )
         ProconBypassMan::Configuration.instance.setting_path = setting_path
@@ -56,12 +66,15 @@ module ProconBypassMan
           logger.warn "不明なバージョンです。failoverします"
           ProconBypassMan::Configuration.instance.instance_eval(yaml["setting"])
         end
+        ProconBypassMan::Configuration.instance
       end
 
       def self.reload_setting
         self.load(setting_path: ProconBypassMan::Configuration.instance.setting_path)
       end
     end
+
+    include Validator
 
     attr_accessor :layers, :setting_path
 
