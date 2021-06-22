@@ -55,15 +55,25 @@ module ProconBypassMan
 
     module Loader
       def self.load(setting_path: )
-        ProconBypassMan::Configuration.instance.setting_path = setting_path
         yaml = YAML.load_file(setting_path) or raise "読み込みに失敗しました"
+        is_valid = ProconBypassMan::Configuration.switch_context(:validation) do |instance|
+          next(instance.instance_eval(yaml["setting"]).valid?)
+        end
+
+        unless is_valid
+          ProconBypassMan.logger.error "設定ファイルが不正です。"
+          return
+        end
+
+        ProconBypassMan::Configuration.instance.setting_path = setting_path
         ProconBypassMan::Configuration.instance.reset!
         ProconBypassMan.reset!
+
         case yaml["version"]
         when 1.0, nil
           ProconBypassMan::Configuration.instance.instance_eval(yaml["setting"])
         else
-          logger.warn "不明なバージョンです。failoverします"
+          ProconBypassMan.logger.warn "不明なバージョンです。failoverします"
           ProconBypassMan::Configuration.instance.instance_eval(yaml["setting"])
         end
         ProconBypassMan::Configuration.instance
@@ -76,10 +86,35 @@ module ProconBypassMan
 
     include Validator
 
-    attr_accessor :layers, :setting_path
+    attr_accessor :layers,
+      :setting_path,
+      :mode_plugins,
+      :macro_plugins,
+      :context,
+      :current_context_key
 
     def self.instance
-      @@instance ||= new
+      @@current_context_key ||= :main
+      @@context ||= {}
+      @@context[@@current_context_key] ||= new
+    end
+
+    def self.switch_context(key)
+      @@context[key] ||= new
+      previous_key = @@current_context_key
+      if block_given?
+        @@current_context_key = key
+        value = yield(@@context[key])
+        @@context[key].reset!
+        @@current_context_key = previous_key
+        return value
+      else
+        @@current_context_key = key
+      end
+    end
+
+    def self.dump
+      { context: @@context, current_context_key: @@current_context_key }
     end
 
     def initialize
@@ -95,18 +130,22 @@ module ProconBypassMan
       layer = Layer.new(mode: mode)
       layer.instance_eval(&block) if block_given?
       self.layers[direction] = layer
+      self
     end
 
     def install_mode_plugin(klass)
       ProconBypassMan::Procon::ModeRegistry.install_plugin(klass)
+      self
     end
 
     def install_macro_plugin(klass)
       ProconBypassMan::Procon::MacroRegistry.install_plugin(klass)
+      self
     end
 
     def prefix_keys_for_changing_layer(buttons)
       @prefix_keys_for_changing_layer = buttons
+      self
     end
 
     def prefix_keys
@@ -115,6 +154,8 @@ module ProconBypassMan
 
     def reset!
       @prefix_keys_for_changing_layer = []
+      self.mode_plugins = {}
+      self.macro_plugins = {}
       self.layers = {
         up: Layer.new,
         down: Layer.new,

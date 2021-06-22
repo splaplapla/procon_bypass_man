@@ -7,8 +7,8 @@ require_relative "procon_bypass_man/bypass"
 require_relative "procon_bypass_man/runner"
 require_relative "procon_bypass_man/processor"
 require_relative "procon_bypass_man/procon/data"
-require_relative "procon_bypass_man/procon"
 require_relative "procon_bypass_man/configuration"
+require_relative "procon_bypass_man/procon"
 
 STDOUT.sync = true
 Thread.abort_on_exception = true
@@ -50,6 +50,7 @@ module ProconBypassMan
     ProconBypassMan::Procon::MacroRegistry.reset!
     ProconBypassMan::Procon::ModeRegistry.reset!
     ProconBypassMan::Procon.reset!
+    ProconBypassMan::Configuration.instance.reset!
     ProconBypassMan::IOMonitor.reset!
   end
 end
