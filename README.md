@@ -134,7 +134,6 @@ https://github.com/splaspla-hacker/procon_bypass_man-splatoon2 を見てみて�
             * https://github.com/dekuNukem/Nintendo_Switch_Reverse_Engineering/issues/7
         * それとSwitchOS 12からペアリングの仕様に変更があって類似ツールが動かなくっている
 * ラズパイのプロビジョニングを楽にしたい
-* 起動時に設定ファイルのlintを行う(サブスレッドが起動してから死ぬとかなしいのでメインスレッドで落としたい)
 * レコーディング機能(プロコンの入力をマクロとして登録ができる)
 * swtichとの接続完了はIOを見て判断する
 * keyのremap
