@@ -7,6 +7,33 @@ describe ProconBypassMan::Configuration do
 
   describe 'Loader' do
     describe '.load' do
+      context '設定内容が不正のとき' do
+        let(:setting_content) do
+          <<~EOH
+          version: 1.0
+          setting: |-
+            prefix_keys_for_changing_layer []
+            layer :up do
+              flip :zr, if_pressed: :zr
+            end
+          EOH
+        end
+        let(:setting) do
+          require "tempfile"
+          file = Tempfile.new(["", ".yml"])
+          file.write setting_content
+          file.seek 0
+          file
+        end
+        it do
+          expect {
+            ProconBypassMan::Configuration::Loader.load(setting_path: setting.path)
+          }.to raise_error(
+            ProconBypassMan::CouldNotLoadConfigError
+          )
+        end
+      end
+
       context '2回loadするとき' do
         class ::AMacroPlugin
           def self.name; :the_macro; end

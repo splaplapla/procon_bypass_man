@@ -15,6 +15,7 @@ Thread.abort_on_exception = true
 
 module ProconBypassMan
   class ProConRejected < StandardError; end
+  class CouldNotLoadConfigError < StandardError; end
 
   def self.configure(setting_path: nil, &block)
     unless setting_path
@@ -32,6 +33,9 @@ module ProconBypassMan
     configure(setting_path: setting_path, &block)
     registry = ProconBypassMan::DeviceRegistry.new
     Runner.new(gadget: registry.gadget, procon: registry.procon).run
+  rescue CouldNotLoadConfigError
+    puts "設定ファイルの読み込みに失敗しました"
+    exit 1
   end
 
   def self.logger=(dev)

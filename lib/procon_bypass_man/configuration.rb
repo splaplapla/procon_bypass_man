@@ -44,25 +44,38 @@ module ProconBypassMan
 
   class Configuration
     module Validator
+      # @return [Boolean]
       def valid?
-        true
+        @errors = {}
+        if prefix_keys.empty?
+          @errors[:prefix_keys] ||= []
+          @errors[:prefix_keys] << "prefix_keys_for_changing_layerに値が入っていません。"
+        end
+
+        @errors.empty?
       end
 
+      # @return [Boolean]
       def invalid?
         !valid?
+      end
+
+      # @return [Hash]
+      def errors
+        @errors
       end
     end
 
     module Loader
       def self.load(setting_path: )
         yaml = YAML.load_file(setting_path) or raise "読み込みに失敗しました"
-        is_valid = ProconBypassMan::Configuration.switch_context(:validation) do |instance|
-          next(instance.instance_eval(yaml["setting"]).valid?)
+        validation_instance = ProconBypassMan::Configuration.switch_context(:validation) do |instance|
+          next(instance.instance_eval(yaml["setting"]).valid?; instance)
         end
 
-        unless is_valid
+        if !validation_instance.errors.empty?
           ProconBypassMan.logger.error "設定ファイルが不正です。"
-          return
+          raise ProconBypassMan::CouldNotLoadConfigError, validation_instance.errors
         end
 
         ProconBypassMan::Configuration.instance.setting_path = setting_path
