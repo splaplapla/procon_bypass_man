@@ -34,7 +34,8 @@ module ProconBypassMan
     registry = ProconBypassMan::DeviceRegistry.new
     Runner.new(gadget: registry.gadget, procon: registry.procon).run
   rescue CouldNotLoadConfigError
-    puts "設定ファイルの読み込みに失敗しました"
+    ProconBypassMan.logger.error "設定ファイルが不正です。設定ファイルの読み込みに失敗しました"
+    puts "設定ファイルが不正です。設定ファイルの読み込みに失敗しました"
     exit 1
   end
 

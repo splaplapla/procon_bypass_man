@@ -74,7 +74,6 @@ module ProconBypassMan
         end
 
         if !validation_instance.errors.empty?
-          ProconBypassMan.logger.error "設定ファイルが不正です。"
           raise ProconBypassMan::CouldNotLoadConfigError, validation_instance.errors
         end
 

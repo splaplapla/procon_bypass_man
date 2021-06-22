@@ -43,7 +43,11 @@ class ProconBypassMan::Runner
         Process.kill("TERM", main_loop_pid)
         Process.wait
         ProconBypassMan.logger.info("Reloading config file")
-        ProconBypassMan::Configuration::Loader.reload_setting
+        begin
+          ProconBypassMan::Configuration::Loader.reload_setting
+        rescue ProconBypassMan::CouldNotLoadConfigError
+          ProconBypassMan.logger.error "設定ファイルが不正です。再読み込みができませんでした"
+        end
         ProconBypassMan.logger.info("バイパス処理を再開します")
       rescue Interrupt
         $will_terminate_token = true
