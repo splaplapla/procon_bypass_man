@@ -12,12 +12,17 @@ describe ProconBypassMan::Configuration do
           def self.name; :the_macro; end
           def self.steps; [:a, :b]; end
         end
+        class AModePlugin
+          def self.name; :foo; end
+          def self.binaries; ['a']; end
+        end
         after(:each) { first_setting&.close; second_setting&.close }
         let(:first_setting_content) do
           <<~EOH
           version: 1.0
           setting: |-
             install_macro_plugin(AMacroPlugin)
+            install_mode_plugin(AModePlugin)
             prefix_keys_for_changing_layer [:zr, :r, :zl, :l]
             layer :up do
               flip :zr, if_pressed: :zr
@@ -29,6 +34,7 @@ describe ProconBypassMan::Configuration do
           version: 1.0
           setting: |-
             install_macro_plugin(AMacroPlugin)
+            install_mode_plugin(AModePlugin)
             prefix_keys_for_changing_layer [:a]
             layer :up do
               flip :b, if_pressed: :b
