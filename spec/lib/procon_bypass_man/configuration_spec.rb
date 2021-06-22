@@ -7,6 +7,54 @@ describe ProconBypassMan::Configuration do
 
   describe 'Loader' do
     describe '.load' do
+      context '設定内容がyamlシンタックスエラーのとき' do
+        let(:setting_content) do
+          <<~EOH
+          version: 1.0
+          setting: |-
+              flip :zr, if_pressed: :zr
+            end
+          EOH
+        end
+        let(:setting) do
+          require "tempfile"
+          file = Tempfile.new(["", ".yml"])
+          file.write setting_content
+          file.seek 0
+          file
+        end
+        it do
+          expect {
+            ProconBypassMan::Configuration::Loader.load(setting_path: setting.path)
+          }.to raise_error(
+            ProconBypassMan::CouldNotLoadConfigError
+          )
+        end
+      end
+      context '設定内容がシンタックスエラーのとき' do
+        let(:setting_content) do
+          <<~EOH
+          version: 1.0
+          setting: |-
+            layer :up do
+              flip :zr, if_pressed: :zr
+          EOH
+        end
+        let(:setting) do
+          require "tempfile"
+          file = Tempfile.new(["", ".yml"])
+          file.write setting_content
+          file.seek 0
+          file
+        end
+        it do
+          expect {
+            ProconBypassMan::Configuration::Loader.load(setting_path: setting.path)
+          }.to raise_error(
+            ProconBypassMan::CouldNotLoadConfigError
+          )
+        end
+      end
       context '設定内容が不正のとき' do
         let(:setting_content) do
           <<~EOH

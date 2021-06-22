@@ -46,7 +46,7 @@ module ProconBypassMan
     module Validator
       # @return [Boolean]
       def valid?
-        @errors = {}
+        @errors = Hash.new {|h,k| h[k] = [] }
         if prefix_keys.empty?
           @errors[:prefix_keys] ||= []
           @errors[:prefix_keys] << "prefix_keys_for_changing_layerに値が入っていません。"
@@ -62,21 +62,32 @@ module ProconBypassMan
 
       # @return [Hash]
       def errors
-        @errors
+        @errors ||= Hash.new {|h,k| h[k] = [] }
       end
     end
 
     module Loader
       def self.load(setting_path: )
-        yaml = YAML.load_file(setting_path) or raise "読み込みに失敗しました"
         validation_instance = ProconBypassMan::Configuration.switch_context(:validation) do |instance|
-          next(instance.instance_eval(yaml["setting"]).valid?; instance)
+          begin
+            yaml = YAML.load_file(setting_path) or raise "読み込みに失敗しました"
+            instance.instance_eval(yaml["setting"])
+          rescue SyntaxError
+            instance.errors[:base] << "Rubyのシンタックスエラーです"
+            next(instance)
+          rescue Psych::SyntaxError
+            instance.errors[:base] << "yamlのシンタックスエラーです"
+            next(instance)
+          end
+          instance.valid?
+          next(instance)
         end
 
         if !validation_instance.errors.empty?
           raise ProconBypassMan::CouldNotLoadConfigError, validation_instance.errors
         end
 
+        yaml = YAML.load_file(setting_path)
         ProconBypassMan::Configuration.instance.setting_path = setting_path
         ProconBypassMan::Configuration.instance.reset!
         ProconBypassMan.reset!
