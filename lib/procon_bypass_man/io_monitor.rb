@@ -65,6 +65,7 @@ module ProconBypassMan
           print " " * max_output_length
           print "\r"
           print line
+          ProconBypassMan.logger.debug { line }
           break if $will_terminate_token
         end
       end
