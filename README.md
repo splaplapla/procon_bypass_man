@@ -136,7 +136,6 @@ https://github.com/splaspla-hacker/procon_bypass_man-splatoon2 を見てみて�
 * ラズパイのプロビジョニングを楽にしたい
 * レコーディング機能(プロコンの入力をマクロとして登録ができる)
 * swtichとの接続完了はIOを見て判断する
-* keyのremap
 * webページから設定ファイルを変更できるようにする(sshしたくない)
     * webサーバのデーモンとPBMはプロセスを分ける(NOTE)
 * プロセスを停止するときにtmp/pidを削除する
