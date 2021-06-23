@@ -45,6 +45,7 @@ setting: |-
   layer :left
   layer :down do
     flip :zl, if_pressed: true
+    remap :l, to: :zr
   end
 ```
 

@@ -215,12 +215,20 @@ describe ProconBypassMan::Configuration do
           layer :up do
             flip :l, if_pressed: [:y, :b], force_neutral: :y
           end
-          layer :down
-          layer :right
-          layer :left
         end
         expect(ProconBypassMan::Configuration.instance.layers[:up].flip_buttons[:l]).to eq(if_pressed: [:y, :b], force_neutral: :y)
         expect(ProconBypassMan::Configuration.instance.layers[:up].flip_buttons.keys).to eq([:l])
+      end
+    end
+
+    context do
+      it  'with remap' do
+        ProconBypassMan.configure do
+          layer :up do
+            remap :l, to: :zr
+          end
+        end
+        expect(ProconBypassMan::Configuration.instance.layers[:up].remaps).to eq(:l=>{:to=>:zr})
       end
     end
 

@@ -1,12 +1,13 @@
 module ProconBypassMan
   class Configuration
     class Layer
-      attr_accessor :mode, :flips, :macros
+      attr_accessor :mode, :flips, :macros, :remaps
 
       def initialize(mode: :manual, &block)
         self.mode = mode
         self.flips = {}
         self.macros = {}
+        self.remaps = {}
         instance_eval(&block) if block_given?
       end
 
@@ -37,9 +38,14 @@ module ProconBypassMan
         self.macros[name] = { if_pressed: if_pressed }
       end
 
+      def remap(button, to: )
+        raise "シンボル以外は設定できません" unless to.is_a?(Symbol)
+        self.remaps[button] = { to: to }
+      end
+
       # @return [Array]
       def flip_buttons
-        flips || {}
+        flips
       end
     end
   end
