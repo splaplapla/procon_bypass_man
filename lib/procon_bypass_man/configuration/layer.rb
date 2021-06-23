@@ -40,7 +40,7 @@ module ProconBypassMan
 
       def remap(button, to: )
         raise "シンボル以外は設定できません" unless to.is_a?(Symbol)
-        self.remaps[button] = { to: to }
+        self.remaps[button] = to
       end
 
       # @return [Array]

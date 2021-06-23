@@ -228,7 +228,7 @@ describe ProconBypassMan::Configuration do
             remap :l, to: :zr
           end
         end
-        expect(ProconBypassMan::Configuration.instance.layers[:up].remaps).to eq(:l=>{:to=>:zr})
+        expect(ProconBypassMan::Configuration.instance.layers[:up].remaps).to eq(:l=>:zr)
       end
     end
 

@@ -33,6 +33,10 @@ class ProconBypassMan::Procon
   end
 
   def apply!
+    current_layer.remaps.each do |from_key, to_key|
+      user_operation.press_button(to_key) if user_operation.pressed_button?(from_key)
+    end
+
     if user_operation.change_layer?
       @@status[:current_layer_key] = user_operation.next_layer_key if user_operation.pressed_next_layer?
       user_operation.set_no_action!
