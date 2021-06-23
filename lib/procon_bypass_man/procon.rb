@@ -108,8 +108,9 @@ class ProconBypassMan::Procon
 
     current_layer.remaps.each do |from_key, to_key|
       if user_operation.pressed_button?(from_key)
-        user_operation.press_button(to_key)
         user_operation.unpress_button(from_key)
+        # TODO 2重でpressしないようにしたい
+        user_operation.press_button(to_key) unless user_operation.pressed_button?(to_key)
       end
     end
 
