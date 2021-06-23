@@ -90,7 +90,7 @@ class ProconBypassMan::Procon
     current_layer.flip_buttons.each do |button, options|
       # 何もしないで常に連打
       if !options[:if_pressed] && status[button]
-        user_operation.press_button(button)
+        user_operation.press_button(button) unless user_operation.pressed_button?(button)
         next
       end
 
@@ -106,11 +106,11 @@ class ProconBypassMan::Procon
       end
     end
 
-    current_layer.remaps.each do |from_key, to_key|
-      if user_operation.pressed_button?(from_key)
-        user_operation.unpress_button(from_key)
+    current_layer.remaps.each do |from_button, to_button|
+      if user_operation.pressed_button?(from_button)
+        user_operation.unpress_button(from_button)
         # TODO 2重でpressしないようにしたい
-        user_operation.press_button(to_key) unless user_operation.pressed_button?(to_key)
+        user_operation.press_button(to_button) unless user_operation.pressed_button?(to_button)
       end
     end
 
