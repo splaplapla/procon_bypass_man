@@ -169,9 +169,9 @@ describe ProconBypassMan::Procon do
       procon.user_operation.press_button(:zr)
       procon.apply!
       b = procon.to_binary
-      expect(b.unpack "H*").to eq(
+      expect(b.unpack "H*").to eq([
         "30f28180800078c77448287509550274ff131029001b0022005a0271ff191028001e00210064027cff1410280020002100000000000000000000000000000000"
-      )
+      ])
     end
   end
 
