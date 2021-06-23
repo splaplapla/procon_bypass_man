@@ -13,6 +13,7 @@ setting: |-
     flip :zl, if_pressed: [:y, :b, :zl]
     flip :down, if_pressed: :down
     macro fast_return.name, if_pressed: [:y, :b, :down]
+    remap :l, to: :zr
   end
   layer :right, mode: guruguru.name
   layer :left do
