@@ -23,10 +23,10 @@ class ProconBypassMan::Procon::ModeRegistry
   }
 
   def self.install_plugin(klass)
-    if @@mode_plugins[klass.name]
+    if plugins[klass.name]
       raise "すでに登録済みです"
     end
-    @@mode_plugins[klass.name] = klass.binaries
+    plugins[klass.name] = klass.binaries
   end
 
   def self.load(name)
@@ -35,11 +35,11 @@ class ProconBypassMan::Procon::ModeRegistry
   end
 
   def self.reset!
-    @@mode_plugins = {}
+    ProconBypassMan::Configuration.instance.mode_plugins = {}
   end
 
   def self.plugins
-    @@mode_plugins
+    ProconBypassMan::Configuration.instance.mode_plugins
   end
 
   reset!

@@ -6,21 +6,24 @@ class ProconBypassMan::Bypass
     self.monitor = monitor
   end
 
+  # ゆっくりでいい
   def send_gadget_to_procon!
     monitor.record(:start_function)
+    input = nil
     begin
-      input = self.gadget.read_nonblock(128)
-      #rescue IO::EAGAINWaitReadable
-      #  monitor.record(:eagain_wait_readable_on_read)
-      #  return if $will_terminate_token
-      #  retry
-      #end
-
-      self.procon.write_nonblock(input)
       sleep($will_interval_1_6)
+      input = self.gadget.read_nonblock(128)
+      ProconBypassMan.logger.debug { ">>> #{input.unpack("H*")}" }
+    rescue IO::EAGAINWaitReadable
+      monitor.record(:eagain_wait_readable_on_read)
+      return if $will_terminate_token
+      retry
+    end
+
+    begin
+      self.procon.write_nonblock(input)
     rescue IO::EAGAINWaitReadable
       monitor.record(:eagain_wait_readable_on_write)
-      sleep($will_interval_1_6)
       return
     end
     monitor.record(:end_function)
@@ -32,6 +35,7 @@ class ProconBypassMan::Bypass
     begin
       sleep($will_interval_0_0_0_5)
       output = self.procon.read_nonblock(128)
+      ProconBypassMan.logger.debug { "<<< #{output.unpack("H*")}" }
     rescue IO::EAGAINWaitReadable
       monitor.record(:eagain_wait_readable_on_read)
       return if $will_terminate_token
@@ -39,7 +43,6 @@ class ProconBypassMan::Bypass
     end
 
     begin
-      ProconBypassMan.logger.debug { "<<< #{output.unpack("H*")}" }
       self.gadget.write_nonblock(ProconBypassMan::Processor.new(output).process)
     rescue IO::EAGAINWaitReadable
       monitor.record(:eagain_wait_readable_on_write)

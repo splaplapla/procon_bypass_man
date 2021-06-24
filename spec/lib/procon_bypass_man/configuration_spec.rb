@@ -5,7 +5,172 @@ describe ProconBypassMan::Configuration do
     ProconBypassMan.reset!
   end
 
+  describe 'Loader' do
+    describe '.load' do
+      context '設定内容がyamlシンタックスエラーのとき' do
+        let(:setting_content) do
+          <<~EOH
+          version: 1.0
+          setting: |-
+              flip :zr, if_pressed: :zr
+            end
+          EOH
+        end
+        let(:setting) do
+          require "tempfile"
+          file = Tempfile.new(["", ".yml"])
+          file.write setting_content
+          file.seek 0
+          file
+        end
+        it do
+          expect {
+            ProconBypassMan::Configuration::Loader.load(setting_path: setting.path)
+          }.to raise_error(
+            ProconBypassMan::CouldNotLoadConfigError
+          )
+        end
+      end
+      context '設定内容がシンタックスエラーのとき' do
+        let(:setting_content) do
+          <<~EOH
+          version: 1.0
+          setting: |-
+            layer :up do
+              flip :zr, if_pressed: :zr
+          EOH
+        end
+        let(:setting) do
+          require "tempfile"
+          file = Tempfile.new(["", ".yml"])
+          file.write setting_content
+          file.seek 0
+          file
+        end
+        it do
+          expect {
+            ProconBypassMan::Configuration::Loader.load(setting_path: setting.path)
+          }.to raise_error(
+            ProconBypassMan::CouldNotLoadConfigError
+          )
+        end
+      end
+      context '設定内容が不正のとき' do
+        let(:setting_content) do
+          <<~EOH
+          version: 1.0
+          setting: |-
+            prefix_keys_for_changing_layer []
+            layer :up do
+              flip :zr, if_pressed: :zr
+            end
+          EOH
+        end
+        let(:setting) do
+          require "tempfile"
+          file = Tempfile.new(["", ".yml"])
+          file.write setting_content
+          file.seek 0
+          file
+        end
+        it do
+          expect {
+            ProconBypassMan::Configuration::Loader.load(setting_path: setting.path)
+          }.to raise_error(
+            ProconBypassMan::CouldNotLoadConfigError
+          )
+        end
+      end
+
+      context '2回loadするとき' do
+        class ::AMacroPlugin
+          def self.name; :the_macro; end
+          def self.steps; [:a, :b]; end
+        end
+        class AModePlugin
+          def self.name; :foo; end
+          def self.binaries; ['a']; end
+        end
+        after(:each) { first_setting&.close; second_setting&.close }
+        let(:first_setting_content) do
+          <<~EOH
+          version: 1.0
+          setting: |-
+            install_macro_plugin(AMacroPlugin)
+            install_mode_plugin(AModePlugin)
+            prefix_keys_for_changing_layer [:zr, :r, :zl, :l]
+            layer :up do
+              flip :zr, if_pressed: :zr
+            end
+          EOH
+        end
+        let(:second_setting_content) do
+          <<~EOH
+          version: 1.0
+          setting: |-
+            install_macro_plugin(AMacroPlugin)
+            install_mode_plugin(AModePlugin)
+            prefix_keys_for_changing_layer [:a]
+            layer :up do
+              flip :b, if_pressed: :b
+            end
+          EOH
+        end
+        let(:first_setting) do
+          require "tempfile"
+          file = Tempfile.new(["", ".yml"])
+          file.write first_setting_content
+          file.seek 0
+          file
+        end
+        let(:second_setting) do
+          require "tempfile"
+          file = Tempfile.new(["", ".yml"])
+          file.write second_setting_content
+          file.seek 0
+          file
+        end
+        it '2回目の設定が設定されていること' do
+          ProconBypassMan::Configuration::Loader.load(setting_path: first_setting.path)
+          expect(ProconBypassMan::Configuration.instance.prefix_keys).to eq([:zr, :r, :zl, :l])
+          expect(ProconBypassMan::Configuration.instance.layers[:up].flip_buttons).to eq(zr: { if_pressed: [:zr] })
+          ProconBypassMan::Configuration::Loader.load(setting_path: second_setting.path)
+          expect(ProconBypassMan::Configuration.instance.prefix_keys).to eq([:a])
+          expect(ProconBypassMan::Configuration.instance.layers[:up].flip_buttons).to eq(b: { if_pressed: [:b] })
+        end
+      end
+    end
+  end
+
   describe '.configure' do
+    context 'with setting_path' do
+      after(:each) { setting&.close }
+      let(:setting_content) do
+        <<~EOH
+          version: 1.0
+          setting: |-
+            prefix_keys_for_changing_layer [:zr, :r, :zl, :l]
+            layer :up do
+              flip :zr, if_pressed: :zr
+            end
+        EOH
+      end
+      let(:setting) do
+        require "tempfile"
+        file = Tempfile.new(["", ".yml"])
+        file.write setting_content
+        file.seek 0
+        file
+      end
+      it do
+        ProconBypassMan.configure(setting_path: setting.path)
+        expect(ProconBypassMan::Configuration.instance.prefix_keys).to eq([:zr, :r, :zl, :l])
+        expect(ProconBypassMan::Configuration.instance.layers[:up].flip_buttons).to eq(zr: { if_pressed: [:zr] })
+        expect(ProconBypassMan::Configuration.instance.layers[:down].flips).to eq({})
+        expect(ProconBypassMan::Configuration.instance.setting_path).to eq(setting.path)
+      end
+    end
+
     context 'with install macro plugin' do
       it do
         class AMacroPlugin
@@ -50,12 +215,20 @@ describe ProconBypassMan::Configuration do
           layer :up do
             flip :l, if_pressed: [:y, :b], force_neutral: :y
           end
-          layer :down
-          layer :right
-          layer :left
         end
         expect(ProconBypassMan::Configuration.instance.layers[:up].flip_buttons[:l]).to eq(if_pressed: [:y, :b], force_neutral: :y)
         expect(ProconBypassMan::Configuration.instance.layers[:up].flip_buttons.keys).to eq([:l])
+      end
+    end
+
+    context do
+      it  'with remap' do
+        ProconBypassMan.configure do
+          layer :up do
+            remap :l, to: :zr
+          end
+        end
+        expect(ProconBypassMan::Configuration.instance.layers[:up].remaps).to eq(:l=>:zr)
       end
     end
 
@@ -129,14 +302,14 @@ describe ProconBypassMan::Configuration do
         expect(ProconBypassMan::Configuration.instance.layers[:left].flip_buttons.keys).to eq([])
       end
     end
-  end
 
-  describe 'prefix_keys_for_changing_layer' do
-    it do
-      ProconBypassMan.configure do
-        prefix_keys_for_changing_layer [:zr]
+    describe 'prefix_keys_for_changing_layer' do
+      it do
+        ProconBypassMan.configure do
+          prefix_keys_for_changing_layer [:zr]
+        end
+        expect(ProconBypassMan::Configuration.instance.prefix_keys).to eq([:zr])
       end
-      expect(ProconBypassMan::Configuration.instance.prefix_keys).to eq([:zr])
     end
   end
 end

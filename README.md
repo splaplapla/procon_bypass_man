@@ -26,9 +26,15 @@ gemfile do
   gem 'procon_bypass_man', github: 'splaspla-hacker/procon_bypass_man', branch: "0.1.1"
 end
 
-ProconBypassMan.run do
-  prefix_keys_for_changing_layer [:zr, :r, :zl, :l]
+ProconBypassMan.run(setting_path: "./setting.yml")
+```
 
+setting.yml
+
+```yml
+version: 1.0
+setting: |-
+  prefix_keys_for_changing_layer [:zr, :r, :zl, :l]
   layer :up do
     flip :zr, if_pressed: :zr
     flip :zl, if_pressed: [:y, :b, :zl]
@@ -39,8 +45,8 @@ ProconBypassMan.run do
   layer :left
   layer :down do
     flip :zl, if_pressed: true
+    remap :l, to: :zr
   end
-end
 ```
 
 ### プラグインを使った設定例
@@ -54,10 +60,16 @@ gemfile do
   gem 'procon_bypass_man-splatoon2', github: 'splaspla-hacker/procon_bypass_man-splatoon2', branch: "0.1.0"
 end
 
-fast_return = ProconBypassMan::Splatoon2::Macro::FastReturn
-guruguru = ProconBypassMan::Splatoon2::Mode::Guruguru
+ProconBypassMan.run(setting_path: "./setting.yml")
+```
+setting.yml
 
-ProconBypassMan.run do
+```yml
+version: 1.0
+setting: |-
+  fast_return = ProconBypassMan::Splatoon2::Macro::FastReturn
+  guruguru = ProconBypassMan::Splatoon2::Mode::Guruguru
+
   install_macro_plugin fast_return
   install_mode_plugin guruguru
 
@@ -76,7 +88,6 @@ ProconBypassMan.run do
   layer :down do
     flip :zl
   end
-end
 ```
 
 * 設定ファイルの例
@@ -114,16 +125,20 @@ https://github.com/splaspla-hacker/procon_bypass_man-splatoon2 を見てみて�
 ## TODO
 * ログをfluentdへ送信
 * 設定ファイルをwebから反映できる
-* プロセスの再起動なしで設定の再読み込み
-* ケーブルの抜き差しなし再接続
-    * 接続確立後、プロセスを強制停止する、接続したままプロセスを再起動する
-    * "81020000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000" 最後にデッドロックする
-    * ケーブルを抜いてからリトライすると改善する
+* ケーブルの抜き差しなし再接続(厳しい)
+    * 接続確立後、プロセスを強制停止し、接続したままプロセスを再起動すると、USBの経由での接続ができなくなる
+        * ケーブルを抜いてからリトライすると改善する
+        * ケーブルで繋がっているけどswitchとプロコンがBluetoothで繋がっている状態かつ非充電状態だとバイパスができない、ということがわかった
+    * ラズパイとプロコン間でBluetooth接続できれば解決するかもしれない
+        * ジャイロの入力を取る方法がまだ発見できていないらしく厳しいことがわかった
+            * https://github.com/dekuNukem/Nintendo_Switch_Reverse_Engineering/issues/7
+        * それとSwitchOS 12からペアリングの仕様に変更があって類似ツールが動かなくっている
 * ラズパイのプロビジョニングを楽にしたい
-* 起動時に設定ファイルのlintを行う(サブスレッドが起動してから死ぬとかなしいのでメインスレッドで落としたい)
 * レコーディング機能(プロコンの入力をマクロとして登録ができる)
 * swtichとの接続完了はIOを見て判断する
-* keyのremap
+* webページから設定ファイルを変更できるようにする(sshしたくない)
+    * webサーバのデーモンとPBMはプロセスを分ける(NOTE)
+* プロセスを停止するときにtmp/pidを削除する
 
 ## Contributing
 

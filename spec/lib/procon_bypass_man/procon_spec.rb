@@ -155,6 +155,26 @@ describe ProconBypassMan::Procon do
     end
   end
 
+  context 'with remap' do
+    it do
+      ProconBypassMan.configure do
+        prefix_keys_for_changing_layer [:zr, :r, :zl, :l]
+        layer :up do
+          remap :l, to: :zr
+        end
+      end
+      no_action_binary = ["30f28100800078c77448287509550274ff131029001b0022005a0271ff191028001e00210064027cff1410280020002100000000000000000000000000000000"].pack("H*")
+      procon = ProconBypassMan::Procon.new(no_action_binary)
+      procon.user_operation.press_button(:l)
+      procon.user_operation.press_button(:zr)
+      procon.apply!
+      b = procon.to_binary
+      expect(b.unpack "H*").to eq([
+        "30f28180800078c77448287509550274ff131029001b0022005a0271ff191028001e00210064027cff1410280020002100000000000000000000000000000000"
+      ])
+    end
+  end
+
   context 'with force_neutral' do
     before do
       ProconBypassMan.configure do
