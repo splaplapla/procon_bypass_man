@@ -57,7 +57,9 @@ module ProconBypassMan
             next
           end
 
-          if false # 全部errorだったら
+          s_to_p = list.detect { |x| x.label == "switch -> procon" }
+          if s_to_p.table.dig(:eagain_wait_readable_on_read) && s_to_p.table.dig(:eagain_wait_readable_on_read)> 100
+            ProconBypassMan.logger.debug { "接続の確立ができません" }
             Process.kill("USR1", Process.ppid)
           end
 
