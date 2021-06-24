@@ -16,6 +16,7 @@ Thread.abort_on_exception = true
 module ProconBypassMan
   class ProConRejected < StandardError; end
   class CouldNotLoadConfigError < StandardError; end
+  class CouldNotConnectDeviceError < StandardError; end
 
   def self.configure(setting_path: nil, &block)
     unless setting_path
@@ -37,6 +38,10 @@ module ProconBypassMan
     ProconBypassMan.logger.error "設定ファイルが不正です。設定ファイルの読み込みに失敗しました"
     puts "設定ファイルが不正です。設定ファイルの読み込みに失敗しました"
     exit 1
+  rescue CouldNotConnectDeviceError
+    ProconBypassMan.logger.error "デバイスと接続中です"
+    puts "デバイスと接続中です"
+    retry
   end
 
   def self.logger=(dev)

@@ -2,6 +2,7 @@ require_relative "io_monitor"
 
 class ProconBypassMan::Runner
   class InterruptForRestart < StandardError; end
+  class InterruptForCouldNotConnect < StandardError; end
 
   def initialize(gadget: , procon: )
     @gadget = gadget
@@ -38,6 +39,11 @@ class ProconBypassMan::Runner
           signal = readable_io.first[0].gets.strip
           handle_signal(signal)
         end
+      rescue InterruptForCouldNotConnect
+        $will_terminate_token = true
+        Process.kill("TERM", main_loop_pid)
+        Process.wait
+        raise ProconBypassMan::CouldNotConnectDeviceError
       rescue InterruptForRestart
         $will_terminate_token = true
         Process.kill("TERM", main_loop_pid)
@@ -154,6 +160,8 @@ class ProconBypassMan::Runner
   def handle_signal(sig)
     ProconBypassMan.logger.info "#{$$}で#{sig}を受け取りました"
     case sig
+    when 'USR1'
+      raise InterruptForCouldNotConnect
     when 'USR2'
       raise InterruptForRestart
     when 'INT', 'TERM'

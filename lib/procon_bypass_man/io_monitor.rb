@@ -56,6 +56,11 @@ module ProconBypassMan
             sleep 0.5
             next
           end
+
+          if false # 全部errorだったら
+            Process.kill("USR1", Process.ppid)
+          end
+
           line = list.map { |counter|
             "#{counter.label}(#{counter.formated_previous_table})"
           }.join(", ")
