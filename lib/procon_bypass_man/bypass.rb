@@ -33,7 +33,8 @@ class ProconBypassMan::Bypass
     monitor.record(:start_function)
     output = nil
     begin
-      output = self.procon.read(128)
+      sleep($will_interval_0_0_0_5)
+      output = self.procon.read_nonblock(128)
       ProconBypassMan.logger.debug { "<<< #{output.unpack("H*")}" }
     rescue IO::EAGAINWaitReadable
       monitor.record(:eagain_wait_readable_on_read)
