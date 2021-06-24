@@ -53,15 +53,16 @@ module ProconBypassMan
         max_output_length = 0
         loop do
           list = @@list.dup
-          unless list.all? { |x| x.previous_table.is_a?(Hash) }
+          unless list.all? { |x| x&.previous_table.is_a?(Hash) }
             sleep 0.5
             next
           end
 
           s_to_p = list.detect { |x| x.label == "switch -> procon" }
-          if s_to_p.previous_table.dig(:eagain_wait_readable_on_read) && s_to_p.previous_table.dig(:eagain_wait_readable_on_read) > 300
-            ProconBypassMan.logger.debug { "接続の確立ができません" }
-            Process.kill("USR1", Process.ppid)
+          previous_table = s_to_p&.previous_table.dup
+          if previous_table && previous_table.dig(:eagain_wait_readable_on_read) && previous_table.dig(:eagain_wait_readable_on_read) > 300
+            # ProconBypassMan.logger.debug { "接続の確立ができません" }
+            # Process.kill("USR1", Process.ppid)
           end
 
           line = list.map { |counter|
