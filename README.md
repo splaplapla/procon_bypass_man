@@ -1,5 +1,5 @@
 # ProconBypassMan
-* プロコンを連射機にしたり、マクロを実行できるツールです
+* プロコンを連射機にしたり、キーのリマップをしたり、マクロを実行できるツールです
     * 設定ファイルはrubyスクリプトで記述します
 * 特定のタイトルに特化した振る舞いにしたい時は各プラグインを使ってください
 
@@ -23,7 +23,7 @@
 require 'bundler/inline'
 
 gemfile do
-  gem 'procon_bypass_man', github: 'splaspla-hacker/procon_bypass_man', branch: "0.1.1"
+  gem 'procon_bypass_man', github: 'splaspla-hacker/procon_bypass_man', branch: "0.1.2"
 end
 
 ProconBypassMan.run(setting_path: "./setting.yml")
@@ -56,7 +56,7 @@ setting: |-
 require 'bundler/inline'
 
 gemfile do
-  gem 'procon_bypass_man', github: 'splaspla-hacker/procon_bypass_man', branch: "0.1.1"
+  gem 'procon_bypass_man', github: 'splaspla-hacker/procon_bypass_man', branch: "0.1.2"
   gem 'procon_bypass_man-splatoon2', github: 'splaspla-hacker/procon_bypass_man-splatoon2', branch: "0.1.0"
 end
 
@@ -99,11 +99,11 @@ setting: |-
 ## プラグインの作り方
 https://github.com/splaspla-hacker/procon_bypass_man-splatoon2 を見てみてください
 
-### モード
+### モード(mode)
 * name, binariesの持つオブジェクトを定義してください
 * binariesには、Proconが出力するバイナリに対して16進数化した文字列を配列で定義してください
 
-### マクロ
+### マクロ(macro)
 * name, stepsの持つメソッドをオブジェクトを定義してください
 * stepsには、プロコンで入力ができるキーを配列で定義してください
   * 現在はintervalは設定できません
@@ -121,6 +121,12 @@ https://github.com/splaspla-hacker/procon_bypass_man-splatoon2 を見てみて�
     * マクロは特定のキーを順番に入れていく機能。キーの入力が終わったらマクロは終了する
 * レイヤーとは？
     * 自作キーボードみたいな感じでレイヤー毎に設定内容を記述して切り替えれる
+* このツールでできることは？
+    * キーリマップ, 連射, マクロ, 特定の同じ操作の繰り返し(mode)
+        * リマップは1つのキーを別のキーに割り当てます
+    * 連射中には特定のキーの入力を無視したり、複数のキーをトリガーに連射することができます
+* どうしてsudoが必要なの？
+    * 操作するdeviceファイルがrootだから
 
 ## TODO
 * ログをfluentdへ送信
@@ -140,16 +146,18 @@ https://github.com/splaspla-hacker/procon_bypass_man-splatoon2 を見てみて�
     * webサーバのデーモンとPBMはプロセスを分ける(NOTE)
 * プロセスを停止するときにtmp/pidを削除する
 
-## Contributing
-
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/procon_bypass_man. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/[USERNAME]/procon_bypass_man/blob/master/CODE_OF_CONDUCT.md).
-
+## 開発系TIPS
 ### ロギング
-```
+```ruby
 ProconBypassMan.tap do |pbm|
   pbm.logger = STDOUT
   pbm.logger.level = :debug
 end
+```
+
+### 設定ファイルのライブリロード
+```shell
+sudo kill -USR2 `cat tmp/pid`
 ```
 
 ## License
