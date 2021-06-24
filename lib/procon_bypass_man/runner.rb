@@ -17,7 +17,7 @@ class ProconBypassMan::Runner
     $is_stable = false
 
     self_read, self_write = IO.pipe
-    %w(TERM INT USR2).each do |sig|
+    %w(TERM INT USR1 USR2).each do |sig|
       begin
         trap sig do
           self_write.puts(sig)
