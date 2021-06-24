@@ -5,6 +5,7 @@ module ProconBypassMan
     def initialize(label: )
       self.label = label
       self.table = {}
+      self.previous_table = {}
     end
 
     # アクティブなバケットは1つだけ
