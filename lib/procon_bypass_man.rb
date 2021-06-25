@@ -38,6 +38,9 @@ module ProconBypassMan
     ProconBypassMan.logger.error "設定ファイルが不正です。設定ファイルの読み込みに失敗しました"
     puts "設定ファイルが不正です。設定ファイルの読み込みに失敗しました"
     exit 1
+  rescue FirstConnectionError
+    puts "接続を確立できませんでした。やりなおします。"
+    retry
   rescue CouldNotConnectDeviceError
     ProconBypassMan.logger.error "デバイスと接続中です"
     puts "デバイスと接続中です"

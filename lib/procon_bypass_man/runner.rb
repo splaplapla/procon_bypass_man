@@ -3,6 +3,7 @@ require_relative "io_monitor"
 class ProconBypassMan::Runner
   class InterruptForRestart < StandardError; end
   class InterruptForCouldNotConnect < StandardError; end
+  class FirstConnectionError < StandardError; end
 
   def initialize(gadget: , procon: )
     @gadget = gadget
@@ -154,6 +155,19 @@ class ProconBypassMan::Runner
         break if $will_terminate_token
       rescue IO::EAGAINWaitReadable
       end
+    end
+
+    # ...
+    #   switch) 8001
+    #   procon) 8101
+    #   switch) 8002
+    # が返ってくるプロトコルがあって、これができていないならやり直す
+    data = @procon.read_nonblock(128)
+    if data[0] == "\x81".b && data[1] == "\x01".b
+      ProconBypassMan.logger.debug { "接続を確認しました" }
+      @gadget.write_nonblock(data)
+    else
+      raise FirstConnectionError
     end
   end
 
