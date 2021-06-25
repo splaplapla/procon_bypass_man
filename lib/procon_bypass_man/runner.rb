@@ -167,6 +167,7 @@ class ProconBypassMan::Runner
         if data[0] == "\x81".b && data[1] == "\x01".b
           ProconBypassMan.logger.debug { "接続を確認しました" }
           @gadget.write_nonblock(data)
+          break
         else
           raise ::ProconBypassMan::FirstConnectionError
         end
