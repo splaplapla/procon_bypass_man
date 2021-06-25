@@ -161,12 +161,17 @@ class ProconBypassMan::Runner
     #   procon) 8101
     #   switch) 8002
     # が返ってくるプロトコルがあって、これができていないならやり直す
-    data = @procon.read_nonblock(128)
-    if data[0] == "\x81".b && data[1] == "\x01".b
-      ProconBypassMan.logger.debug { "接続を確認しました" }
-      @gadget.write_nonblock(data)
-    else
-      raise ::ProconBypassMan::FirstConnectionError
+    loop do
+      begin
+        data = @procon.read_nonblock(128)
+        if data[0] == "\x81".b && data[1] == "\x01".b
+          ProconBypassMan.logger.debug { "接続を確認しました" }
+          @gadget.write_nonblock(data)
+        else
+          raise ::ProconBypassMan::FirstConnectionError
+        end
+      rescue IO::EAGAINWaitReadable
+      end
     end
   end
 
