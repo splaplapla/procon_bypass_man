@@ -3,7 +3,6 @@ require_relative "io_monitor"
 class ProconBypassMan::Runner
   class InterruptForRestart < StandardError; end
   class InterruptForCouldNotConnect < StandardError; end
-  class FirstConnectionError < StandardError; end
 
   def initialize(gadget: , procon: )
     @gadget = gadget
@@ -167,7 +166,7 @@ class ProconBypassMan::Runner
       ProconBypassMan.logger.debug { "接続を確認しました" }
       @gadget.write_nonblock(data)
     else
-      raise FirstConnectionError
+      raise ::ProconBypassMan::FirstConnectionError
     end
   end
 

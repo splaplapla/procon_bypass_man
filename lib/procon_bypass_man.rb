@@ -17,6 +17,7 @@ module ProconBypassMan
   class ProConRejected < StandardError; end
   class CouldNotLoadConfigError < StandardError; end
   class CouldNotConnectDeviceError < StandardError; end
+  class FirstConnectionError < StandardError; end
 
   def self.configure(setting_path: nil, &block)
     unless setting_path
