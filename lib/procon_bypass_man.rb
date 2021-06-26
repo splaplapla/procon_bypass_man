@@ -58,10 +58,6 @@ module ProconBypassMan
   end
 
   DEFAULT_PID_PATH = File.expand_path('../pbm_pid', __dir__).freeze
-  def self.pid_path=(path)
-    @@pid_path = File.expand_path(path, __dir__).freeze
-  end
-
   def self.pid_path
     @@pid_path ||= DEFAULT_PID_PATH
   end
