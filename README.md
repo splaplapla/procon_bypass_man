@@ -6,7 +6,7 @@
 ## 使うハードウェア
 * プロコン
 * Switch本体とドック
-* Raspberry Pi4
+* Raspberry Pi4(Raspberry Pi OS (32-bit))
     * 他のシリーズは未確認です
 * データ通信が可能なUSBケーブル
 
