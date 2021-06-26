@@ -8,7 +8,7 @@ Gem::Specification.new do |spec|
   spec.authors       = ["jiikko"]
   spec.email         = ["n905i.1214@gmail.com"]
 
-  spec.summary       = "rasberrypi's software for procon"
+  spec.summary       = "extension for Nintendo Switch Pro Controller"
   spec.description   = spec.summary
   spec.homepage      = "https://github.com/splaspla-hacker/procon_bypass_man"
   spec.license       = "MIT"
