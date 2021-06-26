@@ -16,7 +16,6 @@ Thread.abort_on_exception = true
 module ProconBypassMan
   class ProConRejected < StandardError; end
   class CouldNotLoadConfigError < StandardError; end
-  class CouldNotConnectDeviceError < StandardError; end
   class FirstConnectionError < StandardError; end
 
   def self.configure(setting_path: nil, &block)
@@ -43,10 +42,6 @@ module ProconBypassMan
     exit 1
   rescue FirstConnectionError
     puts "接続を確立できませんでした。やりなおします。"
-    retry
-  rescue CouldNotConnectDeviceError
-    ProconBypassMan.logger.error "デバイスと接続中です"
-    puts "デバイスと接続中です"
     retry
   end
 
