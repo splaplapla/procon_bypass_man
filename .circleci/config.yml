@@ -5,11 +5,16 @@ orbs:
 jobs:
   build:
     docker:
-      - image: circleci/ruby:2.6.3-stretch-node
+      - image: circleci/ruby:3.0.1
     executor: ruby/default
     steps:
       - checkout
       - run:
-          name: Which bundler?
-          command: bundle -v
-      - ruby/bundle-install
+          name: install bundler
+          command: gem install bundler:2.2.20
+      - run:
+          name: bundle install
+          command: bundle install --jobs 4
+      - run:
+          name: run test
+          command: bundle exec rspec
