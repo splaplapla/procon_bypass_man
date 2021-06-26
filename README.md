@@ -25,8 +25,8 @@ Switch <-- (PBM): ZR連打
 
 ## Usage
 * USBガジェットモードで起動するRaspberry Pi4を用意する
-* https://github.com/jiikko/procon_bypass_man_sample をclone する
-  * 実行ファイルと設定ファイルについては https://github.com/splaspla-hacker/procon_bypass_man/wiki に詳細を書いていますが、まずは動かすためにcloneしたほうが早いです
+* https://github.com/jiikko/procon_bypass_man_sample をRaspberry Pi4でclone して実行ファイルを動かす
+  * 実行ファイルと設定ファイルについては https://github.com/splaspla-hacker/procon_bypass_man/wiki に詳細を書いていますが、まず動かすためにcloneしたほうが早いです
 
 ## Plugins
 * https://github.com/splaspla-hacker/procon_bypass_man-splatoon2
@@ -48,7 +48,7 @@ Switch <-- (PBM): ZR連打
         * リマップは1つのキーを別のキーに割り当てます
     * 連射中には特定のキーの入力を無視したり、複数のキーをトリガーに連射することができます
 * どうしてsudoが必要なの？
-    * 操作するdeviceファイルがrootだから
+    * 操作するdeviceファイルの所有者がrootだから
 
 ## TODO
 * 設定ファイルをwebから反映できる
