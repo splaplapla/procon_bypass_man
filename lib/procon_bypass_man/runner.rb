@@ -14,7 +14,6 @@ class ProconBypassMan::Runner
 
   def run
     first_negotiation
-    $is_stable = false
 
     self_read, self_write = IO.pipe
     %w(TERM INT USR1 USR2).each do |sig|
@@ -72,10 +71,9 @@ class ProconBypassMan::Runner
   def main_loop
     # TODO 接続確立完了をswitchを読み取るようにして、この暫定で接続完了sleepを消す
     Thread.new do
-      sleep(10)
+      sleep(5)
       $will_interval_0_0_0_5 = 0.005
       $will_interval_1_6 = 1.6
-      $is_stable = true
     end
 
     ProconBypassMan::IOMonitor.start!
