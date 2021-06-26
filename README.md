@@ -24,101 +24,14 @@ Switch <-- (PBM): ZR連打
   * ruby-3.0.x
 
 ## Usage
-* 以下のファイルを用意して`sudo`をつけて実行してください
-    * ex) `sudo bin/run.rb`
-
-```ruby
-# bundler inline
-require 'bundler/inline'
-
-gemfile do
-  gem 'procon_bypass_man', github: 'splaspla-hacker/procon_bypass_man', tag: "0.1.2"
-end
-
-ProconBypassMan.run(setting_path: "./setting.yml")
-```
-
-setting.yml
-
-```yml
-version: 1.0
-setting: |-
-  prefix_keys_for_changing_layer [:zr, :r, :zl, :l]
-  layer :up do
-    flip :zr, if_pressed: :zr
-    flip :zl, if_pressed: [:y, :b, :zl]
-    flip :down, if_pressed: true
-  end
-  layer :right do
-  end
-  layer :left
-  layer :down do
-    flip :zl, if_pressed: true
-    remap :l, to: :zr
-  end
-```
-
-### プラグインを使った設定例
-```ruby
-#!/usr/bin/env ruby
-
-require 'bundler/inline'
-
-gemfile do
-  gem 'procon_bypass_man', github: 'splaspla-hacker/procon_bypass_man', tag: "0.1.2"
-  gem 'procon_bypass_man-splatoon2', github: 'splaspla-hacker/procon_bypass_man-splatoon2', tag: "0.1.0"
-end
-
-ProconBypassMan.run(setting_path: "./setting.yml")
-```
-setting.yml
-
-```yml
-version: 1.0
-setting: |-
-  fast_return = ProconBypassMan::Splatoon2::Macro::FastReturn
-  guruguru = ProconBypassMan::Splatoon2::Mode::Guruguru
-
-  install_macro_plugin fast_return
-  install_mode_plugin guruguru
-
-  prefix_keys_for_changing_layer [:zr, :r, :zl, :l]
-
-  layer :up, mode: :manual do
-    flip :zr, if_pressed: :zr, force_neutral: :zl
-    flip :zl, if_pressed: [:y, :b, :zl]
-    flip :down, if_pressed: :down
-    macro fast_return.name, if_pressed: [:y, :b, :down]
-  end
-  layer :right, mode: guruguru.name
-  layer :left do
-    # no-op
-  end
-  layer :down do
-    flip :zl
-  end
-```
-
-* 設定ファイルの例
-  * https://github.com/jiikko/procon_bypass_man_sample
+* USBガジェットモードで起動するRaspberry Pi4を用意する
+* https://github.com/jiikko/procon_bypass_man_sample をRaspberry Pi4でclone して実行ファイルを動かす
+  * 実行ファイルと設定ファイルについては https://github.com/splaspla-hacker/procon_bypass_man/wiki に詳細を書いていますが、まず動かすためにcloneしたほうが早いです
 
 ## Plugins
 * https://github.com/splaspla-hacker/procon_bypass_man-splatoon2
 
-## プラグインの作り方
-https://github.com/splaspla-hacker/procon_bypass_man-splatoon2 を見てみてください
-
-### モード(mode)
-* name, binariesの持つオブジェクトを定義してください
-* binariesには、Proconが出力するバイナリに対して16進数化した文字列を配列で定義してください
-
-### マクロ(macro)
-* name, stepsの持つメソッドをオブジェクトを定義してください
-* stepsには、プロコンで入力ができるキーを配列で定義してください
-  * 現在はintervalは設定できません
-
 ## FAQ
-### ソフトウェアについて
 * どうやって動かすの?
     * このツールはRaspberry Pi4をUSBガジェットモードで起動して有線でプロコンとSwitchに接続して使います
 * どうやって使うの？
@@ -138,7 +51,6 @@ https://github.com/splaspla-hacker/procon_bypass_man-splatoon2 を見てみて�
     * 操作するdeviceファイルの所有者がrootだから
 
 ## TODO
-* ログをfluentdへ送信
 * 設定ファイルをwebから反映できる
 * ラズパイのプロビジョニングを楽にしたい
 * レコーディング機能(プロコンの入力をマクロとして登録ができる)
