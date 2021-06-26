@@ -126,7 +126,7 @@ https://github.com/splaspla-hacker/procon_bypass_man-splatoon2 を見てみて�
         * リマップは1つのキーを別のキーに割り当てます
     * 連射中には特定のキーの入力を無視したり、複数のキーをトリガーに連射することができます
 * どうしてsudoが必要なの？
-    * 操作するdeviceファイルがrootだから
+    * 操作するdeviceファイルの所有者がrootだから
 
 ## TODO
 * ログをfluentdへ送信
