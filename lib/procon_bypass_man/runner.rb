@@ -26,9 +26,6 @@ class ProconBypassMan::Runner
       end
     end
 
-    FileUtils.mkdir_p "tmp"
-    File.write "tmp/pid", $$
-
     loop do
       $will_terminate_token = false
       main_loop_pid = fork { main_loop }

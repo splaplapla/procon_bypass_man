@@ -57,20 +57,19 @@ Switch <-- (PBM): ZR連打
 * swtichとの接続完了はIOを見て判断する
 * webページから設定ファイルを変更できるようにする(sshしたくない)
     * webサーバのデーモンとPBMはプロセスを分ける(NOTE)
-* プロセスを停止するときにtmp/pidを削除する
 
-## 開発系TIPS
-### ロギング
+## 開発系
 ```ruby
 ProconBypassMan.tap do |pbm|
   pbm.logger = STDOUT
   pbm.logger.level = :debug
+  pbm.pid_path = "/tmp/pbm_pid"
 end
 ```
 
 ### 設定ファイルのライブリロード
 ```shell
-sudo kill -USR2 `cat tmp/pid`
+sudo kill -USR2 `cat pbm_pid`
 ```
 
 ## License
