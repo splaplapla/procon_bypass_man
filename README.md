@@ -66,9 +66,9 @@ ProconBypassMan.tap do |pbm|
 end
 ```
 
-### 設定ファイルのライブリロード
+### プロコンとの接続を維持したまま、現在の設定ファイルをPBMに反映する
 ```shell
-sudo kill -USR2 `cat pbm_pid`
+sudo kill -USR2 `cat /tmp/pbm_pid`
 ```
 
 ## License
