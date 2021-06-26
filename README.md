@@ -1,5 +1,5 @@
 # ProconBypassMan
-* プロコンを連射機にしたり、キーのリマップをしたり、マクロを実行できるツールです
+* Switchに繋いだプロコンを連射機にしたり、キーのリマップをしたり、マクロを実行できるツールです
     * 設定ファイルはrubyスクリプトで記述します
 * 特定のタイトルに特化した振る舞いにしたい時は各プラグインを使ってください
 
@@ -25,8 +25,9 @@ Switch <-- (PBM): ZR連打
 
 ## Usage
 * USBガジェットモードで起動するRaspberry Pi4を用意する
-* https://github.com/jiikko/procon_bypass_man_sample をRaspberry Pi4でclone して実行ファイルを動かす
-  * 実行ファイルと設定ファイルについては https://github.com/splaspla-hacker/procon_bypass_man/wiki に詳細を書いていますが、まず動かすためにcloneしたほうが早いです
+  * https://github.com/splaspla-hacker/procon_bypass_man/blob/master/docs/setup_raspi.md
+* Raspberry Pi4で https://github.com/jiikko/procon_bypass_man_sample をclone して実行ファイルを動かす
+  * 実行ファイルと設定ファイルについては https://github.com/splaspla-hacker/procon_bypass_man/wiki に詳細を書いていますが、まず動かすためにはcloneしたほうが早いです
 
 ## Plugins
 * https://github.com/splaspla-hacker/procon_bypass_man-splatoon2

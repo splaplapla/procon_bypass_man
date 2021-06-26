@@ -1,5 +1,5 @@
 # Raspberry Pi4のセットアップ手順
-* SDカードに焼く
+* SDカードにRaspberry Pi OS (32-bit)を焼く
 * SDカードをRaspberry Pi4本体に挿して起動する
 * ラズパイGUI
   * 無線LANに接続する
@@ -36,3 +36,6 @@
 * cd ~ && mkdir -p src && cd ~/src && git clone https://github.com/jiikko/procon_bypass_man_sample && cd procon_bypass_man && sudo bundle install
 
 おわり. 起動する時は都度sudo ruby app.rb を実行する
+
+## 参考
+* https://mtosak-tech.hatenablog.jp/entry/2020/08/22/114622
