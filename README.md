@@ -25,8 +25,9 @@ Switch <-- (PBM): ZR連打
 
 ## Usage
 * USBガジェットモードで起動するRaspberry Pi4を用意する
-* https://github.com/jiikko/procon_bypass_man_sample をRaspberry Pi4でclone して実行ファイルを動かす
-  * 実行ファイルと設定ファイルについては https://github.com/splaspla-hacker/procon_bypass_man/wiki に詳細を書いていますが、まず動かすためにcloneしたほうが早いです
+  * https://github.com/splaspla-hacker/procon_bypass_man/blob/master/docs/setup_raspi.md
+* Raspberry Pi4で https://github.com/jiikko/procon_bypass_man_sample をclone して実行ファイルを動かす
+  * 実行ファイルと設定ファイルについては https://github.com/splaspla-hacker/procon_bypass_man/wiki に詳細を書いていますが、まず動かすためにはcloneしたほうが早いです
 
 ## Plugins
 * https://github.com/splaspla-hacker/procon_bypass_man-splatoon2
