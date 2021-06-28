@@ -13,6 +13,7 @@ class ProconBypassMan::Runner
 
   def run
     first_negotiation
+    print_booted_message
 
     self_read, self_write = IO.pipe
     %w(TERM INT USR1 USR2).each do |sig|
@@ -173,5 +174,14 @@ class ProconBypassMan::Runner
     when 'INT', 'TERM'
       raise Interrupt
     end
+  end
+
+  # @return [void]
+  def print_booted_message
+    booted_message <<~EOF
+      ProconBypassMan #{ProconBypassMan::VERSION}
+    EOF
+    ProconBypassMan.logger.info(booted_message)
+    puts booted_message
   end
 end
