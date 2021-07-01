@@ -15,7 +15,7 @@ Type=simple
 PIDFile=/home/pi/src/procon_bypass_man/pbm_pid
 WatchdogSec=10
 WorkingDirectory=/home/pi/src/procon_bypass_man
-ExecStart=/home/pi/.rbenv/versions/3.0.1/bin/ruby bundle exec examples/practical/app.rb
+ExecStart=/home/pi/.rbenv/versions/3.0.1/bin/ruby examples/practical/app.rb
 Restart=always
 
 [Install]
