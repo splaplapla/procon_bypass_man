@@ -1,5 +1,6 @@
 require "logger"
 require 'yaml'
+require "fileutils"
 
 require_relative "procon_bypass_man/version"
 require_relative "procon_bypass_man/device_registry"
