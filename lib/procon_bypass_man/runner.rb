@@ -178,7 +178,7 @@ class ProconBypassMan::Runner
 
   # @return [void]
   def print_booted_message
-    booted_message <<~EOF
+    booted_message = <<~EOF
       ProconBypassMan #{ProconBypassMan::VERSION}
     EOF
     ProconBypassMan.logger.info(booted_message)
