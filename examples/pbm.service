@@ -11,7 +11,7 @@ Description=PBM
 After=network.target
 
 [Service]
-Type=notify
+Type=simple
 WatchdogSec=10
 WorkingDirectory=/home/pi/src/procon_bypass_man
 ExecStart=/home/pi/.rbenv/shims/ruby examples/practical/app.rb
