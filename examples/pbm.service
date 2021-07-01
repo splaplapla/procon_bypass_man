@@ -12,6 +12,7 @@ After=network.target
 
 [Service]
 Type=simple
+PIDFile=/home/pi/src/procon_bypass_man/pbm_pid
 WatchdogSec=10
 WorkingDirectory=/home/pi/src/procon_bypass_man
 ExecStart=/home/pi/.rbenv/shims/ruby examples/practical/app.rb
