@@ -33,9 +33,9 @@ module ProconBypassMan
 
   def self.run(setting_path: nil, &block)
     configure(setting_path: setting_path, &block)
-    registry = ProconBypassMan::DeviceRegistry.new
     at_exit { FileUtils.rm_rf(pid_path) }
     File.write(pid_path, $$)
+    registry = ProconBypassMan::DeviceRegistry.new
     Runner.new(gadget: registry.gadget, procon: registry.procon).run
   rescue CouldNotLoadConfigError
     ProconBypassMan.logger.error "設定ファイルが不正です。設定ファイルの読み込みに失敗しました"
