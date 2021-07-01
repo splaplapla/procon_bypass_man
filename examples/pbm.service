@@ -14,7 +14,7 @@ After=network.target
 Type=notify
 WatchdogSec=10
 WorkingDirectory=/home/pi/src/procon_bypass_man
-ExecStart=ruby examples/practical/app.rb
+ExecStart=/home/pi/.rbenv/shims/ruby examples/practical/app.rb
 Restart=always
 
 [Install]
