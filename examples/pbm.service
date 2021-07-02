@@ -8,7 +8,8 @@
 
 [Unit]
 Description=PBM
-After=network-online.target
+# After=network-online.target
+After=network.target
 
 [Service]
 Type=simple
