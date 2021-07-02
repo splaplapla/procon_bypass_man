@@ -5,6 +5,10 @@
 #   systemctl start pbm.service
 #   systemctl status pbm.service
 #   systemctl restart pbm.service
+# Debug:
+#   journalctl -xe -f
+# TODO:
+#   do not make PIDFILE
 
 [Unit]
 Description=PBM
