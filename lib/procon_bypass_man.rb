@@ -70,4 +70,8 @@ module ProconBypassMan
     ProconBypassMan::Configuration.instance.reset!
     ProconBypassMan::IOMonitor.reset!
   end
+
+  def self.root
+    File.expand_path('..', __dir__).freeze
+  end
 end
