@@ -71,7 +71,11 @@ module ProconBypassMan
   end
 
   def self.root
-    @root || File.expand_path('..', __dir__).freeze
+    if defined?(@@root)
+      @@root
+    else
+      File.expand_path('..', __dir__).freeze
+    end
   end
 
   def self.root=(path)
