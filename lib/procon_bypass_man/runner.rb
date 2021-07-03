@@ -22,7 +22,7 @@ class ProconBypassMan::Runner
           self_write.puts(sig)
         end
       rescue ArgumentError
-        ProconBypassMan.logger.info("Signal #{sig} not supported")
+        ProconBypassMan.logger.error("Signal #{sig} not supported")
       end
     end
 
