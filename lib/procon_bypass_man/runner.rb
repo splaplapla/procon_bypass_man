@@ -182,7 +182,7 @@ class ProconBypassMan::Runner
       ProconBypassMan: #{ProconBypassMan::VERSION}
       pid_path: #{ProconBypassMan.pid_path}
       pid: #{$$}
-      project_path: #{ProconBypassMan.root}
+      root: #{ProconBypassMan.root}
     EOF
     ProconBypassMan.logger.info(booted_message)
     puts booted_message
