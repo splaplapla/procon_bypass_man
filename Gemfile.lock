@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    procon_bypass_man (0.1.3)
+    procon_bypass_man (0.1.4)
 
 GEM
   remote: https://rubygems.org/
