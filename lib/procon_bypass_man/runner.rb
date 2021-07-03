@@ -180,9 +180,10 @@ class ProconBypassMan::Runner
   def print_booted_message
     booted_message = <<~EOF
       ProconBypassMan: #{ProconBypassMan::VERSION}
-      pid_path: #{ProconBypassMan.pid_path}
       pid: #{$$}
       root: #{ProconBypassMan.root}
+      pid_path: #{ProconBypassMan.pid_path}
+      setting_path: #{ProconBypassMan::Configuration.instance.setting_path}
     EOF
     ProconBypassMan.logger.info(booted_message)
     puts booted_message
