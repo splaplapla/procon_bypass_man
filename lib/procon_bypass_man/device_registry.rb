@@ -34,6 +34,7 @@ class ProconBypassMan::DeviceRegistry
         break
       else
         puts "プロコンをラズベイに挿してください"
+        ProconBypassMan.logger.info("プロコンをラズベイに挿してください")
         sleep(1)
       end
     end

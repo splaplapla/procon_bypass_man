@@ -2,7 +2,6 @@ require_relative "io_monitor"
 
 class ProconBypassMan::Runner
   class InterruptForRestart < StandardError; end
-  class InterruptForCouldNotConnect < StandardError; end
 
   def initialize(gadget: , procon: )
     @gadget = gadget
@@ -14,7 +13,7 @@ class ProconBypassMan::Runner
 
   def run
     first_negotiation
-    $is_stable = false
+    print_booted_message
 
     self_read, self_write = IO.pipe
     %w(TERM INT USR1 USR2).each do |sig|
@@ -27,9 +26,6 @@ class ProconBypassMan::Runner
       end
     end
 
-    FileUtils.mkdir_p "tmp"
-    File.write "tmp/pid", $$
-
     loop do
       $will_terminate_token = false
       main_loop_pid = fork { main_loop }
@@ -39,11 +35,6 @@ class ProconBypassMan::Runner
           signal = readable_io.first[0].gets.strip
           handle_signal(signal)
         end
-      rescue InterruptForCouldNotConnect
-        $will_terminate_token = true
-        Process.kill("TERM", main_loop_pid)
-        Process.wait
-        raise ProconBypassMan::CouldNotConnectDeviceError
       rescue InterruptForRestart
         $will_terminate_token = true
         Process.kill("TERM", main_loop_pid)
@@ -72,10 +63,9 @@ class ProconBypassMan::Runner
   def main_loop
     # TODO 接続確立完了をswitchを読み取るようにして、この暫定で接続完了sleepを消す
     Thread.new do
-      sleep(10)
+      sleep(5)
       $will_interval_0_0_0_5 = 0.005
       $will_interval_1_6 = 1.6
-      $is_stable = true
     end
 
     ProconBypassMan::IOMonitor.start!
@@ -155,17 +145,46 @@ class ProconBypassMan::Runner
       rescue IO::EAGAINWaitReadable
       end
     end
+
+    # ...
+    #   switch) 8001
+    #   procon) 8101
+    #   switch) 8002
+    # が返ってくるプロトコルがあって、これができていないならやり直す
+    loop do
+      begin
+        data = @procon.read_nonblock(128)
+        if data[0] == "\x81".b && data[1] == "\x01".b
+          ProconBypassMan.logger.debug { "接続を確認しました" }
+          @gadget.write_nonblock(data)
+          break
+        else
+          raise ::ProconBypassMan::FirstConnectionError
+        end
+      rescue IO::EAGAINWaitReadable
+      end
+    end
   end
 
   def handle_signal(sig)
     ProconBypassMan.logger.info "#{$$}で#{sig}を受け取りました"
     case sig
-    when 'USR1'
-      raise InterruptForCouldNotConnect
     when 'USR2'
       raise InterruptForRestart
     when 'INT', 'TERM'
       raise Interrupt
     end
+  end
+
+  # @return [void]
+  def print_booted_message
+    booted_message = <<~EOF
+      ProconBypassMan: #{ProconBypassMan::VERSION}
+      pid_path: #{ProconBypassMan.pid_path}
+      pid: #{$$}
+      project_path: #{ProconBypassMan.root}
+    EOF
+    ProconBypassMan.logger.info(booted_message)
+    puts booted_message
   end
 end

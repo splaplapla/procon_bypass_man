@@ -1,5 +1,6 @@
 require "logger"
 require 'yaml'
+require "fileutils"
 
 require_relative "procon_bypass_man/version"
 require_relative "procon_bypass_man/device_registry"
@@ -16,7 +17,7 @@ Thread.abort_on_exception = true
 module ProconBypassMan
   class ProConRejected < StandardError; end
   class CouldNotLoadConfigError < StandardError; end
-  class CouldNotConnectDeviceError < StandardError; end
+  class FirstConnectionError < StandardError; end
 
   def self.configure(setting_path: nil, &block)
     unless setting_path
@@ -32,20 +33,21 @@ module ProconBypassMan
 
   def self.run(setting_path: nil, &block)
     configure(setting_path: setting_path, &block)
+    at_exit { FileUtils.rm_rf(pid_path) }
+    File.write(pid_path, $$)
     registry = ProconBypassMan::DeviceRegistry.new
     Runner.new(gadget: registry.gadget, procon: registry.procon).run
   rescue CouldNotLoadConfigError
     ProconBypassMan.logger.error "設定ファイルが不正です。設定ファイルの読み込みに失敗しました"
     puts "設定ファイルが不正です。設定ファイルの読み込みに失敗しました"
     exit 1
-  rescue CouldNotConnectDeviceError
-    ProconBypassMan.logger.error "デバイスと接続中です"
-    puts "デバイスと接続中です"
+  rescue FirstConnectionError
+    puts "接続を確立できませんでした。やりなおします。"
     retry
   end
 
-  def self.logger=(dev)
-    @@logger = Logger.new(dev, 5, 1024 * 1024 * 10) # 5世代まで残して, 10MBでローテーション
+  def self.logger=(logger)
+    @@logger = logger
   end
 
   def self.logger
@@ -56,11 +58,20 @@ module ProconBypassMan
     end
   end
 
+  DEFAULT_PID_PATH = File.expand_path('../pbm_pid', __dir__).freeze
+  def self.pid_path
+    @@pid_path ||= DEFAULT_PID_PATH
+  end
+
   def self.reset!
     ProconBypassMan::Procon::MacroRegistry.reset!
     ProconBypassMan::Procon::ModeRegistry.reset!
     ProconBypassMan::Procon.reset!
     ProconBypassMan::Configuration.instance.reset!
     ProconBypassMan::IOMonitor.reset!
+  end
+
+  def self.root
+    File.expand_path('..', __dir__).freeze
   end
 end

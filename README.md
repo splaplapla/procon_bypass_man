@@ -15,7 +15,7 @@ Switch <-- (PBM): ZR連打
 ## 使うハードウェア
 * プロコン
 * Switch本体とドック
-* Raspberry Pi4
+* Raspberry Pi4 Model B/4GB(Raspberry Pi OS (32-bit))
     * 他のシリーズは未確認です
 * データ通信が可能なUSBケーブル
 
@@ -55,23 +55,20 @@ Switch <-- (PBM): ZR連打
 * 設定ファイルをwebから反映できる
 * ラズパイのプロビジョニングを楽にしたい
 * レコーディング機能(プロコンの入力をマクロとして登録ができる)
-* swtichとの接続完了はIOを見て判断する
 * webページから設定ファイルを変更できるようにする(sshしたくない)
     * webサーバのデーモンとPBMはプロセスを分ける(NOTE)
-* プロセスを停止するときにtmp/pidを削除する
 
-## 開発系TIPS
-### ロギング
+## 開発系
 ```ruby
 ProconBypassMan.tap do |pbm|
-  pbm.logger = STDOUT
+  pbm.logger = Logger.new("#{ProconBypassMan.root}/app.log", 5, 1024 * 1024 * 10)
   pbm.logger.level = :debug
 end
 ```
 
-### 設定ファイルのライブリロード
+### プロコンとの接続を維持したまま、現在の設定ファイルをPBMに反映する
 ```shell
-sudo kill -USR2 `cat tmp/pid`
+sudo kill -USR2 `cat ./pbm_pid`
 ```
 
 ## License

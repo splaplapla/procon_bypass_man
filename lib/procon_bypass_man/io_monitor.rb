@@ -10,7 +10,6 @@ module ProconBypassMan
 
     # アクティブなバケットは1つだけ
     def record(event_name)
-      return unless $is_stable
       key = Time.now.strftime("%S").to_i
       if table[key].nil?
         self.previous_table = table.values.first
@@ -56,13 +55,6 @@ module ProconBypassMan
           unless list.all? { |x| x&.previous_table.is_a?(Hash) }
             sleep 0.5
             next
-          end
-
-          s_to_p = list.detect { |x| x.label == "switch -> procon" }
-          previous_table = s_to_p&.previous_table.dup
-          if previous_table && previous_table.dig(:eagain_wait_readable_on_read) && previous_table.dig(:eagain_wait_readable_on_read) > 300
-            # ProconBypassMan.logger.debug { "接続の確立ができません" }
-            # Process.kill("USR1", Process.ppid)
           end
 
           line = list.map { |counter|

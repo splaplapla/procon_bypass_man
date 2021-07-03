@@ -1,0 +1,27 @@
+# sudo ln -s /home/pi/src/procon_bypass_man/examples/pbm.service /etc/systemd/system/pbm.service
+# Usage:
+#   systemctl daemon-reload
+#   systemctl enable pbm.service
+#   systemctl start pbm.service
+#   systemctl status pbm.service
+#   systemctl restart pbm.service
+# Debug:
+#   journalctl -xe -f
+# TODO:
+#   do not make PIDFILE
+
+[Unit]
+Description=PBM
+# After=network-online.target
+After=network.target
+
+[Service]
+Type=simple
+# PIDFile=/home/pi/src/procon_bypass_man/pbm_pid
+# WatchdogSec=60
+WorkingDirectory=/home/pi/src/procon_bypass_man
+ExecStart=/home/pi/.rbenv/versions/3.0.1/bin/ruby examples/practical/app.rb
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

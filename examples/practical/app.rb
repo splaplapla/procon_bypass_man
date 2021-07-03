@@ -1,5 +1,9 @@
 #!/usr/bin/env ruby
 
+# sudo ln -s /home/pi/src/procon_bypass_man/examples/practical/setting.yml /home/pi/src/procon_bypass_man/setting.yml
+# cd src/procon_bypass_man
+# sudo ruby examples/practical/app.rb
+
 require 'bundler/inline'
 
 gemfile do
@@ -9,7 +13,7 @@ gemfile do
 end
 
 ProconBypassMan.tap do |pbm|
-  pbm.logger = "./app.log"
+  pbm.logger = Logger.new("#{ProconBypassMan.root}/app.log", 5, 1024 * 1024 * 10) # 5世代まで残して, 10MBでローテーション
   pbm.logger.level = :debug
 end
 
