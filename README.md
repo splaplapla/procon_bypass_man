@@ -60,7 +60,7 @@ Switch <-- (PBM): ZR連打
 ## 開発系
 ```ruby
 ProconBypassMan.tap do |pbm|
-  pbm.logger = STDOUT
+  pbm.logger = Logger.new("#{ProconBypassMan.root}/app.log", 5, 1024 * 1024 * 10)
   pbm.logger.level = :debug
 end
 ```
