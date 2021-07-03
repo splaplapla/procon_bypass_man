@@ -15,7 +15,7 @@ Switch <-- (PBM): ZR連打
 ## 使うハードウェア
 * プロコン
 * Switch本体とドック
-* Raspberry Pi4(Raspberry Pi OS (32-bit))
+* Raspberry Pi4 Model B/4GB(Raspberry Pi OS (32-bit))
     * 他のシリーズは未確認です
 * データ通信が可能なUSBケーブル
 
