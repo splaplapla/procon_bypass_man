@@ -12,7 +12,7 @@ module ProconBypassMan
       end
 
       # @param [Symbol] button
-      def flip(button, if_pressed: false, channel: nil, force_neutral: nil)
+      def flip(button, if_pressed: false, force_neutral: nil)
         case if_pressed
         when TrueClass
           if_pressed = [button]
@@ -24,9 +24,6 @@ module ProconBypassMan
           raise "not support class"
         end
         hash = { if_pressed: if_pressed }
-        if channel
-          hash[:channel] = channel
-        end
         if force_neutral
           hash[:force_neutral] = force_neutral
         end

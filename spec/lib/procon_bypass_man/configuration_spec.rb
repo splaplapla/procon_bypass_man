@@ -242,7 +242,7 @@ describe ProconBypassMan::Configuration do
           install_mode_plugin AModePlugin
           layer :up do
             flip :l, if_pressed: true
-            flip :r, channel: 1
+            flip :r
           end
           layer :down, mode: :manual do
             flip :r, if_pressed: [:zr, :zl]
@@ -251,7 +251,7 @@ describe ProconBypassMan::Configuration do
           layer :left
         end
         expect(ProconBypassMan::Configuration.instance.layers[:up].flip_buttons[:l]).to eq(if_pressed: [:l])
-        expect(ProconBypassMan::Configuration.instance.layers[:up].flip_buttons[:r]).to eq(if_pressed: false, channel: 1)
+        expect(ProconBypassMan::Configuration.instance.layers[:up].flip_buttons[:r]).to eq(if_pressed: false)
         expect(ProconBypassMan::Configuration.instance.layers[:up].flip_buttons.keys).to eq([:l, :r])
         expect(ProconBypassMan::Configuration.instance.layers[:up].mode).to eq(:manual)
         expect(ProconBypassMan::Configuration.instance.layers[:down].flip_buttons.keys).to eq([:r])
