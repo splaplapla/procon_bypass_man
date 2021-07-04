@@ -1,5 +1,5 @@
 ## [0.1.4] - 2021-0
--
+- ProconBypassMan.rootの定義を、gem rootからproject rootへ変更した
 
 ## [0.1.3] - 2021-07-03
 - 接続のしやすさ向上

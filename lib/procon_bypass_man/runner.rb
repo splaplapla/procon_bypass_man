@@ -179,11 +179,14 @@ class ProconBypassMan::Runner
   # @return [void]
   def print_booted_message
     booted_message = <<~EOF
+      ----
+      RUBY_VERSION: #{RUBY_VERSION}
       ProconBypassMan: #{ProconBypassMan::VERSION}
       pid: #{$$}
       root: #{ProconBypassMan.root}
       pid_path: #{ProconBypassMan.pid_path}
       setting_path: #{ProconBypassMan::Configuration.instance.setting_path}
+      ----
     EOF
     ProconBypassMan.logger.info(booted_message)
     puts booted_message
