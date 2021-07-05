@@ -311,5 +311,16 @@ describe ProconBypassMan::Configuration do
         expect(ProconBypassMan::Configuration.instance.prefix_keys).to eq([:zr])
       end
     end
+
+    context 'flip_interval' do
+      it do
+        ProconBypassMan.configure do
+          layer :up do
+              flip :zr, flip_interval: "8F"
+          end
+        end
+        expect(ProconBypassMan::Configuration.instance.layers[:up].flip_buttons[:zr][:flip_interval]).to eq(0.13)
+      end
+    end
   end
 end
