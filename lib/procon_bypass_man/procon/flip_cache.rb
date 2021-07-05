@@ -6,10 +6,16 @@ class ProconBypassMan::Procon
       else
         if @@previous_fetch < Time.now
           @@previous_fetch = Time.now + expires_in
+          block.call
         end
       end
     end
 
-    @@previous_fetch = Time.now
+    # for testing
+    def self.reset!
+      @@previous_fetch = Time.now
+    end
+
+    reset!
   end
 end
