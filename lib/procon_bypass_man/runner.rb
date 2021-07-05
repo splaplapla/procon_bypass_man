@@ -29,6 +29,7 @@ class ProconBypassMan::Runner
     loop do
       $will_terminate_token = false
       main_loop_pid = fork { main_loop }
+      at_exit { FileUtils.rm_rf(pid_path) } # forkしたプロセスには適用したくないのでここで
 
       begin
         while readable_io = IO.select([self_read])

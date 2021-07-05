@@ -33,7 +33,6 @@ module ProconBypassMan
 
   def self.run(setting_path: nil, &block)
     configure(setting_path: setting_path, &block)
-    at_exit { FileUtils.rm_rf(pid_path) }
     File.write(pid_path, $$)
     registry = ProconBypassMan::DeviceRegistry.new
     Runner.new(gadget: registry.gadget, procon: registry.procon).run
