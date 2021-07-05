@@ -26,6 +26,7 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.10.0)
     rspec-support (3.10.2)
+    timecop (0.9.4)
 
 PLATFORMS
   arm-linux
@@ -37,6 +38,7 @@ DEPENDENCIES
   pry
   rake (~> 13.0)
   rspec
+  timecop
 
 BUNDLED WITH
    2.2.20
