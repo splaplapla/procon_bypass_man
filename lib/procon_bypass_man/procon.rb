@@ -53,18 +53,18 @@ class ProconBypassMan::Procon
       @@status[:ongoing_mode] = ModeRegistry.load(:manual)
       current_layer.flip_buttons.each do |button, options|
         if !options[:if_pressed]
-          FlipCache.fetch(expires_in: options[:flip_interval]) do
+          FlipCache.fetch(key: button, expires_in: options[:flip_interval]) do
             status[button] = !status[button]
           end
           next
         end
 
         if options[:if_pressed] && options[:if_pressed].all? { |b| user_operation.pressed_button?(b) }
-          FlipCache.fetch(expires_in: options[:flip_interval]) do
+          FlipCache.fetch(key: button, expires_in: options[:flip_interval]) do
             status[button] = !status[button]
           end
         else
-          FlipCache.fetch(expires_in: options[:flip_interval]) do
+          FlipCache.fetch(key: button, expires_in: options[:flip_interval]) do
             status[button] = false
           end
         end
