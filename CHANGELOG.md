@@ -1,3 +1,6 @@
+## [0.1.5] - 2021-07-
+-
+
 ## [0.1.4] - 2021-07-11
 - ProconBypassMan.rootの定義を、gem rootからproject rootへ変更した
 - 連打の頻度を変更できるようにした
