@@ -15,6 +15,7 @@ end
 ProconBypassMan.tap do |pbm|
   pbm.logger = Logger.new("#{ProconBypassMan.root}/app.log", 5, 1024 * 1024 * 10) # 5世代まで残して, 10MBでローテーション
   pbm.logger.level = :debug
+  pbm.root = File.expand_path(__dir__)
 end
 
 ProconBypassMan.run(setting_path: "./setting.yml")

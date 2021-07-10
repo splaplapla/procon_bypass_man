@@ -5,6 +5,7 @@ class ProconBypassMan::Procon
   require "procon_bypass_man/procon/button_collection"
   require "procon_bypass_man/procon/pressed_button_helper"
   require "procon_bypass_man/procon/user_operation"
+  require "procon_bypass_man/procon/flip_cache"
 
   attr_accessor :user_operation
 
@@ -51,15 +52,21 @@ class ProconBypassMan::Procon
     when :manual
       @@status[:ongoing_mode] = ModeRegistry.load(:manual)
       current_layer.flip_buttons.each do |button, options|
-        unless options[:if_pressed]
-          status[button] = !status[button]
+        if !options[:if_pressed]
+          FlipCache.fetch(key: button, expires_in: options[:flip_interval]) do
+            status[button] = !status[button]
+          end
           next
         end
 
         if options[:if_pressed] && options[:if_pressed].all? { |b| user_operation.pressed_button?(b) }
-          status[button] = !status[button]
+          FlipCache.fetch(key: button, expires_in: options[:flip_interval]) do
+            status[button] = !status[button]
+          end
         else
-          status[button] = false
+          FlipCache.fetch(key: button, expires_in: options[:flip_interval]) do
+            status[button] = false
+          end
         end
       end
     else

@@ -12,7 +12,7 @@ module ProconBypassMan
       end
 
       # @param [Symbol] button
-      def flip(button, if_pressed: false, channel: nil, force_neutral: nil)
+      def flip(button, if_pressed: false, force_neutral: nil, flip_interval: nil)
         case if_pressed
         when TrueClass
           if_pressed = [button]
@@ -24,11 +24,16 @@ module ProconBypassMan
           raise "not support class"
         end
         hash = { if_pressed: if_pressed }
-        if channel
-          hash[:channel] = channel
-        end
         if force_neutral
           hash[:force_neutral] = force_neutral
+        end
+        if flip_interval
+          if /\A(\d+)F\z/i =~ flip_interval
+            interval =  ((frame = $1.to_i) / 60.0).floor(2)
+          else
+            raise "8F みたいなフォーマットで入力してください"
+          end
+          hash[:flip_interval] = interval
         end
         self.flips[button] = hash
       end

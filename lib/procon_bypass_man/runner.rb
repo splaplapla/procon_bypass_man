@@ -22,7 +22,7 @@ class ProconBypassMan::Runner
           self_write.puts(sig)
         end
       rescue ArgumentError
-        ProconBypassMan.logger.info("Signal #{sig} not supported")
+        ProconBypassMan.logger.error("Signal #{sig} not supported")
       end
     end
 
@@ -53,6 +53,7 @@ class ProconBypassMan::Runner
         Process.wait
         @gadget&.close
         @procon&.close
+        FileUtils.rm_rf(ProconBypassMan.pid_path)
         exit 1
       end
     end
@@ -179,10 +180,14 @@ class ProconBypassMan::Runner
   # @return [void]
   def print_booted_message
     booted_message = <<~EOF
+      ----
+      RUBY_VERSION: #{RUBY_VERSION}
       ProconBypassMan: #{ProconBypassMan::VERSION}
-      pid_path: #{ProconBypassMan.pid_path}
       pid: #{$$}
-      project_path: #{ProconBypassMan.root}
+      root: #{ProconBypassMan.root}
+      pid_path: #{ProconBypassMan.pid_path}
+      setting_path: #{ProconBypassMan::Configuration.instance.setting_path}
+      ----
     EOF
     ProconBypassMan.logger.info(booted_message)
     puts booted_message

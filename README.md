@@ -55,14 +55,14 @@ Switch <-- (PBM): ZR連打
 * 設定ファイルをwebから反映できる
 * ラズパイのプロビジョニングを楽にしたい
 * レコーディング機能(プロコンの入力をマクロとして登録ができる)
-* webページから設定ファイルを変更できるようにする(sshしたくない)
-    * webサーバのデーモンとPBMはプロセスを分ける(NOTE)
+* マクロにdelayを入れれるようにする
 
 ## 開発系
 ```ruby
 ProconBypassMan.tap do |pbm|
   pbm.logger = Logger.new("#{ProconBypassMan.root}/app.log", 5, 1024 * 1024 * 10)
   pbm.logger.level = :debug
+  pbm.root = File.expand_path(__dir__)
 end
 ```
 

@@ -9,7 +9,7 @@ setting: |-
   prefix_keys_for_changing_layer [:zr, :r, :zl, :l]
 
   layer :up, mode: :manual do
-    flip :zr, if_pressed: :zr, force_neutral: :zl
+    flip :zr, if_pressed: :zr, force_neutral: :zl, flip_interval: "8F"
     flip :zl, if_pressed: [:y, :b, :zl]
     flip :down, if_pressed: :down
     macro fast_return.name, if_pressed: [:y, :b, :down]
