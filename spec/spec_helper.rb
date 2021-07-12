@@ -1,5 +1,5 @@
-require "procon_bypass_man"
 require "pry"
+require "procon_bypass_man"
 require "timecop"
 require "bundler/setup"
 

@@ -40,7 +40,12 @@ module ProconBypassMan
 
       PRESET_MACROS = [:fast_return]
       def macro(name, if_pressed: )
-        self.macros[name] = { if_pressed: if_pressed }
+        if name.respond_to?(:name)
+          macro_name = name.name.to_sym
+        else
+          macro_name = name
+        end
+        self.macros[macro_name] = { if_pressed: if_pressed }
       end
 
       def remap(button, to: )

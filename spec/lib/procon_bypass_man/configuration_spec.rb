@@ -184,6 +184,25 @@ describe ProconBypassMan::Configuration do
           end
         end
         expect(ProconBypassMan::Procon::MacroRegistry.plugins).to eq(the_macro: [:a, :b])
+        expect(ProconBypassMan::Configuration.instance.layers[:up].instance_eval { |x| @macros }).to eq(
+          {:the_macro=>{:if_pressed=>[:a, :y]}}
+        )
+      end
+      it do
+        class AMacroPlugin
+          def self.name; :the_macro; end
+          def self.steps; [:a, :b]; end
+        end
+        ProconBypassMan.configure do
+          install_macro_plugin(AMacroPlugin)
+          layer :up do
+            macro AMacroPlugin, if_pressed: [:a, :y]
+          end
+        end
+        expect(ProconBypassMan::Procon::MacroRegistry.plugins).to eq(the_macro: [:a, :b])
+        expect(ProconBypassMan::Configuration.instance.layers[:up].instance_eval { |x| @macros }).to eq(
+          {:the_macro=>{:if_pressed=>[:a, :y]}}
+        )
       end
     end
     context 'with install mode plugin' do
@@ -197,15 +216,6 @@ describe ProconBypassMan::Configuration do
           layer :up, mode: AModePlugin.name
         end
         expect(ProconBypassMan::Procon::ModeRegistry.plugins).to eq(foo: ['a'])
-      end
-    end
-    context 'with macro' do
-      it do
-        ProconBypassMan.configure do
-          layer :up do
-            macro :fast_return, if_pressed: [:y, :b, :down]
-          end
-        end
       end
     end
 
@@ -247,7 +257,7 @@ describe ProconBypassMan::Configuration do
           layer :down, mode: :manual do
             flip :r, if_pressed: [:zr, :zl]
           end
-          layer :right, mode: :foo
+          layer :right, mode: AModePlugin
           layer :left
         end
         expect(ProconBypassMan::Configuration.instance.layers[:up].flip_buttons[:l]).to eq(if_pressed: [:l])
