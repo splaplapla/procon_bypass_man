@@ -326,10 +326,30 @@ describe ProconBypassMan::Configuration do
       it do
         ProconBypassMan.configure do
           layer :up do
-              flip :zr, flip_interval: "8F"
+            flip :zr, flip_interval: "8F"
           end
         end
         expect(ProconBypassMan::Configuration.instance.layers[:up].flip_buttons[:zr][:flip_interval]).to eq(0.13)
+      end
+    end
+  end
+
+  describe 'validations' do
+    context 'modeを設定しているのにブロックを渡しているとき' do
+      it do
+        class AModePlugin
+          def self.name; :foo; end
+          def self.binaries; ['a']; end
+        end
+        ProconBypassMan.configure do
+          prefix_keys_for_changing_layer [:zr]
+          install_mode_plugin AModePlugin
+          layer :up, mode: AModePlugin do
+            flip :zr
+          end
+        end
+        expect(ProconBypassMan::Configuration.instance.valid?).to eq(false)
+        expect(ProconBypassMan::Configuration.instance.errors).to eq(:layers=>["upでmodeを設定しているのでボタンの設定はできません。"])
       end
     end
   end

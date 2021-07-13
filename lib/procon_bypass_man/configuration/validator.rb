@@ -9,6 +9,16 @@ module ProconBypassMan
           @errors[:prefix_keys] << "prefix_keys_for_changing_layerに値が入っていません。"
         end
 
+        @layers.each do |layer_key, value|
+          if ProconBypassMan::Procon::ModeRegistry::PRESETS.key?(value.mode)
+            next
+          else
+            if !value.flips.empty? || !value.macros.empty?
+              @errors[:layers] << "#{layer_key}でmodeを設定しているのでボタンの設定はできません。"
+            end
+          end
+        end
+
         @errors.empty?
       end
 
