@@ -7,7 +7,6 @@ require_relative "procon_bypass_man/device_registry"
 require_relative "procon_bypass_man/bypass"
 require_relative "procon_bypass_man/runner"
 require_relative "procon_bypass_man/processor"
-require_relative "procon_bypass_man/procon/data"
 require_relative "procon_bypass_man/configuration"
 require_relative "procon_bypass_man/procon"
 
