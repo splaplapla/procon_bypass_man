@@ -10,7 +10,7 @@ class ProconBypassMan::Procon
 
   attr_accessor :user_operation
 
-  def self.reset_cvar!
+  def self.reset!
     @@status = {
       buttons: {},
       current_layer_key: :up,
@@ -18,7 +18,6 @@ class ProconBypassMan::Procon
       ongoing_mode: ModeRegistry.load(:manual),
     }
   end
-  def self.reset!; reset_cvar!; end
   reset!
 
   def initialize(binary)
