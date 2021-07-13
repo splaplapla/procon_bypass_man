@@ -42,7 +42,7 @@ module ProconBypassMan
       if mode.respond_to?(:name)
         mode_name = mode.name.to_sym
       else
-        mode_name = name
+        mode_name = mode
       end
       unless (MODES + ProconBypassMan::Procon::ModeRegistry.plugins.keys).include?(mode_name)
         raise("#{mode_name} mode is unknown")
