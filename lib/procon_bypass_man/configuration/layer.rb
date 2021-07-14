@@ -35,7 +35,11 @@ module ProconBypassMan
           end
           hash[:flip_interval] = interval
         end
-        self.flips[button] = hash
+        if self.flips[button]
+          raise "#{button}への設定をすでに割り当て済みです"
+        else
+          self.flips[button] = hash
+        end
       end
 
       PRESET_MACROS = [:fast_return]

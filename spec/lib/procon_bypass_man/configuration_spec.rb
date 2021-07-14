@@ -335,6 +335,22 @@ describe ProconBypassMan::Configuration do
   end
 
   describe 'validations' do
+    context '1つのレイヤーで同じボタンへの設定をしているとき' do
+      it do
+        # TODO validationとして捕捉したい
+        expect {
+        ProconBypassMan.configure do
+          prefix_keys_for_changing_layer [:zr]
+          layer :up do
+            flip :zr, if_pressed: [:y]
+            flip :zr, if_pressed: [:x]
+          end
+        end
+        }.to raise_error(RuntimeError, "zrへの設定をすでに割り当て済みです")
+        # expect(ProconBypassMan::Configuration.instance.valid?).to eq(false)
+        # expect(ProconBypassMan::Configuration.instance.errors).to eq(:layers=>["upで同じボタンへの設定はできません。"])
+      end
+    end
     context 'modeを設定しているのにブロックを渡しているとき' do
       it do
         class AModePlugin
