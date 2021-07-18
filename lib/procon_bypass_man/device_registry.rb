@@ -16,6 +16,8 @@ class ProconBypassMan::DeviceRegistry
 
   # @return [void]
   def init_devices
+    puts "デバイスの初期化をします"
+    ProconBypassMan.logger.info("デバイスの初期化をします")
     loop do
       case
       when File.exist?(PROCON_PATH)
@@ -38,5 +40,7 @@ class ProconBypassMan::DeviceRegistry
         sleep(1)
       end
     end
+    puts "デバイスの初期化が終わりました"
+    ProconBypassMan.logger.info("デバイスの初期化が終わりました")
   end
 end
