@@ -133,6 +133,7 @@ class ProconBypassMan::Runner
   end
 
   def first_negotiation
+    first_io_is_done = false
     loop do
       begin
         input = @gadget.read_nonblock(128)
@@ -143,7 +144,15 @@ class ProconBypassMan::Runner
           break
         end
         break if $will_terminate_token
+        first_io_is_done = true
       rescue IO::EAGAINWaitReadable
+        # switch, proconが電源OFFだったら常にIO::EAGAINWaitReadableが返ってくるのでそのときのため
+        unless first_io_is_done
+          ProconBypassMan.logger.error "たぶん、SwitchかProconのどちらかが電源入っていないです"
+          puts "たぶん、SwitchかProconのどちらかが電源入っていないです"
+          sleep(60)
+          raise ::ProconBypassMan::FirstConnectionError
+        end
       end
     end
 
