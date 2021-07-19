@@ -61,8 +61,15 @@ module ProconBypassMan
       end
 
       def remap(button, to: )
-        raise "シンボル以外は設定できません" unless to.is_a?(Symbol)
-        self.remaps[button] = to
+        case to
+        when TrueClass, FalseClass
+          raise "ボタンを渡してください"
+        when Symbol, String
+          self.remaps[button] = [to]
+        when Array
+          raise "ボタンを渡してください" if to.size.zero?
+          self.remaps[button] = to
+        end
       end
 
       # @return [Array]

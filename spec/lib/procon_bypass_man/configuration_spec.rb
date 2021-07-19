@@ -238,7 +238,24 @@ describe ProconBypassMan::Configuration do
             remap :l, to: :zr
           end
         end
-        expect(ProconBypassMan::Configuration.instance.layers[:up].remaps).to eq(:l=>:zr)
+        expect(ProconBypassMan::Configuration.instance.layers[:up].remaps).to eq(:l=>[:zr])
+      end
+      it  'with remap' do
+        expect {
+          ProconBypassMan.configure do
+            layer :up do
+              remap :l, to: []
+            end
+          end
+        }.to raise_error RuntimeError, "ボタンを渡してください"
+      end
+      it  'with remap' do
+        ProconBypassMan.configure do
+          layer :up do
+            remap :l, to: [:zr]
+          end
+        end
+        expect(ProconBypassMan::Configuration.instance.layers[:up].remaps).to eq(:l=>[:zr])
       end
     end
 
