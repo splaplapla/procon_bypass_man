@@ -226,7 +226,7 @@ describe ProconBypassMan::Configuration do
             flip :l, if_pressed: [:y, :b], force_neutral: :y
           end
         end
-        expect(ProconBypassMan::Configuration.instance.layers[:up].flip_buttons[:l]).to eq(if_pressed: [:y, :b], force_neutral: :y)
+        expect(ProconBypassMan::Configuration.instance.layers[:up].flip_buttons[:l]).to eq(if_pressed: [:y, :b], force_neutral: [:y])
         expect(ProconBypassMan::Configuration.instance.layers[:up].flip_buttons.keys).to eq([:l])
       end
     end

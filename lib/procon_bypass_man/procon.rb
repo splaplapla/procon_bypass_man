@@ -106,9 +106,9 @@ class ProconBypassMan::Procon
         if !status[button]
           user_operation.unpress_button(button)
         end
-        if options[:force_neutral] && user_operation.pressed_button?(options[:force_neutral])
-          button = options[:force_neutral]
-          user_operation.unpress_button(button)
+
+        options[:force_neutral]&.each do |force_neutral_button|
+          user_operation.pressed_button?(force_neutral_button) && user_operation.unpress_button(force_neutral_button)
         end
       end
     end

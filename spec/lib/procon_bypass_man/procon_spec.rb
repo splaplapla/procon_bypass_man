@@ -208,7 +208,7 @@ describe ProconBypassMan::Procon do
       ProconBypassMan.configure do
         prefix_keys_for_changing_layer [:zr, :r, :zl, :l]
         layer :up do
-          flip :y, if_pressed: [:y], force_neutral: :b
+          flip :y, if_pressed: [:y], force_neutral: [:b, :l]
         end
         layer :right
         layer :left

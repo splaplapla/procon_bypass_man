@@ -16,7 +16,7 @@ module ProconBypassMan
         case if_pressed
         when TrueClass
           if_pressed = [button]
-        when Symbol
+        when Symbol, String
           if_pressed = [if_pressed]
         when Array, FalseClass
           # sono mama
@@ -25,8 +25,16 @@ module ProconBypassMan
         end
         hash = { if_pressed: if_pressed }
         if force_neutral
-          hash[:force_neutral] = force_neutral
+          case force_neutral
+          when TrueClass, FalseClass
+            raise "ボタンを渡してください"
+          when Symbol, String
+            hash[:force_neutral] = [force_neutral]
+          when Array
+            hash[:force_neutral] = force_neutral
+          end
         end
+
         if flip_interval
           if /\A(\d+)F\z/i =~ flip_interval
             interval =  ((frame = $1.to_i) / 60.0).floor(2)

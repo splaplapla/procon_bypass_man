@@ -1,5 +1,6 @@
 ## [0.1.5] - 2021-07-
 - siwtch, proコンが電源OFF時にCPU使いまくるのを修正した
+- 連打中に無視するボタンを複数登録できるようにした
 
 ## [0.1.4] - 2021-07-11
 - ProconBypassMan.rootの定義を、gem rootからproject rootへ変更した
