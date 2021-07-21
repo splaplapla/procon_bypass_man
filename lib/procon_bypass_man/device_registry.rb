@@ -23,14 +23,14 @@ class ProconBypassMan::DeviceRegistry
       when File.exist?(PROCON_PATH)
         system('echo > /sys/kernel/config/usb_gadget/procon/UDC')
         system('ls /sys/class/udc > /sys/kernel/config/usb_gadget/procon/UDC')
-        sleep 0.5
+        sleep 2
         @gadget = File.open('/dev/hidg0', "w+")
         @procon = File.open(PROCON_PATH, "w+")
         break
       when File.exist?(PROCON2_PATH)
         system('echo > /sys/kernel/config/usb_gadget/procon/UDC')
         system('ls /sys/class/udc > /sys/kernel/config/usb_gadget/procon/UDC')
-        sleep 0.5
+        sleep 2
         @gadget = File.open('/dev/hidg0', "w+")
         @procon = File.open(PROCON2_PATH, "w+")
         break
