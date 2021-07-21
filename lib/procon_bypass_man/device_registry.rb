@@ -21,6 +21,7 @@ class ProconBypassMan::DeviceRegistry
     loop do
       case
       when is_available_device?(PROCON_PATH)
+        ProconBypassMan.logger.info("proconのデバイスファイルは#{PROCON_PATH}を使います")
         system('echo > /sys/kernel/config/usb_gadget/procon/UDC')
         system('ls /sys/class/udc > /sys/kernel/config/usb_gadget/procon/UDC')
         sleep 0.5
@@ -28,6 +29,7 @@ class ProconBypassMan::DeviceRegistry
         @procon = File.open(PROCON_PATH, "w+")
         break
       when is_available_device?(PROCON2_PATH)
+        ProconBypassMan.logger.info("proconのデバイスファイルは#{PROCON2_PATH}を使います")
         system('echo > /sys/kernel/config/usb_gadget/procon/UDC')
         system('ls /sys/class/udc > /sys/kernel/config/usb_gadget/procon/UDC')
         sleep 0.5
