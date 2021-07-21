@@ -186,11 +186,7 @@ class ProconBypassMan::Runner
       begin
         data = @procon.read_nonblock(128)
       rescue IO::EAGAINWaitReadable => e
-        puts e
-        ProconBypassMan.logger.error("bluetoothでproconとswitchの接続しているので接続に失敗しました")
-        puts("bluetoothでproconとswitchの接続しているので接続に失敗しました")
-        sleep(19)
-        raise ::ProconBypassMan::FirstConnectionError
+        retry
       end
 
       begin
