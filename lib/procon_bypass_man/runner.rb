@@ -132,30 +132,38 @@ class ProconBypassMan::Runner
     end
   end
 
-  IO_ERROR_COUNT_THRESHOLD = 1000
-  def first_negotiation
-    io_error_count = 0
+  IO_ERROR_COUNT_THRESHOLD = 200
+  def first_negotiation(io_error_count: 0)
     loop do
-      begin
-        input = @gadget.read_nonblock(128)
-        ProconBypassMan.logger.debug { ">>> #{input.unpack("H*")}" }
-        @procon.write_nonblock(input)
-        if input[0] == "\x80".b && input[1] == "\x01".b
-          ProconBypassMan.logger.info("first negotiation is over")
-          break
-        end
-        break if $will_terminate_token
+      break if $will_terminate_token
 
+      input = nil
+      begin
         # switch, proconが電源OFFだったら常にIO::EAGAINWaitReadableが返ってくるのでそのときは例外を投げる
         if IO_ERROR_COUNT_THRESHOLD < io_error_count
           ProconBypassMan.logger.error "たぶん、SwitchかProconのどちらかが電源入っていないです"
           puts "たぶん、SwitchかProconのどちらかが電源入っていないです"
-          sleep(60)
+          sleep(10)
           raise ::ProconBypassMan::FirstConnectionError
         end
+
+        input = @gadget.read_nonblock(128)
+        ProconBypassMan.logger.debug { ">>> #{input.unpack("H*")}" }
       rescue IO::EAGAINWaitReadable
         print "."
         io_error_count = io_error_count + 1
+        retry
+      end
+
+      begin
+        @procon.write_nonblock(input)
+      rescue IO::EAGAINWaitReadable
+        # メソッドの最初から実行するために何もしない
+      else # no exception
+        if input[0] == "\x80".b && input[1] == "\x01".b
+          ProconBypassMan.logger.info("first negotiation is over")
+          break
+        end
       end
     end
 
