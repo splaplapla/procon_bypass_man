@@ -98,8 +98,11 @@ class ProconBypassMan::Runner
         loop do
           break if $will_terminate_token
           bypass.send_procon_to_gadget!
+        rescue EOFError => e
+          ProconBypassMan.logger.error "Proconと通信ができませんでした.終了処理を開始します"
+          Process.kill "TERM", Process.ppid
         rescue Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError => e
-          ProconBypassMan.logger.error "Proconが切断されました.終了処理を開始します"
+          ProconBypassMan.logger.error "Proconが切断されました。終了処理を開始します"
           Process.kill "TERM", Process.ppid
         end
         ProconBypassMan.logger.info "Thread2を終了します"
