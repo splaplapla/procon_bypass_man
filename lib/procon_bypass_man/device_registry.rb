@@ -47,8 +47,8 @@ class ProconBypassMan::DeviceRegistry
   private
 
   def is_available_device?(path)
-    File.exist?(PROCON_PATH)
-    file = File.open('/dev/hidg0', "w+")
+    return false if !File.exist?(PROCON_PATH)
+    file = File.open(path, "w+")
     begin
       file.read_nonblock(128)
     rescue EOFError
