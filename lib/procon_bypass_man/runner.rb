@@ -151,7 +151,7 @@ class ProconBypassMan::Runner
         end
 
         input = @gadget.read_nonblock(128)
-        ProconBypassMan.logger.debug { ">>> #{input.unpack("H*")}" }
+        ProconBypassMan.logger.debug { "[f] >>> #{input.unpack("H*")}" }
       rescue IO::EAGAINWaitReadable
         # print "."
         io_error_count = io_error_count + 1
@@ -185,6 +185,7 @@ class ProconBypassMan::Runner
       data = nil
       begin
         data = @procon.read_nonblock(128)
+        ProconBypassMan.logger.debug { "[f] >>> #{data.unpack("H*")}" }
       rescue IO::EAGAINWaitReadable => e
         retry
       end
