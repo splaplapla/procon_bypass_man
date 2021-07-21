@@ -161,29 +161,15 @@ class ProconBypassMan::Runner
         retry
         # メソッドの最初から実行するために何もしない
       else # no exception
+        # ...
+        #   switch) 8001
+        #   procon) 8101
+        #   switch) 8002
+        # が返ってくるプロトコルがあって、これができていないならやり直す
         if input[0] == "\x80".b && input[1] == "\x01".b
           ProconBypassMan.logger.info("first negotiation is over")
           break
         end
-      end
-    end
-
-    # ...
-    #   switch) 8001
-    #   procon) 8101
-    #   switch) 8002
-    # が返ってくるプロトコルがあって、これができていないならやり直す
-    loop do
-      begin
-        data = @procon.read_nonblock(128)
-        if data[0] == "\x81".b && data[1] == "\x01".b
-          ProconBypassMan.logger.debug { "接続を確認しました" }
-          @gadget.write_nonblock(data)
-          break
-        else
-          raise ::ProconBypassMan::FirstConnectionError
-        end
-      rescue IO::EAGAINWaitReadable
       end
     end
   end
