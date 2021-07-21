@@ -19,6 +19,13 @@ module ProconBypassMan
           end
         end
 
+        @layers.each do |layer_key, value|
+          unverified_buttons = value.instance_eval { @flips.keys }.map(&:to_sym)
+          unless (unverified_buttons - ProconBypassMan::Procon::ButtonCollection::BUTTONS).length.zero?
+            @errors[:layers] << "#{layer_key}で存在しないボタン#{unverified_buttons.join(", ")}があります"
+          end
+        end
+
         @errors.empty?
       end
 

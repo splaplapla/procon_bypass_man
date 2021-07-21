@@ -7,7 +7,101 @@ describe ProconBypassMan::Configuration do
 
   describe 'Loader' do
     describe '.load' do
-      context '設定内容がyamlシンタックスエラーのとき' do
+      context '存在しないボタンを書いているとき1-1(対象のボタン)' do
+        let(:setting_content) do
+          <<~EOH
+          version: 1.0
+          setting: |-
+            prefix_keys_for_changing_layer [:zr, :r, :zl, :l]
+            layer :up do
+              flip :n, if_pressed: :zr
+            end
+          EOH
+        end
+        let(:setting) do
+          require "tempfile"
+          file = Tempfile.new(["", ".yml"])
+          file.write setting_content
+          file.seek 0
+          file
+        end
+        it do
+          begin
+            ProconBypassMan::Configuration::Loader.load(setting_path: setting.path)
+          rescue ProconBypassMan::CouldNotLoadConfigError => e
+            expect(e.message).to include "upで存在しないボタンnがあります"
+          end
+        end
+      end
+      context '存在しないボタンを書いているとき1-2(オプション)' do
+        let(:setting_content) do
+          <<~EOH
+          version: 1.0
+          setting: |-
+            prefix_keys_for_changing_layer [:zr, :r, :zl, :l]
+            layer :up do
+              flip :zr, if_pressed: :n
+            end
+          EOH
+        end
+        let(:setting) do
+          require "tempfile"
+          file = Tempfile.new(["", ".yml"])
+          file.write setting_content
+          file.seek 0
+          file
+        end
+        it do
+          expect {
+            ProconBypassMan::Configuration::Loader.load(setting_path: setting.path)
+          }.to raise_error(
+            ProconBypassMan::CouldNotLoadConfigError
+          )
+        end
+      end
+      context '存在しないボタンを書いているとき2-1(remap)' do
+        let(:setting_content) do
+          <<~EOH
+          version: 1.0
+          setting: |-
+            prefix_keys_for_changing_layer [:zr, :r, :zl, :l]
+            layer :up do
+              remap :n, to: %i(zr)
+            end
+          EOH
+        end
+        let(:setting) do
+          require "tempfile"
+          file = Tempfile.new(["", ".yml"])
+          file.write setting_content
+          file.seek 0
+          file
+        end
+        it do
+        end
+      end
+      context '存在しないボタンを書いているとき2-2(remap)' do
+        let(:setting_content) do
+          <<~EOH
+          version: 1.0
+          setting: |-
+            prefix_keys_for_changing_layer [:zr, :r, :zl, :l]
+            layer :up do
+              remap :zr, to: %i(n)
+            end
+          EOH
+        end
+        let(:setting) do
+          require "tempfile"
+          file = Tempfile.new(["", ".yml"])
+          file.write setting_content
+          file.seek 0
+          file
+        end
+        it do
+        end
+      end
+      context '設定内容がyamlシンタックスエラーのとき(インデントが1つ深すぎる)' do
         let(:setting_content) do
           <<~EOH
           version: 1.0

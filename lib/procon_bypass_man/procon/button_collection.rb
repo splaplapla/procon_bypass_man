@@ -24,7 +24,7 @@ class ProconBypassMan::Procon::ButtonCollection
     3 => [:zr, :r, :sr, :sl, :a, :b, :x, :y],
     4 => [:grip, :_undefined_key, :cap, :home, :thumbl, :thumbr, :plus, :minus],
     5 => [:zl, :l, :sl, :sr, :left, :right, :up, :down],
-  }
+  }.freeze
 
   BUTTONS_MAP = BYTES_MAP.reduce({}) { |acc, value|
     next acc if value[1].nil?
@@ -32,7 +32,8 @@ class ProconBypassMan::Procon::ButtonCollection
       acc[button] = { byte_position: value[0], bit_position: index }
     end
     acc
-  }
+  }.freeze
+  BUTTONS = ProconBypassMan::Procon::ButtonCollection::BUTTONS_MAP.keys.freeze
 
   def self.load(button_key)
     Button.new(button_key)
