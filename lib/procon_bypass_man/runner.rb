@@ -147,7 +147,7 @@ class ProconBypassMan::Runner
         break if $will_terminate_token
 
         # switch, proconが電源OFFだったら常にIO::EAGAINWaitReadableが返ってくるのでそのときは例外を投げる
-        if IO_ERROR_COUNT_THRESHOLD > io_error_count
+        if IO_ERROR_COUNT_THRESHOLD < io_error_count
           ProconBypassMan.logger.error "たぶん、SwitchかProconのどちらかが電源入っていないです"
           puts "たぶん、SwitchかProconのどちらかが電源入っていないです"
           sleep(60)
