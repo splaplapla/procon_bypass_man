@@ -132,7 +132,7 @@ class ProconBypassMan::Runner
     end
   end
 
-  IO_ERROR_COUNT_THRESHOLD = 5000
+  IO_ERROR_COUNT_THRESHOLD = 1000
   def first_negotiation
     io_error_count = 0
     loop do
@@ -154,6 +154,7 @@ class ProconBypassMan::Runner
           raise ::ProconBypassMan::FirstConnectionError
         end
       rescue IO::EAGAINWaitReadable
+        print "."
         io_error_count = io_error_count + 1
       end
     end
