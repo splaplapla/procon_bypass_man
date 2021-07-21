@@ -104,6 +104,11 @@ describe ProconBypassMan::Configuration do
           file
         end
         it do
+          expect {
+            ProconBypassMan::Configuration::Loader.load(setting_path: setting.path)
+          }.to raise_error(
+            ProconBypassMan::CouldNotLoadConfigError
+          )
         end
       end
       context '存在しないボタンを書いているとき2-2(remap)' do
@@ -125,6 +130,11 @@ describe ProconBypassMan::Configuration do
           file
         end
         it do
+          expect {
+            ProconBypassMan::Configuration::Loader.load(setting_path: setting.path)
+          }.to raise_error(
+            ProconBypassMan::CouldNotLoadConfigError
+          )
         end
       end
       context '設定内容がyamlシンタックスエラーのとき(インデントが1つ深すぎる)' do
@@ -358,7 +368,7 @@ describe ProconBypassMan::Configuration do
             remap :l, to: :zr
           end
         end
-        expect(ProconBypassMan::Configuration.instance.layers[:up].remaps).to eq(:l=>[:zr])
+        expect(ProconBypassMan::Configuration.instance.layers[:up].remaps).to eq(:l=>{ to: [:zr] })
       end
       it  'with remap' do
         expect {
@@ -375,7 +385,7 @@ describe ProconBypassMan::Configuration do
             remap :l, to: [:zr]
           end
         end
-        expect(ProconBypassMan::Configuration.instance.layers[:up].remaps).to eq(:l=>[:zr])
+        expect(ProconBypassMan::Configuration.instance.layers[:up].remaps).to eq(:l=>{ to: [:zr] })
       end
     end
 

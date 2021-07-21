@@ -20,12 +20,22 @@ module ProconBypassMan
         end
 
         @layers.each do |layer_key, value|
+          unverified_buttons = []
           # teplevel target button
-          unverified_buttons = value.instance_eval { @flips.keys }.map(&:to_sym)
+          value.instance_eval { @flips.keys }.map(&:to_sym).each { |b| unverified_buttons << b }
+          value.instance_eval { @remaps.keys }.map(&:to_sym).each { |b| unverified_buttons << b }
           # internal target button
           value.instance_eval {
             @flips.flat_map { |flip_button, flip_option|
               flip_option.flat_map { |flip_option_key, flip_option_target_button|
+                next if flip_option_target_button.is_a?(FalseClass) || flip_option_target_button.is_a?(TrueClass)
+                flip_option_target_button
+              }
+            }
+          }.compact.each { |b| unverified_buttons << b }
+          value.instance_eval {
+            @remaps.flat_map { |button, option|
+              option.flat_map { |flip_option_key, flip_option_target_button|
                 next if flip_option_target_button.is_a?(FalseClass) || flip_option_target_button.is_a?(TrueClass)
                 flip_option_target_button
               }

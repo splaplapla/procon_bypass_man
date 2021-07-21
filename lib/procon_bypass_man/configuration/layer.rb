@@ -65,10 +65,10 @@ module ProconBypassMan
         when TrueClass, FalseClass
           raise "ボタンを渡してください"
         when Symbol, String
-          self.remaps[button] = [to]
+          self.remaps[button] = { to: [to] }
         when Array
           raise "ボタンを渡してください" if to.size.zero?
-          self.remaps[button] = to
+          self.remaps[button] = { to: to }
         end
       end
 
