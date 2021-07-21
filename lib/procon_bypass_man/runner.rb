@@ -163,11 +163,6 @@ class ProconBypassMan::Runner
       rescue IO::EAGAINWaitReadable
         # メソッドの最初から実行するために何もしない
       else # no exception
-        # ...
-        #   switch) 8001
-        #   procon) 8101
-        #   switch) 8002
-        # が返ってくるプロトコルがあって、これができていないならやり直す
         if input[0] == "\x80".b && input[1] == "\x01".b
           ProconBypassMan.logger.info("first negotiation is over at procon part")
           break
@@ -175,7 +170,7 @@ class ProconBypassMan::Runner
       end
     end
 
-    # proconから吸い出し
+    # proconからの送信
     # ...
     #   switch) 8001
     #   procon) 8101
@@ -185,22 +180,56 @@ class ProconBypassMan::Runner
       data = nil
       begin
         data = @procon.read_nonblock(128)
-        ProconBypassMan.logger.debug { "[f] >>> #{data.unpack("H*")}" }
+        ProconBypassMan.logger.debug { "[f] <<< #{data.unpack("H*")}" }
       rescue IO::EAGAINWaitReadable => e
         retry
       end
 
-      begin
-        if data[0] == "\x81".b && data[1] == "\x01".b
-          ProconBypassMan.logger.debug { "接続を確認しました" }
-          @gadget.write_nonblock(data)
-          break
-        else
-          raise ::ProconBypassMan::FirstConnectionError
-        end
-      rescue IO::EAGAINWaitReadable
+      if data[0] == "\x81".b && data[1] == "\x01".b
+        @gadget.write_nonblock(data)
+        break
+      else
+        raise ::ProconBypassMan::FirstConnectionError
       end
     end
+
+    # switchからの返事
+    loop do
+      data = nil
+      begin
+        data = @gadget.read_nonblock(128)
+        ProconBypassMan.logger.debug { "[f] >>> #{data.unpack("H*")}" }
+      rescue IO::EAGAINWaitReadable => e
+        retry
+      end
+      if data[0] == "\x80".b && data[1] == "\x02".b
+        @procon.write_nonblock(data)
+        break
+      else
+        raise ::ProconBypassMan::FirstConnectionError
+      end
+    end
+
+    # proconからの送信
+    loop do
+      data = nil
+      begin
+        data = @procon.read_nonblock(128)
+        ProconBypassMan.logger.debug { "[f] <<< #{data.unpack("H*")}" }
+      rescue IO::EAGAINWaitReadable => e
+        retry
+      end
+
+      if data[0] == "\x81".b && data[1] == "\x02".b
+        @procon.write_nonblock(data)
+        break
+      else
+        raise ::ProconBypassMan::FirstConnectionError
+      end
+      @gadget.write_nonblock(data)
+      ProconBypassMan.logger.info "(仮) 接続を確認しました"
+    end
+
   end
 
   def handle_signal(sig)
