@@ -132,8 +132,9 @@ class ProconBypassMan::Runner
     end
   end
 
+  IO_ERROR_COUNT_THRESHOLD = 5000
   def first_negotiation
-    first_io_is_done = false
+    io_error_count = 0
     loop do
       begin
         input = @gadget.read_nonblock(128)
@@ -144,15 +145,16 @@ class ProconBypassMan::Runner
           break
         end
         break if $will_terminate_token
-        first_io_is_done = true
-      rescue IO::EAGAINWaitReadable
-        # switch, proconが電源OFFだったら常にIO::EAGAINWaitReadableが返ってくるのでそのときのため
-        unless first_io_is_done
+
+        # switch, proconが電源OFFだったら常にIO::EAGAINWaitReadableが返ってくるのでそのときは例外を投げる
+        if IO_ERROR_COUNT_THRESHOLD > io_error_count
           ProconBypassMan.logger.error "たぶん、SwitchかProconのどちらかが電源入っていないです"
           puts "たぶん、SwitchかProconのどちらかが電源入っていないです"
           sleep(60)
           raise ::ProconBypassMan::FirstConnectionError
         end
+      rescue IO::EAGAINWaitReadable
+        io_error_count = io_error_count + 1
       end
     end
 
