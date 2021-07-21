@@ -59,6 +59,32 @@ describe ProconBypassMan::Configuration do
           )
         end
       end
+      context '存在しないボタンを書いているとき1-3(オプション)' do
+        let(:setting_content) do
+          <<~EOH
+          version: 1.0
+          setting: |-
+            prefix_keys_for_changing_layer [:zr, :r, :zl, :l]
+            layer :up do
+              flip :zr, if_pressed: [:n]
+            end
+          EOH
+        end
+        let(:setting) do
+          require "tempfile"
+          file = Tempfile.new(["", ".yml"])
+          file.write setting_content
+          file.seek 0
+          file
+        end
+        it do
+          expect {
+            ProconBypassMan::Configuration::Loader.load(setting_path: setting.path)
+          }.to raise_error(
+            ProconBypassMan::CouldNotLoadConfigError
+          )
+        end
+      end
       context '存在しないボタンを書いているとき2-1(remap)' do
         let(:setting_content) do
           <<~EOH

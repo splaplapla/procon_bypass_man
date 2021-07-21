@@ -20,9 +20,19 @@ module ProconBypassMan
         end
 
         @layers.each do |layer_key, value|
+          # teplevel target button
           unverified_buttons = value.instance_eval { @flips.keys }.map(&:to_sym)
-          unless (unverified_buttons - ProconBypassMan::Procon::ButtonCollection::BUTTONS).length.zero?
-            @errors[:layers] << "#{layer_key}で存在しないボタン#{unverified_buttons.join(", ")}があります"
+          # internal target button
+          value.instance_eval {
+            @flips.flat_map { |flip_button, flip_option|
+              flip_option.flat_map { |flip_option_key, flip_option_target_button|
+                next if flip_option_target_button.is_a?(FalseClass) || flip_option_target_button.is_a?(TrueClass)
+                flip_option_target_button
+              }
+            }
+          }.compact.each { |b| unverified_buttons << b }
+          unless(nunsupport_buttons = (unverified_buttons - ProconBypassMan::Procon::ButtonCollection::BUTTONS)).length.zero?
+            @errors[:layers] << "#{layer_key}で存在しないボタン#{nunsupport_buttons.join(", ")}があります"
           end
         end
 
