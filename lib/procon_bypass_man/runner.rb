@@ -135,7 +135,7 @@ class ProconBypassMan::Runner
     end
   end
 
-  IO_ERROR_COUNT_THRESHOLD = 1000_000
+  IO_ERROR_COUNT_THRESHOLD = 10_000_000
   def first_negotiation(io_error_count: 0)
     loop do
       break if $will_terminate_token
@@ -161,7 +161,6 @@ class ProconBypassMan::Runner
       begin
         @procon.write_nonblock(input)
       rescue IO::EAGAINWaitReadable
-        retry
         # メソッドの最初から実行するために何もしない
       else # no exception
         # ...
@@ -170,9 +169,36 @@ class ProconBypassMan::Runner
         #   switch) 8002
         # が返ってくるプロトコルがあって、これができていないならやり直す
         if input[0] == "\x80".b && input[1] == "\x01".b
-          ProconBypassMan.logger.info("first negotiation is over")
+          ProconBypassMan.logger.info("first negotiation is over at procon part")
           break
         end
+      end
+    end
+
+    # proconから吸い出し
+    # ...
+    #   switch) 8001
+    #   procon) 8101
+    #   switch) 8002
+    # が返ってくるプロトコルがあって、これができていないならやり直す
+    loop do
+      data = nil
+      begin
+        data = @procon.read_nonblock(128)
+      rescue EOFError
+        ProconBypassMan.logger.error("bluetoothでproconとswitchの接続しているので接続に失敗しました")
+        puts("bluetoothでproconとswitchの接続しているので接続に失敗しました")
+      end
+
+      begin
+        if data[0] == "\x81".b && data[1] == "\x01".b
+          ProconBypassMan.logger.debug { "接続を確認しました" }
+          @gadget.write_nonblock(data)
+          break
+        else
+          raise ::ProconBypassMan::FirstConnectionError
+        end
+      rescue IO::EAGAINWaitReadable
       end
     end
   end
