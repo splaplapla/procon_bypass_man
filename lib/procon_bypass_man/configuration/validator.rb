@@ -28,6 +28,7 @@ module ProconBypassMan
           value.instance_eval {
             @flips.flat_map { |flip_button, flip_option|
               flip_option.flat_map { |flip_option_key, flip_option_target_button|
+                next if flip_option_key == :flip_interval
                 next if flip_option_target_button.is_a?(FalseClass) || flip_option_target_button.is_a?(TrueClass)
                 flip_option_target_button
               }

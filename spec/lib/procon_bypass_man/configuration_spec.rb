@@ -7,6 +7,30 @@ describe ProconBypassMan::Configuration do
 
   describe 'Loader' do
     describe '.load' do
+      context 'with flip_interval' do
+        let(:setting_content) do
+          <<~EOH
+          version: 1.0
+          setting: |-
+            prefix_keys_for_changing_layer [:zr, :r, :zl, :l]
+            layer :up do
+              flip :zr, if_pressed: :zr, flip_interval: "2F"
+            end
+          EOH
+        end
+        let(:setting) do
+          require "tempfile"
+          file = Tempfile.new(["", ".yml"])
+          file.write setting_content
+          file.seek 0
+          file
+        end
+        it do
+          expect {
+            ProconBypassMan::Configuration::Loader.load(setting_path: setting.path)
+          }.not_to raise_error
+        end
+      end
       context '存在しないボタンを書いているとき1-1(対象のボタン)' do
         let(:setting_content) do
           <<~EOH

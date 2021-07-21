@@ -117,7 +117,7 @@ class ProconBypassMan::Procon
       if user_operation.pressed_button?(from_button)
         user_operation.unpress_button(from_button)
         # TODO 2重でpressしないようにしたい
-        to_buttons.each do |_key, to_button|
+        to_buttons[:to].each do |to_button|
           user_operation.press_button(to_button) unless user_operation.pressed_button?(to_button)
         end
       end
