@@ -132,7 +132,7 @@ class ProconBypassMan::Runner
     end
   end
 
-  IO_ERROR_COUNT_THRESHOLD = 1000
+  IO_ERROR_COUNT_THRESHOLD = 3000
   def first_negotiation(io_error_count: 0)
     loop do
       break if $will_terminate_token
