@@ -132,7 +132,7 @@ class ProconBypassMan::Runner
     end
   end
 
-  IO_ERROR_COUNT_THRESHOLD = 3000
+  IO_ERROR_COUNT_THRESHOLD = 1000_000
   def first_negotiation(io_error_count: 0)
     loop do
       break if $will_terminate_token
@@ -150,7 +150,7 @@ class ProconBypassMan::Runner
         input = @gadget.read_nonblock(128)
         ProconBypassMan.logger.debug { ">>> #{input.unpack("H*")}" }
       rescue IO::EAGAINWaitReadable
-        print "."
+        # print "."
         io_error_count = io_error_count + 1
         retry
       end
@@ -158,6 +158,7 @@ class ProconBypassMan::Runner
       begin
         @procon.write_nonblock(input)
       rescue IO::EAGAINWaitReadable
+        retry
         # メソッドの最初から実行するために何もしない
       else # no exception
         if input[0] == "\x80".b && input[1] == "\x01".b
