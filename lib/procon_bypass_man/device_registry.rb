@@ -20,14 +20,14 @@ class ProconBypassMan::DeviceRegistry
     ProconBypassMan.logger.info("デバイスの初期化をします")
     loop do
       case
-      when File.exist?(PROCON_PATH)
+      when is_available_device?(PROCON_PATH)
         system('echo > /sys/kernel/config/usb_gadget/procon/UDC')
         system('ls /sys/class/udc > /sys/kernel/config/usb_gadget/procon/UDC')
         sleep 0.5
         @gadget = File.open('/dev/hidg0', "w+")
         @procon = File.open(PROCON_PATH, "w+")
         break
-      when File.exist?(PROCON2_PATH)
+      when is_available_device?(PROCON2_PATH)
         system('echo > /sys/kernel/config/usb_gadget/procon/UDC')
         system('ls /sys/class/udc > /sys/kernel/config/usb_gadget/procon/UDC')
         sleep 0.5
@@ -43,4 +43,19 @@ class ProconBypassMan::DeviceRegistry
     puts "デバイスの初期化が終わりました"
     ProconBypassMan.logger.info("デバイスの初期化が終わりました")
   end
-end
+
+  private
+
+  def is_available_device?(path)
+    File.exist?(PROCON_PATH)
+    file = File.open('/dev/hidg0', "w+")
+    begin
+      file.read_nonblock(128)
+    rescue EOFError
+      file.close
+      return false
+    rescue IO::EAGAINWaitReadable
+      file.close
+      return true
+    end
+  end
