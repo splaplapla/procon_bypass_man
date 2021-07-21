@@ -230,6 +230,15 @@ class ProconBypassMan::Runner
       ProconBypassMan.logger.info "(仮) 接続を確認しました"
     end
 
+    # switchからの返事
+    data = nil
+    begin
+      data = @gadget.read_nonblock(128)
+      ProconBypassMan.logger.debug { "[f] >>> #{data.unpack("H*")}" }
+    rescue IO::EAGAINWaitReadable => e
+      retry
+    end
+    @procon.write_nonblock(data)
   end
 
   def handle_signal(sig)
