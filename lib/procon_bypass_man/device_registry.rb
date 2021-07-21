@@ -59,3 +59,4 @@ class ProconBypassMan::DeviceRegistry
       return true
     end
   end
+end
