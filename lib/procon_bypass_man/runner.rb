@@ -12,7 +12,7 @@ class ProconBypassMan::Runner
   end
 
   def run
-    first_negotiation
+    # first_negotiation
     print_booted_message
 
     self_read, self_write = IO.pipe
