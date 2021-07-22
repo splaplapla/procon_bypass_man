@@ -42,7 +42,11 @@ class ProconBypassMan::Bypass::Simulator
     end
   end
 
-  def read_procon_to_switch
+  def read_procon
+    unless @initialized_devices
+      init_devices
+    end
+
     data = nil
     begin
       data = procon.read_nonblock(128)
@@ -53,7 +57,11 @@ class ProconBypassMan::Bypass::Simulator
     switch.write_nonblock(data)
   end
 
-  def read_switch_to_procon
+  def read_switch
+    unless @initialized_devices
+      init_devices
+    end
+
     data = nil
     begin
       data = switch.read_nonblock(128)
