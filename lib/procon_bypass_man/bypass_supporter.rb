@@ -35,7 +35,7 @@ class ProconBypassMan::BypassSupporter
     s.drain_all
     s.read_procon
     s.write_switch("213c910080005db7723d48720a800300000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000")
-    sleep(1) # いらないかも
+    sleep(10) # いらないかも
     s
   end
 
