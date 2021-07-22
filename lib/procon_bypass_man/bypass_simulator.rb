@@ -1,4 +1,7 @@
 class ProconBypassMan::Bypass::Simulator
+  class Timer
+  end
+
   class Value
     attr_accessor :read_from, :values
     def initialize(values: , read_from: )
@@ -39,6 +42,17 @@ class ProconBypassMan::Bypass::Simulator
         end
         to_device(item).write_nonblock(data)
       end
+    end
+  end
+
+  # switchに任意の命令を入力して、switchから読み取る
+  def write_switch(data)
+    switch.write_nonblock(data)
+    begin
+      data = switch.read_nonblock(128)
+      puts " <<< #{data.unpack("H*")})"
+    rescue IO::EAGAINWaitReadable
+      retry
     end
   end
 
@@ -118,6 +132,10 @@ class ProconBypassMan::Bypass::Simulator
   end
 
   def init_devices
+    if @initialized_devices
+      return
+    end
+
     case
     when is_available_device?(PROCON_PATH)
       puts("proconのデバイスファイルは#{PROCON_PATH}を使います")
@@ -133,5 +151,17 @@ class ProconBypassMan::Bypass::Simulator
     sleep 0.5
 
     @initialized_devices = true
+
+    at_exit do
+      @procon&.close
+      @gadget&.close
+    end
+  rescue Errno::ENXIO
+    # /dev/hidg0 をopenできないときがある
+    puts "Errno::ENXIO (No such device or address @ rb_sysopen - /dev/hidg0)が起きました。resetします"
+    system('echo > /sys/kernel/config/usb_gadget/procon/UDC')
+    system('ls /sys/class/udc > /sys/kernel/config/usb_gadget/procon/UDC')
+    sleep 2
+    retry
   end
 end
