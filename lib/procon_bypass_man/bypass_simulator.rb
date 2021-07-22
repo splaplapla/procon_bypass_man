@@ -1,5 +1,15 @@
 class ProconBypassMan::Bypass::Simulator
   class Timer
+    class Timeout < StandardError; end
+
+    # 5秒後がタイムアウト
+    def initialize(timeout: Time.now + 5)
+      @timeout = timeout
+    end
+
+    def throw_if_timeout!
+      raise Timeout if @timeout < Time.now
+    end
   end
 
   class Value
@@ -30,11 +40,14 @@ class ProconBypassMan::Bypass::Simulator
     while(item = @stack.pop)
       item.values.each do |value|
         data = nil
+        timer = Timer.new
         begin
+          timer.throw_if_timeout!
           data = from_device(item).read_nonblock(128)
         rescue IO::EAGAINWaitReadable
           retry
         end
+
         if value == data.unpack("H*")
           puts "OK(expected: #{value}, got: #{data.unpack("H*")})"
         else
@@ -43,17 +56,23 @@ class ProconBypassMan::Bypass::Simulator
         to_device(item).write_nonblock(data)
       end
     end
+  rescue Timer::Timeout
+    puts "timeoutになりました"
   end
 
   # switchに任意の命令を入力して、switchから読み取る
   def write_switch(data)
+    timer = Timer.new
     switch.write_nonblock(data)
     begin
+      timer.throw_if_timeout!
       data = switch.read_nonblock(128)
       puts " <<< #{data.unpack("H*")})"
     rescue IO::EAGAINWaitReadable
       retry
     end
+  rescue Timer::Timeout
+    puts "timeoutになりました"
   end
 
   def read_procon
@@ -62,13 +81,17 @@ class ProconBypassMan::Bypass::Simulator
     end
 
     data = nil
+    timer = Timer.new
     begin
+      timer.throw_if_timeout!
       data = procon.read_nonblock(128)
       puts " <<< #{data.unpack("H*")})"
     rescue IO::EAGAINWaitReadable
       retry
     end
     switch.write_nonblock(data)
+  rescue Timer::Timeout
+    puts "timeoutになりました"
   end
 
   def read_switch
@@ -77,13 +100,17 @@ class ProconBypassMan::Bypass::Simulator
     end
 
     data = nil
+    timer = Timer.new
     begin
+      timer.throw_if_timeout!
       data = switch.read_nonblock(128)
       puts " >>> #{data.unpack("H*")})"
     rescue IO::EAGAINWaitReadable
       retry
     end
     procon.write_nonblock(data)
+  rescue Timer::Timeout
+    puts "timeoutになりました"
   end
 
   def from_device(item)
@@ -115,6 +142,11 @@ class ProconBypassMan::Bypass::Simulator
 
   def is_available_device?(path)
     return false if !File.exist?(PROCON_PATH)
+
+    system('echo > /sys/kernel/config/usb_gadget/procon/UDC')
+    system('ls /sys/class/udc > /sys/kernel/config/usb_gadget/procon/UDC')
+    sleep 0.5
+
     file = File.open(path, "w+")
     begin
       file.read_nonblock(128)
