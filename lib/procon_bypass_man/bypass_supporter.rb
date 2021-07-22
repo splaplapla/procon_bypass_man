@@ -275,9 +275,7 @@ class ProconBypassMan::BypassSupporter
       @procon = File.open(PROCON2_PATH, "w+")
       @gadget = File.open('/dev/hidg0', "w+")
     else
-      puts "デバイスが見つかりませんでした"
-      sleep 5
-      retry
+      raise "デバイスが見つかりませんでした"
     end
     system('echo > /sys/kernel/config/usb_gadget/procon/UDC')
     system('ls /sys/class/udc > /sys/kernel/config/usb_gadget/procon/UDC')
