@@ -1,17 +1,5 @@
+
 class ProconBypassMan::BypassSupporter
-  class Timer
-    class Timeout < StandardError; end
-
-    # 5秒後がタイムアウト
-    def initialize(timeout: Time.now + 5)
-      @timeout = timeout
-    end
-
-    def throw_if_timeout!
-      raise Timeout if @timeout < Time.now
-    end
-  end
-
   class Value
     attr_accessor :read_from, :values
     def initialize(values: , read_from: )
@@ -59,7 +47,7 @@ class ProconBypassMan::BypassSupporter
     while(item = @stack.pop)
       item.values.each do |value|
         data = nil
-        timer = Timer.new
+        timer = ProconBypassMan::Timer.new
         begin
           timer.throw_if_timeout!
           data = from_device(item).read_nonblock(128)
@@ -75,7 +63,7 @@ class ProconBypassMan::BypassSupporter
         to_device(item).write_nonblock(data)
       end
     end
-  rescue Timer::Timeout
+  rescue ProconBypassMan::Timer::Timeout
     ProconBypassMan.logger.error "timeoutになりました"
     raise if @throw_error_if_timeout
   end
@@ -89,31 +77,31 @@ class ProconBypassMan::BypassSupporter
       init_devices
     end
 
-    timer = Timer.new
+    timer = ProconBypassMan::Timer.new
     data = nil
     begin
       timer.throw_if_timeout!
       switch.write_nonblock(data)
     rescue IO::EAGAINWaitReadable
       retry
-    rescue Timer::Timeout
+    rescue ProconBypassMan::Timer::Timeout
       ProconBypassMan.logger.error "writeでtimeoutになりました"
       raise
     end
     return(data.unpack("H*")) if only_write
 
-    timer = Timer.new
+    timer = ProconBypassMan::Timer.new
     begin
       timer.throw_if_timeout!
       data = switch.read_nonblock(128)
       ProconBypassMan.logger.debug { " >>> #{data.unpack("H*")})" }
     rescue IO::EAGAINWaitReadable
       retry
-    rescue Timer::Timeout
+    rescue ProconBypassMan::Timer::Timeout
       ProconBypassMan.logger.error "readでtimeoutになりました"
       raise
     end
-  rescue Timer::Timeout
+  rescue ProconBypassMan::Timer::Timeout
     raise if @throw_error_if_timeout
   end
 
@@ -125,30 +113,30 @@ class ProconBypassMan::BypassSupporter
       init_devices
     end
 
-    timer = Timer.new
+    timer = ProconBypassMan::Timer.new
     begin
       timer.throw_if_timeout!
       procon.write_nonblock(data)
     rescue IO::EAGAINWaitReadable
       retry
-    rescue Timer::Timeout
+    rescue ProconBypassMan::Timer::Timeout
       ProconBypassMan.logger.error "writeでtimeoutになりました"
       raise
     end
     return(data.unpack("H*")) if only_write
 
-    timer = Timer.new
+    timer = ProconBypassMan::Timer.new
     begin
       timer.throw_if_timeout!
       data = procon.read_nonblock(128)
       ProconBypassMan.logger.error " <<< #{data.unpack("H*")})"
     rescue IO::EAGAINWaitReadable
       retry
-    rescue Timer::Timeout
+    rescue ProconBypassMan::Timer::Timeout
       ProconBypassMan.logger.error "readでtimeoutになりました"
       raise
     end
-  rescue Timer::Timeout
+  rescue ProconBypassMan::Timer::Timeout
     raise if @throw_error_if_timeout
   end
 
@@ -158,30 +146,30 @@ class ProconBypassMan::BypassSupporter
     end
 
     data = nil
-    timer = Timer.new
+    timer = ProconBypassMan::Timer.new
     begin
       timer.throw_if_timeout!
       data = procon.read_nonblock(128)
       ProconBypassMan.logger.debug { " <<< #{data.unpack("H*")})" }
     rescue IO::EAGAINWaitReadable
       retry
-    rescue Timer::Timeout
+    rescue ProconBypassMan::Timer::Timeout
       ProconBypassMan.logger.error "readでtimeoutになりました"
       raise
     end
     return(data.unpack("H*")) if only_read
 
-    timer = Timer.new
+    timer = ProconBypassMan::Timer.new
     begin
       timer.throw_if_timeout!
       switch.write_nonblock(data)
     rescue IO::EAGAINWaitReadable
       retry
-    rescue Timer::Timeout
+    rescue ProconBypassMan::Timer::Timeout
       ProconBypassMan.logger.error "writeでtimeoutになりました"
       raise
     end
-  rescue Timer::Timeout
+  rescue ProconBypassMan::Timer::Timeout
     raise if @throw_error_if_timeout
   end
 
@@ -191,30 +179,30 @@ class ProconBypassMan::BypassSupporter
     end
 
     data = nil
-    timer = Timer.new
+    timer = ProconBypassMan::Timer.new
     begin
       timer.throw_if_timeout!
       data = switch.read_nonblock(128)
       ProconBypassMan.logger.debug { " >>> #{data.unpack("H*")})" }
     rescue IO::EAGAINWaitReadable
       retry
-    rescue Timer::Timeout
+    rescue ProconBypassMan::Timer::Timeout
       ProconBypassMan.logger.error "readでtimeoutになりました"
       raise
     end
     return(data.unpack("H*")) if only_read
 
-    timer = Timer.new
+    timer = ProconBypassMan::Timer.new
     begin
       timer.throw_if_timeout!
       procon.write_nonblock(data)
     rescue IO::EAGAINWaitReadable
       retry
-    rescue Timer::Timeout
+    rescue ProconBypassMan::Timer::Timeout
       ProconBypassMan.logger.error "writeでtimeoutになりました"
       raise
     end
-  rescue Timer::Timeout
+  rescue ProconBypassMan::Timer::Timeout
     raise if @throw_error_if_timeout
   end
 

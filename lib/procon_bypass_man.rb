@@ -3,6 +3,7 @@ require 'yaml'
 require "fileutils"
 
 require_relative "procon_bypass_man/version"
+require_relative "procon_bypass_man/timer"
 require_relative "procon_bypass_man/bypass"
 require_relative "procon_bypass_man/bypass_supporter"
 require_relative "procon_bypass_man/runner"
