@@ -15,11 +15,11 @@ class ProconBypassMan::Bypass::Simulator
     @initialized_devices = false
   end
 
-  def add(values , read_from: )
+  def add(values, read_from: )
     @stack << Value.new(values: values, read_from: read_from)
   end
 
-  def run
+  def drain_all
     unless @initialized_devices
       init_devices
     end
@@ -40,6 +40,28 @@ class ProconBypassMan::Bypass::Simulator
         to_device(item).write_nonblock(data)
       end
     end
+  end
+
+  def read_procon_to_switch
+    data = nil
+    begin
+      data = procon.read_nonblock(128)
+      puts " <<< #{data.unpack("H*")})"
+    rescue IO::EAGAINWaitReadable
+      retry
+    end
+    switch.write_nonblock(data)
+  end
+
+  def read_switch_to_procon
+    data = nil
+    begin
+      data = switch.read_nonblock(128)
+      puts " >>> #{data.unpack("H*")})"
+    rescue IO::EAGAINWaitReadable
+      retry
+    end
+    procon.write_nonblock(data)
   end
 
   def from_device(item)
