@@ -1,4 +1,4 @@
-class ProconBypassMan::Bypass::Simulator
+class ProconBypassMan::BypassSupporter
   class Timer
     class Timeout < StandardError; end
 
