@@ -84,10 +84,6 @@ class ProconBypassMan::Bypass::Simulator
   end
 
   def read_procon
-    if data.encoding.name == "UTF-8"
-      data = [data].pack("H*")
-    end
-
     unless @initialized_devices
       init_devices
     end
