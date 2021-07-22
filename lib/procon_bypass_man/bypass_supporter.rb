@@ -157,10 +157,22 @@ class ProconBypassMan::BypassSupporter
       puts " <<< #{data.unpack("H*")})"
     rescue IO::EAGAINWaitReadable
       retry
+    rescue Timer::Timeout
+      puts "readでtimeoutになりました"
+      raise
     end
-    switch.write_nonblock(data)
+
+    timer = Timer.new
+    begin
+      timer.throw_if_timeout!
+      switch.write_nonblock(data)
+    rescue IO::EAGAINWaitReadable
+      retry
+    rescue Timer::Timeout
+      puts "writeでtimeoutになりました"
+      raise
+    end
   rescue Timer::Timeout
-    puts "timeoutになりました"
   end
 
   def read_switch
@@ -176,10 +188,22 @@ class ProconBypassMan::BypassSupporter
       puts " >>> #{data.unpack("H*")})"
     rescue IO::EAGAINWaitReadable
       retry
+    rescue Timer::Timeout
+      puts "readでtimeoutになりました"
+      raise
     end
-    procon.write_nonblock(data)
+
+    timer = Timer.new
+    begin
+      timer.throw_if_timeout!
+      procon.write_nonblock(data)
+    rescue IO::EAGAINWaitReadable
+      retry
+    rescue Timer::Timeout
+      puts "writeでtimeoutになりました"
+      raise
+    end
   rescue Timer::Timeout
-    puts "timeoutになりました"
   end
 
   def from_device(item)
