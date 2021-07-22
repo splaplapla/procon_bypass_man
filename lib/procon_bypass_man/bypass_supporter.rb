@@ -23,6 +23,7 @@ class ProconBypassMan::BypassSupporter
   PROCON_PATH = "/dev/hidraw0"
   PROCON2_PATH = "/dev/hidraw1"
 
+  # 画面で再接続ができたが状況は変わらない
   def self.reset_connection!
     s = new
     s.add([
