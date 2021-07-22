@@ -87,9 +87,9 @@ class ProconBypassMan::BypassSupporter
     end
 
     timer = Timer.new
-    switch.write_nonblock(data)
     begin
       timer.throw_if_timeout!
+      switch.write_nonblock(data)
       data = switch.read_nonblock(128)
       puts " <<< #{data.unpack("H*")})"
     rescue IO::EAGAINWaitReadable
