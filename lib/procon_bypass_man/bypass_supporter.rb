@@ -163,7 +163,7 @@ class ProconBypassMan::BypassSupporter
       puts "readでtimeoutになりました"
       raise
     end
-    return if only_read
+    return(data.unpack("H*")) if only_read
 
     timer = Timer.new
     begin
@@ -195,7 +195,7 @@ class ProconBypassMan::BypassSupporter
       puts "readでtimeoutになりました"
       raise
     end
-    return if only_read
+    return(data.unpack("H*")) if only_read
 
     timer = Timer.new
     begin
