@@ -133,7 +133,7 @@ class ProconBypassMan::Runner
   end
 
   def first_negotiation
-    break if $will_terminate_token
+    return if $will_terminate_token
 
     s = ProconBypassMan::BypassSupporter.new(throw_error_if_timeout: true, enable_at_exit: false)
     # おきまり

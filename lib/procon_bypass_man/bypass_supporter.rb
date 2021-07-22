@@ -99,7 +99,7 @@ class ProconBypassMan::BypassSupporter
       puts "writeでtimeoutになりました"
       raise
     end
-    return(data.unpack("H*")) if only_read
+    return(data.unpack("H*")) if only_write
 
     timer = Timer.new
     begin
