@@ -238,7 +238,7 @@ class ProconBypassMan::BypassSupporter
   end
 
   def is_available_device?(path)
-    return false if !File.exist?(PROCON_PATH)
+    return false if !File.exist?(path)
 
     system('echo > /sys/kernel/config/usb_gadget/procon/UDC')
     system('ls /sys/class/udc > /sys/kernel/config/usb_gadget/procon/UDC')
@@ -274,6 +274,10 @@ class ProconBypassMan::BypassSupporter
       puts("proconのデバイスファイルは#{PROCON2_PATH}を使います")
       @procon = File.open(PROCON2_PATH, "w+")
       @gadget = File.open('/dev/hidg0', "w+")
+    else
+      puts "デバイスが見つかりませんでした"
+      sleep 5
+      retry
     end
     system('echo > /sys/kernel/config/usb_gadget/procon/UDC')
     system('ls /sys/class/udc > /sys/kernel/config/usb_gadget/procon/UDC')
