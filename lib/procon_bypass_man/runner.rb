@@ -4,9 +4,8 @@ class ProconBypassMan::Runner
   class InterruptForRestart < StandardError; end
 
   def initialize
-    # TODO 今はもう固定値でいい. 消す
-    $will_interval_0_0_0_5 = 0.005
-    $will_interval_1_6 = 1.6
+    $will_interval_0_0_0_5 = 0
+    $will_interval_1_6 = 0
   end
 
   def run
@@ -60,6 +59,13 @@ class ProconBypassMan::Runner
   private
 
   def main_loop
+    # TODO 接続確立完了をswitchを読み取るようにして、この暫定で接続完了sleepを消す
+    Thread.new do
+      sleep(5)
+      $will_interval_0_0_0_5 = 0.005
+      $will_interval_1_6 = 1.6
+    end
+
     ProconBypassMan::IOMonitor.start!
     # gadget => procon
     # 遅くていい
