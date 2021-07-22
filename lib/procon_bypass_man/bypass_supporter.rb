@@ -77,7 +77,7 @@ class ProconBypassMan::BypassSupporter
   end
 
   # switchに任意の命令を入力して、switchから読み取る
-  def write_switch(data)
+  def write_switch(data, only_write: false)
     if data.encoding.name == "UTF-8"
       data = [data].pack("H*")
     end
@@ -96,6 +96,7 @@ class ProconBypassMan::BypassSupporter
       puts "writeでtimeoutになりました"
       raise
     end
+    return if only_write
 
     timer = Timer.new
     begin
@@ -111,7 +112,7 @@ class ProconBypassMan::BypassSupporter
   rescue Timer::Timeout
   end
 
-  def write_procon(data)
+  def write_procon(data, only_write: false)
     if data.encoding.name == "UTF-8"
       data = [data].pack("H*")
     end
@@ -129,6 +130,7 @@ class ProconBypassMan::BypassSupporter
       puts "writeでtimeoutになりました"
       raise
     end
+    return if only_write
 
     timer = Timer.new
     begin
@@ -144,7 +146,7 @@ class ProconBypassMan::BypassSupporter
   rescue Timer::Timeout
   end
 
-  def read_procon
+  def read_procon(only_read: false)
     unless @initialized_devices
       init_devices
     end
@@ -161,6 +163,7 @@ class ProconBypassMan::BypassSupporter
       puts "readでtimeoutになりました"
       raise
     end
+    return if only_read
 
     timer = Timer.new
     begin
@@ -175,7 +178,7 @@ class ProconBypassMan::BypassSupporter
   rescue Timer::Timeout
   end
 
-  def read_switch
+  def read_switch(only_read: false)
     unless @initialized_devices
       init_devices
     end
@@ -192,6 +195,7 @@ class ProconBypassMan::BypassSupporter
       puts "readでtimeoutになりました"
       raise
     end
+    return if only_read
 
     timer = Timer.new
     begin
