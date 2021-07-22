@@ -84,8 +84,6 @@ class ProconBypassMan::Bypass::Simulator
   end
 
   def init_devices
-    binding.pry
-
     case
     when is_available_device?(PROCON_PATH)
       puts("proconのデバイスファイルは#{PROCON_PATH}を使います")
