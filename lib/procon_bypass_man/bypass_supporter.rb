@@ -39,9 +39,11 @@ class ProconBypassMan::BypassSupporter
     s
   end
 
-  def initialize
+  def initialize(throw_error_if_timeout: false, enable_at_exit: true)
     @stack = []
     @initialized_devices = false
+    @throw_error_if_timeout = throw_error_if_timeout
+    @enable_at_exit = enable_at_exit
   end
 
   def add(values, read_from: )
@@ -74,6 +76,7 @@ class ProconBypassMan::BypassSupporter
     end
   rescue Timer::Timeout
     puts "timeoutになりました"
+    raise if @throw_error_if_timeout
   end
 
   # switchに任意の命令を入力して、switchから読み取る
@@ -96,7 +99,7 @@ class ProconBypassMan::BypassSupporter
       puts "writeでtimeoutになりました"
       raise
     end
-    return if only_write
+    return(data.unpack("H*")) if only_read
 
     timer = Timer.new
     begin
@@ -110,6 +113,7 @@ class ProconBypassMan::BypassSupporter
       raise
     end
   rescue Timer::Timeout
+    raise if @throw_error_if_timeout
   end
 
   def write_procon(data, only_write: false)
@@ -130,7 +134,7 @@ class ProconBypassMan::BypassSupporter
       puts "writeでtimeoutになりました"
       raise
     end
-    return if only_write
+    return(data.unpack("H*")) if only_write
 
     timer = Timer.new
     begin
@@ -144,6 +148,7 @@ class ProconBypassMan::BypassSupporter
       raise
     end
   rescue Timer::Timeout
+    raise if @throw_error_if_timeout
   end
 
   def read_procon(only_read: false)
@@ -176,6 +181,7 @@ class ProconBypassMan::BypassSupporter
       raise
     end
   rescue Timer::Timeout
+    raise if @throw_error_if_timeout
   end
 
   def read_switch(only_read: false)
@@ -208,6 +214,7 @@ class ProconBypassMan::BypassSupporter
       raise
     end
   rescue Timer::Timeout
+    raise if @throw_error_if_timeout
   end
 
   def from_device(item)
@@ -275,7 +282,7 @@ class ProconBypassMan::BypassSupporter
       @procon = File.open(PROCON2_PATH, "w+")
       @gadget = File.open('/dev/hidg0', "w+")
     else
-      raise "デバイスが見つかりませんでした"
+      raise "/dev/hidraw0, /dev/hidraw1の両方見つかりませんでした"
     end
     system('echo > /sys/kernel/config/usb_gadget/procon/UDC')
     system('ls /sys/class/udc > /sys/kernel/config/usb_gadget/procon/UDC')
@@ -283,13 +290,16 @@ class ProconBypassMan::BypassSupporter
 
     @initialized_devices = true
 
-    at_exit do
-      @procon&.close
-      @gadget&.close
+    if @enable_at_exit
+      at_exit do
+        @procon&.close
+        @gadget&.close
+      end
     end
-  rescue Errno::ENXIO
+  rescue Errno::ENXIO => e
     # /dev/hidg0 をopenできないときがある
     puts "Errno::ENXIO (No such device or address @ rb_sysopen - /dev/hidg0)が起きました。resetします"
+    puts e
     system('echo > /sys/kernel/config/usb_gadget/procon/UDC')
     system('ls /sys/class/udc > /sys/kernel/config/usb_gadget/procon/UDC')
     sleep 2

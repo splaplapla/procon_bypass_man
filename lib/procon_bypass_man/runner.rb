@@ -3,10 +3,7 @@ require_relative "io_monitor"
 class ProconBypassMan::Runner
   class InterruptForRestart < StandardError; end
 
-  def initialize(gadget: , procon: )
-    @gadget = gadget
-    @procon = procon
-
+  def initialize
     $will_interval_0_0_0_5 = 0
     $will_interval_1_6 = 0
   end
@@ -135,110 +132,32 @@ class ProconBypassMan::Runner
     end
   end
 
-  IO_ERROR_COUNT_THRESHOLD = 10_000_000
-  def first_negotiation(io_error_count: 0)
-    loop do
-      break if $will_terminate_token
+  def first_negotiation
+    break if $will_terminate_token
 
-      input = nil
-      begin
-        # switch, proconが電源OFFだったら常にIO::EAGAINWaitReadableが返ってくるのでそのときは例外を投げる
-        if IO_ERROR_COUNT_THRESHOLD < io_error_count
-          ProconBypassMan.logger.error "たぶん、SwitchかProconのどちらかが電源入っていないです"
-          puts "たぶん、SwitchかProconのどちらかが電源入っていないです"
-          sleep(10)
-          raise ::ProconBypassMan::FirstConnectionError
-        end
+    s = ProconBypassMan::BypassSupporter.new(throw_error_if_timeout: true, enable_at_exit: false)
+    # おきまり
+    s.read_switch # >>> 0000
+    s.read_switch # >>> 0000
+    s.read_switch # >>> 8005
+    s.read_switch # >>> 0000
+    # ハンドシェイクの開始
+    s.read_switch # >>> 8001 を要求
+    s.read_procon # <<< 81010003176d96e7a5480000000, macaddressとコントローラー番号を返す
+    # ハンドシェイクの開始
+    s.read_switch # >>> 8002
+    s.read_procon # <<< 8102000000000000000
+    # -----
+    s.read_switch # >>> 01000000000000000000033000000
+    s.read_procon # <<< ^21
+    # ------
+    s.read_switch # 本当なら8004 が返ってくるはず
 
-        input = @gadget.read_nonblock(128)
-        ProconBypassMan.logger.debug { "[f] >>> #{input.unpack("H*")}" }
-      rescue IO::EAGAINWaitReadable
-        # print "."
-        io_error_count = io_error_count + 1
-        retry
-      end
-
-      begin
-        @procon.write_nonblock(input)
-      rescue IO::EAGAINWaitReadable
-        # メソッドの最初から実行するために何もしない
-      else # no exception
-        if input[0] == "\x80".b && input[1] == "\x01".b
-          ProconBypassMan.logger.info("first negotiation is over at procon part")
-          break
-        end
-      end
-    end
-
-    # proconからの送信
-    # ...
-    #   switch) 8001
-    #   procon) 8101
-    #   switch) 8002
-    # が返ってくるプロトコルがあって、これができていないならやり直す
-    loop do
-      data = nil
-      begin
-        data = @procon.read_nonblock(128)
-        ProconBypassMan.logger.debug { "[f] <<< #{data.unpack("H*")}" }
-      rescue IO::EAGAINWaitReadable => e
-        retry
-      end
-
-      if data[0] == "\x81".b && data[1] == "\x01".b
-        @gadget.write_nonblock(data)
-        break
-      else
-        raise ::ProconBypassMan::FirstConnectionError
-      end
-    end
-
-    # switchからの返事
-    loop do
-      data = nil
-      begin
-        data = @gadget.read_nonblock(128)
-        ProconBypassMan.logger.debug { "[f] >>> #{data.unpack("H*")}" }
-      rescue IO::EAGAINWaitReadable => e
-        retry
-      end
-      if data[0] == "\x80".b && data[1] == "\x02".b
-        @procon.write_nonblock(data)
-        break
-      else
-        raise ::ProconBypassMan::FirstConnectionError
-      end
-    end
-
-    # proconからの送信
-    loop do
-      data = nil
-      begin
-        data = @procon.read_nonblock(128)
-        ProconBypassMan.logger.debug { "[f] <<< #{data.unpack("H*")}" }
-      rescue IO::EAGAINWaitReadable => e
-        retry
-      end
-
-      if data[0] == "\x81".b && data[1] == "\x02".b
-        @procon.write_nonblock(data)
-        break
-      else
-        raise ::ProconBypassMan::FirstConnectionError
-      end
-      @gadget.write_nonblock(data)
-      ProconBypassMan.logger.info "(仮) 接続を確認しました"
-    end
-
-    # switchからの返事
-    data = nil
-    begin
-      data = @gadget.read_nonblock(128)
-      ProconBypassMan.logger.debug { "[f] >>> #{data.unpack("H*")}" }
-    rescue IO::EAGAINWaitReadable => e
-      retry
-    end
-    @procon.write_nonblock(data)
+    @gadget = s.switch
+    @procon = s.procon
+  rescue ProconBypassMan::BypassSupporter::Timer::Timeout
+    ::ProconBypassMan.logger.error "タイムアウトが起きて接続ができませんでした。"
+    raise ::ProconBypassMan::FirstConnectionError
   end
 
   def handle_signal(sig)
