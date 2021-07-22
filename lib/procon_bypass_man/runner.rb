@@ -157,6 +157,15 @@ class ProconBypassMan::Runner
     @procon = s.procon
   rescue ProconBypassMan::BypassSupporter::Timer::Timeout
     ::ProconBypassMan.logger.error "タイムアウトが起きて接続ができませんでした。"
+    sleep(100)
+    raise ::ProconBypassMan::FirstConnectionError
+  rescue EOFError => e
+    ProconBypassMan.logger.error "Proconと通信ができませんでした.終了処理を開始します"
+    sleep(100)
+    raise ::ProconBypassMan::FirstConnectionError
+  rescue Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError => e
+    ProconBypassMan.logger.error "Proconが切断されました。終了処理を開始します"
+    sleep(100)
     raise ::ProconBypassMan::FirstConnectionError
   end
 
