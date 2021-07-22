@@ -34,6 +34,7 @@ module ProconBypassMan
   def self.run(setting_path: nil, &block)
     configure(setting_path: setting_path, &block)
     File.write(pid_path, $$)
+    # 再接続してもbluetooth経由になるので一旦コメントアウトにする
     ProconBypassMan::BypassSupporter.reset_connection!
     registry = ProconBypassMan::DeviceRegistry.new
     Runner.new(gadget: registry.gadget, procon: registry.procon).run
