@@ -156,17 +156,10 @@ class ProconBypassMan::Runner
     @gadget = s.switch
     @procon = s.procon
   rescue ProconBypassMan::Timer::Timeout
-    ::ProconBypassMan.logger.error "タイムアウトが起きて接続ができませんでした。"
-    sleep(100)
-    raise ::ProconBypassMan::FirstConnectionError
-  rescue EOFError => e
-    ProconBypassMan.logger.error "Proconと通信ができませんでした.終了処理を開始します"
-    sleep(100)
-    raise ::ProconBypassMan::FirstConnectionError
-  rescue Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError => e
-    ProconBypassMan.logger.error "Proconが切断されました。終了処理を開始します"
-    sleep(100)
-    raise ::ProconBypassMan::FirstConnectionError
+    ::ProconBypassMan.logger.error "デバイスとの通信でタイムアウトが起きて接続ができませんでした。"
+    @gadget&.close
+    @procon&.close
+    raise ::ProconBypassMan::EternalConnectionError
   end
 
   def handle_signal(sig)

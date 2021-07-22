@@ -18,6 +18,7 @@ module ProconBypassMan
   class ProConRejected < StandardError; end
   class CouldNotLoadConfigError < StandardError; end
   class FirstConnectionError < StandardError; end
+  class EternalConnectionError < StandardError; end
 
   def self.configure(setting_path: nil, &block)
     unless setting_path
@@ -40,6 +41,11 @@ module ProconBypassMan
     puts "設定ファイルが不正です。設定ファイルの読み込みに失敗しました"
     FileUtils.rm_rf(ProconBypassMan.pid_path)
     exit 1
+  rescue EternalConnectionError
+    ProconBypassMan.logger.error "接続の見込みがないのでsleepしまくります"
+    puts "接続の見込みがないのでsleepしまくります"
+    FileUtils.rm_rf(ProconBypassMan.pid_path)
+    sleep(999999999999999999)
   rescue FirstConnectionError
     puts "接続を確立できませんでした。やりなおします。"
     retry
