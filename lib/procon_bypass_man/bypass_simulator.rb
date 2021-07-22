@@ -32,7 +32,11 @@ class ProconBypassMan::Bypass::Simulator
         rescue IO::EAGAINWaitReadable
           retry
         end
-        puts "expected: #{value}, got: #{data.unpack("H*")}"
+        if value == data.unpack("H*")
+          puts "OK(expected: #{value}, got: #{data.unpack("H*")})"
+        else
+          puts "NG(expected: #{value}, got: #{data.unpack("H*")})"
+        end
         to_device(item).write_nonblock(data)
       end
     end
