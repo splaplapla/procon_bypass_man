@@ -68,15 +68,15 @@ class ProconBypassMan::BypassSupporter
         end
 
         if value == data.unpack("H*")
-          puts "OK(expected: #{value}, got: #{data.unpack("H*")})"
+          ProconBypassMan.logger.info "OK(expected: #{value}, got: #{data.unpack("H*")})"
         else
-          puts "NG(expected: #{value}, got: #{data.unpack("H*")})"
+          ProconBypassMan.logger.info "NG(expected: #{value}, got: #{data.unpack("H*")})"
         end
         to_device(item).write_nonblock(data)
       end
     end
   rescue Timer::Timeout
-    puts "timeoutになりました"
+    ProconBypassMan.logger.error "timeoutになりました"
     raise if @throw_error_if_timeout
   end
 
@@ -97,7 +97,7 @@ class ProconBypassMan::BypassSupporter
     rescue IO::EAGAINWaitReadable
       retry
     rescue Timer::Timeout
-      puts "writeでtimeoutになりました"
+      ProconBypassMan.logger.error "writeでtimeoutになりました"
       raise
     end
     return(data.unpack("H*")) if only_write
@@ -106,11 +106,11 @@ class ProconBypassMan::BypassSupporter
     begin
       timer.throw_if_timeout!
       data = switch.read_nonblock(128)
-      puts " <<< #{data.unpack("H*")})"
+      ProconBypassMan.logger.debug { " >>> #{data.unpack("H*")})" }
     rescue IO::EAGAINWaitReadable
       retry
     rescue Timer::Timeout
-      puts "readでtimeoutになりました"
+      ProconBypassMan.logger.error "readでtimeoutになりました"
       raise
     end
   rescue Timer::Timeout
@@ -132,7 +132,7 @@ class ProconBypassMan::BypassSupporter
     rescue IO::EAGAINWaitReadable
       retry
     rescue Timer::Timeout
-      puts "writeでtimeoutになりました"
+      ProconBypassMan.logger.error "writeでtimeoutになりました"
       raise
     end
     return(data.unpack("H*")) if only_write
@@ -141,11 +141,11 @@ class ProconBypassMan::BypassSupporter
     begin
       timer.throw_if_timeout!
       data = procon.read_nonblock(128)
-      puts " <<< #{data.unpack("H*")})"
+      ProconBypassMan.logger.error " <<< #{data.unpack("H*")})"
     rescue IO::EAGAINWaitReadable
       retry
     rescue Timer::Timeout
-      puts "readでtimeoutになりました"
+      ProconBypassMan.logger.error "readでtimeoutになりました"
       raise
     end
   rescue Timer::Timeout
@@ -162,11 +162,11 @@ class ProconBypassMan::BypassSupporter
     begin
       timer.throw_if_timeout!
       data = procon.read_nonblock(128)
-      puts " <<< #{data.unpack("H*")})"
+      ProconBypassMan.logger.debug { " <<< #{data.unpack("H*")})" }
     rescue IO::EAGAINWaitReadable
       retry
     rescue Timer::Timeout
-      puts "readでtimeoutになりました"
+      ProconBypassMan.logger.error "readでtimeoutになりました"
       raise
     end
     return(data.unpack("H*")) if only_read
@@ -178,7 +178,7 @@ class ProconBypassMan::BypassSupporter
     rescue IO::EAGAINWaitReadable
       retry
     rescue Timer::Timeout
-      puts "writeでtimeoutになりました"
+      ProconBypassMan.logger.error "writeでtimeoutになりました"
       raise
     end
   rescue Timer::Timeout
@@ -195,11 +195,11 @@ class ProconBypassMan::BypassSupporter
     begin
       timer.throw_if_timeout!
       data = switch.read_nonblock(128)
-      puts " >>> #{data.unpack("H*")})"
+      ProconBypassMan.logger.debug { " >>> #{data.unpack("H*")})" }
     rescue IO::EAGAINWaitReadable
       retry
     rescue Timer::Timeout
-      puts "readでtimeoutになりました"
+      ProconBypassMan.logger.error "readでtimeoutになりました"
       raise
     end
     return(data.unpack("H*")) if only_read
@@ -211,7 +211,7 @@ class ProconBypassMan::BypassSupporter
     rescue IO::EAGAINWaitReadable
       retry
     rescue Timer::Timeout
-      puts "writeでtimeoutになりました"
+      ProconBypassMan.logger.error "writeでtimeoutになりました"
       raise
     end
   rescue Timer::Timeout
@@ -275,11 +275,11 @@ class ProconBypassMan::BypassSupporter
 
     case
     when is_available_device?(PROCON_PATH)
-      puts("proconのデバイスファイルは#{PROCON_PATH}を使います")
+      ProconBypassMan.logger.info "proconのデバイスファイルは#{PROCON_PATH}を使います"
       @procon = File.open(PROCON_PATH, "w+")
       @gadget = File.open('/dev/hidg0', "w+")
     when is_available_device?(PROCON2_PATH)
-      puts("proconのデバイスファイルは#{PROCON2_PATH}を使います")
+      ProconBypassMan.logger.info "proconのデバイスファイルは#{PROCON2_PATH}を使います"
       @procon = File.open(PROCON2_PATH, "w+")
       @gadget = File.open('/dev/hidg0', "w+")
     else
@@ -299,8 +299,8 @@ class ProconBypassMan::BypassSupporter
     end
   rescue Errno::ENXIO => e
     # /dev/hidg0 をopenできないときがある
-    puts "Errno::ENXIO (No such device or address @ rb_sysopen - /dev/hidg0)が起きました。resetします"
-    puts e
+    ProconBypassMan.logger.error "Errno::ENXIO (No such device or address @ rb_sysopen - /dev/hidg0)が起きました。resetします"
+    ProconBypassMan.logger.error e
     system('echo > /sys/kernel/config/usb_gadget/procon/UDC')
     system('ls /sys/class/udc > /sys/kernel/config/usb_gadget/procon/UDC')
     sleep 2
