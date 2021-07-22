@@ -12,7 +12,7 @@ class ProconBypassMan::Bypass::Simulator
 
   def initialize
     @stack = []
-    # init_devices
+    @initialized_devices = false
   end
 
   def add(values , read_from: )
@@ -20,6 +20,10 @@ class ProconBypassMan::Bypass::Simulator
   end
 
   def run
+    unless @initialized_devices
+      init_devices
+    end
+
     while(item = @stack.pop)
       item.values.each do |value|
         data = nil
@@ -95,5 +99,7 @@ class ProconBypassMan::Bypass::Simulator
     system('echo > /sys/kernel/config/usb_gadget/procon/UDC')
     system('ls /sys/class/udc > /sys/kernel/config/usb_gadget/procon/UDC')
     sleep 0.5
+
+    @initialized_devices = true
   end
 end
