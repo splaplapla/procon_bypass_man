@@ -62,6 +62,14 @@ class ProconBypassMan::Bypass::Simulator
 
   # switchに任意の命令を入力して、switchから読み取る
   def write_switch(data)
+    if data.encoding.name == "UTF-8"
+      data = [data].pack("H*")
+    end
+
+    unless @initialized_devices
+      init_devices
+    end
+
     timer = Timer.new
     switch.write_nonblock(data)
     begin
@@ -76,6 +84,10 @@ class ProconBypassMan::Bypass::Simulator
   end
 
   def read_procon
+    if data.encoding.name == "UTF-8"
+      data = [data].pack("H*")
+    end
+
     unless @initialized_devices
       init_devices
     end
