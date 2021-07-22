@@ -23,6 +23,22 @@ class ProconBypassMan::BypassSupporter
   PROCON_PATH = "/dev/hidraw0"
   PROCON2_PATH = "/dev/hidraw1"
 
+  def self.reset_connection!
+    s = new
+    s.add([
+      ["0000"],
+      ["0000"],
+      ["8005"],
+      ["0000"],
+      ["8001"],
+    ], read_from: :switch)
+    s.drain_all
+    s.read_procon
+    s.write_switch("213c910080005db7723d48720a800300000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000")
+    sleep(1) # いらないかも
+    s
+  end
+
   def initialize
     @stack = []
     @initialized_devices = false

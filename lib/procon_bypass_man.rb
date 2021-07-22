@@ -34,6 +34,7 @@ module ProconBypassMan
   def self.run(setting_path: nil, &block)
     configure(setting_path: setting_path, &block)
     File.write(pid_path, $$)
+    ProconBypassMan::BypassSupporter.reset_connection!
     registry = ProconBypassMan::DeviceRegistry.new
     Runner.new(gadget: registry.gadget, procon: registry.procon).run
   rescue CouldNotLoadConfigError
