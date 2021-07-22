@@ -149,7 +149,7 @@ class ProconBypassMan::Runner
 
     @gadget = s.switch
     @procon = s.procon
-  rescue ProconBypassMan::BypassSupporter::Timer::Timeout
+  rescue ProconBypassMan::Timer::Timeout
     ::ProconBypassMan.logger.error "タイムアウトが起きて接続ができませんでした。"
     sleep(100)
     raise ::ProconBypassMan::FirstConnectionError
