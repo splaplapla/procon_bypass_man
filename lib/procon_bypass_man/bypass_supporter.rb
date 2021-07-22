@@ -81,44 +81,67 @@ class ProconBypassMan::BypassSupporter
     if data.encoding.name == "UTF-8"
       data = [data].pack("H*")
     end
-
     unless @initialized_devices
       init_devices
     end
 
     timer = Timer.new
+    data = nil
     begin
       timer.throw_if_timeout!
       switch.write_nonblock(data)
+    rescue IO::EAGAINWaitReadable
+      retry
+    rescue Timer::Timeout
+      puts "writeでtimeoutになりました"
+      raise
+    end
+
+    timer = Timer.new
+    begin
+      timer.throw_if_timeout!
       data = switch.read_nonblock(128)
       puts " <<< #{data.unpack("H*")})"
     rescue IO::EAGAINWaitReadable
       retry
+    rescue Timer::Timeout
+      puts "readでtimeoutになりました"
+      raise
     end
   rescue Timer::Timeout
-    puts "timeoutになりました"
   end
 
   def write_procon(data)
     if data.encoding.name == "UTF-8"
       data = [data].pack("H*")
     end
-
     unless @initialized_devices
       init_devices
     end
 
     timer = Timer.new
-    procon.write_nonblock(data)
+    begin
+      timer.throw_if_timeout!
+      procon.write_nonblock(data)
+    rescue IO::EAGAINWaitReadable
+      retry
+    rescue Timer::Timeout
+      puts "writeでtimeoutになりました"
+      raise
+    end
+
+    timer = Timer.new
     begin
       timer.throw_if_timeout!
       data = procon.read_nonblock(128)
       puts " <<< #{data.unpack("H*")})"
     rescue IO::EAGAINWaitReadable
       retry
+    rescue Timer::Timeout
+      puts "readでtimeoutになりました"
+      raise
     end
   rescue Timer::Timeout
-    puts "timeoutになりました"
   end
 
   def read_procon
