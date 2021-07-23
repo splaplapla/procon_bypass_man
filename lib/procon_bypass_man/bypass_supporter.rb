@@ -1,5 +1,7 @@
 
 class ProconBypassMan::BypassSupporter
+  class BytesMismatchError < StandardError; end
+
   class Value
     attr_accessor :read_from, :values
     def initialize(values: , read_from: )
@@ -28,10 +30,11 @@ class ProconBypassMan::BypassSupporter
     s
   end
 
-  def initialize(throw_error_if_timeout: false, enable_at_exit: true)
+  def initialize(throw_error_if_timeout: false, throw_error_if_mismatch: false , enable_at_exit: true)
     @stack = []
     @initialized_devices = false
     @throw_error_if_timeout = throw_error_if_timeout
+    @throw_error_if_mismatch = throw_error_if_mismatch
     @enable_at_exit = enable_at_exit
   end
 
@@ -44,7 +47,7 @@ class ProconBypassMan::BypassSupporter
       init_devices
     end
 
-    while(item = @stack.pop)
+    while(item = @stack.shift)
       item.values.each do |value|
         data = nil
         timer = ProconBypassMan::Timer.new
@@ -55,9 +58,19 @@ class ProconBypassMan::BypassSupporter
           retry
         end
 
-        if value == data.unpack("H*")
+        result =
+          case value
+          when String, Array
+            value == data.unpack("H*")
+          when Regexp
+            value =~ data.unpack("H*").first
+          else
+            raise "#{value}は知りません"
+          end
+        if result
           ProconBypassMan.logger.info "OK(expected: #{value}, got: #{data.unpack("H*")})"
         else
+          raise BytesMismatchError if @throw_error_if_mismatch
           ProconBypassMan.logger.info "NG(expected: #{value}, got: #{data.unpack("H*")})"
         end
         to_device(item).write_nonblock(data)
@@ -209,7 +222,9 @@ class ProconBypassMan::BypassSupporter
   def from_device(item)
     case item.read_from
     when :switch
-      self.public_send(:switch)
+      switch
+    when :procon
+      procon
     else
       raise
     end
@@ -219,7 +234,9 @@ class ProconBypassMan::BypassSupporter
   def to_device(item)
     case item.read_from
     when :switch
-      self.public_send(:procon)
+      procon
+    when :procon
+      switch
     else
       raise
     end

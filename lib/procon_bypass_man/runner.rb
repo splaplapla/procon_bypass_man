@@ -144,7 +144,7 @@ class ProconBypassMan::Runner
     # ハンドシェイクの開始
     s.read_switch # >>> 8001 を要求
     s.read_procon # <<< 81010003176d96e7a5480000000, macaddressとコントローラー番号を返す
-    # ハンドシェイクの開始
+    # ハンドシェイク
     s.read_switch # >>> 8002
     s.read_procon # <<< 8102000000000000000
     # -----
