@@ -59,7 +59,7 @@ describe ProconBypassMan::BypassSupporter do
       # 4
       s.add([["8004"]], read_from: :switch)
 
-      expect { s.drain_all }.to raise_error
+      expect { s.drain_all }.not_to raise_error
     end
   end
   context 'ただしい' do

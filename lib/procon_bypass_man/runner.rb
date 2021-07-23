@@ -136,22 +136,24 @@ class ProconBypassMan::Runner
     return if $will_terminate_token
 
     s = ProconBypassMan::BypassSupporter.new(throw_error_if_timeout: true, enable_at_exit: false)
-    # おきまり
-    s.read_switch # >>> 0000
-    s.read_switch # >>> 0000
-    s.read_switch # >>> 8005
-    s.read_switch # >>> 0000
-    # ハンドシェイクの開始
-    s.read_switch # >>> 8001 を要求
-    s.read_procon # <<< 81010003176d96e7a5480000000, macaddressとコントローラー番号を返す
-    # ハンドシェイク
-    s.read_switch # >>> 8002
-    s.read_procon # <<< 8102000000000000000
-    # -----
-    s.read_switch # >>> 01000000000000000000033000000
-    s.read_procon # <<< ^21
-    # ------
-    s.read_switch # 本当なら8004 が返ってくるはず
+    s.add([
+      ["0000"],
+      ["0000"],
+      ["8005"],
+      ["0010"],
+    ], read_from: :switch)
+    # 1
+    s.add([["8001"]], read_from: :switch)
+    s.add([/^8101/], read_from: :procon) # <<< 81010003176d96e7a5480000000, macaddressとコントローラー番号を返す
+    # 2
+    s.add([["8002"]], read_from: :switch)
+    s.add([/^8102/], read_from: :procon)
+    # 3
+    s.add([/^0100/], read_from: :switch)
+    s.add([/^21/], read_from: :procon)
+    # 4
+    s.add([["8004"]], read_from: :switch)
+    s.drain_all
 
     @gadget = s.switch
     @procon = s.procon
