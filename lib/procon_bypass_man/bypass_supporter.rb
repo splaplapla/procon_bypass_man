@@ -70,8 +70,8 @@ class ProconBypassMan::BypassSupporter
         if result
           ProconBypassMan.logger.info "OK(expected: #{value}, got: #{data.unpack("H*")})"
         else
-          raise BytesMismatchError if @throw_error_if_mismatch
           ProconBypassMan.logger.info "NG(expected: #{value}, got: #{data.unpack("H*")})"
+          raise BytesMismatchError if @throw_error_if_mismatch
         end
         to_device(item).write_nonblock(data)
       end
