@@ -4,6 +4,7 @@ describe ProconBypassMan::Configuration do
   before(:each) do
     ProconBypassMan.reset!
   end
+  let(:setting) { Setting.new(setting_content).to_file }
 
   describe 'Loader' do
     describe '.load' do
@@ -17,13 +18,6 @@ describe ProconBypassMan::Configuration do
               flip :zr, if_pressed: :zr, flip_interval: "2F"
             end
           EOH
-        end
-        let(:setting) do
-          require "tempfile"
-          file = Tempfile.new(["", ".yml"])
-          file.write setting_content
-          file.seek 0
-          file
         end
         it do
           expect {
@@ -41,13 +35,6 @@ describe ProconBypassMan::Configuration do
               flip :n, if_pressed: :zr
             end
           EOH
-        end
-        let(:setting) do
-          require "tempfile"
-          file = Tempfile.new(["", ".yml"])
-          file.write setting_content
-          file.seek 0
-          file
         end
         it do
           begin
@@ -68,13 +55,6 @@ describe ProconBypassMan::Configuration do
             end
           EOH
         end
-        let(:setting) do
-          require "tempfile"
-          file = Tempfile.new(["", ".yml"])
-          file.write setting_content
-          file.seek 0
-          file
-        end
         it do
           expect {
             ProconBypassMan::Configuration::Loader.load(setting_path: setting.path)
@@ -93,13 +73,6 @@ describe ProconBypassMan::Configuration do
               flip :zr, if_pressed: [:n]
             end
           EOH
-        end
-        let(:setting) do
-          require "tempfile"
-          file = Tempfile.new(["", ".yml"])
-          file.write setting_content
-          file.seek 0
-          file
         end
         it do
           expect {
@@ -120,13 +93,6 @@ describe ProconBypassMan::Configuration do
             end
           EOH
         end
-        let(:setting) do
-          require "tempfile"
-          file = Tempfile.new(["", ".yml"])
-          file.write setting_content
-          file.seek 0
-          file
-        end
         it do
           expect {
             ProconBypassMan::Configuration::Loader.load(setting_path: setting.path)
@@ -146,13 +112,6 @@ describe ProconBypassMan::Configuration do
             end
           EOH
         end
-        let(:setting) do
-          require "tempfile"
-          file = Tempfile.new(["", ".yml"])
-          file.write setting_content
-          file.seek 0
-          file
-        end
         it do
           expect {
             ProconBypassMan::Configuration::Loader.load(setting_path: setting.path)
@@ -170,13 +129,6 @@ describe ProconBypassMan::Configuration do
             end
           EOH
         end
-        let(:setting) do
-          require "tempfile"
-          file = Tempfile.new(["", ".yml"])
-          file.write setting_content
-          file.seek 0
-          file
-        end
         it do
           expect {
             ProconBypassMan::Configuration::Loader.load(setting_path: setting.path)
@@ -193,13 +145,6 @@ describe ProconBypassMan::Configuration do
             layer :up do
               flip :zr, if_pressed: :zr
           EOH
-        end
-        let(:setting) do
-          require "tempfile"
-          file = Tempfile.new(["", ".yml"])
-          file.write setting_content
-          file.seek 0
-          file
         end
         it do
           expect {
@@ -220,13 +165,6 @@ describe ProconBypassMan::Configuration do
             end
           EOH
         end
-        let(:setting) do
-          require "tempfile"
-          file = Tempfile.new(["", ".yml"])
-          file.write setting_content
-          file.seek 0
-          file
-        end
         it do
           expect {
             ProconBypassMan::Configuration::Loader.load(setting_path: setting.path)
@@ -245,7 +183,6 @@ describe ProconBypassMan::Configuration do
           def self.name; :foo; end
           def self.binaries; ['a']; end
         end
-        after(:each) { first_setting&.close; second_setting&.close }
         let(:first_setting_content) do
           <<~EOH
           version: 1.0
@@ -270,21 +207,9 @@ describe ProconBypassMan::Configuration do
             end
           EOH
         end
-        let(:first_setting) do
-          require "tempfile"
-          file = Tempfile.new(["", ".yml"])
-          file.write first_setting_content
-          file.seek 0
-          file
-        end
-        let(:second_setting) do
-          require "tempfile"
-          file = Tempfile.new(["", ".yml"])
-          file.write second_setting_content
-          file.seek 0
-          file
-        end
         it '2回目の設定が設定されていること' do
+          first_setting = Setting.new(first_setting_content).to_file
+          second_setting = Setting.new(second_setting_content).to_file
           ProconBypassMan::Configuration::Loader.load(setting_path: first_setting.path)
           expect(ProconBypassMan::Configuration.instance.prefix_keys).to eq([:zr, :r, :zl, :l])
           expect(ProconBypassMan::Configuration.instance.layers[:up].flip_buttons).to eq(zr: { if_pressed: [:zr] })
@@ -308,13 +233,6 @@ describe ProconBypassMan::Configuration do
               flip :zr, if_pressed: :zr
             end
         EOH
-      end
-      let(:setting) do
-        require "tempfile"
-        file = Tempfile.new(["", ".yml"])
-        file.write setting_content
-        file.seek 0
-        file
       end
       it do
         ProconBypassMan.configure(setting_path: setting.path)
