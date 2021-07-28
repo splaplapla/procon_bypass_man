@@ -135,28 +135,7 @@ class ProconBypassMan::Runner
   def first_negotiation
     return if $will_terminate_token
 
-    s = ProconBypassMan::DeviceConnector.new(throw_error_if_timeout: true, enable_at_exit: false)
-    s.add([
-      ["0000"],
-      ["0000"],
-      ["8005"],
-      ["0010"],
-    ], read_from: :switch)
-    # 1
-    s.add([["8001"]], read_from: :switch)
-    s.add([/^8101/], read_from: :procon) # <<< 81010003176d96e7a5480000000, macaddressとコントローラー番号を返す
-    # 2
-    s.add([["8002"]], read_from: :switch)
-    s.add([/^8102/], read_from: :procon)
-    # 3
-    s.add([/^0100/], read_from: :switch)
-    s.add([/^21/], read_from: :procon)
-    # 4
-    s.add([["8004"]], read_from: :switch)
-    s.drain_all
-
-    @gadget = s.switch
-    @procon = s.procon
+    @gadget, @procon = ProconBypassMan::DeviceConnector.connect(throw_error_if_timeout: true, enable_at_exit: false)
   rescue ProconBypassMan::Timer::Timeout
     ::ProconBypassMan.logger.error "デバイスとの通信でタイムアウトが起きて接続ができませんでした。"
     @gadget&.close

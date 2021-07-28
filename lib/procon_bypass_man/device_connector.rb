@@ -29,6 +29,29 @@ class ProconBypassMan::DeviceConnector
     s
   end
 
+  def self.connect(throw_error_if_timeout: true, enable_at_exit: false)
+    s = new(throw_error_if_timeout: true, enable_at_exit: false)
+    s.add([
+      ["0000"],
+      ["0000"],
+      ["8005"],
+      ["0010"],
+    ], read_from: :switch)
+    # 1
+    s.add([["8001"]], read_from: :switch)
+    s.add([/^8101/], read_from: :procon) # <<< 81010003176d96e7a5480000000, macaddressとコントローラー番号を返す
+    # 2
+    s.add([["8002"]], read_from: :switch)
+    s.add([/^8102/], read_from: :procon)
+    # 3
+    s.add([/^0100/], read_from: :switch)
+    s.add([/^21/], read_from: :procon)
+    # 4
+    s.add([["8004"]], read_from: :switch)
+    s.drain_all
+    return [s.switch, s.procon]
+  end
+
   def initialize(throw_error_if_timeout: false, throw_error_if_mismatch: false , enable_at_exit: true)
     @stack = []
     @initialized_devices = false
