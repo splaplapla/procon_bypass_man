@@ -135,7 +135,7 @@ class ProconBypassMan::Runner
   def first_negotiation
     return if $will_terminate_token
 
-    s = ProconBypassMan::BypassSupporter.new(throw_error_if_timeout: true, enable_at_exit: false)
+    s = ProconBypassMan::DeviceConnector.new(throw_error_if_timeout: true, enable_at_exit: false)
     s.add([
       ["0000"],
       ["0000"],

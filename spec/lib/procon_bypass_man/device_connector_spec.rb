@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe ProconBypassMan::BypassSupporter do
+describe ProconBypassMan::DeviceConnector do
   subject(:s) { described_class.new(throw_error_if_mismatch: true) }
 
   around do |example|
@@ -82,7 +82,7 @@ describe ProconBypassMan::BypassSupporter do
       # 4
       s.add([["8004"]], read_from: :switch)
 
-      expect { s.drain_all }.to raise_error(ProconBypassMan::BypassSupporter::BytesMismatchError)
+      expect { s.drain_all }.to raise_error(ProconBypassMan::DeviceConnector::BytesMismatchError)
     end
   end
 end

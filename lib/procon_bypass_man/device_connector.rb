@@ -1,5 +1,4 @@
-
-class ProconBypassMan::BypassSupporter
+class ProconBypassMan::DeviceConnector
   class BytesMismatchError < StandardError; end
 
   class Value
