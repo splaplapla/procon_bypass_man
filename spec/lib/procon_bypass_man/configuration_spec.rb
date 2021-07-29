@@ -447,6 +447,9 @@ describe ProconBypassMan::Configuration do
           layer :up do
             flip :zr, if_pressed: [:y]
             remap :zr, to: [:y]
+            flip :y, if_pressed: [:y]
+            flip :l, if_pressed: [:zr]
+            flip :r, if_pressed: [:y]
           end
         end
         expect(ProconBypassMan::Configuration.instance.valid?).to eq(false)
