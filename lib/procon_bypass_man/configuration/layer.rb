@@ -16,7 +16,7 @@ module ProconBypassMan
         case if_pressed
         when TrueClass
           if_pressed = [button]
-        when Symbol
+        when Symbol, String
           if_pressed = [if_pressed]
         when Array, FalseClass
           # sono mama
@@ -25,8 +25,16 @@ module ProconBypassMan
         end
         hash = { if_pressed: if_pressed }
         if force_neutral
-          hash[:force_neutral] = force_neutral
+          case force_neutral
+          when TrueClass, FalseClass
+            raise "ボタンを渡してください"
+          when Symbol, String
+            hash[:force_neutral] = [force_neutral]
+          when Array
+            hash[:force_neutral] = force_neutral
+          end
         end
+
         if flip_interval
           if /\A(\d+)F\z/i =~ flip_interval
             interval =  ((frame = $1.to_i) / 60.0).floor(2)
@@ -35,17 +43,33 @@ module ProconBypassMan
           end
           hash[:flip_interval] = interval
         end
-        self.flips[button] = hash
+        if self.flips[button]
+          raise "#{button}への設定をすでに割り当て済みです"
+        else
+          self.flips[button] = hash
+        end
       end
 
       PRESET_MACROS = [:fast_return]
       def macro(name, if_pressed: )
-        self.macros[name] = { if_pressed: if_pressed }
+        if name.respond_to?(:name)
+          macro_name = name.name.to_sym
+        else
+          macro_name = name
+        end
+        self.macros[macro_name] = { if_pressed: if_pressed }
       end
 
       def remap(button, to: )
-        raise "シンボル以外は設定できません" unless to.is_a?(Symbol)
-        self.remaps[button] = to
+        case to
+        when TrueClass, FalseClass
+          raise "ボタンを渡してください"
+        when Symbol, String
+          self.remaps[button] = { to: [to] }
+        when Array
+          raise "ボタンを渡してください" if to.size.zero?
+          self.remaps[button] = { to: to }
+        end
       end
 
       # @return [Array]

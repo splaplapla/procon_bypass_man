@@ -1,4 +1,5 @@
 class ProconBypassMan::Procon
+  require "procon_bypass_man/procon/data"
   require "procon_bypass_man/procon/mode_registry"
   require "procon_bypass_man/procon/macro_registry"
   require "procon_bypass_man/procon/layer_changeable"
@@ -9,7 +10,7 @@ class ProconBypassMan::Procon
 
   attr_accessor :user_operation
 
-  def self.reset_cvar!
+  def self.reset!
     @@status = {
       buttons: {},
       current_layer_key: :up,
@@ -17,7 +18,6 @@ class ProconBypassMan::Procon
       ongoing_mode: ModeRegistry.load(:manual),
     }
   end
-  def self.reset!; reset_cvar!; end
   reset!
 
   def initialize(binary)
@@ -106,18 +106,20 @@ class ProconBypassMan::Procon
         if !status[button]
           user_operation.unpress_button(button)
         end
-        if options[:force_neutral] && user_operation.pressed_button?(options[:force_neutral])
-          button = options[:force_neutral]
-          user_operation.unpress_button(button)
+
+        options[:force_neutral]&.each do |force_neutral_button|
+          user_operation.pressed_button?(force_neutral_button) && user_operation.unpress_button(force_neutral_button)
         end
       end
     end
 
-    current_layer.remaps.each do |from_button, to_button|
+    current_layer.remaps.each do |from_button, to_buttons|
       if user_operation.pressed_button?(from_button)
         user_operation.unpress_button(from_button)
         # TODO 2重でpressしないようにしたい
-        user_operation.press_button(to_button) unless user_operation.pressed_button?(to_button)
+        to_buttons[:to].each do |to_button|
+          user_operation.press_button(to_button) unless user_operation.pressed_button?(to_button)
+        end
       end
     end
 

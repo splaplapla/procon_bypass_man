@@ -3,10 +3,7 @@ require_relative "io_monitor"
 class ProconBypassMan::Runner
   class InterruptForRestart < StandardError; end
 
-  def initialize(gadget: , procon: )
-    @gadget = gadget
-    @procon = procon
-
+  def initialize
     $will_interval_0_0_0_5 = 0
     $will_interval_1_6 = 0
   end
@@ -98,8 +95,11 @@ class ProconBypassMan::Runner
         loop do
           break if $will_terminate_token
           bypass.send_procon_to_gadget!
+        rescue EOFError => e
+          ProconBypassMan.logger.error "Proconと通信ができませんでした.終了処理を開始します"
+          Process.kill "TERM", Process.ppid
         rescue Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError => e
-          ProconBypassMan.logger.error "Proconが切断されました.終了処理を開始します"
+          ProconBypassMan.logger.error "Proconが切断されました。終了処理を開始します"
           Process.kill "TERM", Process.ppid
         end
         ProconBypassMan.logger.info "Thread2を終了します"
@@ -133,38 +133,14 @@ class ProconBypassMan::Runner
   end
 
   def first_negotiation
-    loop do
-      begin
-        input = @gadget.read_nonblock(128)
-        ProconBypassMan.logger.debug { ">>> #{input.unpack("H*")}" }
-        @procon.write_nonblock(input)
-        if input[0] == "\x80".b && input[1] == "\x01".b
-          ProconBypassMan.logger.info("first negotiation is over")
-          break
-        end
-        break if $will_terminate_token
-      rescue IO::EAGAINWaitReadable
-      end
-    end
+    return if $will_terminate_token
 
-    # ...
-    #   switch) 8001
-    #   procon) 8101
-    #   switch) 8002
-    # が返ってくるプロトコルがあって、これができていないならやり直す
-    loop do
-      begin
-        data = @procon.read_nonblock(128)
-        if data[0] == "\x81".b && data[1] == "\x01".b
-          ProconBypassMan.logger.debug { "接続を確認しました" }
-          @gadget.write_nonblock(data)
-          break
-        else
-          raise ::ProconBypassMan::FirstConnectionError
-        end
-      rescue IO::EAGAINWaitReadable
-      end
-    end
+    @gadget, @procon = ProconBypassMan::DeviceConnector.connect(throw_error_if_timeout: true, enable_at_exit: false)
+  rescue ProconBypassMan::Timer::Timeout
+    ::ProconBypassMan.logger.error "デバイスとの通信でタイムアウトが起きて接続ができませんでした。"
+    @gadget&.close
+    @procon&.close
+    raise ::ProconBypassMan::EternalConnectionError
   end
 
   def handle_signal(sig)

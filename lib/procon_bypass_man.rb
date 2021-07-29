@@ -3,11 +3,11 @@ require 'yaml'
 require "fileutils"
 
 require_relative "procon_bypass_man/version"
-require_relative "procon_bypass_man/device_registry"
+require_relative "procon_bypass_man/timer"
 require_relative "procon_bypass_man/bypass"
+require_relative "procon_bypass_man/device_connector"
 require_relative "procon_bypass_man/runner"
 require_relative "procon_bypass_man/processor"
-require_relative "procon_bypass_man/procon/data"
 require_relative "procon_bypass_man/configuration"
 require_relative "procon_bypass_man/procon"
 
@@ -18,6 +18,7 @@ module ProconBypassMan
   class ProConRejected < StandardError; end
   class CouldNotLoadConfigError < StandardError; end
   class FirstConnectionError < StandardError; end
+  class EternalConnectionError < StandardError; end
 
   def self.configure(setting_path: nil, &block)
     unless setting_path
@@ -34,13 +35,17 @@ module ProconBypassMan
   def self.run(setting_path: nil, &block)
     configure(setting_path: setting_path, &block)
     File.write(pid_path, $$)
-    registry = ProconBypassMan::DeviceRegistry.new
-    Runner.new(gadget: registry.gadget, procon: registry.procon).run
+    Runner.new.run
   rescue CouldNotLoadConfigError
     ProconBypassMan.logger.error "設定ファイルが不正です。設定ファイルの読み込みに失敗しました"
     puts "設定ファイルが不正です。設定ファイルの読み込みに失敗しました"
     FileUtils.rm_rf(ProconBypassMan.pid_path)
     exit 1
+  rescue EternalConnectionError
+    ProconBypassMan.logger.error "接続の見込みがないのでsleepしまくります"
+    puts "接続の見込みがないのでsleepしまくります"
+    FileUtils.rm_rf(ProconBypassMan.pid_path)
+    sleep(999999999999999999)
   rescue FirstConnectionError
     puts "接続を確立できませんでした。やりなおします。"
     retry
