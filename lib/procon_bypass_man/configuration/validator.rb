@@ -8,6 +8,7 @@ module ProconBypassMan
         validate_require_prefix_keys
         validate_config_of_button_lonely
         validate_verify_button_existence
+        validate_flip_and_remap_are_hate_each_other
 
         @errors.empty?
       end
@@ -69,6 +70,18 @@ module ProconBypassMan
           }.compact.each { |b| unverified_buttons << b }
           unless(nunsupport_buttons = (unverified_buttons - ProconBypassMan::Procon::ButtonCollection::BUTTONS)).length.zero?
             @errors[:layers] << "#{layer_key}で存在しないボタン#{nunsupport_buttons.join(", ")}があります"
+          end
+        end
+      end
+
+      def validate_flip_and_remap_are_hate_each_other
+        @layers.each do |layer_key, value|
+          flip_buttons = []
+          remap_buttons = []
+          value.instance_eval { @flips.keys }.map(&:to_sym).each { |b| flip_buttons << b }
+          value.instance_eval { @remaps.keys }.map(&:to_sym).each { |b| remap_buttons << b }
+          if(duplicated_buttons = flip_buttons & remap_buttons).length > 0
+            @errors[:layers] << "レイヤー#{layer_key}で、連打とリマップの定義が重複しているボタン#{duplicated_buttons.join(", ")}があります"
           end
         end
       end

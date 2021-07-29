@@ -424,7 +424,7 @@ describe ProconBypassMan::Configuration do
   end
 
   describe 'validations' do
-    context '1つのレイヤーで同じボタンへの設定をしているとき' do
+    context '同じレイヤーで同じボタンへの設定をしているとき' do
       it do
         # TODO validationとして捕捉したい
         expect {
@@ -438,6 +438,19 @@ describe ProconBypassMan::Configuration do
         }.to raise_error(RuntimeError, "zrへの設定をすでに割り当て済みです")
         # expect(ProconBypassMan::Configuration.instance.valid?).to eq(false)
         # expect(ProconBypassMan::Configuration.instance.errors).to eq(:layers=>["upで同じボタンへの設定はできません。"])
+      end
+    end
+    context '同じレイヤーで1つのボタンへのflipとremapを設定をしているとき' do
+      it do
+        ProconBypassMan.configure do
+          prefix_keys_for_changing_layer [:zr]
+          layer :up do
+            flip :zr, if_pressed: [:y]
+            remap :zr, to: [:y]
+          end
+        end
+        expect(ProconBypassMan::Configuration.instance.valid?).to eq(false)
+        expect(ProconBypassMan::Configuration.instance.errors).to eq({:layers=>["レイヤーupで、連打とリマップの定義が重複しているボタンzrがあります"]})
       end
     end
     context 'modeを設定しているのにブロックを渡しているとき' do
