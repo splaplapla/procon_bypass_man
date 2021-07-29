@@ -48,24 +48,20 @@ module ProconBypassMan
         @layers.each do |layer_key, value|
           unverified_buttons = []
           # teplevel target button
-          value.instance_eval { @flips.keys }.map(&:to_sym).each { |b| unverified_buttons << b }
-          value.instance_eval { @remaps.keys }.map(&:to_sym).each { |b| unverified_buttons << b }
+          value.flips.keys.map(&:to_sym).each { |b| unverified_buttons << b }
+          value.remaps.keys.map(&:to_sym).each { |b| unverified_buttons << b }
           # internal target button
-          value.instance_eval {
-            @flips.flat_map { |flip_button, flip_option|
-              flip_option.flat_map { |flip_option_key, flip_option_target_button|
-                next if flip_option_key == :flip_interval
-                next if flip_option_target_button.is_a?(FalseClass) || flip_option_target_button.is_a?(TrueClass)
-                flip_option_target_button
-              }
+          value.flips.flat_map { |flip_button, flip_option|
+            flip_option.flat_map { |flip_option_key, flip_option_target_button|
+              next if flip_option_key == :flip_interval
+              next if flip_option_target_button.is_a?(FalseClass) || flip_option_target_button.is_a?(TrueClass)
+              flip_option_target_button
             }
           }.compact.each { |b| unverified_buttons << b }
-          value.instance_eval {
-            @remaps.flat_map { |button, option|
-              option.flat_map { |flip_option_key, flip_option_target_button|
-                next if flip_option_target_button.is_a?(FalseClass) || flip_option_target_button.is_a?(TrueClass)
-                flip_option_target_button
-              }
+          value.remaps.flat_map { |button, option|
+            option.flat_map { |flip_option_key, flip_option_target_button|
+              next if flip_option_target_button.is_a?(FalseClass) || flip_option_target_button.is_a?(TrueClass)
+              flip_option_target_button
             }
           }.compact.each { |b| unverified_buttons << b }
           unless(nunsupport_buttons = (unverified_buttons - ProconBypassMan::Procon::ButtonCollection::BUTTONS)).length.zero?
@@ -78,8 +74,8 @@ module ProconBypassMan
         @layers.each do |layer_key, value|
           flip_buttons = []
           remap_buttons = []
-          value.instance_eval { @flips.keys }.map(&:to_sym).each { |b| flip_buttons << b }
-          value.instance_eval { @remaps.keys }.map(&:to_sym).each { |b| remap_buttons << b }
+          value.flips.keys.map(&:to_sym).each { |b| flip_buttons << b }
+          value.remaps.keys.map(&:to_sym).each { |b| remap_buttons << b }
           if(duplicated_buttons = flip_buttons & remap_buttons).length > 0
             @errors[:layers] << "レイヤー#{layer_key}で、連打とリマップの定義が重複しているボタン#{duplicated_buttons.join(", ")}があります"
           end

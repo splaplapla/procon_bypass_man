@@ -256,7 +256,7 @@ describe ProconBypassMan::Configuration do
           end
         end
         expect(ProconBypassMan::Procon::MacroRegistry.plugins).to eq(the_macro: [:a, :b])
-        expect(ProconBypassMan::Configuration.instance.layers[:up].instance_eval { |x| @macros }).to eq(
+        expect(ProconBypassMan::Configuration.instance.layers[:up].macros).to eq(
           {:the_macro=>{:if_pressed=>[:a, :y]}}
         )
       end
@@ -272,7 +272,7 @@ describe ProconBypassMan::Configuration do
           end
         end
         expect(ProconBypassMan::Procon::MacroRegistry.plugins).to eq(the_macro: [:a, :b])
-        expect(ProconBypassMan::Configuration.instance.layers[:up].instance_eval { |x| @macros }).to eq(
+        expect(ProconBypassMan::Configuration.instance.layers[:up].macros).to eq(
           {:the_macro=>{:if_pressed=>[:a, :y]}}
         )
       end
