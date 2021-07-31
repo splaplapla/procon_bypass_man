@@ -1,6 +1,11 @@
 module ProconBypassMan
   class Configuration
-    module Validator
+    class Validator
+      def initialize(config)
+        @layers = config.layers
+        @prefix_keys = config.prefix_keys
+      end
+
       # @return [Boolean]
       def valid?
         @errors = Hash.new {|h,k| h[k] = [] }
@@ -38,7 +43,7 @@ module ProconBypassMan
       end
 
       def validate_require_prefix_keys
-        if prefix_keys.empty?
+        if @prefix_keys.empty?
           @errors[:prefix_keys] ||= []
           @errors[:prefix_keys] << "prefix_keys_for_changing_layerに値が入っていません。"
         end

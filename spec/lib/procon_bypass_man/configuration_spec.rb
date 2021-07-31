@@ -452,8 +452,11 @@ describe ProconBypassMan::Configuration do
             flip :r, if_pressed: [:y]
           end
         end
-        expect(ProconBypassMan::Configuration.instance.valid?).to eq(false)
-        expect(ProconBypassMan::Configuration.instance.errors).to eq({:layers=>["レイヤーupで、連打とリマップの定義が重複しているボタンzrがあります"]})
+        validator = ProconBypassMan::Configuration::Validator.new(
+          ProconBypassMan::Configuration.instance
+        )
+        expect(validator.valid?).to eq(false)
+        expect(validator.errors).to eq({:layers=>["レイヤーupで、連打とリマップの定義が重複しているボタンzrがあります"]})
       end
     end
     context 'modeを設定しているのにブロックを渡しているとき' do
@@ -469,8 +472,11 @@ describe ProconBypassMan::Configuration do
             flip :zr
           end
         end
-        expect(ProconBypassMan::Configuration.instance.valid?).to eq(false)
-        expect(ProconBypassMan::Configuration.instance.errors).to eq(:layers=>["upでmodeを設定しているのでボタンの設定はできません。"])
+        validator = ProconBypassMan::Configuration::Validator.new(
+          ProconBypassMan::Configuration.instance
+        )
+        expect(validator.valid?).to eq(false)
+        expect(validator.errors).to eq(:layers=>["upでmodeを設定しているのでボタンの設定はできません。"])
       end
     end
   end
