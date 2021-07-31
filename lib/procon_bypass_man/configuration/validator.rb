@@ -51,15 +51,15 @@ module ProconBypassMan
           value.flips.keys.map(&:to_sym).each { |b| unverified_buttons << b }
           value.remaps.keys.map(&:to_sym).each { |b| unverified_buttons << b }
           # internal target button
-          value.flips.flat_map { |flip_button, flip_option|
+          value.flips.flat_map { |_flip_button, flip_option|
             flip_option.flat_map { |flip_option_key, flip_option_target_button|
               next if flip_option_key == :flip_interval
               next if flip_option_target_button.is_a?(FalseClass) || flip_option_target_button.is_a?(TrueClass)
               flip_option_target_button
             }
           }.compact.each { |b| unverified_buttons << b }
-          value.remaps.flat_map { |button, option|
-            option.flat_map { |flip_option_key, flip_option_target_button|
+          value.remaps.flat_map { |_button, option|
+            option.flat_map { |_flip_option_key, flip_option_target_button|
               next if flip_option_target_button.is_a?(FalseClass) || flip_option_target_button.is_a?(TrueClass)
               flip_option_target_button
             }

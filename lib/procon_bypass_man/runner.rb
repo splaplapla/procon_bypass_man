@@ -28,7 +28,7 @@ class ProconBypassMan::Runner
       main_loop_pid = fork { main_loop }
 
       begin
-        while readable_io = IO.select([self_read])
+        while(readable_io = IO.select([self_read]))
           signal = readable_io.first[0].gets.strip
           handle_signal(signal)
         end
@@ -119,7 +119,7 @@ class ProconBypassMan::Runner
 
     ProconBypassMan.logger.info "子プロセスでgraceful shutdownの準備ができました"
     begin
-      while readable_io = IO.select([self_read])
+      while(readable_io = IO.select([self_read]))
         signal = readable_io.first[0].gets.strip
         handle_signal(signal)
       end
@@ -135,7 +135,7 @@ class ProconBypassMan::Runner
   def first_negotiation
     return if $will_terminate_token
 
-    @gadget, @procon = ProconBypassMan::DeviceConnector.connect(throw_error_if_timeout: true, enable_at_exit: false)
+    @gadget, @procon = ProconBypassMan::DeviceConnector.connect
   rescue ProconBypassMan::Timer::Timeout
     ::ProconBypassMan.logger.error "デバイスとの通信でタイムアウトが起きて接続ができませんでした。"
     @gadget&.close
