@@ -24,6 +24,13 @@ describe ProconBypassMan::Configuration do
             ProconBypassMan::Configuration::Loader.load(setting_path: setting.path)
           }.not_to raise_error
         end
+        it do
+          FileUtils.rm_rf("#{ProconBypassMan.root}/.setting_yaml_digest")
+          ProconBypassMan::Configuration::Loader.load(setting_path: setting.path)
+          expect(
+            File.read("#{ProconBypassMan.root}/.setting_yaml_digest")
+          ).not_to be_nil
+        end
       end
       context '存在しないボタンを書いているとき1-1(対象のボタン)' do
         let(:setting_content) do

@@ -1,6 +1,8 @@
 module ProconBypassMan
   class Configuration
     module Loader
+      require 'digest/md5'
+
       def self.load(setting_path: )
         ProconBypassMan::Configuration.switch_new_context(:validation) do |validation_instance|
           yaml = YAML.load_file(setting_path) or raise "読み込みに失敗しました"
@@ -29,6 +31,9 @@ module ProconBypassMan
           ProconBypassMan.logger.warn "不明なバージョンです。failoverします"
           ProconBypassMan::Configuration.instance.instance_eval(yaml["setting"])
         end
+
+        File.write("#{ProconBypassMan.root}/.setting_yaml_digest", Digest::MD5.hexdigest(yaml["setting"]))
+
         ProconBypassMan::Configuration.instance
       end
 
