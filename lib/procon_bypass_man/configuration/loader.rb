@@ -32,7 +32,7 @@ module ProconBypassMan
           ProconBypassMan::Configuration.instance.instance_eval(yaml["setting"])
         end
 
-        File.write("#{ProconBypassMan.root}/.setting_yaml_digest", Digest::MD5.hexdigest(yaml["setting"]))
+        File.write(ProconBypassMan.digest_path, Digest::MD5.hexdigest(yaml["setting"]))
 
         ProconBypassMan::Configuration.instance
       end

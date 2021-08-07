@@ -86,4 +86,8 @@ module ProconBypassMan
   def self.root=(path)
     @@root = path
   end
+
+  def self.digest_path
+    "#{root}/.setting_yaml_digest"
+  end
 end
