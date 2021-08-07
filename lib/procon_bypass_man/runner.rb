@@ -51,6 +51,7 @@ class ProconBypassMan::Runner
         @gadget&.close
         @procon&.close
         FileUtils.rm_rf(ProconBypassMan.pid_path)
+        FileUtils.rm_rf(ProconBypassMan.digest_path)
         exit 1
       end
     end

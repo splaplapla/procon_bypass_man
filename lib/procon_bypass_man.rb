@@ -40,6 +40,7 @@ module ProconBypassMan
     ProconBypassMan.logger.error "設定ファイルが不正です。設定ファイルの読み込みに失敗しました"
     puts "設定ファイルが不正です。設定ファイルの読み込みに失敗しました"
     FileUtils.rm_rf(ProconBypassMan.pid_path)
+    FileUtils.rm_rf(ProconBypassMan.digest_path)
     exit 1
   rescue EternalConnectionError
     ProconBypassMan.logger.error "接続の見込みがないのでsleepしまくります"
