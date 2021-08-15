@@ -46,7 +46,7 @@ module ProconBypassMan
     ProconBypassMan.logger.error "接続の見込みがないのでsleepしまくります"
     puts "接続の見込みがないのでsleepしまくります"
     FileUtils.rm_rf(ProconBypassMan.pid_path)
-    sleep(9999999999999)
+    sleep(999999999)
   rescue FirstConnectionError
     puts "接続を確立できませんでした。やりなおします。"
     retry
