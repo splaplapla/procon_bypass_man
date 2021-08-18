@@ -16,5 +16,8 @@ jobs:
           name: bundle install
           command: bundle install --jobs 4
       - run:
+          name: rubocop
+          command: bundle exec rubocop
+      - run:
           name: run test
           command: bundle exec rspec

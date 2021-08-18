@@ -1,0 +1,24 @@
+AllCops:
+  NewCops: enable
+  SuggestExtensions: false
+  Include:
+    - 'lib/**/*.rb'
+    - 'spec/**/*.rb'
+Style:
+  Enabled: false
+
+Metrics:
+  Enabled: false
+    
+Layout:
+  Enabled: false
+
+Naming:
+  Enabled: false
+
+Lint/ConstantDefinitionInBlock:
+    Enabled: false
+Lint/UselessAssignment:
+    Enabled: false
+Lint/EmptyBlock:
+    Enabled: false

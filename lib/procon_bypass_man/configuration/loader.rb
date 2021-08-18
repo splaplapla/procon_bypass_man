@@ -1,24 +1,22 @@
 module ProconBypassMan
   class Configuration
     module Loader
-      def self.load(setting_path: )
-        validation_instance = ProconBypassMan::Configuration.switch_context(:validation) do |instance|
-          begin
-            yaml = YAML.load_file(setting_path) or raise "読み込みに失敗しました"
-            instance.instance_eval(yaml["setting"])
-          rescue SyntaxError
-            instance.errors[:base] << "Rubyのシンタックスエラーです"
-            next(instance)
-          rescue Psych::SyntaxError
-            instance.errors[:base] << "yamlのシンタックスエラーです"
-            next(instance)
-          end
-          instance.valid?
-          next(instance)
-        end
+      require 'digest/md5'
 
-        if !validation_instance.errors.empty?
-          raise ProconBypassMan::CouldNotLoadConfigError, validation_instance.errors
+      def self.load(setting_path: )
+        ProconBypassMan::Configuration.switch_new_context(:validation) do |validation_instance|
+          yaml = YAML.load_file(setting_path) or raise "読み込みに失敗しました"
+          validation_instance.instance_eval(yaml["setting"])
+          validator = Validator.new(validation_instance)
+          if validator.valid?
+            next
+          else
+            raise ProconBypassMan::CouldNotLoadConfigError, validator.errors
+          end
+        rescue SyntaxError
+          raise ProconBypassMan::CouldNotLoadConfigError, "Rubyのシンタックスエラーです"
+        rescue Psych::SyntaxError
+          raise ProconBypassMan::CouldNotLoadConfigError, "yamlのシンタックスエラーです"
         end
 
         yaml = YAML.load_file(setting_path)
@@ -33,6 +31,9 @@ module ProconBypassMan
           ProconBypassMan.logger.warn "不明なバージョンです。failoverします"
           ProconBypassMan::Configuration.instance.instance_eval(yaml["setting"])
         end
+
+        File.write(ProconBypassMan.digest_path, Digest::MD5.hexdigest(yaml["setting"]))
+
         ProconBypassMan::Configuration.instance
       end
 

@@ -4,7 +4,6 @@ require "procon_bypass_man/configuration/layer"
 
 module ProconBypassMan
   class Configuration
-    include Validator
 
     attr_accessor :layers,
       :setting_path,
@@ -19,13 +18,12 @@ module ProconBypassMan
       @@context[@@current_context_key] ||= new
     end
 
-    def self.switch_context(key)
-      @@context[key] ||= new
+    def self.switch_new_context(key)
+      @@context[key] = new
       previous_key = @@current_context_key
       if block_given?
         @@current_context_key = key
         value = yield(@@context[key])
-        @@context[key].reset!
         @@current_context_key = previous_key
         return value
       else
