@@ -25,12 +25,12 @@ Switch <-- (PBM): ZR連打
 
 ## Usage
 * USBガジェットモードで起動するRaspberry Pi4を用意する
-  * https://github.com/splaspla-hacker/procon_bypass_man/blob/master/docs/setup_raspi.md
+  * https://github.com/splaplapla/procon_bypass_man/blob/master/docs/setup_raspi.md
 * Raspberry Pi4で https://github.com/jiikko/procon_bypass_man_sample をclone して実行ファイルを動かす
-  * 実行ファイルと設定ファイルについては https://github.com/splaspla-hacker/procon_bypass_man/wiki に詳細を書いていますが、まず動かすためにはcloneしたほうが早いです
+  * 実行ファイルと設定ファイルについては https://github.com/splaplapla/procon_bypass_man/wiki に詳細を書いていますが、まず動かすためにはcloneしたほうが早いです
 
 ## Plugins
-* https://github.com/splaspla-hacker/procon_bypass_man-splatoon2
+* https://github.com/splaplapla/procon_bypass_man-splatoon2
 
 ## FAQ
 * どうやって動かすの?
@@ -38,7 +38,7 @@ Switch <-- (PBM): ZR連打
 * どうやって使うの？
     * ケーブルでそれらを接続した状態で、Raspberry Pi4にsshして本プログラムを起動することで使用します
 * ラズベリーパイ4のセットアップ方法は？
-    * https://github.com/splaspla-hacker/procon_bypass_man/tree/master/docs/setup_raspi.md
+    * https://github.com/splaplapla/procon_bypass_man/tree/master/docs/setup_raspi.md
 * モード, マクロの違いは？
     * modeはProconの入力をそのまま再現するため機能。レイヤーを切り替えるまで繰り返し続ける
     * マクロは特定のキーを順番に入れていく機能。キーの入力が終わったらマクロは終了する
