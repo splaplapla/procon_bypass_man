@@ -24,6 +24,13 @@ describe ProconBypassMan::Configuration do
             ProconBypassMan::Configuration::Loader.load(setting_path: setting.path)
           }.not_to raise_error
         end
+        it do
+          FileUtils.rm_rf("#{ProconBypassMan.root}/.setting_yaml_digest")
+          ProconBypassMan::Configuration::Loader.load(setting_path: setting.path)
+          expect(
+            File.read("#{ProconBypassMan.root}/.setting_yaml_digest")
+          ).not_to be_nil
+        end
       end
       context '存在しないボタンを書いているとき1-1(対象のボタン)' do
         let(:setting_content) do
@@ -256,7 +263,7 @@ describe ProconBypassMan::Configuration do
           end
         end
         expect(ProconBypassMan::Procon::MacroRegistry.plugins).to eq(the_macro: [:a, :b])
-        expect(ProconBypassMan::Configuration.instance.layers[:up].instance_eval { |x| @macros }).to eq(
+        expect(ProconBypassMan::Configuration.instance.layers[:up].macros).to eq(
           {:the_macro=>{:if_pressed=>[:a, :y]}}
         )
       end
@@ -272,7 +279,7 @@ describe ProconBypassMan::Configuration do
           end
         end
         expect(ProconBypassMan::Procon::MacroRegistry.plugins).to eq(the_macro: [:a, :b])
-        expect(ProconBypassMan::Configuration.instance.layers[:up].instance_eval { |x| @macros }).to eq(
+        expect(ProconBypassMan::Configuration.instance.layers[:up].macros).to eq(
           {:the_macro=>{:if_pressed=>[:a, :y]}}
         )
       end
@@ -452,8 +459,11 @@ describe ProconBypassMan::Configuration do
             flip :r, if_pressed: [:y]
           end
         end
-        expect(ProconBypassMan::Configuration.instance.valid?).to eq(false)
-        expect(ProconBypassMan::Configuration.instance.errors).to eq({:layers=>["レイヤーupで、連打とリマップの定義が重複しているボタンzrがあります"]})
+        validator = ProconBypassMan::Configuration::Validator.new(
+          ProconBypassMan::Configuration.instance
+        )
+        expect(validator.valid?).to eq(false)
+        expect(validator.errors).to eq({:layers=>["レイヤーupで、連打とリマップの定義が重複しているボタンzrがあります"]})
       end
     end
     context 'modeを設定しているのにブロックを渡しているとき' do
@@ -469,8 +479,11 @@ describe ProconBypassMan::Configuration do
             flip :zr
           end
         end
-        expect(ProconBypassMan::Configuration.instance.valid?).to eq(false)
-        expect(ProconBypassMan::Configuration.instance.errors).to eq(:layers=>["upでmodeを設定しているのでボタンの設定はできません。"])
+        validator = ProconBypassMan::Configuration::Validator.new(
+          ProconBypassMan::Configuration.instance
+        )
+        expect(validator.valid?).to eq(false)
+        expect(validator.errors).to eq(:layers=>["upでmodeを設定しているのでボタンの設定はできません。"])
       end
     end
   end

@@ -40,12 +40,13 @@ module ProconBypassMan
     ProconBypassMan.logger.error "設定ファイルが不正です。設定ファイルの読み込みに失敗しました"
     puts "設定ファイルが不正です。設定ファイルの読み込みに失敗しました"
     FileUtils.rm_rf(ProconBypassMan.pid_path)
+    FileUtils.rm_rf(ProconBypassMan.digest_path)
     exit 1
   rescue EternalConnectionError
     ProconBypassMan.logger.error "接続の見込みがないのでsleepしまくります"
     puts "接続の見込みがないのでsleepしまくります"
     FileUtils.rm_rf(ProconBypassMan.pid_path)
-    sleep(999999999999999999)
+    sleep(999999999)
   rescue FirstConnectionError
     puts "接続を確立できませんでした。やりなおします。"
     retry
@@ -85,5 +86,9 @@ module ProconBypassMan
 
   def self.root=(path)
     @@root = path
+  end
+
+  def self.digest_path
+    "#{root}/.setting_yaml_digest"
   end
 end

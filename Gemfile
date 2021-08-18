@@ -9,3 +9,4 @@ gem "rake", "~> 13.0"
 gem "rspec"
 gem "pry"
 gem "timecop"
+gem "rubocop", require: false

@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
 
   spec.summary       = "extension for Nintendo Switch Pro Controller"
   spec.description   = spec.summary
-  spec.homepage      = "https://github.com/splaspla-hacker/procon_bypass_man"
+  spec.homepage      = "https://github.com/splaplapla/procon_bypass_man"
   spec.license       = "MIT"
   spec.required_ruby_version = Gem::Requirement.new(">= 2.4.0")
 
