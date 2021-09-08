@@ -13,7 +13,7 @@
       * /etc/dphys-swapfile を CONF_SWAPSIZE=1024 にする
       * sudo /etc/init.d/dphys-swapfile restart && swapon -s
   * tailscale をインストールする(optional)
-  * sudo apt-get install vim rbenv
+  * sudo apt-get install vim rbenv git -y
   * rbenvでrubyを入れる
       * git clone https://github.com/rbenv/ruby-build.git "$(rbenv root)"/plugins/ruby-build
       * rbenv install 3.0.1
