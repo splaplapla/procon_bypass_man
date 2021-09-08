@@ -22,12 +22,11 @@
 * sshkeyを作成する
 * github に鍵を登録する
 * ~/.ssh/authorized_keys に鍵を登録する
-* sudo pip3 install fluent-logger pytz
 * ガジェットモードで起動する
   * /boot/config.txtに、dtoverlay=dwc2を追記
-　* echo "dwc2" | sudo tee -a /etc/modules
-　* echo "libcomposite" | sudo tee -a /etc/modules
-　* sudo cat /etc/modules
+  * echo "dwc2" | sudo tee -a /etc/modules
+  * echo "libcomposite" | sudo tee -a /etc/modules
+  * sudo cat /etc/modules
   * cd ~ && wget https://gist.githubusercontent.com/jiikko/3f9fb3194c0cc7685e31fbfcb5b5f9ff/raw/23ddee29d94350be80b79d290ac3c8ce8400bd88/add_procon_gadget.sh
   * chmod 755 ~/add_procon_gadget.sh
   * sudo reboot
@@ -35,7 +34,7 @@
   *  /etc/rc.local に sh /home/pi/add_procon_gadget.sh って書く
 * cd ~ && mkdir -p src && cd ~/src && git clone https://github.com/jiikko/procon_bypass_man_sample && cd procon_bypass_man && sudo bundle install
 
-おわり. 起動する時は都度sudo ruby app.rb を実行する
+おわり. 起動する時は都度 sudo ruby app.rb を実行する
 
 ## 参考
 * https://mtosak-tech.hatenablog.jp/entry/2020/08/22/114622
