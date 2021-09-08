@@ -38,3 +38,9 @@
 
 ## 参考
 * https://mtosak-tech.hatenablog.jp/entry/2020/08/22/114622
+
+# TIPS
+* SDカードにイメージを焼くときは、ImagerのAdvanced Optionsを使うとセットアップが楽になる
+* raspios_liteにした方が起動が早くなりそう
+    * https://qiita.com/Liesegang/items/dcdc669f80d1bf721c21
+    * http://ftp.jaist.ac.jp/pub/raspberrypi/raspios_lite_armhf
