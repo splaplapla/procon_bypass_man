@@ -22,5 +22,5 @@ File.write "#{project_dir}/setup.sh", "sudo ln -s #{current_dir}/#{project_dir}/
 
 valid_pbm_service_body = ERB.new(
   File.read("#{current_dir}/#{project_dir}/systemd_units/pbm.service.erb")
-).run
+).result
 File.write("#{current_dir}/#{project_dir}/systemd_units/pbm.service", valid_pbm_service_body)
