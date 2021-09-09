@@ -1,0 +1,4 @@
+#!/usr/bin/env ruby
+
+system("mkdir -p pbm_project")
+system("cp -r examples/recommend/* pbm_project")
