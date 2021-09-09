@@ -2,15 +2,11 @@
 これらを展開すれば動くようになる
 
 ## Setup
+### `bundle exec create_pbm_project`
+* カレントディレクトにpbm_projectというディレクトを作成する
+* pbm_project/setup.sh でsystemdのunitファイルのsymlinkを貼る
 
 ## systemd
-
-```shell
-sudo ln -s /home/pi/src/procon_bypass_man_sample/systemd_units/pbm.service /etc/systemd/system/pbm.service
-sudo systemctl enable pbm.service
-```
-
-他の操作
 
 * systemctl daemon-reload
 * systemctl enable pbm.service
