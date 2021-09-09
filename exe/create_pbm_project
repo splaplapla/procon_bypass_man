@@ -7,4 +7,5 @@ system("mkdir -p #{project_dir}")
 system("cp -r #{gem_root}/examples/recommend/* #{project_dir}")
 system("cp -r #{gem_root}/examples/recommend/* #{project_dir}")
 
-File.write "#{project_dir}/setup.sh", "sudo ln -s /systemd_units/pbm.service /etc/systemd/system/pbm.service"
+current_dir = File.expand_path('..', __FILE__)
+File.write "#{project_dir}/setup.sh", "sudo ln -s #{current_dir}/#{project_dir}/systemd_units/pbm.service /etc/systemd/system/pbm.service"
