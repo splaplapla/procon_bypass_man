@@ -4,7 +4,7 @@ gem_root = Gem::Specification.find_by_name("procon_bypass_man").gem_dir
 project_dir = "pbm_project"
 
 system("mkdir -p #{project_dir}")
-system("cp -r #{gem_root}/examples/recommend/* #{pbm_project}")
-system("cp -r #{gem_root}/examples/recommend/* #{pbm_project}")
+system("cp -r #{gem_root}/examples/recommend/* #{project_dir}")
+system("cp -r #{gem_root}/examples/recommend/* #{project_dir}")
 
-File.write "#{pbm_project}/setup.sh", "sudo ln -s /systemd_units/pbm.service /etc/systemd/system/pbm.service"
+File.write "#{project_dir}/setup.sh", "sudo ln -s /systemd_units/pbm.service /etc/systemd/system/pbm.service"
