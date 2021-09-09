@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
 
+gem_root = Gem::Specification.find_by_name("procon_bypass_man").gem_dir
 system("mkdir -p pbm_project")
-system("cp -r examples/recommend/* pbm_project")
+system("cp -r #{gem_root}/examples/recommend/* pbm_project")
