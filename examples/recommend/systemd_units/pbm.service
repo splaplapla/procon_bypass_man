@@ -1,0 +1,13 @@
+[Unit]
+Description=PBM
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/home/pi/src/procon_bypass_man_sample
+ExecStart=/bin/bash -c "/home/pi/.rbenv/versions/3.0.1/bin/ruby /home/pi/src/procon_bypass_man_sample/app.rb"
+Restart=always
+Nice=-19
+
+[Install]
+WantedBy=multi-user.target
