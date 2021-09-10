@@ -17,7 +17,10 @@ end
 gem_root = Gem::Specification.find_by_name("procon_bypass_man").gem_dir
 
 system("mkdir -p #{project_dir}")
-system("cp -r #{gem_root}/installer_assets/* #{project_dir}")
+system("cp #{gem_root}/installer_assets/systemd_units/pbm.service.erb #{project_dir}/systemd_units/pbm.service.erb")
+system("cp #{gem_root}/installer_assets/app.rb #{project_dir}/app.rb")
+system("cp #{gem_root}/installer_assets/setting.yml #{project_dir}/setting.yml")
+
 File.write "#{project_dir}/setup.sh", "sudo ln -s #{current_dir}/#{project_dir}/systemd_units/pbm.service /etc/systemd/system/pbm.service"
 
 valid_pbm_service_body = ERB.new(

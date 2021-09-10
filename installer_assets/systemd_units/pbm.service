@@ -1,0 +1,13 @@
+[Unit]
+Description=PBM
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/usr/share/pbm/current
+ExecStart=/bin/bash -c "ruby /usr/share/pbm/current/app.rb"
+Restart=always
+Nice=-19
+
+[Install]
+WantedBy=multi-user.target
