@@ -2,22 +2,47 @@ version: 2.1
 orbs:
   ruby: circleci/ruby@0.1.2 
 
-jobs:
-  build:
+executors:
+  ruby:
+    parameters:
+      tag:
+        type: string
+        default: "latest"
     docker:
-      - image: circleci/ruby:3.0.1
-    executor: ruby/default
+      - image: ruby:<< parameters.tag >>
+    environment:
+      BUNDLE_PATH: vendor/bundle
+      BUNDLE_JOBS: 4
+    working_directory: ~/app
+
+jobs:
+  rspec:
+    parameters:
+      version:
+        type: string
+    executor:
+      name: ruby
+      tag: << parameters.version >>
     steps:
       - checkout
-      - run:
-          name: install bundler
-          command: gem install bundler:2.2.20
-      - run:
-          name: bundle install
-          command: bundle install --jobs 4
-      - run:
-          name: rubocop
-          command: bundle exec rubocop
-      - run:
-          name: run test
-          command: bundle exec rspec
+      - run: ruby --version
+      - run: bundle --version
+      - run: gem --version
+      - run: gem install bundler
+      - run: bundle install --jobs 4
+      - run: bundle exec rubocop
+      - run: bundle exec rspec
+
+build_jobs: &build_jobs
+  - rspec:
+      matrix:
+        parameters:
+          version:
+            - "2.5"
+            - "2.6"
+            - "2.7"
+            - "3.0"
+workflows:
+  version: 2
+  build:
+    jobs: *build_jobs
