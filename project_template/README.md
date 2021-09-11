@@ -5,6 +5,7 @@
 ### `bundle exec create_pbm_project`
 * カレントディレクトにpbm_projectというディレクトを作成する
 * pbm_project/setup.sh でsystemdのunitファイルのsymlinkを貼る
+* sudo ln -s /usr/share/pbm/current/systemd_units/pbm.service /etc/systemd/system/pbm.service
 
 ## systemd
 
