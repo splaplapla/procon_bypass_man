@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    procon_bypass_man (0.1.6)
+    procon_bypass_man (0.1.7)
 
 GEM
   remote: https://rubygems.org/
@@ -60,3 +60,6 @@ DEPENDENCIES
   rspec
   rubocop
   timecop
+
+BUNDLED WITH
+   2.2.15

@@ -70,6 +70,10 @@ end
 sudo kill -USR2 `cat ./pbm_pid`
 ```
 
+### リリース手順
+* project_template/app.rb, lib/procon_bypass_man/version.rb のバージョンをあげる
+* be rake release
+
 ## License
 
 The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).

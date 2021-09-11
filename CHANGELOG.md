@@ -1,3 +1,6 @@
+## [0.1.7] - 2021-09-11
+- Support pbmenv
+
 ## [0.1.6] - 2021-08-19
 - 設定ファイルを読み込むと内容のmd5を `pbm_root_dir/.setting_yaml_digest` へ出力するようにしました
 
