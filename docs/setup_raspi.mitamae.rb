@@ -32,8 +32,7 @@ end
 execute "Initialize PBM" do
   command <<~SHELL
     sudo mkdir -p /usr/share/pbm/shared
-    wget https://gist.githubusercontent.com/jiikko/3f9fb3194c0cc7685e31fbfcb5b5f9ff/raw/23ddee29d94350be80b79d290ac3c8ce8400bd88/add_procon_gadget.sh
-    mv add_procon_gadget.sh /usr/share/pbm/shared/add_procon_gadget.sh
+    wget https://gist.githubusercontent.com/jiikko/3f9fb3194c0cc7685e31fbfcb5b5f9ff/raw/23ddee29d94350be80b79d290ac3c8ce8400bd88/add_procon_gadget.sh -O /usr/share/pbm/shared/add_procon_gadget.sh
     chmod +x /usr/share/pbm/shared/add_procon_gadget.sh
  SHELL
 end

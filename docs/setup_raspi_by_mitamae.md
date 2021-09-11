@@ -4,7 +4,7 @@
 * SDカードをRaspberry Pi4本体に挿して起動する
 * sshする
 * curl -L https://github.com/itamae-kitchen/mitamae/releases/latest/download/mitamae-armhf-linux.tar.gz | tar xvz
-* wget https://raw.githubusercontent.com/splaplapla/procon_bypass_man/master/docs/setup_raspi.mitamae.rb
+* wget https://raw.githubusercontent.com/splaplapla/procon_bypass_man/master/docs/setup_raspi.mitamae.rb -O setup_raspi.mitamae.rb
 * sudo ./mitamae-armhf-linux local setup_raspi.mitamae.rb -l debug
 * sudo reboot
 * sudo sh /usr/share/pbm/shared/add_procon_gadget.sh の実行に成功させる
