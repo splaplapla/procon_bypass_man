@@ -17,11 +17,11 @@ Switch <-- (PBM): ZR連打
 * Switch本体とドック
 * Raspberry Pi4 Model B/4GB(Raspberry Pi OS (32-bit))
     * 他のシリーズは未確認です
+        * zeroは非対応
 * データ通信が可能なUSBケーブル
 
 ## 使うソフトウェア
-* 必須
-  * ruby-3.0.x
+* ruby-3.0.x
 
 ## Usage
 * USBガジェットモードで起動するRaspberry Pi4を用意する
