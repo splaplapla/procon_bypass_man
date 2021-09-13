@@ -1,4 +1,5 @@
 require_relative "io_monitor"
+require_relative "uptime"
 
 class ProconBypassMan::Runner
   class InterruptForRestart < StandardError; end
@@ -164,6 +165,7 @@ class ProconBypassMan::Runner
       root: #{ProconBypassMan.root}
       pid_path: #{ProconBypassMan.pid_path}
       setting_path: #{ProconBypassMan::Configuration.instance.setting_path}
+      uptime from boot: #{ProconBypassMan::Uptime.from_boot} sec
       ----
     EOF
     ProconBypassMan.logger.info(booted_message)
