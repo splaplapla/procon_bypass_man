@@ -41,5 +41,8 @@ execute "Initialize PBM" do
  SHELL
 end
 
-run_command 'systemctl disable triggerhappy'
-run_command 'systemctl disable bluetooth'
+run_command 'sudo systemctl disable triggerhappy.socket'
+run_command 'sudo systemctl disable triggerhappy.service'
+run_command 'sudo systemctl disable bluetooth'
+run_command 'sudo systemctl disable apt-daily-upgrade.timer'
+run_command 'sudo systemctl disable apt-daily.timer'
