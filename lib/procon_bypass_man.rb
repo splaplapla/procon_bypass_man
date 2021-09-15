@@ -14,6 +14,11 @@ require_relative "procon_bypass_man/procon"
 STDOUT.sync = true
 Thread.abort_on_exception = true
 
+# new feature from ruby3.0's
+if GC.respond_to?(:auto_compact)
+  GC.auto_compact = true
+end
+
 module ProconBypassMan
   class ProConRejected < StandardError; end
   class CouldNotLoadConfigError < StandardError; end
