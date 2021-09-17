@@ -10,4 +10,5 @@
 * sudo sh /usr/share/pbm/shared/add_procon_gadget.sh の実行に成功させる
 * /etc/rc.local に sh /usr/share/pbm/shared/add_procon_gadget.sh って書く
 * PCとRaspberry Pi4を接続し、プロコンとして認識していることを確認する
-* TOOD install pbmenv
+* sudo gem i pbmenv
+* sudo pbmenv install latest
