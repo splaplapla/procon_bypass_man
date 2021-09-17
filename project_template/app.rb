@@ -15,4 +15,4 @@ ProconBypassMan.tap do |pbm|
   pbm.logger.level = :debug
 end
 
-ProconBypassMan.run(setting_path: "./setting.yml")
+ProconBypassMan.run(setting_path: "/usr/share/pbm/current/setting.yml")
