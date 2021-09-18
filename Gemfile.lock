@@ -52,6 +52,7 @@ PLATFORMS
   arm-linux
   arm64-darwin-20
   armv7l-linux
+  x86_64-linux
 
 DEPENDENCIES
   procon_bypass_man!
