@@ -135,8 +135,6 @@ class ProconBypassMan::Runner
   end
 
   def first_negotiation
-    return if $will_terminate_token
-
     @gadget, @procon = ProconBypassMan::DeviceConnector.connect
   rescue ProconBypassMan::Timer::Timeout
     ::ProconBypassMan.logger.error "デバイスとの通信でタイムアウトが起きて接続ができませんでした。"
