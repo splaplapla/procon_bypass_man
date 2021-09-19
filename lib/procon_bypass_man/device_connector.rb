@@ -37,16 +37,16 @@ class ProconBypassMan::DeviceConnector
       ["8005"],
       ["0010"],
     ], read_from: :switch)
-    # 1
+    # 1. Sends current connection status, and if the Joy-Con are connected,
     s.add([["8001"]], read_from: :switch)
     s.add([/^8101/], read_from: :procon) # <<< 81010003176d96e7a5480000000, macaddressとコントローラー番号を返す
-    # 2
+    # 2. Sends handshaking packets over UART to the Joy-Con or Pro Controller Broadcom chip. This command can only be called once per session.
     s.add([["8002"]], read_from: :switch)
     s.add([/^8102/], read_from: :procon)
     # 3
     s.add([/^0100/], read_from: :switch)
     s.add([/^21/], read_from: :procon)
-    # 4
+    # 4. Forces the Joy-Con or Pro Controller to only talk over USB HID without any timeouts. This is required for the Pro Controller to not time out and revert to Bluetooth.
     s.add([["8004"]], read_from: :switch)
     s.drain_all
     return [s.switch, s.procon]
