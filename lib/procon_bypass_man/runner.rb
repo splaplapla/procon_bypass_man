@@ -167,7 +167,7 @@ class ProconBypassMan::Runner
       ----
     EOF
     ProconBypassMan.logger.info(booted_message)
-    ProconBypassMan::Reporter.report_boot_log(body: booted_message)
+    Thread.new { ProconBypassMan::Reporter.report_boot_log(body: booted_message) }
     puts booted_message
   end
 end
