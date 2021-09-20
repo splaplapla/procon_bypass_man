@@ -10,11 +10,12 @@ require_relative "procon_bypass_man/runner"
 require_relative "procon_bypass_man/processor"
 require_relative "procon_bypass_man/configuration"
 require_relative "procon_bypass_man/procon"
+require_relative "procon_bypass_man/reporter"
 
 STDOUT.sync = true
 Thread.abort_on_exception = true
 
-# new feature from ruby3.0's
+# new feature from ruby3.0
 if GC.respond_to?(:auto_compact)
   GC.auto_compact = true
 end
@@ -92,6 +93,18 @@ module ProconBypassMan
 
   def self.root=(path)
     @@root = path
+  end
+
+  def self.api_server=(api_server)
+    @@api_server = api_server
+  end
+
+  def self.api_server
+    if defined?(@@api_server)
+      @@api_server
+    else
+      nil
+    end
   end
 
   def self.digest_path

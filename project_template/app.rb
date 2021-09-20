@@ -13,6 +13,7 @@ ProconBypassMan.tap do |pbm|
   pbm.root = File.expand_path(__dir__)
   pbm.logger = Logger.new("#{ProconBypassMan.root}/app.log", 5, 1024 * 1024 * 10)
   pbm.logger.level = :debug
+  # pbm.api_server = 'https://...'
 end
 
 ProconBypassMan.run(setting_path: "/usr/share/pbm/current/setting.yml")
