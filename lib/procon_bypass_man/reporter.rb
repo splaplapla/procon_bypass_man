@@ -1,7 +1,8 @@
 require "net/http"
 
 class ProconBypassMan::Reporter
-  PATH = "/api/boot_logs" # POST
+  PATH = "/api/reports" # POST
+  # TODO JSON schemaの定義
 
   class Client
     def initialize
@@ -10,6 +11,7 @@ class ProconBypassMan::Reporter
     end
 
     def post(body: )
+      # TODO ここでvalidationする
       if @server.nil?
         ProconBypassMan.logger.info('送信先が未設定なのでスキップしました')
         return
@@ -31,7 +33,7 @@ class ProconBypassMan::Reporter
     end
   end
 
-  def self.report_boot_log(body: )
+  def self.report(body: )
     Client.new.post_boot(body: body)
   rescue => e
     ProconBypassMan.logger.error(e)
