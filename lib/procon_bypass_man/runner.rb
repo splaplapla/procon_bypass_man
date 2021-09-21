@@ -155,19 +155,9 @@ class ProconBypassMan::Runner
 
   # @return [void]
   def print_booted_message
-    booted_message = <<~EOF
-      ----
-      RUBY_VERSION: #{RUBY_VERSION}
-      ProconBypassMan: #{ProconBypassMan::VERSION}
-      pid: #{$$}
-      root: #{ProconBypassMan.root}
-      pid_path: #{ProconBypassMan.pid_path}
-      setting_path: #{ProconBypassMan::Configuration.instance.setting_path}
-      uptime from boot: #{ProconBypassMan::Uptime.from_boot} sec
-      ----
-    EOF
-    ProconBypassMan.logger.info(booted_message)
-    Thread.new { ProconBypassMan::Reporter.report(body: booted_message) }
-    puts booted_message
+    message = ProconBypassMan::BootMessage.new
+    ProconBypassMan.logger.info(message.to_s)
+    Thread.new { ProconBypassMan::Reporter.report(body: message.to_hash) }
+    puts message.to_s
   end
 end
