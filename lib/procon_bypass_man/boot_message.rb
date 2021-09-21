@@ -1,26 +1,32 @@
 class ProconBypassMan::BootMessage
   def initialize
-    @h = {}
-    @h[:RUBY_VERSION] = RUBY_VERSION
-    @h[:ProconBypassMan] = ProconBypassMan::VERSION
-    @h[:pid] = $$
-    @h[:root_path] = ProconBypassMan.root
-    @h[:pid_path] = ProconBypassMan.pid_path
-    @h[:setting_path] = ProconBypassMan::Configuration.instance.setting_path
-    @h[:uptime_from_boot] = { type: :value, value: ProconBypassMan::Uptime.from_boot, suffix: " sec" }
+    @table = {}
+    @table[:ruby_version] = RUBY_VERSION
+    @table[:pbm_version] = ProconBypassMan::VERSION
+    @table[:pid] = $$
+    @table[:root_path] = ProconBypassMan.root
+    @table[:pid_path] = ProconBypassMan.pid_path
+    @table[:setting_path] = ProconBypassMan::Configuration.instance.setting_path
+    @table[:uptime_from_boot] = ProconBypassMan::Uptime.from_boot
   end
 
   # @return [String]
   def to_s
-    @h.each do
-      # TODO hashを変換する
-    end
+    booted_message = <<~EOF
+      ----
+      RUBY_VERSION: #{@table[:ruby_version]}
+      ProconBypassMan: #{@table[:pbm_version]}
+      pid: #{@table[:pid]}
+      root: #{@table[:root_path]}
+      pid_path: #{@table[:pid_path]}
+      setting_path: #{@table[:setting_path]}
+      uptime from boot: #{@table[:uptime_from_boot]} sec
+      ----
+    EOF
   end
 
   # @return [Hash]
   def to_hash
-    @h.each do
-      # TODO hashを変換する
-    end
+    @table
   end
 end
