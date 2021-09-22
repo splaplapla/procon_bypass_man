@@ -303,12 +303,12 @@ class ProconBypassMan::DeviceConnector
     case
     when is_available_device?(PROCON_PATH)
       ProconBypassMan.logger.info "proconのデバイスファイルは#{PROCON_PATH}を使います"
-      @procon = File.open(PROCON_PATH, "w+")
-      @gadget = File.open('/dev/hidg0', "w+")
+      @procon = File.open(PROCON_PATH, "w+b")
+      @gadget = File.open('/dev/hidg0', "w+b")
     when is_available_device?(PROCON2_PATH)
       ProconBypassMan.logger.info "proconのデバイスファイルは#{PROCON2_PATH}を使います"
-      @procon = File.open(PROCON2_PATH, "w+")
-      @gadget = File.open('/dev/hidg0', "w+")
+      @procon = File.open(PROCON2_PATH, "w+b")
+      @gadget = File.open('/dev/hidg0', "w+b")
     else
       raise "/dev/hidraw0, /dev/hidraw1の両方見つかりませんでした"
     end
