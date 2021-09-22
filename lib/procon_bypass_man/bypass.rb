@@ -32,13 +32,24 @@ class ProconBypassMan::Bypass
   def send_procon_to_gadget!
     monitor.record(:start_function)
     output = nil
+    # begin
+    #   sleep($will_interval_0_0_0_5)
+    #   output = self.procon.read_nonblock(128)
+    #   ProconBypassMan.logger.debug { "<<< #{output.unpack("H*")}" }
+    # rescue IO::EAGAINWaitReadable
+    #   monitor.record(:eagain_wait_readable_on_read)
+    #   return if $will_terminate_token
+    #   retry
+    # end
+
     begin
-      sleep($will_interval_0_0_0_5)
-      output = self.procon.read_nonblock(128)
-      ProconBypassMan.logger.debug { "<<< #{output.unpack("H*")}" }
-    rescue IO::EAGAINWaitReadable
+      Timeout.timeout(1) do
+        output = self.procon.read(128)
+        ProconBypassMan.logger.debug { "<<< #{output.unpack("H*")}" }
+      end
+    rescue Timeout::Error
+      ProconBypassMan.logger.debug { "read timeout sleep" }
       monitor.record(:eagain_wait_readable_on_read)
-      return if $will_terminate_token
       retry
     end
 
