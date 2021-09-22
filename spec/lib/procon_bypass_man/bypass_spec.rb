@@ -20,6 +20,7 @@ describe ProconBypassMan::Bypass do
     it do
       monitor = ProconBypassMan::IOMonitor.new(label: "gadget => procon")
       bypass = ProconBypassMan::Bypass.new(gadget: dev, procon: dev, monitor: monitor)
+      expect(bypass).to receive(:push_queue)
       bypass.send_procon_to_gadget!
     end
   end

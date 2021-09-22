@@ -32,6 +32,7 @@ class ProconBypassMan::Bypass
   def send_procon_to_gadget!
     monitor.record(:start_function)
     output = nil
+
     begin
       return if $will_terminate_token
       Timeout.timeout(1) do
@@ -49,12 +50,32 @@ class ProconBypassMan::Bypass
       retry
     end
 
-    begin
-      self.gadget.write_nonblock(ProconBypassMan::Processor.new(output).process)
-    rescue IO::EAGAINWaitReadable
-      monitor.record(:eagain_wait_readable_on_write)
-      return
+    if defined?(@send_gadget_to_switch_queue)
+      push_gadget_to_switch_queue(output)
+    else
+      start_send_gadget_to_switch_thread
+      push_gadget_to_switch_queue(output)
     end
-    monitor.record(:end_function)
+  end
+
+  private
+
+  def start_send_gadget_to_switch_thread
+    @send_gadget_to_switch_queue = SizedQueue.new(1000)
+    @send_gadget_to_switch_thread = Thread.new do
+      while(data = @send_gadget_to_switch_queue.pop) do
+        begin
+          self.gadget.write_nonblock(ProconBypassMan::Processor.new(data).process)
+        rescue IO::EAGAINWaitReadable
+          monitor.record(:eagain_wait_readable_on_write)
+          next
+        end
+        monitor.record(:end_function)
+      end
+    end
+  end
+
+  def push_gadget_to_switch_queue(output)
+    @send_gadget_to_switch_queue.push(output)
   end
 end
