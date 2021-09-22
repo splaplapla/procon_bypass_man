@@ -34,7 +34,7 @@ class ProconBypassMan::Reporter
   end
 
   def self.report(body: )
-    Client.new.post_boot(body: body)
+    Client.new.post(body: body)
   rescue => e
     ProconBypassMan.logger.error(e)
   end
