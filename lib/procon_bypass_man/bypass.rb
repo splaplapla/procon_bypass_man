@@ -50,6 +50,13 @@ class ProconBypassMan::Bypass
     rescue Timeout::Error
       ProconBypassMan.logger.debug { "read timeout sleep" }
       monitor.record(:eagain_wait_readable_on_read)
+      return if $will_terminate_token
+      retry
+    rescue IO::EAGAINWaitReadable
+      ProconBypassMan.logger.debug { "EAGAINWaitReadable" }
+      monitor.record(:eagain_wait_readable_on_read)
+      return if $will_terminate_token
+      sleep($will_interval_0_0_0_5)
       retry
     end
 
