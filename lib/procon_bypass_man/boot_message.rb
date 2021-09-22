@@ -8,6 +8,13 @@ class ProconBypassMan::BootMessage
     @table[:pid_path] = ProconBypassMan.pid_path
     @table[:setting_path] = ProconBypassMan::Configuration.instance.setting_path
     @table[:uptime_from_boot] = ProconBypassMan::Uptime.from_boot
+
+    build_version = `git rev-parse --short HEAD`.chomp
+    if build_version.empty?
+      @table[:build_version] = 'release version'
+    else
+      @table[:build_version] = build_version
+    end
   end
 
   # @return [String]
@@ -21,6 +28,7 @@ class ProconBypassMan::BootMessage
       pid_path: #{@table[:pid_path]}
       setting_path: #{@table[:setting_path]}
       uptime from boot: #{@table[:uptime_from_boot]} sec
+      build version: #{@table[:build_version]}
       ----
     EOF
   end
