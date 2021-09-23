@@ -71,6 +71,18 @@ module ProconBypassMan
     end
   end
 
+  def self.enable_critical_error_logging!
+    @@enable_critical_error_logging = true
+  end
+
+  def self.error_logger
+    if defined?(@@enable_critical_error_logging)
+      @@logger ||= Logger.new("#{ProconBypassMan.root}/error.log", 5, 1024 * 1024 * 10)
+    else
+      Logger.new(nil)
+    end
+  end
+
   def self.pid_path
     @@pid_path ||= File.expand_path("#{root}/pbm_pid", __dir__).freeze
   end

@@ -14,6 +14,7 @@ ProconBypassMan.tap do |pbm|
   pbm.logger = Logger.new("#{ProconBypassMan.root}/app.log", 5, 1024 * 1024 * 10)
   pbm.logger.level = :debug
   # pbm.api_server = 'https://...'
+  pbm.enable_critical_error_logging!
 end
 
 ProconBypassMan.run(setting_path: "/usr/share/pbm/current/setting.yml")
