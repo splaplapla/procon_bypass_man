@@ -5,10 +5,6 @@ require_relative "boot_message"
 class ProconBypassMan::Runner
   class InterruptForRestart < StandardError; end
 
-  def initialize
-    $will_interval_0_0_0_5 = 0
-  end
-
   def run
     first_negotiation
     print_booted_message
@@ -61,12 +57,6 @@ class ProconBypassMan::Runner
   private
 
   def main_loop
-    # TODO 接続確立完了をswitchを読み取るようにして、この暫定で接続完了sleepを消す
-    Thread.new do
-      sleep(0)
-      $will_interval_0_0_0_5 = 0.005
-    end
-
     ProconBypassMan::IOMonitor.start!
     # gadget => procon
     # 遅くていい

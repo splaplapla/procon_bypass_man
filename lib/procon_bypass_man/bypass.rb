@@ -11,7 +11,7 @@ class ProconBypassMan::Bypass
     monitor.record(:start_function)
     input = nil
     begin
-      sleep($will_interval_0_0_0_5)
+      sleep(0.005)
       input = self.gadget.read_nonblock(128)
       ProconBypassMan.logger.debug { ">>> #{input.unpack("H*")}" }
     rescue IO::EAGAINWaitReadable
@@ -47,7 +47,7 @@ class ProconBypassMan::Bypass
     rescue IO::EAGAINWaitReadable
       ProconBypassMan.logger.debug { "EAGAINWaitReadable" }
       monitor.record(:eagain_wait_readable_on_read)
-      sleep($will_interval_0_0_0_5)
+      sleep(0.005)
       retry
     end
 
