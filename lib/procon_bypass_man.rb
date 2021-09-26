@@ -77,7 +77,7 @@ module ProconBypassMan
 
   def self.error_logger
     if defined?(@@enable_critical_error_logging)
-      @@logger ||= Logger.new("#{ProconBypassMan.root}/error.log", 5, 1024 * 1024 * 10)
+      @@error_logger ||= Logger.new("#{ProconBypassMan.root}/error.log", 5, 1024 * 1024 * 10)
     else
       Logger.new(nil)
     end
