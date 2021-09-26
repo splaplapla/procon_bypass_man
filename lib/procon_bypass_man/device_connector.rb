@@ -12,23 +12,6 @@ class ProconBypassMan::DeviceConnector
   PROCON_PATH = "/dev/hidraw0"
   PROCON2_PATH = "/dev/hidraw1"
 
-  # 画面で再接続ができたが状況は変わらない
-  def self.reset_connection!
-    s = new
-    s.add([
-      ["0000"],
-      ["0000"],
-      ["8005"],
-      ["0000"],
-      ["8001"],
-    ], read_from: :switch)
-    s.drain_all
-    s.read_procon
-    s.write_switch("213c910080005db7723d48720a800300000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000")
-    sleep(10) # いらないかも
-    s
-  end
-
   def self.connect
     s = new(throw_error_if_timeout: true, enable_at_exit: false)
     s.add([
