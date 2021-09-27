@@ -1,4 +1,5 @@
 require "net/http"
+require "json"
 
 class ProconBypassMan::Reporter
   PATH = "/api/reports" # POST
@@ -22,13 +23,14 @@ class ProconBypassMan::Reporter
       http.use_ssl = uri.scheme === "https"
       response = http.post(
         uri.path,
-        { body: body, hostname: @hostname }.to_json,
+        { report: body.to_json, hostname: @hostname }.to_json,
         { "Content-Type" => "application/json" },
       )
       unless response.code == /^20/
         ProconBypassMan.logger.error(response.body)
       end
     rescue => e
+      puts e
       ProconBypassMan.logger.error(e)
     end
   end
