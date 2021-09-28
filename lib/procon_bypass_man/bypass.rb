@@ -36,7 +36,7 @@ class ProconBypassMan::Bypass
     begin
       return if $will_terminate_token
       Timeout.timeout(1) do
-        output = self.procon.read(128)
+        output = self.procon.read(64)
         ProconBypassMan.logger.debug { "<<< #{output.unpack("H*")}" }
       end
     rescue Timeout::Error
