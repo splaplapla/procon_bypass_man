@@ -25,7 +25,11 @@ class ProconBypassMan::Bypass
     rescue IO::EAGAINWaitReadable
       monitor.record(:eagain_wait_readable_on_write)
       return
+    rescue Errno::ETIMEDOUT => e
+      # TODO まれに発生する再接続したい
+      raise
     end
+
     monitor.record(:end_function)
   end
 
