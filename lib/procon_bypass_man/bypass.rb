@@ -27,7 +27,10 @@ class ProconBypassMan::Bypass
       return
     rescue Errno::ETIMEDOUT => e
       # TODO まれに発生する再接続したい
-      ProconBypassMan::ErrorReporter.report(body: e)
+      ProconBypassMan.cache.fetch(key: 'send_gadget_to_procon', expires_in: 30) do
+        ProconBypassMan::ErrorReporter.report(body: e)
+        nil
+      end
       raise
     end
 

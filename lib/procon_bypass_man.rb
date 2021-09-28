@@ -12,6 +12,7 @@ require_relative "procon_bypass_man/configuration"
 require_relative "procon_bypass_man/procon"
 require_relative "procon_bypass_man/reporter"
 require_relative "procon_bypass_man/error_reporter"
+require_relative "procon_bypass_man/on_memory_cache"
 
 STDOUT.sync = true
 Thread.abort_on_exception = true
@@ -118,6 +119,10 @@ module ProconBypassMan
     else
       nil
     end
+  end
+
+  def self.cache
+    @@cache_table ||= ProconBypassMan::Cache.new
   end
 
   def self.digest_path
