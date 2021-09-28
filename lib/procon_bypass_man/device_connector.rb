@@ -58,7 +58,7 @@ class ProconBypassMan::DeviceConnector
         timer = ProconBypassMan::Timer.new
         begin
           timer.throw_if_timeout!
-          data = from_device(item).read_nonblock(128)
+          data = from_device(item).read_nonblock(64)
         rescue IO::EAGAINWaitReadable
           retry
         end
@@ -111,7 +111,7 @@ class ProconBypassMan::DeviceConnector
     timer = ProconBypassMan::Timer.new
     begin
       timer.throw_if_timeout!
-      data = switch.read_nonblock(128)
+      data = switch.read_nonblock(64)
       ProconBypassMan.logger.debug { " >>> #{data.unpack("H*")})" }
     rescue IO::EAGAINWaitReadable
       retry
@@ -146,7 +146,7 @@ class ProconBypassMan::DeviceConnector
     timer = ProconBypassMan::Timer.new
     begin
       timer.throw_if_timeout!
-      data = procon.read_nonblock(128)
+      data = procon.read_nonblock(64)
       ProconBypassMan.logger.error " <<< #{data.unpack("H*")})"
     rescue IO::EAGAINWaitReadable
       retry
@@ -167,7 +167,7 @@ class ProconBypassMan::DeviceConnector
     timer = ProconBypassMan::Timer.new
     begin
       timer.throw_if_timeout!
-      data = procon.read_nonblock(128)
+      data = procon.read_nonblock(64)
       ProconBypassMan.logger.debug { " <<< #{data.unpack("H*")})" }
     rescue IO::EAGAINWaitReadable
       retry
@@ -200,7 +200,7 @@ class ProconBypassMan::DeviceConnector
     timer = ProconBypassMan::Timer.new
     begin
       timer.throw_if_timeout!
-      data = switch.read_nonblock(128)
+      data = switch.read_nonblock(64)
       ProconBypassMan.logger.debug { " >>> #{data.unpack("H*")})" }
     rescue IO::EAGAINWaitReadable
       retry
@@ -264,7 +264,7 @@ class ProconBypassMan::DeviceConnector
 
     file = File.open(path, "w+")
     begin
-      file.read_nonblock(128)
+      file.read_nonblock(64)
     rescue EOFError
       file.close
       return false
