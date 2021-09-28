@@ -27,6 +27,7 @@ class ProconBypassMan::Bypass
       return
     rescue Errno::ETIMEDOUT => e
       # TODO まれに発生する再接続したい
+      ProconBypassMan::ErrorReporter.report(body: e)
       raise
     end
 

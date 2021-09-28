@@ -1,8 +1,8 @@
 require "net/http"
 require "json"
 
-class ProconBypassMan::Reporter
-  PATH = "/api/reports" # POST
+class ProconBypassMan::ErrorReporter
+  PATH = "/api/error_reports" # POST
 
   class Client
     def initialize
@@ -22,7 +22,7 @@ class ProconBypassMan::Reporter
       http.use_ssl = uri.scheme === "https"
       response = http.post(
         uri.path,
-        { report: body.to_json, hostname: @hostname }.to_json,
+        { report: body.full_message.to_json, hostname: @hostname }.to_json,
         { "Content-Type" => "application/json" },
       )
       unless response.code == /^20/
@@ -40,3 +40,4 @@ class ProconBypassMan::Reporter
     ProconBypassMan.logger.error(e)
   end
 end
+
