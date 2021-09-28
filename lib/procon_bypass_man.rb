@@ -122,7 +122,7 @@ module ProconBypassMan
   end
 
   def self.cache
-    @@cache_table ||= ProconBypassMan::Cache.new
+    @@cache_table ||= ProconBypassMan::OnMemoryCache.new
   end
 
   def self.digest_path

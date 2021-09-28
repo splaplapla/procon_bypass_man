@@ -9,7 +9,7 @@ describe ProconBypassMan do
 
   describe '.cache' do
     it do
-      expect(ProconBypassMan.respond_to?(:cache)).to eq(true)
+      expect(ProconBypassMan.cache.respond_to?(:fetch)).to eq(true)
     end
   end
 end
