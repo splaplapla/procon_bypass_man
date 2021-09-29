@@ -62,10 +62,13 @@ module ProconBypassMan
           }.join(", ")
           max_output_length = line.length
           sleep 0.7
-          print "\r"
-          print " " * max_output_length
-          print "\r"
-          print line
+
+          if ENV["PBM_FOREGROUND"]
+            print "\r"
+            print " " * max_output_length
+            print "\r"
+            print line
+          end
           ProconBypassMan.logger.debug { line }
           break if $will_terminate_token
         end
