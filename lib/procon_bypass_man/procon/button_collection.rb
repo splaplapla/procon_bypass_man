@@ -29,6 +29,9 @@ class ProconBypassMan::Procon::ButtonCollection
     3 => [:zr, :r, :sr, :sl, :a, :b, :x, :y],
     4 => [:grip, :_undefined_key, :cap, :home, :thumbl, :thumbr, :plus, :minus],
     5 => [:zl, :l, :sl, :sr, :left, :right, :up, :down],
+    6 => [],
+    7 => [],
+    8 => [],
   }.freeze
 
   BUTTONS_MAP = BYTES_MAP.reduce({}) { |acc, value|

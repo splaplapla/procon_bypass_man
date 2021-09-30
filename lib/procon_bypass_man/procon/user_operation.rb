@@ -1,7 +1,6 @@
 class ProconBypassMan::Procon
   class UserOperation
     include LayerChangeable
-    include PushedButtonHelper::Static
     extend PushedButtonHelper::Dynamic
 
     attr_reader :binary
@@ -67,6 +66,10 @@ class ProconBypassMan::Procon
       binary[10] = tb[10]
       binary[11] = tb[11]
       self.binary
+    end
+
+    def pressed_button?(button)
+      ProconBypassMan::PpressButtonAware.new(binary).pressed_button?(button)
     end
   end
 end

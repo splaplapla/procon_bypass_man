@@ -7,6 +7,7 @@ class ProconBypassMan::Procon
   require "procon_bypass_man/procon/pressed_button_helper"
   require "procon_bypass_man/procon/user_operation"
   require "procon_bypass_man/procon/flip_cache"
+  require "procon_bypass_man/procon/press_button_aware"
 
   attr_accessor :user_operation
 
