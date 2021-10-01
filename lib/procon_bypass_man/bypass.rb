@@ -16,10 +16,17 @@ class ProconBypassMan::Bypass
     mutex.synchronize do
       begin
         next if $will_terminate_token
-        # TODO blocking readにしたい
-        input = self.gadget.read_nonblock(64)
-        ProconBypassMan.logger.debug { ">>> #{input.unpack("H*")}" }
+        Timeout.timeout(1) do
+          input = self.gadget.read(1)
+          ProconBypassMan.logger.debug { ">>> #{input.unpack("H*")}" }
+        end
+      rescue Timeout::Error
+        ProconBypassMan.logger.debug { "read timeout! sleep. by send_gadget_to_procon!" }
+        ProconBypassMan.error_logger.error { "read timeout! sleep. by send_gadget_to_procon!" }
+        monitor.record(:eagain_wait_readable_on_read)
+        retry
       rescue IO::EAGAINWaitReadable
+        ProconBypassMan.logger.debug { "EAGAINWaitReadable" }
         monitor.record(:eagain_wait_readable_on_read)
         sleep(0.005)
         retry
@@ -56,8 +63,8 @@ class ProconBypassMan::Bypass
           ProconBypassMan.logger.debug { "<<< #{output.unpack("H*")}" }
         end
       rescue Timeout::Error
-        ProconBypassMan.logger.debug { "read timeout! do sleep. by send_procon_to_gadget!" }
-        ProconBypassMan.error_logger.error { "read timeout! do sleep. by send_procon_to_gadget!" }
+        ProconBypassMan.logger.debug { "read timeout! sleep. by send_procon_to_gadget!" }
+        ProconBypassMan.error_logger.error { "read timeout! sleep. by send_procon_to_gadget!" }
         monitor.record(:eagain_wait_readable_on_read)
         retry
       rescue IO::EAGAINWaitReadable
