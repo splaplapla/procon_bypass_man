@@ -12,12 +12,15 @@ describe ProconBypassMan::Bypass do
   end
 
   describe '.send_procon_to_gadget!' do
-    let(:output) { ["3075810080009ea7734758750c56fbdc02240f220007001c0055fbdc02250f250009001d005cfbde02240f230007001c00000000000000000000000000000000"].pack("H*") }
+    let(:output) { ["30f28100800078c77448287509550274ff131029001b0022005a0271ff191028001e00210064027cff1410280020002100000000000000000000000000000000"].pack("H*") }
     it do
       expect(dev).to receive(:read) { output }
+      double(:processor).tap do |processor|
+        expect(processor).to receive(:process)
+        expect(ProconBypassMan::Processor).to receive(:new) { processor }
+      end
       monitor = ProconBypassMan::IOMonitor.new(label: "gadget => procon")
       bypass = ProconBypassMan::Bypass.new(gadget: dev, procon: dev, monitor: monitor)
-      expect(bypass).to receive(:push_gadget_to_switch_queue)
       bypass.send_procon_to_gadget!
     end
   end
