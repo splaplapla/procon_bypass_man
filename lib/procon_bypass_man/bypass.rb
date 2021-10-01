@@ -15,12 +15,12 @@ class ProconBypassMan::Bypass
     input = nil
     mutex.synchronize do
       begin
+        next if $will_terminate_token
         # TODO blocking readにしたい
         input = self.gadget.read_nonblock(64)
         ProconBypassMan.logger.debug { ">>> #{input.unpack("H*")}" }
       rescue IO::EAGAINWaitReadable
         monitor.record(:eagain_wait_readable_on_read)
-        next if $will_terminate_token
         sleep(0.005)
         retry
       end
