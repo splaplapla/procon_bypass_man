@@ -21,7 +21,7 @@ class ProconBypassMan::Bypass
         ProconBypassMan.logger.debug { ">>> #{input.unpack("H*")}" }
       rescue IO::EAGAINWaitReadable
         monitor.record(:eagain_wait_readable_on_read)
-        sleep(0.005)
+        sleep(0.001)
         retry
       end
 
