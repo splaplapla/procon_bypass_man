@@ -1,10 +1,6 @@
 class ProconBypassMan::Bypass
   attr_accessor :gadget, :procon, :monitor
-  attr_accessor :gadget_mutex, :procon_mutex
-
   def initialize(gadget: , procon: , monitor: )
-    self.gadget_mutex = ::Thread::Mutex.new
-    self.procon_mutex = ::Thread::Mutex.new
     self.gadget = gadget
     self.procon = procon
     self.monitor = monitor
@@ -15,10 +11,8 @@ class ProconBypassMan::Bypass
     monitor.record(:start_function)
     input = nil
     begin
-      sleep(0.05)
-      gadget_mutex.synchronize do
-        input = self.gadget.read_nonblock(64)
-      end
+      sleep(0.005)
+      input = self.gadget.read_nonblock(64)
       ProconBypassMan.logger.debug { ">>> #{input.unpack("H*")}" }
     rescue IO::EAGAINWaitReadable
       monitor.record(:eagain_wait_readable_on_read)
@@ -27,9 +21,7 @@ class ProconBypassMan::Bypass
     end
 
     begin
-      procon_mutex.synchronize do
-        self.procon.write_nonblock(input)
-      end
+      self.procon.write_nonblock(input)
     rescue IO::EAGAINWaitReadable
       monitor.record(:eagain_wait_readable_on_write)
       return
@@ -52,9 +44,7 @@ class ProconBypassMan::Bypass
     begin
       return if $will_terminate_token
       Timeout.timeout(1) do
-        procon_mutex.synchronize do
-          output = self.procon.read(64)
-        end
+        output = self.procon.read(64)
         ProconBypassMan.logger.debug { "<<< #{output.unpack("H*")}" }
       end
     rescue Timeout::Error
@@ -84,9 +74,7 @@ class ProconBypassMan::Bypass
     @send_gadget_to_switch_thread = Thread.new do
       while(data = @send_gadget_to_switch_queue.pop) do
         begin
-          gadget_mutex.synchronize do
-            self.gadget.write_nonblock(ProconBypassMan::Processor.new(data).process)
-          end
+          self.gadget.write_nonblock(ProconBypassMan::Processor.new(data).process)
         rescue IO::EAGAINWaitReadable
           monitor.record(:eagain_wait_readable_on_write)
           next
