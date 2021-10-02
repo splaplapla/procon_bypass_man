@@ -65,21 +65,19 @@ class ProconBypassMan::Runner
     ProconBypassMan.logger.info "Thread1を起動します"
     t1 = Thread.new do
       bypass = ProconBypassMan::Bypass.new(gadget: @gadget, procon: @procon, monitor: monitor1)
-      begin
-        loop do
-          break if $will_terminate_token
-          bypass.send_gadget_to_procon!
-        rescue Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError => e
-          ProconBypassMan.logger.error "Proconが切断されました.終了処理を開始します"
-          Process.kill "TERM", Process.ppid
-        rescue Errno::ETIMEDOUT => e
-          # TODO まれにこれが発生する. 再接続したい
-          ProconBypassMan::ErrorReporter.report(body: e)
-          ProconBypassMan.logger.error "Switchとの切断されました.終了処理を開始します"
-          Process.kill "TERM", Process.ppid
-        end
-        ProconBypassMan.logger.info "Thread1を終了します"
+      loop do
+        break if $will_terminate_token
+        bypass.send_gadget_to_procon!
+      rescue Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError => e
+        ProconBypassMan.logger.error "Proconが切断されました.終了処理を開始します"
+        Process.kill "TERM", Process.ppid
+      rescue Errno::ETIMEDOUT => e
+        # TODO まれにこれが発生する. 再接続したい
+        ProconBypassMan::ErrorReporter.report(body: e)
+        ProconBypassMan.logger.error "Switchとの切断されました.終了処理を開始します"
+        Process.kill "TERM", Process.ppid
       end
+      ProconBypassMan.logger.info "Thread1を終了します"
     end
 
     # procon => gadget
@@ -87,19 +85,17 @@ class ProconBypassMan::Runner
     ProconBypassMan.logger.info "Thread2を起動します"
     t2 = Thread.new do
       bypass = ProconBypassMan::Bypass.new(gadget: @gadget, procon: @procon, monitor: monitor2)
-      begin
-        loop do
-          break if $will_terminate_token
-          bypass.send_procon_to_gadget!
-        rescue EOFError => e
-          ProconBypassMan.logger.error "Proconと通信ができませんでした.終了処理を開始します"
-          Process.kill "TERM", Process.ppid
-        rescue Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError => e
-          ProconBypassMan.logger.error "Proconが切断されました。終了処理を開始します"
-          Process.kill "TERM", Process.ppid
-        end
-        ProconBypassMan.logger.info "Thread2を終了します"
+      loop do
+        break if $will_terminate_token
+        bypass.send_procon_to_gadget!
+      rescue EOFError => e
+        ProconBypassMan.logger.error "Proconと通信ができませんでした.終了処理を開始します"
+        Process.kill "TERM", Process.ppid
+      rescue Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError => e
+        ProconBypassMan.logger.error "Proconが切断されました。終了処理を開始します"
+        Process.kill "TERM", Process.ppid
       end
+      ProconBypassMan.logger.info "Thread2を終了します"
     end
 
     self_read, self_write = IO.pipe
