@@ -4,6 +4,16 @@ class ProconBypassMan::BypassMutex
     @lockable = false
   end
 
+  def synchronize_if_unlocked(&block)
+    raise "need block!!!!" unless block_given?
+
+    if @mutex.locked?
+      return
+    else
+      synchronize(&block)
+    end
+  end
+
   def synchronize(&block)
     raise "need block!!!!" unless block_given?
 

@@ -72,7 +72,7 @@ class ProconBypassMan::Runner
       bypass = ProconBypassMan::Bypass.new(gadget: @gadget, procon: @procon, monitor: monitor1)
       loop do
         break if $will_terminate_token
-        mutex.synchronize do
+        mutex.synchronize_if_unlocked do
           bypass.send_gadget_to_procon!
         end
         sleep(0.005)
