@@ -72,6 +72,11 @@ class ProconBypassMan::Runner
         rescue Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError => e
           ProconBypassMan.logger.error "Proconが切断されました.終了処理を開始します"
           Process.kill "TERM", Process.ppid
+        rescue Errno::ETIMEDOUT => e
+          # TODO まれにこれが発生する. 再接続したい
+          ProconBypassMan::ErrorReporter.report(body: e)
+          ProconBypassMan.logger.error "Switchとの切断されました.終了処理を開始します"
+          Process.kill "TERM", Process.ppid
         end
         ProconBypassMan.logger.info "Thread1を終了します"
       end

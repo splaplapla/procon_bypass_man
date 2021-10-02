@@ -27,13 +27,6 @@ class ProconBypassMan::Bypass
     rescue IO::EAGAINWaitReadable
       monitor.record(:eagain_wait_readable_on_write)
       return
-    rescue Errno::ETIMEDOUT => e
-      # TODO まれにこれが発生する. 再接続したい
-      ProconBypassMan.cache.fetch(key: 'send_gadget_to_procon', expires_in: 30) do
-        ProconBypassMan::ErrorReporter.report(body: e)
-        nil
-      end
-      raise
     end
     sleep(0.005)
 
