@@ -4,11 +4,13 @@ class ProconBypassMan::Procon::DebugDumper
   end
 
   def dump_analog_sticks
-    fi = @binary[6..8].unpack("H*").first.to_i(16).to_s(2).rjust(18, "0")
-    se = @binary[9..11].unpack("H*").first.to_i(16).to_s(2).rjust(18, "0")
-    th = @binary[12..14].unpack("H*").first.to_i(16).to_s(2).rjust(18, "0")
-    ProconBypassMan.logger.debug "6..8: #{fi}"
-    ProconBypassMan.logger.debug "9..11: #{se}"
-    ProconBypassMan.logger.debug "12..14: #{th}"
+    bin6 = @binary[6].unpack("H*").first.to_i(16).to_s(2).rjust(8, "0")
+    bin7 = @binary[7].unpack("H*").first.to_i(16).to_s(2).rjust(8, "0")
+    bin8 = @binary[8].unpack("H*").first.to_i(16).to_s(2).rjust(8, "0")
+
+    x = "#{bin7[4..7]}#{bin6}"
+    y = "#{bin8}#{bin7[0..3]}"
+    ProconBypassMan.logger.debug "x: #{x}, val: #{x.to_i(2)}"
+    ProconBypassMan.logger.debug "y: #{y}, val: #{y.to_i(2)}"
   end
 end
