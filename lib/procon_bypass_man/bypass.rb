@@ -28,7 +28,6 @@ class ProconBypassMan::Bypass
       monitor.record(:eagain_wait_readable_on_write)
       return
     end
-    sleep(0.005)
 
     monitor.record(:end_function)
   end

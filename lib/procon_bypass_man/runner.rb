@@ -57,7 +57,12 @@ class ProconBypassMan::Runner
   private
 
   def main_loop
+    mutex = ProconBypassMan::BypassMutex.new
     ProconBypassMan::IOMonitor.start!
+    Thread.start do
+      sleep(10)
+      mutex.lockable!
+    end
     # gadget => procon
     # 遅くていい
     monitor1 = ProconBypassMan::IOMonitor.new(label: "switch -> procon")
@@ -67,7 +72,10 @@ class ProconBypassMan::Runner
       bypass = ProconBypassMan::Bypass.new(gadget: @gadget, procon: @procon, monitor: monitor1)
       loop do
         break if $will_terminate_token
-        bypass.send_gadget_to_procon!
+        mutex.synchronize do
+          bypass.send_gadget_to_procon!
+        end
+        sleep(0.005)
       rescue Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError => e
         ProconBypassMan.logger.error "Proconが切断されました.終了処理を開始します"
         Process.kill "TERM", Process.ppid
@@ -87,7 +95,9 @@ class ProconBypassMan::Runner
       bypass = ProconBypassMan::Bypass.new(gadget: @gadget, procon: @procon, monitor: monitor2)
       loop do
         break if $will_terminate_token
-        bypass.send_procon_to_gadget!
+        mutex.synchronize do
+          bypass.send_procon_to_gadget!
+        end
       rescue EOFError => e
         ProconBypassMan.logger.error "Proconと通信ができませんでした.終了処理を開始します"
         Process.kill "TERM", Process.ppid
