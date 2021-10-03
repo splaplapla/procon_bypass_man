@@ -37,7 +37,7 @@ class ProconBypassMan::Procon
     end
 
     def apply_left_analog_stick_cap(cap_x: , cap_y: )
-      binary[6..8] = ProconBypassMan::Procon::AnalogStickCap.new(binary).capped_binary_values(cap_x: x, cap_y: y)
+      binary[6..8] = ProconBypassMan::Procon::AnalogStickCap.new(binary).capped_binary_values(cap_x: cap_x, cap_y: cap_y)
     end
 
     def press_button(button)
