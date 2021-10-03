@@ -16,12 +16,14 @@ class ProconBypassMan::Procon::AnalogStickCap
   def capped_binary_values(cap_x: , cap_y: )
     if x > cap_x.first
       new_x = cap_x.first
-    elsif x < cap_x.last
+    end
+    if x < cap_x.last
       new_x = cap_x.last
     end
     if y > cap_y.first
       new_y = cap_y.first
-    elsif y < cap_y.last
+    end
+    if y < cap_y.last
       new_y = cap_y.last
     end
     to_binary(new_x: new_x || x, new_y: new_y || y)
