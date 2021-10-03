@@ -130,7 +130,9 @@ class ProconBypassMan::Procon
       end
     end
 
-    user_operation.binary
+    b = user_operation.binary
+    ProconBypassMan::Procon::DebugDumper.new(binary: b).dump_analog_sticks
+    b
   end
 
   private

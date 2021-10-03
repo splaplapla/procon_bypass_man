@@ -55,7 +55,7 @@ class ProconBypassMan::Bypass
     end
 
     begin
-      ProconBypassMan::Procon::DebugDumper.new(binary: output).dump_analog_sticks
+      # ProconBypassMan::Procon::DebugDumper.new(binary: output).dump_analog_sticks
       self.gadget.write_nonblock(ProconBypassMan::Processor.new(output).process)
     rescue IO::EAGAINWaitReadable
       monitor.record(:eagain_wait_readable_on_write)
