@@ -86,7 +86,7 @@ module ProconBypassMan
           raise "not support class"
         end
 
-        left_analog_stick_caps[if_pressed] = { position: { x: x, y: y } }
+        left_analog_stick_caps[if_pressed] = { x: x, y: y }
       end
 
       # @return [Array]

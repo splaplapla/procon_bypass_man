@@ -23,6 +23,9 @@ describe ProconBypassMan::Configuration do
           it do
             ProconBypassMan::Configuration::Loader.load(setting_path: setting.path)
             expect(ProconBypassMan::Configuration.instance.layers[:up].left_analog_stick_caps.keys).to eq([[:a]])
+            expect(ProconBypassMan::Configuration.instance.layers[:up].left_analog_stick_caps[[:a]]).to eq(
+              {:x=>[3000, 900], :y=>[3100, 700]}
+            )
           end
         end
         context 'provide a button' do
