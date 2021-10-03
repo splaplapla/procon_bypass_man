@@ -83,7 +83,7 @@ module ProconBypassMan
         when NilClass
           if_pressed = nil
         else
-          raise "not support class"
+          raise "not support if_pressed"
         end
 
         left_analog_stick_caps[if_pressed] = { x: x, y: y }
