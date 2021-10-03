@@ -8,6 +8,72 @@ describe ProconBypassMan::Configuration do
 
   describe 'Loader' do
     describe '.load' do
+      context 'with left_analog_stick_cap' do
+        context 'provide array' do
+          let(:setting_content) do
+            <<~EOH
+          version: 1.0
+          setting: |-
+            prefix_keys_for_changing_layer [:zr, :r, :zl, :l]
+            layer :up do
+              left_analog_stick_cap x: [3000, 900], y: [3100, 700], if_pressed: [:a]
+            end
+            EOH
+          end
+          it do
+            ProconBypassMan::Configuration::Loader.load(setting_path: setting.path)
+            expect(ProconBypassMan::Configuration.instance.layers[:up].left_analog_stick_caps.keys).to eq([[:a]])
+          end
+        end
+        context 'provide a button' do
+          let(:setting_content) do
+            <<~EOH
+          version: 1.0
+          setting: |-
+            prefix_keys_for_changing_layer [:zr, :r, :zl, :l]
+            layer :up do
+              left_analog_stick_cap x: [3000, 900], y: [3100, 700], if_pressed: :a
+            end
+            EOH
+          end
+          it do
+            ProconBypassMan::Configuration::Loader.load(setting_path: setting.path)
+            expect(ProconBypassMan::Configuration.instance.layers[:up].left_analog_stick_caps.keys).to eq([[:a]])
+          end
+        end
+        context 'provide a nil' do
+          let(:setting_content) do
+            <<~EOH
+          version: 1.0
+          setting: |-
+            prefix_keys_for_changing_layer [:zr, :r, :zl, :l]
+            layer :up do
+              left_analog_stick_cap x: [3000, 900], y: [3100, 700], if_pressed: nil
+            end
+            EOH
+          end
+          it do
+            ProconBypassMan::Configuration::Loader.load(setting_path: setting.path)
+            expect(ProconBypassMan::Configuration.instance.layers[:up].left_analog_stick_caps.keys).to eq([nil])
+          end
+        end
+        context 'do not provide' do
+          let(:setting_content) do
+            <<~EOH
+          version: 1.0
+          setting: |-
+            prefix_keys_for_changing_layer [:zr, :r, :zl, :l]
+            layer :up do
+              left_analog_stick_cap x: [3000, 900], y: [3100, 700]
+            end
+            EOH
+          end
+          it do
+            ProconBypassMan::Configuration::Loader.load(setting_path: setting.path)
+            expect(ProconBypassMan::Configuration.instance.layers[:up].left_analog_stick_caps.keys).to eq([nil])
+          end
+        end
+      end
       context 'with flip_interval' do
         let(:setting_content) do
           <<~EOH
