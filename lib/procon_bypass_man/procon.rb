@@ -95,6 +95,12 @@ class ProconBypassMan::Procon
       return user_operation.binary
     end
 
+    current_layer.left_analog_stick_cap_buttons.each do |button, x, y|
+      if user_operation.pressed_button?(button)
+        user_operation.apply_left_analog_stick_cap(x: x, y: y)
+      end
+    end
+
     current_layer.flip_buttons.each do |button, options|
       # 何もしないで常に連打
       if !options[:if_pressed] && status[button]

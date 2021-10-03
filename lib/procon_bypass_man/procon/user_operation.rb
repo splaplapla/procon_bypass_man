@@ -36,6 +36,10 @@ class ProconBypassMan::Procon
       binary[byte_position] = ["%02X" % value.to_s].pack("H*")
     end
 
+    def apply_left_analog_stick_cap(x: , y: )
+      binary[6..8] = ProconBypassMan::Procon::AnalogStickCap.new(binary).apply(x: x, y: y)
+    end
+
     def press_button(button)
       byte_position = ButtonCollection.load(button).byte_position
       value = binary[byte_position].unpack("H*").first.to_i(16) + (2**ButtonCollection.load(button).bit_position)
