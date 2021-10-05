@@ -13,7 +13,7 @@ class ProconBypassMan::Procon::AnalogStickCap
         ((@y << 4) & "0xf0".to_i(16)) | ((@x >> 8) & "0x0f".to_i(16)),
         t = (@y >> 4) & "0xff".to_i(16),
       ]
-      hex = analog_stick_data.map{ |x| x.to_s(16) }.join
+      hex = analog_stick_data.map{ |x| x.to_s(16).ljust(2, "0") }.join
       [hex].pack("H*")
     end
   end
@@ -47,7 +47,7 @@ class ProconBypassMan::Procon::AnalogStickCap
 
   # @return [ProconBypassMan::Procon::AnalogStickCap::Position]
   def position
-    Position.new(x: x, y: y)
+    Position.new( x: x, y: y)
   end
 
   def x

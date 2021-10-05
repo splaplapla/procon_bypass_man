@@ -58,6 +58,7 @@ describe ProconBypassMan::Procon::AnalogStickCap do
     it { expect(described_class.new(binary).capped_position(cap_hypotenuse: 1500).y).to eq(0) }
     it { expect(described_class.new(binary).capped_position(cap_hypotenuse: 1000).x).to eq(0) }
     it { expect(described_class.new(binary).capped_position(cap_hypotenuse: 1000).y).to eq(0) }
+    it { expect(described_class.new(binary).capped_position(cap_hypotenuse: 1000).to_binary).to eq("\x00\x00\x00") }
   end
 
   context '左' do
