@@ -1,6 +1,7 @@
 class ProconBypassMan::Procon::DebugDumper
   def initialize(binary: )
     @binary = binary
+    ProconBypassMan.logger.debug { "<<< patched #{@binary.unpack("H*")}" }
   end
 
   def dump_analog_sticks

@@ -41,8 +41,8 @@ class ProconBypassMan::Procon::AnalogStickCap
       capped_x = -(capped_x.abs) if x.negative?
       capped_y = -(capped_y.abs) if y.negative?
       return Position.new(
-        x: capped_x + @neutral_position[:x],
-        y: capped_y + @neutral_position[:y],
+        x: capped_x + neutral_position[:x],
+        y: capped_y + neutral_position[:y],
       )
     else
       return position
@@ -52,8 +52,8 @@ class ProconBypassMan::Procon::AnalogStickCap
   # @return [ProconBypassMan::Procon::AnalogStickCap::Position]
   def position
     Position.new(
-      x: x + @neutral_position[:x],
-      y: y + @neutral_position[:y],
+      x: x + neutral_position[:x],
+      y: y + neutral_position[:y],
     )
   end
 
