@@ -2,7 +2,7 @@ class ProconBypassMan::Procon::AnalogStickCap
   class Position
     attr_accessor :x, :y
 
-    def initialize(context: , x:, y:)
+    def initialize(x:, y:)
       @x = x.to_i
       @y = y.to_i
     end
@@ -22,8 +22,7 @@ class ProconBypassMan::Procon::AnalogStickCap
   attr_accessor :neutral_position
 
   def initialize(binary)
-
-    @neutral_position = { x: 1900, y: 1900 }
+    @neutral_position = { x: 2124, y: 1807 }
     @neutral_position[:base_hypotenuse] = Math.sqrt(@neutral_position[:x]**2 + @neutral_position[:y]**2).floor(6)
     @binary = binary
 
@@ -37,11 +36,10 @@ class ProconBypassMan::Procon::AnalogStickCap
 
   # @return [ProconBypassMan::Procon::AnalogStickCap::Position]
   def capped_position(cap_hypotenuse: )
-    full_cap_hypotenuse = @neutral_position[:base_hypotenuse] + cap_hypotenuse
-    if hypotenuse > full_cap_hypotenuse
-      capped_x = full_cap_hypotenuse * Math.cos(rad * Math::PI / 180)
-      capped_y = full_cap_hypotenuse * Math.sin(rad * Math::PI / 180)
-      return Position.new(context: self, x: capped_x, y: capped_y)
+    if hypotenuse > cap_hypotenuse
+      capped_x = cap_hypotenuse * Math.cos(rad * Math::PI / 180)
+      capped_y = cap_hypotenuse * Math.sin(rad * Math::PI / 180)
+      return Position.new(x: capped_x, y: capped_y)
     else
       return position
     end
@@ -49,23 +47,15 @@ class ProconBypassMan::Procon::AnalogStickCap
 
   # @return [ProconBypassMan::Procon::AnalogStickCap::Position]
   def position
-    Position.new(context: self, x: x, y: y)
+    Position.new(x: x, y: y)
   end
 
   def x
-    bin_x.to_i(2)
+    bin_x.to_i(2) - neutral_position[:x]
   end
 
   def y
-    bin_y.to_i(2)
-  end
-
-  def x_from_zero
-    x - neutral_position[:x]
-  end
-
-  def y_from_zero
-    y - neutral_position[:y]
+    bin_y.to_i(2) - neutral_position[:y]
   end
 
   def rad
