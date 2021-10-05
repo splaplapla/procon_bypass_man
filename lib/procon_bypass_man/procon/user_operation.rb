@@ -36,8 +36,8 @@ class ProconBypassMan::Procon
       binary[byte_position] = ["%02X" % value.to_s].pack("H*")
     end
 
-    def apply_left_analog_stick_cap(cap_x: , cap_y: )
-      binary[6..8] = ProconBypassMan::Procon::AnalogStickCap.new(binary).capped_binary_values(cap_x: cap_x, cap_y: cap_y)
+    def apply_left_analog_stick_cap(cap: )
+      binary[6..8] = ProconBypassMan::Procon::AnalogStickCap.new(binary).capped_position(cap_hypotenuse: cap).to_binary
     end
 
     def press_button(button)

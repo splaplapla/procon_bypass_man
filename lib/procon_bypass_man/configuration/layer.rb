@@ -72,7 +72,7 @@ module ProconBypassMan
         end
       end
 
-      def left_analog_stick_cap(x: , y: , if_pressed: nil)
+      def left_analog_stick_cap(cap: , if_pressed: nil)
         case if_pressed
         when TrueClass
           raise "not support class"
@@ -86,7 +86,7 @@ module ProconBypassMan
           raise "not support if_pressed"
         end
 
-        left_analog_stick_caps[if_pressed] = { x: x, y: y }
+        left_analog_stick_caps[if_pressed] = { cap: cap }
       end
 
       # @return [Array]

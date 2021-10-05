@@ -1,7 +1,30 @@
 class ProconBypassMan::Procon::AnalogStickCap
+  class Position
+    attr_accessor :x, :y
+
+    def initialize(context: , x:, y:)
+      @x = x.to_i
+      @y = y.to_i
+    end
+
+    def to_binary
+      analog_stick_data = [
+        (@x & "0xff".to_i(16)),
+        ((@y << 4) & "0xf0".to_i(16)) | ((@x >> 8) & "0x0f".to_i(16)),
+        t = (@y >> 4) & "0xff".to_i(16),
+      ]
+      hex = analog_stick_data.map{ |x| x.to_s(16) }.join
+      [hex].pack("H*")
+    end
+  end
+
   attr_accessor :bin_x, :bin_y
+  attr_accessor :neutral_position
 
   def initialize(binary)
+
+    @neutral_position = { x: 1900, y: 1900 }
+    @neutral_position[:base_hypotenuse] = Math.sqrt(@neutral_position[:x]**2 + @neutral_position[:y]**2).floor(6)
     @binary = binary
 
     byte6 = @binary[6].unpack("H*").first.to_i(16).to_s(2).rjust(8, "0")
@@ -13,35 +36,20 @@ class ProconBypassMan::Procon::AnalogStickCap
   end
 
   # @return [String]
-  def capped_binary_values(cap_x: , cap_y: )
-    if x > cap_x.first
-      new_x = cap_x.first
+  def capped_position(cap_hypotenuse: )
+    full_cap_hypotenuse = @neutral_position[:base_hypotenuse] + cap_hypotenuse
+    if hypotenuse > full_cap_hypotenuse
+      capped_x = full_cap_hypotenuse * Math.cos(rad * Math::PI / 180)
+      capped_y = full_cap_hypotenuse * Math.sin(rad * Math::PI / 180)
+      return Position.new(context: self, x: capped_x, y: capped_y)
+    else
+      return Position.new(context: self, x: x, y: y)
     end
-    if x < cap_x.last
-      new_x = cap_x.last
-    end
-    if y > cap_y.first
-      new_y = cap_y.first
-    end
-    if y < cap_y.last
-      new_y = cap_y.last
-    end
-    to_binary(new_x: new_x || x, new_y: new_y || y)
-  end
-
-  def radian
-    (
-      Math.asin(x / y.to_f) * Math::PI
-    ).floor(6)
-  end
-
-  def hypotenuse
-    Math.sqrt(x**2 + y**2).floor(6)
   end
 
   # @return [String]
-  def binary_values
-    to_binary(new_x: x, new_y: y)
+  def position
+    Position.new(context: self, x: x, y: y)
   end
 
   def x
@@ -52,15 +60,21 @@ class ProconBypassMan::Procon::AnalogStickCap
     bin_y.to_i(2)
   end
 
-  private
+  def x_from_zero
+    x - neutral_position[:x]
+  end
 
-  def to_binary(new_x: , new_y: )
-    analog_stick_data = [
-      (new_x & "0xff".to_i(16)),
-      ((new_y << 4) & "0xf0".to_i(16)) | ((new_x >> 8) & "0x0f".to_i(16)),
-      t = (new_y >> 4) & "0xff".to_i(16),
-    ]
-    hex = analog_stick_data.map{ |x| x.to_s(16) }.join
-    [hex].pack("H*")
+  def y_from_zero
+    y - neutral_position[:y]
+  end
+
+  def rad
+    (
+      Math.atan(y / x.to_f) * 180 / Math::PI
+    ).floor(6)
+  end
+
+  def hypotenuse
+    Math.sqrt(x**2 + y**2).floor(6)
   end
 end

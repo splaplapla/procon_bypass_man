@@ -16,7 +16,7 @@ describe ProconBypassMan::Configuration do
           setting: |-
             prefix_keys_for_changing_layer [:zr, :r, :zl, :l]
             layer :up do
-              left_analog_stick_cap x: [3000, 900], y: [3100, 700], if_pressed: [:a]
+              left_analog_stick_cap cap: 1000, if_pressed: [:a]
             end
             EOH
           end
@@ -24,7 +24,7 @@ describe ProconBypassMan::Configuration do
             ProconBypassMan::Configuration::Loader.load(setting_path: setting.path)
             expect(ProconBypassMan::Configuration.instance.layers[:up].left_analog_stick_caps.keys).to eq([[:a]])
             expect(ProconBypassMan::Configuration.instance.layers[:up].left_analog_stick_caps[[:a]]).to eq(
-              {:x=>[3000, 900], :y=>[3100, 700]}
+              {:cap=>1000}
             )
           end
         end
@@ -35,7 +35,7 @@ describe ProconBypassMan::Configuration do
           setting: |-
             prefix_keys_for_changing_layer [:zr, :r, :zl, :l]
             layer :up do
-              left_analog_stick_cap x: [3000, 900], y: [3100, 700], if_pressed: :a
+              left_analog_stick_cap cap: 1000, if_pressed: :a
             end
             EOH
           end
@@ -51,7 +51,7 @@ describe ProconBypassMan::Configuration do
           setting: |-
             prefix_keys_for_changing_layer [:zr, :r, :zl, :l]
             layer :up do
-              left_analog_stick_cap x: [3000, 900], y: [3100, 700], if_pressed: nil
+              left_analog_stick_cap cap: 1000, if_pressed: nil
             end
             EOH
           end
@@ -67,7 +67,7 @@ describe ProconBypassMan::Configuration do
           setting: |-
             prefix_keys_for_changing_layer [:zr, :r, :zl, :l]
             layer :up do
-              left_analog_stick_cap x: [3000, 900], y: [3100, 700]
+              left_analog_stick_cap cap: 1000
             end
             EOH
           end

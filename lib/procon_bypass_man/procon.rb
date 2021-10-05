@@ -97,7 +97,7 @@ class ProconBypassMan::Procon
 
     current_layer.left_analog_stick_caps.each do |button, option|
       if button.nil? || button.all? { |b| user_operation.pressed_button?(b) }
-        user_operation.apply_left_analog_stick_cap(cap_x: option[:x], cap_y: option[:y])
+        user_operation.apply_left_analog_stick_cap(cap: option[:cap])
       end
     end
 

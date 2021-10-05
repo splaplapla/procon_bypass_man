@@ -7,9 +7,9 @@ describe ProconBypassMan::Procon::AnalogStickCap do
     }
     let(:analog_data) { "f2eabe" }
 
-    describe '#radian' do
+    describe '#rad' do
       it do
-        expect(described_class.new(binary).radian).to eq(3.649624)
+        expect(described_class.new(binary).rad).to eq(47.464076)
       end
     end
 
@@ -31,27 +31,31 @@ describe ProconBypassMan::Procon::AnalogStickCap do
       end
     end
 
-    describe 'binary_values' do
-      it do
-        expect(described_class.new(binary).binary_values).to eq("\xF2\xEA\xBE".b)
-        expect(described_class.new(binary).binary_values.unpack("H*")).to eq([analog_data])
-      end
+    describe '#position' do
+        it do
+          position = described_class.new(binary).position
+          expect(position.x).to eq(2802)
+          expect(position.y).to eq(3054)
+          expect(position.to_binary).to eq([analog_data].pack("H*"))
+        end
     end
 
-    describe 'capped_binary_values' do
-      context '範囲内' do
+    describe '#capped_position' do
+      context 'over' do
         it do
-          expect(described_class.new(binary).capped_binary_values(cap_x: [4500, 400], cap_y: [4500, 400]).unpack("H*")).to eq([analog_data])
+          position = described_class.new(binary).capped_position(cap_hypotenuse: 1100)
+          expect(position.x).to eq(2560)
+          expect(position.y).to eq(2790)
+          expect(position.to_binary).not_to eq([analog_data].pack("H*"))
         end
       end
-      it do
-        expect(described_class.new(binary).capped_binary_values(cap_x: [2500, 700], cap_y: [2500, 700]).unpack("H*")).to eq(["c4499c"])
-      end
-      it do
-        expect(described_class.new(binary).capped_binary_values(cap_x: [2500, 400], cap_y: [4500, 400]).unpack("H*")).to eq(["c4e9be"])
-      end
-      it do
-        expect(described_class.new(binary).capped_binary_values(cap_x: [4500, 3000], cap_y: [4500, 400]).unpack("H*")).to eq(["b8ebbe"])
+      context 'not over' do
+        it do
+          position = described_class.new(binary).capped_position(cap_hypotenuse: 2100)
+          expect(position.x).to eq(2802)
+          expect(position.y).to eq(3054)
+          expect(position.to_binary).to eq([analog_data].pack("H*"))
+        end
       end
     end
   end
