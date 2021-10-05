@@ -25,9 +25,9 @@ class ProconBypassMan::Procon::AnalogStickCap
     @neutral_position = { x: 2124, y: 1807 }
     @binary = binary
 
-    byte6 = @binary[6].unpack("H*").first.to_i(16).to_s(2).rjust(8, "0")
-    byte7 = @binary[7].unpack("H*").first.to_i(16).to_s(2).rjust(8, "0")
-    byte8 = @binary[8].unpack("H*").first.to_i(16).to_s(2).rjust(8, "0")
+    byte6 = binary[6].unpack("H*").first.to_i(16).to_s(2).rjust(8, "0")
+    byte7 = binary[7].unpack("H*").first.to_i(16).to_s(2).rjust(8, "0")
+    byte8 = binary[8].unpack("H*").first.to_i(16).to_s(2).rjust(8, "0")
 
     self.bin_x = "#{byte7[4..7]}#{byte6}"
     self.bin_y = "#{byte8}#{byte7[0..3]}"
@@ -36,13 +36,13 @@ class ProconBypassMan::Procon::AnalogStickCap
   # @return [ProconBypassMan::Procon::AnalogStickCap::Position]
   def capped_position(cap_hypotenuse: )
     if hypotenuse > cap_hypotenuse
-      capped_x = cap_hypotenuse * Math.cos(rad * Math::PI / 180).abs
-      capped_y = cap_hypotenuse * Math.sin(rad * Math::PI / 180).abs
-      capped_x = -(capped_x.abs) if x.negative?
-      capped_y = -(capped_y.abs) if y.negative?
+      relative_capped_x = cap_hypotenuse * Math.cos(rad * Math::PI / 180).abs
+      relative_capped_y = cap_hypotenuse * Math.sin(rad * Math::PI / 180).abs
+      relative_capped_x = -(relative_capped_x.abs) if relative_x.negative?
+      relative_capped_y = -(relative_capped_y.abs) if relative_y.negative?
       return Position.new(
-        x: capped_x + neutral_position[:x],
-        y: capped_y + neutral_position[:y],
+        x: relative_capped_x + neutral_position[:x],
+        y: relative_capped_y + neutral_position[:y],
       )
     else
       return position
@@ -51,19 +51,30 @@ class ProconBypassMan::Procon::AnalogStickCap
 
   # @return [ProconBypassMan::Procon::AnalogStickCap::Position]
   def position
-    Position.new(
-      x: x + neutral_position[:x],
-      y: y + neutral_position[:y],
-    )
+    Position.new(x: abs_x, y: abs_y)
   end
 
-  def x
+  # 0, 0からのx
+  def abs_x
+    bin_x.to_i(2)
+  end
+
+  # 0, 0からのy
+  def abs_y
+    bin_y.to_i(2)
+  end
+
+  def relative_x
     bin_x.to_i(2) - neutral_position[:x]
   end
 
-  def y
+  def relative_y
     bin_y.to_i(2) - neutral_position[:y]
   end
+
+  # @deprecated
+  def x; relative_x; end
+  def y; relative_y; end
 
   def rad
     (
