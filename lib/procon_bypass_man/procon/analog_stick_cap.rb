@@ -35,6 +35,10 @@ class ProconBypassMan::Procon::AnalogStickCap
     ).floor(6)
   end
 
+  def hypotenuse
+    Math.sqrt(x**2 + y**2).floor(6)
+  end
+
   # @return [String]
   def binary_values
     to_binary(new_x: x, new_y: y)

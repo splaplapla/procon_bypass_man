@@ -13,6 +13,12 @@ describe ProconBypassMan::Procon::AnalogStickCap do
       end
     end
 
+    describe '#hypotenuse' do
+      it do
+        expect(described_class.new(binary).hypotenuse).to eq(4144.649562)
+      end
+    end
+
     describe '#x' do
       it do
         expect(described_class.new(binary).x).to eq(2802)
