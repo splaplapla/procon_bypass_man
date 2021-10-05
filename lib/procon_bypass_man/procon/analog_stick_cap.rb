@@ -29,6 +29,12 @@ class ProconBypassMan::Procon::AnalogStickCap
     to_binary(new_x: new_x || x, new_y: new_y || y)
   end
 
+  def radian
+    (
+      Math.asin(x / y.to_f) * Math::PI
+    ).floor(6)
+  end
+
   # @return [String]
   def binary_values
     to_binary(new_x: x, new_y: y)
