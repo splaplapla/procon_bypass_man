@@ -52,6 +52,12 @@ describe ProconBypassMan::Procon::AnalogStickCap do
     it { expect(described_class.new(binary).y).to eq(0) }
     it { expect(described_class.new(binary).hypotenuse).to eq(0) }
     it { expect(described_class.new(binary).rad).not_to be_a(Integer) }
+    it { expect(described_class.new(binary).capped_position(cap_hypotenuse: 2000).y).to eq(0) }
+    it { expect(described_class.new(binary).capped_position(cap_hypotenuse: 2000).x).to eq(0) }
+    it { expect(described_class.new(binary).capped_position(cap_hypotenuse: 1500).x).to eq(0) }
+    it { expect(described_class.new(binary).capped_position(cap_hypotenuse: 1500).y).to eq(0) }
+    it { expect(described_class.new(binary).capped_position(cap_hypotenuse: 1000).x).to eq(0) }
+    it { expect(described_class.new(binary).capped_position(cap_hypotenuse: 1000).y).to eq(0) }
   end
 
   context '左' do
@@ -81,6 +87,12 @@ describe ProconBypassMan::Procon::AnalogStickCap do
     it { expect(described_class.new(binary).x).to eq(35) }
     it { expect(described_class.new(binary).y).to eq(1747) }
     it { expect(described_class.new(binary).hypotenuse.to_i).to eq(1747) }
+    it { expect(described_class.new(binary).capped_position(cap_hypotenuse: 2000).y).to eq(1747) }
+    it { expect(described_class.new(binary).capped_position(cap_hypotenuse: 2000).x).to eq(35) }
+    it { expect(described_class.new(binary).capped_position(cap_hypotenuse: 1500).x).to eq(30) }
+    it { expect(described_class.new(binary).capped_position(cap_hypotenuse: 1500).y).to eq(1499) }
+    it { expect(described_class.new(binary).capped_position(cap_hypotenuse: 1000).x).to eq(20) }
+    it { expect(described_class.new(binary).capped_position(cap_hypotenuse: 1000).y).to eq(999) }
     it { expect(described_class.new(binary).rad).to eq(88.85227) }
   end
 end
