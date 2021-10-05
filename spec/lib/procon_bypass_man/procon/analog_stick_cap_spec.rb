@@ -32,12 +32,12 @@ describe ProconBypassMan::Procon::AnalogStickCap do
     end
 
     describe '#position' do
-        it do
-          position = described_class.new(binary).position
-          expect(position.x).to eq(2802)
-          expect(position.y).to eq(3054)
-          expect(position.to_binary).to eq([analog_data].pack("H*"))
-        end
+      it do
+        position = described_class.new(binary).position
+        expect(position.x).to eq(2802)
+        expect(position.y).to eq(3054)
+        expect(position.to_binary).to eq([analog_data].pack("H*"))
+      end
     end
 
     describe '#capped_position' do
