@@ -69,6 +69,10 @@ module ProconBypassMan
 
   # @return [Logger]
   def self.logger
+    if ENV["PBM_ENV"] == 'test'
+      return Logger.new($stdout)
+    end
+
     if defined?(@@logger) && @@logger.is_a?(Logger)
       @@logger
     else
