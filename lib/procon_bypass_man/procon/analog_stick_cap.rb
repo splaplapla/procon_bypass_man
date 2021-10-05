@@ -35,7 +35,7 @@ class ProconBypassMan::Procon::AnalogStickCap
     self.bin_y = "#{byte8}#{byte7[0..3]}"
   end
 
-  # @return [String]
+  # @return [ProconBypassMan::Procon::AnalogStickCap::Position]
   def capped_position(cap_hypotenuse: )
     full_cap_hypotenuse = @neutral_position[:base_hypotenuse] + cap_hypotenuse
     if hypotenuse > full_cap_hypotenuse
@@ -43,11 +43,11 @@ class ProconBypassMan::Procon::AnalogStickCap
       capped_y = full_cap_hypotenuse * Math.sin(rad * Math::PI / 180)
       return Position.new(context: self, x: capped_x, y: capped_y)
     else
-      return Position.new(context: self, x: x, y: y)
+      return position
     end
   end
 
-  # @return [String]
+  # @return [ProconBypassMan::Procon::AnalogStickCap::Position]
   def position
     Position.new(context: self, x: x, y: y)
   end
