@@ -36,8 +36,10 @@ class ProconBypassMan::Procon::AnalogStickCap
   # @return [ProconBypassMan::Procon::AnalogStickCap::Position]
   def capped_position(cap_hypotenuse: )
     if hypotenuse > cap_hypotenuse
-      capped_x = cap_hypotenuse * Math.cos(rad * Math::PI / 180)
-      capped_y = cap_hypotenuse * Math.sin(rad * Math::PI / 180)
+      capped_x = cap_hypotenuse * Math.cos(rad * Math::PI / 180).abs
+      capped_y = cap_hypotenuse * Math.sin(rad * Math::PI / 180).abs
+      capped_x = -(capped_x.abs) if x.negative?
+      capped_y = -(capped_y.abs) if y.negative?
       return Position.new(
         x: capped_x + @neutral_position[:x],
         y: capped_y + @neutral_position[:y],

@@ -86,6 +86,12 @@ describe ProconBypassMan::Procon::AnalogStickCap do
     }
     it { expect(described_class.new(binary).x).to eq(-1253) }
     it { expect(described_class.new(binary).y).to eq(1096) }
+    it { expect(described_class.new(binary).position.x).to eq(with_default_x -1253) }
+    it { expect(described_class.new(binary).position.y).to eq(with_default_y 1096) }
+    it { expect(described_class.new(binary).capped_position(cap_hypotenuse: 2000).x).to eq(with_default_x -1253) }
+    it { expect(described_class.new(binary).capped_position(cap_hypotenuse: 2000).y).to eq(with_default_y 1096) }
+    it { expect(described_class.new(binary).capped_position(cap_hypotenuse: 1500).x).to eq(994) }
+    it { expect(described_class.new(binary).capped_position(cap_hypotenuse: 1500).y).to eq(2794) }
     it { expect(described_class.new(binary).hypotenuse.to_i).to eq(1664) }
     it { expect(described_class.new(binary).rad).to eq(-41.176212) }
   end
