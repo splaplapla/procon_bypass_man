@@ -48,33 +48,39 @@ describe ProconBypassMan::Procon::AnalogStickCap do
     let(:binary) {
       ["3036910080004cf87070b7710c28fd1801d10f2500a3ffc2ff25fd1801dd0f2400a4ffc5ff24fd1a01d80f2400a4ffc3ff000000000000000000000000000000"].pack("H*")
     }
-    describe '#x' do
-      it { expect(described_class.new(binary).x).to eq(0) }
-      it { expect(described_class.new(binary).y).to eq(0) }
-      it { expect(described_class.new(binary).hypotenuse).to eq(0) }
-    end
+    it { expect(described_class.new(binary).x).to eq(0) }
+    it { expect(described_class.new(binary).y).to eq(0) }
+    it { expect(described_class.new(binary).hypotenuse).to eq(0) }
+    it { expect(described_class.new(binary).rad).not_to be_a(Integer) }
   end
 
   context '左' do
     let(:binary) {
       ["3028810080005252717977730b82fe4e010c102600a6ffc8ff84fe4e0109102600a6ffc8ff85fe4e0108102600a7ffc8ff000000000000000000000000000000"].pack("H*")
     }
-    describe '#x' do
-      it { expect(described_class.new(binary).x).to eq(-1530) }
-      it { expect(described_class.new(binary).y).to eq(6) }
-      it { expect(described_class.new(binary).hypotenuse.to_i).to eq(1530) }
-    end
+    it { expect(described_class.new(binary).x).to eq(-1530) }
+    it { expect(described_class.new(binary).y).to eq(6) }
+    it { expect(described_class.new(binary).hypotenuse.to_i).to eq(1530) }
+    it { expect(described_class.new(binary).rad).to eq(-0.224689) }
   end
 
   context '左うえ' do
     let(:binary) {
       ["30b6810080006773b55ab76f0b5bfe1d010a101e00aeffc6ff5cfe1d0109101d00aeffc6ff5cfe1d0108101b00afffc5ff000000000000000000000000000000"].pack("H*")
     }
-    describe '#x' do
-      it { expect(described_class.new(binary).x).to eq(-1253) }
-      it { expect(described_class.new(binary).y).to eq(1096) }
-      it { expect(described_class.new(binary).hypotenuse.to_i).to eq(1664) }
-    end
+    it { expect(described_class.new(binary).x).to eq(-1253) }
+    it { expect(described_class.new(binary).y).to eq(1096) }
+    it { expect(described_class.new(binary).hypotenuse.to_i).to eq(1664) }
+    it { expect(described_class.new(binary).rad).to eq(-41.176212) }
   end
 
+  context '上' do
+    let(:binary) {
+      ["3059810080006f28de88a7720b38fdf0ffe40f2400a5ffc5ff38fdeeffe20f2300a7ffc3ff3dfdf1ffe50f2400a8ffc5ff000000000000000000000000000000"].pack("H*")
+    }
+    it { expect(described_class.new(binary).x).to eq(35) }
+    it { expect(described_class.new(binary).y).to eq(1747) }
+    it { expect(described_class.new(binary).hypotenuse.to_i).to eq(1747) }
+    it { expect(described_class.new(binary).rad).to eq(88.85227) }
+  end
 end
