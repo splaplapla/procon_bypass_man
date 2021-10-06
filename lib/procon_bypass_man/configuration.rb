@@ -10,7 +10,8 @@ module ProconBypassMan
       :mode_plugins,
       :macro_plugins,
       :context,
-      :current_context_key
+      :current_context_key,
+      :neutral_position
 
     def self.instance
       @@current_context_key ||= :main
@@ -75,6 +76,11 @@ module ProconBypassMan
       self
     end
 
+    def set_neutral_position(x, y)
+      self.neutral_position = { x: x, y: y }
+      self
+    end
+
     def prefix_keys
       @prefix_keys_for_changing_layer
     end
@@ -89,6 +95,7 @@ module ProconBypassMan
         left: Layer.new,
         right: Layer.new,
       }
+      @neutral_position = { x: 2124, y: 1807 }
     end
   end
 end

@@ -22,7 +22,7 @@ class ProconBypassMan::Procon::AnalogStickCap
   attr_accessor :neutral_position
 
   def initialize(binary)
-    @neutral_position = { x: 2124, y: 1807 }
+    @neutral_position = ProconBypassMan::Configuration.instance.neutral_position
     @binary = binary
 
     byte6 = binary[6].unpack("H*").first.to_i(16).to_s(2).rjust(8, "0")
