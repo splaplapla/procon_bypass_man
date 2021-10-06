@@ -72,7 +72,9 @@ module ProconBypassMan
         end
       end
 
-      def left_analog_stick_cap(cap: , if_pressed: nil)
+      def left_analog_stick_cap(cap: , if_pressed: nil, force_neutral: nil)
+        hash = { cap: cap }
+
         case if_pressed
         when TrueClass
           raise "not support class"
@@ -86,7 +88,18 @@ module ProconBypassMan
           raise "not support if_pressed"
         end
 
-        left_analog_stick_caps[if_pressed] = { cap: cap }
+        if force_neutral
+          case force_neutral
+          when TrueClass, FalseClass
+            raise "ボタンを渡してください"
+          when Symbol, String
+            hash[:force_neutral] = [force_neutral]
+          when Array
+            hash[:force_neutral] = force_neutral
+          end
+        end
+
+        left_analog_stick_caps[if_pressed] = hash
       end
 
       # @return [Array]
