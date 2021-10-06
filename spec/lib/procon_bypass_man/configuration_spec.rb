@@ -15,18 +15,11 @@ describe ProconBypassMan::Configuration do
           setting: |-
             prefix_keys_for_changing_layer [:zr, :r, :zl, :l]
             set_neutral_position 1000, 1000
-            layer :up do
-              left_analog_stick_cap cap: 1000, if_pressed: [:a]
-            end
           EOH
         end
         it do
           ProconBypassMan::Configuration::Loader.load(setting_path: setting.path)
-          expect(ProconBypassMan::Configuration.instance.layers[:up].left_analog_stick_caps.keys).to eq([[:a]])
           expect(ProconBypassMan::Configuration.instance.neutral_position).to eq({ x: 1000, y: 1000 })
-          expect(ProconBypassMan::Configuration.instance.layers[:up].left_analog_stick_caps[[:a]]).to eq(
-            {:cap=>1000}
-          )
         end
       end
       context 'with left_analog_stick_cap' do
