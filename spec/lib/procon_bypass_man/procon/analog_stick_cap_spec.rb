@@ -10,6 +10,10 @@ describe ProconBypassMan::Procon::AnalogStickCap do
     return default_y + n
   end
 
+  before do
+    ProconBypassMan::Configuration.instance.set_neutral_position(2124, 1807)
+  end
+
   context 'defailt' do
     let(:binary) {
       ["306481008000f2eabe20d7750a88076dfcd90d3c00b0ffc8ff830769fcd40d3600b0ffc8ff7d076afcca0d3300adffcaff000000000000000000000000000000"].pack("H*")
