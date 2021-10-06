@@ -111,4 +111,11 @@ describe ProconBypassMan::Procon::AnalogStickCap do
     it { expect(described_class.new(binary).capped_position(cap_hypotenuse: 1000).y).to eq(with_default_y 999) }
     it { expect(described_class.new(binary).rad).to eq(88.85227) }
   end
+
+  context 'バグが起きた特定の並び' do
+    let(:binary) {
+      ["305b8108800045087254c7730975fd0900f00f2400a5ffc5ff6ffd0600f40f2200a3ffc5ff73fd0800f60f2100a4ffc5ff000000000000000000000000000000"].pack("H*")
+    }
+    it { expect(described_class.new(binary).position.to_binary).to eq("E\br") }
+  end
 end
