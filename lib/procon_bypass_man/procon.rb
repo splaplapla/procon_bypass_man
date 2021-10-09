@@ -134,7 +134,9 @@ class ProconBypassMan::Procon
     end
 
     b = user_operation.binary
-    # ProconBypassMan::Procon::DebugDumper.new(binary: b).dump_analog_sticks
+    ProconBypassMan.cache.fetch key: 'user_operation.binary', expires_in: 60 do
+      ProconBypassMan::Procon::DebugDumper.new(binary: b).dump_analog_sticks
+    end
     b
   end
 
