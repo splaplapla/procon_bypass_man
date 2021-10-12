@@ -10,3 +10,5 @@ gem "rspec"
 gem "pry"
 gem "timecop"
 gem "rubocop", require: false
+gem "steep", require: false
+gem 'rbs', require: false

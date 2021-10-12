@@ -61,8 +61,9 @@ module ProconBypassMan
     @@logger = logger
   end
 
+  # @return [Logger]
   def self.logger
-    if defined?(@@logger)
+    if defined?(@@logger) && @@logger.is_a?(Logger)
       @@logger
     else
       Logger.new(nil)

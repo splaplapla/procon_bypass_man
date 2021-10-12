@@ -7,7 +7,7 @@ module ProconBypassMan
       return Time.now.to_i - boot_time.to_i
     rescue => e
       ProconBypassMan.logger.error(e)
-      return "error!"
+      return -1
     end
   end
 end
