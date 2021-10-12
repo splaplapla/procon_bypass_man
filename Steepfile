@@ -29,6 +29,7 @@
 target :lib do
   check "lib/procon_bypass_man/timer.rb"
   check "lib/procon_bypass_man/uptime.rb"
+  check "lib/procon_bypass_man/configuration.rb"
 
   signature "sig"
 
