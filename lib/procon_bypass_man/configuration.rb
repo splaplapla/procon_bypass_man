@@ -36,17 +36,16 @@ module ProconBypassMan
     end
 
     MODES = [:manual]
-    def layer(direction, mode: :manual, &block)
-      mode_name = if mode.respond_to?(:name)
-                    mode.name.to_sym
-                  else
-                    mode
-                  end
+    def layer(direction, mode: nil, &block)
+      if mode && mode.respond_to?(:name)
+        mode_name = mode.name.to_sym
+      end
+
       unless (MODES + ProconBypassMan::Procon::ModeRegistry.plugins.keys).include?(mode_name)
         raise("#{mode_name} mode is unknown")
       end
 
-      layer = Layer.new(mode: mode_name)
+      layer = Layer.new(mode: mode_name || :manual)
       layer.instance_eval(&block) if block_given?
       self.layers[direction] = layer
       self

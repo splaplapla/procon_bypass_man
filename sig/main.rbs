@@ -1,5 +1,9 @@
+interface _Symolize
+  def to_sym: () -> ::Symbol
+end
+
 interface _Pluginable
-  def name: () -> string
+  def name: () -> _Symolize
   def respond_to?: (::Symbol) -> bool
 end
 
@@ -73,7 +77,7 @@ module ProconBypassMan
 
     MODES: ::Array[untyped]
 
-    def layer: (untyped direction, ?mode: (::Symbol | ::_Pluginable) mode) { () -> untyped } -> untyped
+    def layer: (untyped direction, ?mode: (nil | _Pluginable) mode) { () -> untyped } -> untyped
 
     def install_mode_plugin: (untyped klass) -> untyped
 
@@ -98,7 +102,7 @@ module ProconBypassMan
 
       attr_accessor remaps: untyped
 
-      def initialize: (?mode: (::Symbol) mode) -> untyped
+      def initialize: (?mode: ::Symbol mode) -> untyped
 
       # @param [Symbol] button
       def flip: (untyped button, ?if_pressed: bool if_pressed, ?force_neutral: untyped? force_neutral, ?flip_interval: untyped? flip_interval) -> untyped
