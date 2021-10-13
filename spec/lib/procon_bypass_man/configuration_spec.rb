@@ -353,7 +353,7 @@ describe ProconBypassMan::Configuration do
           layer :down, mode: :manual do
             flip :r, if_pressed: [:zr, :zl]
           end
-          layer :right, mode: AModePlugin
+          layer :right, mode: AModePlugin.name
           layer :left
         end
         expect(ProconBypassMan::Configuration.instance.layers[:up].flip_buttons[:l]).to eq(if_pressed: [:l])
