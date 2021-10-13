@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        ruby-version: ['2.5', '2.7', '3.0']
+        ruby-version: ['2.7', '3.0.1']
 
     steps:
     - uses: actions/checkout@v2
@@ -30,3 +30,4 @@ jobs:
         bundler-cache: true # runs 'bundle install' and caches installed gems automatically
     - name: Run tests
       run: bundle exec rake
+      run: bundle exec steep check

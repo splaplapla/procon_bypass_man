@@ -364,7 +364,7 @@ describe ProconBypassMan::Configuration do
         expect(ProconBypassMan::Configuration.instance.layers[:down].flip_buttons[:r]).to eq(if_pressed: [:zr, :zl])
         expect(ProconBypassMan::Configuration.instance.layers[:down].mode).to eq(:manual)
         expect(ProconBypassMan::Configuration.instance.layers[:right].flip_buttons.keys).to eq([])
-        expect(ProconBypassMan::Configuration.instance.layers[:right].mode).to eq('foo')
+        expect(ProconBypassMan::Configuration.instance.layers[:right].mode).to eq(:foo)
         expect(ProconBypassMan::Configuration.instance.layers[:left].flip_buttons.keys).to eq([])
         expect(ProconBypassMan::Configuration.instance.layers[:left].mode).to eq(:manual)
       end

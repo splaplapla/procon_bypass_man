@@ -3,7 +3,7 @@ module ProconBypassMan
     class Layer
       attr_accessor :mode, :flips, :macros, :remaps
 
-      def initialize(mode: :manual, &block)
+      def initialize(mode: :manual)
         self.mode = mode
         self.flips = {}
         self.macros = {}

@@ -1,0 +1,458 @@
+interface _Symolize
+  def to_sym: () -> ::Symbol
+end
+
+interface _Pluginable
+  def name: () -> _Symolize
+  def respond_to?: (::Symbol) -> bool
+end
+
+module ProconBypassMan
+  class ProConRejected < StandardError
+  end
+
+  class CouldNotLoadConfigError < StandardError
+  end
+
+  class FirstConnectionError < StandardError
+  end
+
+  class EternalConnectionError < StandardError
+  end
+
+  def self.configure: (?setting_path: untyped? setting_path) { () -> untyped } -> untyped
+
+  def self.run: (?setting_path: untyped? setting_path) { () -> untyped } -> untyped
+
+  def self.logger=: (untyped logger) -> untyped
+
+  # @return [Logger]
+  def self.logger: () -> untyped
+
+  def self.pid_path: () -> untyped
+
+  def self.reset!: () -> untyped
+
+  def self.root: () -> untyped
+
+  def self.root=: (untyped path) -> untyped
+
+  def self.digest_path: () -> ::String
+end
+
+class ProconBypassMan::Bypass
+  attr_accessor gadget: untyped
+
+  attr_accessor procon: untyped
+
+  attr_accessor monitor: untyped
+
+  def initialize: (gadget: untyped gadget, procon: untyped procon, monitor: untyped monitor) -> untyped
+
+  # ゆっくりでいい
+  def send_gadget_to_procon!: () -> (nil | untyped)
+
+  def send_procon_to_gadget!: () -> (nil | untyped)
+end
+
+module ProconBypassMan
+  class Configuration
+    attr_accessor layers: untyped
+
+    attr_accessor setting_path: untyped
+
+    attr_accessor mode_plugins: untyped
+
+    attr_accessor macro_plugins: untyped
+
+    attr_accessor context: untyped
+
+    attr_accessor current_context_key: untyped
+
+    def self.instance: () -> untyped
+
+    def self.switch_new_context: (untyped key) { (untyped) -> untyped } -> untyped
+
+    def initialize: () -> untyped
+
+    MODES: ::Array[untyped]
+
+    def layer: (untyped direction, ?mode: (_Pluginable) mode) { () -> untyped } -> untyped
+
+    def install_mode_plugin: (untyped klass) -> untyped
+
+    def install_macro_plugin: (untyped klass) -> untyped
+
+    def prefix_keys_for_changing_layer: (untyped buttons) -> untyped
+
+    def prefix_keys: () -> untyped
+
+    def reset!: () -> untyped
+  end
+end
+
+module ProconBypassMan
+  class Configuration
+    class Layer
+      attr_accessor mode: untyped
+
+      attr_accessor flips: untyped
+
+      attr_accessor macros: untyped
+
+      attr_accessor remaps: untyped
+
+      def initialize: (?mode: ::Symbol mode) -> untyped
+
+      # @param [Symbol] button
+      def flip: (untyped button, ?if_pressed: bool if_pressed, ?force_neutral: untyped? force_neutral, ?flip_interval: untyped? flip_interval) -> untyped
+
+      PRESET_MACROS: ::Array[untyped]
+
+      def macro: (untyped name, if_pressed: untyped if_pressed) -> untyped
+
+      def remap: (untyped button, to: untyped to) -> untyped
+
+      # @return [Array]
+      def flip_buttons: () -> untyped
+
+      def instance_eval: ()?{ () -> nil } -> untyped
+    end
+  end
+end
+
+module ProconBypassMan
+  class Configuration
+    module Loader
+      def self.load: (setting_path: untyped setting_path) -> untyped
+
+      def self.reload_setting: () -> untyped
+    end
+  end
+end
+
+module ProconBypassMan
+  class Configuration
+    class Validator
+      def initialize: (untyped config) -> untyped
+
+      # @return [Boolean]
+      def valid?: () -> untyped
+
+      # @return [Boolean]
+      def invalid?: () -> untyped
+
+      # @return [Hash]
+      def errors: () -> untyped
+
+      private
+
+      def validate_config_of_button_lonely: () -> untyped
+
+      def validate_require_prefix_keys: () -> untyped
+
+      def validate_verify_button_existence: () -> untyped
+
+      def validate_flip_and_remap_are_hate_each_other: () -> untyped
+    end
+  end
+end
+
+class ProconBypassMan::DeviceConnector
+  class BytesMismatchError < StandardError
+  end
+
+  class Value
+    attr_accessor read_from: untyped
+
+    attr_accessor values: untyped
+
+    def initialize: (values: untyped values, read_from: untyped read_from) -> untyped
+  end
+
+  PROCON_PATH: ::String
+
+  PROCON2_PATH: ::String
+
+  # 画面で再接続ができたが状況は変わらない
+  def self.reset_connection!: () -> untyped
+
+  def self.connect: () -> ::Array[untyped]
+
+  def initialize: (?throw_error_if_timeout: bool throw_error_if_timeout, ?throw_error_if_mismatch: bool throw_error_if_mismatch, ?enable_at_exit: bool enable_at_exit) -> untyped
+
+  def add: (untyped values, read_from: untyped read_from) -> untyped
+
+  def drain_all: () -> untyped
+
+  # switchに任意の命令を入力して、switchから読み取る
+  def write_switch: (untyped data, ?only_write: bool only_write) -> untyped
+
+  def write_procon: (untyped data, ?only_write: bool only_write) -> untyped
+
+  def read_procon: (?only_read: bool only_read) -> untyped
+
+  def read_switch: (?only_read: bool only_read) -> untyped
+
+  def from_device: (untyped item) -> untyped
+
+  # fromの対になる
+  def to_device: (untyped item) -> untyped
+
+  def switch: () -> untyped
+
+  def procon: () -> untyped
+
+  def is_available_device?: (untyped path) -> (::FalseClass | ::TrueClass | untyped)
+
+  def to_bin: (untyped string) -> untyped
+
+  def init_devices: () -> untyped
+end
+
+module ProconBypassMan
+  class Counter
+    attr_accessor label: untyped
+
+    attr_accessor table: untyped
+
+    attr_accessor previous_table: untyped
+
+    def initialize: (label: untyped label) -> untyped
+
+    # アクティブなバケットは1つだけ
+    def record: (untyped event_name) -> untyped
+
+    def formated_previous_table: () -> ::String
+  end
+
+  module IOMonitor
+    def self.new: (label: untyped label) -> untyped
+
+    # @return [Array<Counter>]
+    def self.targets: () -> untyped
+
+    # ここで集計する
+    def self.start!: () -> untyped
+
+    def self.reset!: () -> untyped
+  end
+end
+
+class ProconBypassMan::Processor
+  # @return [String] binary
+  def initialize: (untyped binary) -> untyped
+
+  # @return [String] 加工後の入力データ
+  def process: () -> untyped
+end
+
+class ProconBypassMan::Procon
+  attr_accessor user_operation: untyped
+
+  def self.reset!: () -> untyped
+
+  def initialize: (untyped binary) -> untyped
+
+  def status: () -> untyped
+
+  def ongoing_macro: () -> untyped
+
+  def ongoing_mode: () -> untyped
+
+  def current_layer_key: () -> untyped
+
+  def current_layer: () -> untyped
+
+  def apply!: () -> (nil | untyped)
+
+  # @return [String<binary>]
+  def to_binary: () -> untyped
+
+  private
+
+  def method_missing: (untyped name) -> untyped
+end
+
+class ProconBypassMan::Procon::ButtonCollection
+  class Button
+    attr_accessor byte_position: untyped
+
+    attr_accessor bit_position: untyped
+
+    def initialize: (untyped key) -> untyped
+  end
+
+  # )  ZR	R	SR(right)	SL(right)	A	B	X	Y
+  # )  Grip	(none)	Cap	Home	ThumbL	ThumbR	+	-
+  # )  ZL	L	SL(left)	SR(left)	Left	Right	Up	Down
+  # )  analog[0]
+  # )  analog[1]
+  # )  analog[2]
+  # )  analog[3]
+  # )  analog[4]
+  # )  analog[5]
+  BYTES_MAP: untyped
+
+  BUTTONS_MAP: untyped
+
+  BUTTONS: untyped
+
+  def self.load: (untyped button_key) -> untyped
+end
+
+class ProconBypassMan::Procon
+  module Data
+    NO_ACTION: untyped
+  end
+end
+
+class ProconBypassMan::Procon
+  class FlipCache
+    def self.fetch: (key: untyped key, expires_in: untyped expires_in) { () -> untyped } -> untyped
+
+    # for testing
+    def self.reset!: () -> untyped
+  end
+end
+
+module ProconBypassMan::Procon::LayerChangeable
+  def next_layer_key: () -> untyped
+
+  def change_layer?: () -> untyped
+
+  def pressed_next_layer?: () -> untyped
+end
+
+class ProconBypassMan::Procon::MacroRegistry
+  class Macro
+    attr_accessor name: untyped
+
+    attr_accessor steps: untyped
+
+    def initialize: (name: untyped name, steps: untyped steps) -> untyped
+
+    def next_step: () -> untyped
+
+    def finished?: () -> untyped
+
+    def ongoing?: () -> untyped
+  end
+
+  PRESETS: ::Hash[untyped, untyped]
+
+  def self.install_plugin: (untyped klass) -> untyped
+
+  def self.load: (untyped name) -> untyped
+
+  def self.reset!: () -> untyped
+
+  def self.plugins: () -> untyped
+end
+
+class ProconBypassMan::Procon::ModeRegistry
+  class Mode
+    attr_accessor name: untyped
+
+    attr_accessor binaries: untyped
+
+    attr_accessor source_binaries: untyped
+
+    def initialize: (name: untyped name, binaries: untyped binaries) -> untyped
+
+    def next_binary: () -> untyped
+  end
+
+  PRESETS: ::Hash[untyped, untyped]
+
+  def self.install_plugin: (untyped klass) -> untyped
+
+  def self.load: (untyped name) -> untyped
+
+  def self.reset!: () -> untyped
+
+  def self.plugins: () -> untyped
+end
+
+module ProconBypassMan::Procon::PushedButtonHelper
+  module Static
+    def pressed_button?: (untyped button) -> untyped
+  end
+
+  module Dynamic
+    def compile_if_not_compile_yet!: () -> untyped
+  end
+end
+
+class ProconBypassMan::Procon
+  class UserOperation
+    include LayerChangeable
+
+    include PushedButtonHelper::Static
+
+    extend PushedButtonHelper::Dynamic
+
+    attr_reader binary: untyped
+
+    def initialize: (untyped binary) -> untyped
+
+    ZERO_BIT: untyped
+
+    ASCII_ENCODING: ::String
+
+    # @depilicate
+    def binary=: (untyped binary) -> untyped
+
+    def set_no_action!: () -> untyped
+
+    def unpress_button: (untyped button) -> untyped
+
+    def press_button: (untyped button) -> untyped
+
+    def press_button_only: (untyped button) -> untyped
+
+    def merge: (target_binary: untyped target_binary) -> untyped
+  end
+end
+
+class ProconBypassMan::Runner
+  class InterruptForRestart < StandardError
+  end
+
+  def initialize: () -> untyped
+
+  def run: () -> untyped
+
+  private
+
+  def main_loop: () -> untyped
+
+  def first_negotiation: () -> untyped
+
+  def handle_signal: (untyped sig) -> untyped
+
+  # @return [void]
+  def print_booted_message: () -> untyped
+end
+
+module ProconBypassMan
+  class Timer
+    class Timeout < StandardError
+    end
+
+    # 5秒後がタイムアウト
+    def initialize: (?timeout: untyped timeout) -> untyped
+
+    def throw_if_timeout!: () -> untyped
+  end
+end
+
+module ProconBypassMan
+  class Uptime
+    def self.from_boot: () -> untyped
+  end
+end
+
+module ProconBypassMan
+  VERSION: ::String
+end
