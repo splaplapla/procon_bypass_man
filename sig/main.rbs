@@ -77,7 +77,7 @@ module ProconBypassMan
 
     MODES: ::Array[untyped]
 
-    def layer: (untyped direction, ?mode: (nil | _Pluginable) mode) { () -> untyped } -> untyped
+    def layer: (untyped direction, ?mode: (_Pluginable) mode) { () -> untyped } -> untyped
 
     def install_mode_plugin: (untyped klass) -> untyped
 

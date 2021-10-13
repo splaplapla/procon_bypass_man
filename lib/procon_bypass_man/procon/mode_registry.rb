@@ -23,10 +23,10 @@ class ProconBypassMan::Procon::ModeRegistry
   }
 
   def self.install_plugin(klass)
-    if plugins[klass.name]
+    if plugins[klass.name.to_sym]
       raise "すでに登録済みです"
     end
-    plugins[klass.name] = klass.binaries
+    plugins[klass.name.to_sym] = klass.binaries
   end
 
   def self.load(name)
