@@ -39,7 +39,7 @@ build_jobs: &build_jobs
         parameters:
           version:
             - "2.7"
-            - "3.0"
+            - "3.0.1"
 workflows:
   version: 2
   build:
