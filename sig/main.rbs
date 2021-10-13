@@ -55,6 +55,13 @@ class ProconBypassMan::Bypass
   def send_procon_to_gadget!: () -> (nil | untyped)
 end
 
+class AnalogStickPosition
+  attr_accessor x: Integer
+  attr_accessor y: Integer
+
+  def initialize: (x: Integer, y: Integer) -> untyped
+end
+
 module ProconBypassMan
   class Configuration
     attr_accessor layers: untyped
@@ -68,6 +75,8 @@ module ProconBypassMan
     attr_accessor context: untyped
 
     attr_accessor current_context_key: untyped
+
+    attr_accessor neutral_position: AnalogStickPosition
 
     def self.instance: () -> untyped
 

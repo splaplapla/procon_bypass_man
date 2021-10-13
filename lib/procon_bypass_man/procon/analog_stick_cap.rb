@@ -41,8 +41,8 @@ class ProconBypassMan::Procon::AnalogStickCap
       relative_capped_x = -(relative_capped_x.abs) if relative_x.negative?
       relative_capped_y = -(relative_capped_y.abs) if relative_y.negative?
       return Position.new(
-        x: relative_capped_x + neutral_position[:x],
-        y: relative_capped_y + neutral_position[:y],
+        x: relative_capped_x + neutral_position.x,
+        y: relative_capped_y + neutral_position.y,
       )
     else
       return position
@@ -65,11 +65,11 @@ class ProconBypassMan::Procon::AnalogStickCap
   end
 
   def relative_x
-    bin_x.to_i(2) - neutral_position[:x]
+    bin_x.to_i(2) - neutral_position.x
   end
 
   def relative_y
-    bin_y.to_i(2) - neutral_position[:y]
+    bin_y.to_i(2) - neutral_position.y
   end
 
   # @deprecated

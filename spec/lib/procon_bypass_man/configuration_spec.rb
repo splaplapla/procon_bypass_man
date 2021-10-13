@@ -19,7 +19,8 @@ describe ProconBypassMan::Configuration do
         end
         it do
           ProconBypassMan::Configuration::Loader.load(setting_path: setting.path)
-          expect(ProconBypassMan::Configuration.instance.neutral_position).to eq({ x: 1000, y: 1000 })
+          expect(ProconBypassMan::Configuration.instance.neutral_position.x).to eq(1000)
+          expect(ProconBypassMan::Configuration.instance.neutral_position.y).to eq(1000)
         end
       end
       context 'with left_analog_stick_cap' do

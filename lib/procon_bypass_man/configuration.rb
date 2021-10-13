@@ -4,7 +4,6 @@ require "procon_bypass_man/configuration/layer"
 
 module ProconBypassMan
   class Configuration
-
     attr_accessor :layers,
       :setting_path,
       :mode_plugins,
@@ -77,7 +76,7 @@ module ProconBypassMan
     end
 
     def set_neutral_position(x, y)
-      self.neutral_position = { x: x, y: y }
+      self.neutral_position = AnalogStickPosition.new(x: x, y: y)
       self
     end
 
@@ -95,7 +94,7 @@ module ProconBypassMan
         left: Layer.new,
         right: Layer.new,
       }
-      @neutral_position = { x: 2124, y: 1807 }
+      @neutral_position = AnalogStickPosition.new(x: 2124, y: 1808)
     end
   end
 end
