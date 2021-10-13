@@ -38,7 +38,6 @@ build_jobs: &build_jobs
       matrix:
         parameters:
           version:
-            - "2.5"
             - "2.7"
             - "3.0"
 workflows:
