@@ -45,6 +45,8 @@ module ProconBypassMan
   end
 
   def self.run(setting_path: nil, &block)
+    ProconBypassMan.logger.info "PBMを起動しています"
+    puts "PBMを起動しています"
     configure(setting_path: setting_path, &block)
     File.write(pid_path, $$)
     Runner.new.run
