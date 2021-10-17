@@ -73,6 +73,7 @@ class ProconBypassMan::Runner
         sleep(0.005)
       rescue ProconBypassMan::Timer::Timeout
         ProconBypassMan.logger.info "10秒経過したのでThread1を終了します"
+        puts "10秒経過したのでThread1を終了します"
         break
       rescue Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError => e
         ProconBypassMan.logger.error "Proconが切断されました.終了処理を開始します"
