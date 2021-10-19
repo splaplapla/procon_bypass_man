@@ -332,7 +332,6 @@ describe ProconBypassMan::Configuration do
 
   describe '.configure' do
     context 'with setting_path' do
-      after(:each) { setting&.close }
       let(:setting_content) do
         <<~EOH
           version: 1.0
@@ -349,6 +348,19 @@ describe ProconBypassMan::Configuration do
         expect(ProconBypassMan::Configuration.instance.layers[:up].flip_buttons).to eq(zr: { if_pressed: [:zr] })
         expect(ProconBypassMan::Configuration.instance.layers[:down].flips).to eq({})
         expect(ProconBypassMan::Configuration.instance.setting_path).to eq(setting.path)
+      end
+    end
+
+    context 'with disable' do
+      it do
+        ProconBypassMan.configure do
+          install_macro_plugin(AMacroPlugin)
+          layer :up do
+            disable [:a, :l]
+            disable [:b]
+          end
+        end
+        expect(ProconBypassMan::Configuration.instance.layers[:up].disables).to eq([:a, :b, :l])
       end
     end
 
