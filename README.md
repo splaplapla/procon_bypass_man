@@ -1,4 +1,6 @@
 # ProconBypassMan
+[![Ruby](https://github.com/splaplapla/procon_bypass_man/actions/workflows/ruby.yml/badge.svg?branch=master)](https://github.com/splaplapla/procon_bypass_man/actions/workflows/ruby.yml)
+
 * Switchに繋いだプロコンを連射機にしたり、キーのリマップをしたり、マクロを実行できるツールです
     * 設定ファイルはrubyスクリプトで記述します
 * 特定のタイトルに特化した振る舞いにしたい時は各プラグインを使ってください
