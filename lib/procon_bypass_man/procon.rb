@@ -7,6 +7,7 @@ class ProconBypassMan::Procon
   require "procon_bypass_man/procon/pressed_button_helper"
   require "procon_bypass_man/procon/user_operation"
   require "procon_bypass_man/procon/flip_cache"
+  require "procon_bypass_man/procon/press_button_aware"
 
   attr_accessor :user_operation
 
@@ -94,6 +95,15 @@ class ProconBypassMan::Procon
       return user_operation.binary
     end
 
+    current_layer.left_analog_stick_caps.each do |button, options|
+      if button.nil? || button.all? { |b| user_operation.pressed_button?(b) }
+        options[:force_neutral]&.each do |force_neutral_button|
+          user_operation.pressed_button?(force_neutral_button) && user_operation.unpress_button(force_neutral_button)
+        end
+        user_operation.apply_left_analog_stick_cap(cap: options[:cap])
+      end
+    end
+
     current_layer.flip_buttons.each do |button, options|
       # 何もしないで常に連打
       if !options[:if_pressed] && status[button]
@@ -123,7 +133,11 @@ class ProconBypassMan::Procon
       end
     end
 
-    user_operation.binary
+    b = user_operation.binary
+    ProconBypassMan.cache.fetch key: 'user_operation.binary', expires_in: 60 do
+      ProconBypassMan::Procon::DebugDumper.new(binary: b).dump_analog_sticks
+    end
+    b
   end
 
   private

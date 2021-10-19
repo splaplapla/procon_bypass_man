@@ -7,6 +7,22 @@ describe ProconBypassMan::Procon do
     ProconBypassMan.reset!
   end
 
+  context 'with left_analog_stick_caps' do
+    let(:data) { "30f28100800078c77448287509550274ff131029001b0022005a0271ff191028001e00210064027cff1410280020002100000000000000000000000000000000" } # no_action
+    it do
+      ProconBypassMan.configure do
+        prefix_keys_for_changing_layer [:zr]
+        layer :up do
+          left_analog_stick_cap cap: 1000, if_pressed: [:a]
+        end
+      end
+      procon = ProconBypassMan::Procon.new(binary)
+      procon.user_operation.press_button(:a)
+      expect(procon.user_operation).to receive(:apply_left_analog_stick_cap).once
+      ProconBypassMan::Procon.new(procon.to_binary)
+    end
+  end
+
   context 'with flip_interval' do
     let(:data) { "30f28100800078c77448287509550274ff131029001b0022005a0271ff191028001e00210064027cff1410280020002100000000000000000000000000000000" } # no_action
     it do

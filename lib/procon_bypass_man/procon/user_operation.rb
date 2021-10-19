@@ -1,7 +1,6 @@
 class ProconBypassMan::Procon
   class UserOperation
     include LayerChangeable
-    include PushedButtonHelper::Static
     extend PushedButtonHelper::Dynamic
 
     attr_reader :binary
@@ -37,6 +36,10 @@ class ProconBypassMan::Procon
       binary[byte_position] = ["%02X" % value.to_s].pack("H*")
     end
 
+    def apply_left_analog_stick_cap(cap: )
+      binary[6..8] = ProconBypassMan::Procon::AnalogStickCap.new(binary).capped_position(cap_hypotenuse: cap).to_binary
+    end
+
     def press_button(button)
       byte_position = ButtonCollection.load(button).byte_position
       value = binary[byte_position].unpack("H*").first.to_i(16) + (2**ButtonCollection.load(button).bit_position)
@@ -67,6 +70,10 @@ class ProconBypassMan::Procon
       binary[10] = tb[10]
       binary[11] = tb[11]
       self.binary
+    end
+
+    def pressed_button?(button)
+      ProconBypassMan::PpressButtonAware.new(binary).pressed_button?(button)
     end
   end
 end

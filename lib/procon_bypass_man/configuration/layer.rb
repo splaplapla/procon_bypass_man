@@ -1,13 +1,14 @@
 module ProconBypassMan
   class Configuration
     class Layer
-      attr_accessor :mode, :flips, :macros, :remaps
+      attr_accessor :mode, :flips, :macros, :remaps, :left_analog_stick_caps
 
       def initialize(mode: :manual)
         self.mode = mode
         self.flips = {}
         self.macros = {}
         self.remaps = {}
+        self.left_analog_stick_caps = {}
         instance_eval(&block) if block_given?
       end
 
@@ -50,7 +51,6 @@ module ProconBypassMan
         end
       end
 
-      PRESET_MACROS = [:fast_return]
       def macro(name, if_pressed: )
         if name.respond_to?(:name)
           macro_name = name.name.to_sym
@@ -70,6 +70,36 @@ module ProconBypassMan
           raise "ボタンを渡してください" if to.size.zero?
           self.remaps[button] = { to: to }
         end
+      end
+
+      def left_analog_stick_cap(cap: , if_pressed: nil, force_neutral: nil)
+        hash = { cap: cap }
+
+        case if_pressed
+        when TrueClass
+          raise "not support class"
+        when Symbol, String
+          if_pressed = [if_pressed]
+        when Array, FalseClass
+          # sono mama
+        when NilClass
+          if_pressed = nil
+        else
+          raise "not support if_pressed"
+        end
+
+        if force_neutral
+          case force_neutral
+          when TrueClass, FalseClass
+            raise "ボタンを渡してください"
+          when Symbol, String
+            hash[:force_neutral] = [force_neutral]
+          when Array
+            hash[:force_neutral] = force_neutral
+          end
+        end
+
+        left_analog_stick_caps[if_pressed] = hash
       end
 
       # @return [Array]

@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    procon_bypass_man (0.1.8)
+    procon_bypass_man (0.1.9)
 
 GEM
   remote: https://rubygems.org/
@@ -25,12 +25,17 @@ GEM
       rb-inotify (~> 0.9, >= 0.9.10)
     method_source (1.0.0)
     minitest (5.14.4)
-    parallel (1.21.0)
+    mustermann (1.1.1)
+      ruby2_keywords (~> 0.0.1)
+    parallel (1.20.1)
     parser (3.0.2.0)
       ast (~> 2.4.1)
     pry (0.14.1)
       coderay (~> 1.1)
       method_source (~> 1.0)
+    rack (2.2.3)
+    rack-protection (2.1.0)
+      rack
     rainbow (3.0.0)
     rake (13.0.6)
     rb-fsevent (0.11.0)
@@ -52,18 +57,24 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.10.0)
     rspec-support (3.10.2)
-    rubocop (1.22.1)
+    rubocop (1.20.0)
       parallel (~> 1.10)
       parser (>= 3.0.0.0)
       rainbow (>= 2.2.2, < 4.0)
       regexp_parser (>= 1.8, < 3.0)
       rexml
-      rubocop-ast (>= 1.12.0, < 2.0)
+      rubocop-ast (>= 1.9.1, < 2.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 1.4.0, < 3.0)
-    rubocop-ast (1.12.0)
+    rubocop-ast (1.11.0)
       parser (>= 3.0.1.1)
     ruby-progressbar (1.11.0)
+    ruby2_keywords (0.0.5)
+    sinatra (2.1.0)
+      mustermann (~> 1.0)
+      rack (~> 2.2)
+      rack-protection (= 2.1.0)
+      tilt (~> 2.0)
     steep (0.46.0)
       activesupport (>= 5.1)
       language_server-protocol (>= 3.15, < 4.0)
@@ -75,10 +86,12 @@ GEM
       terminal-table (>= 2, < 4)
     terminal-table (3.0.2)
       unicode-display_width (>= 1.1.1, < 3)
+    tilt (2.0.10)
     timecop (0.9.4)
     tzinfo (2.0.4)
       concurrent-ruby (~> 1.0)
-    unicode-display_width (2.1.0)
+    unicode-display_width (2.0.0)
+    webrick (1.7.0)
     zeitwerk (2.4.2)
 
 PLATFORMS
@@ -94,8 +107,10 @@ DEPENDENCIES
   rbs
   rspec
   rubocop
+  sinatra
   steep
   timecop
+  webrick
 
 BUNDLED WITH
    2.2.22

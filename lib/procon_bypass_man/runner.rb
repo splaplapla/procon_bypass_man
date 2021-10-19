@@ -1,13 +1,9 @@
 require_relative "io_monitor"
 require_relative "uptime"
+require_relative "boot_message"
 
 class ProconBypassMan::Runner
   class InterruptForRestart < StandardError; end
-
-  def initialize
-    $will_interval_0_0_0_5 = 0
-    $will_interval_1_6 = 0
-  end
 
   def run
     first_negotiation
@@ -61,13 +57,6 @@ class ProconBypassMan::Runner
   private
 
   def main_loop
-    # TODO 接続確立完了をswitchを読み取るようにして、この暫定で接続完了sleepを消す
-    Thread.new do
-      sleep(5)
-      $will_interval_0_0_0_5 = 0.005
-      $will_interval_1_6 = 1.6
-    end
-
     ProconBypassMan::IOMonitor.start!
     # gadget => procon
     # 遅くていい
@@ -75,17 +64,27 @@ class ProconBypassMan::Runner
     monitor2 = ProconBypassMan::IOMonitor.new(label: "procon -> switch")
     ProconBypassMan.logger.info "Thread1を起動します"
     t1 = Thread.new do
+      timer = ProconBypassMan::Timer.new(timeout: Time.now + 10)
       bypass = ProconBypassMan::Bypass.new(gadget: @gadget, procon: @procon, monitor: monitor1)
-      begin
-        loop do
-          break if $will_terminate_token
-          bypass.send_gadget_to_procon!
-        rescue Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError => e
-          ProconBypassMan.logger.error "Proconが切断されました.終了処理を開始します"
-          Process.kill "TERM", Process.ppid
-        end
-        ProconBypassMan.logger.info "Thread1を終了します"
+      loop do
+        break if $will_terminate_token
+        timer.throw_if_timeout!
+        bypass.send_gadget_to_procon!
+        sleep(0.005)
+      rescue ProconBypassMan::Timer::Timeout
+        ProconBypassMan.logger.info "10秒経過したのでThread1を終了します"
+        puts "10秒経過したのでThread1を終了します"
+        break
+      rescue Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError => e
+        ProconBypassMan.logger.error "Proconが切断されました.終了処理を開始します"
+        Process.kill "TERM", Process.ppid
+      rescue Errno::ETIMEDOUT => e
+        # TODO まれにこれが発生する. 再接続したい
+        ProconBypassMan::ErrorReporter.report(body: e)
+        ProconBypassMan.logger.error "Switchとの切断されました.終了処理を開始します"
+        Process.kill "TERM", Process.ppid
       end
+      ProconBypassMan.logger.info "Thread1を終了します"
     end
 
     # procon => gadget
@@ -93,19 +92,17 @@ class ProconBypassMan::Runner
     ProconBypassMan.logger.info "Thread2を起動します"
     t2 = Thread.new do
       bypass = ProconBypassMan::Bypass.new(gadget: @gadget, procon: @procon, monitor: monitor2)
-      begin
-        loop do
-          break if $will_terminate_token
-          bypass.send_procon_to_gadget!
-        rescue EOFError => e
-          ProconBypassMan.logger.error "Proconと通信ができませんでした.終了処理を開始します"
-          Process.kill "TERM", Process.ppid
-        rescue Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError => e
-          ProconBypassMan.logger.error "Proconが切断されました。終了処理を開始します"
-          Process.kill "TERM", Process.ppid
-        end
-        ProconBypassMan.logger.info "Thread2を終了します"
+      loop do
+        break if $will_terminate_token
+        bypass.send_procon_to_gadget!
+      rescue EOFError => e
+        ProconBypassMan.logger.error "Proconと通信ができませんでした.終了処理を開始します"
+        Process.kill "TERM", Process.ppid
+      rescue Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError => e
+        ProconBypassMan.logger.error "Proconが切断されました。終了処理を開始します"
+        Process.kill "TERM", Process.ppid
       end
+      ProconBypassMan.logger.info "Thread2を終了します"
     end
 
     self_read, self_write = IO.pipe
@@ -155,18 +152,9 @@ class ProconBypassMan::Runner
 
   # @return [void]
   def print_booted_message
-    booted_message = <<~EOF
-      ----
-      RUBY_VERSION: #{RUBY_VERSION}
-      ProconBypassMan: #{ProconBypassMan::VERSION}
-      pid: #{$$}
-      root: #{ProconBypassMan.root}
-      pid_path: #{ProconBypassMan.pid_path}
-      setting_path: #{ProconBypassMan::Configuration.instance.setting_path}
-      uptime from boot: #{ProconBypassMan::Uptime.from_boot} sec
-      ----
-    EOF
-    ProconBypassMan.logger.info(booted_message)
-    puts booted_message
+    message = ProconBypassMan::BootMessage.new
+    ProconBypassMan.logger.info(message.to_s)
+    Thread.new { ProconBypassMan::Reporter.report(body: message.to_hash) }
+    puts message.to_s
   end
 end

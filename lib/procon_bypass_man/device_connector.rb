@@ -12,23 +12,6 @@ class ProconBypassMan::DeviceConnector
   PROCON_PATH = "/dev/hidraw0"
   PROCON2_PATH = "/dev/hidraw1"
 
-  # 画面で再接続ができたが状況は変わらない
-  def self.reset_connection!
-    s = new
-    s.add([
-      ["0000"],
-      ["0000"],
-      ["8005"],
-      ["0000"],
-      ["8001"],
-    ], read_from: :switch)
-    s.drain_all
-    s.read_procon
-    s.write_switch("213c910080005db7723d48720a800300000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000")
-    sleep(10) # いらないかも
-    s
-  end
-
   def self.connect
     s = new(throw_error_if_timeout: true, enable_at_exit: false)
     s.add([
@@ -75,7 +58,7 @@ class ProconBypassMan::DeviceConnector
         timer = ProconBypassMan::Timer.new
         begin
           timer.throw_if_timeout!
-          data = from_device(item).read_nonblock(128)
+          data = from_device(item).read_nonblock(64)
         rescue IO::EAGAINWaitReadable
           retry
         end
@@ -128,7 +111,7 @@ class ProconBypassMan::DeviceConnector
     timer = ProconBypassMan::Timer.new
     begin
       timer.throw_if_timeout!
-      data = switch.read_nonblock(128)
+      data = switch.read_nonblock(64)
       ProconBypassMan.logger.debug { " >>> #{data.unpack("H*")})" }
     rescue IO::EAGAINWaitReadable
       retry
@@ -163,7 +146,7 @@ class ProconBypassMan::DeviceConnector
     timer = ProconBypassMan::Timer.new
     begin
       timer.throw_if_timeout!
-      data = procon.read_nonblock(128)
+      data = procon.read_nonblock(64)
       ProconBypassMan.logger.error " <<< #{data.unpack("H*")})"
     rescue IO::EAGAINWaitReadable
       retry
@@ -184,7 +167,7 @@ class ProconBypassMan::DeviceConnector
     timer = ProconBypassMan::Timer.new
     begin
       timer.throw_if_timeout!
-      data = procon.read_nonblock(128)
+      data = procon.read_nonblock(64)
       ProconBypassMan.logger.debug { " <<< #{data.unpack("H*")})" }
     rescue IO::EAGAINWaitReadable
       retry
@@ -217,7 +200,7 @@ class ProconBypassMan::DeviceConnector
     timer = ProconBypassMan::Timer.new
     begin
       timer.throw_if_timeout!
-      data = switch.read_nonblock(128)
+      data = switch.read_nonblock(64)
       ProconBypassMan.logger.debug { " >>> #{data.unpack("H*")})" }
     rescue IO::EAGAINWaitReadable
       retry
@@ -281,7 +264,7 @@ class ProconBypassMan::DeviceConnector
 
     file = File.open(path, "w+")
     begin
-      file.read_nonblock(128)
+      file.read_nonblock(64)
     rescue EOFError
       file.close
       return false
@@ -303,12 +286,12 @@ class ProconBypassMan::DeviceConnector
     case
     when is_available_device?(PROCON_PATH)
       ProconBypassMan.logger.info "proconのデバイスファイルは#{PROCON_PATH}を使います"
-      @procon = File.open(PROCON_PATH, "w+")
-      @gadget = File.open('/dev/hidg0', "w+")
+      @procon = File.open(PROCON_PATH, "w+b")
+      @gadget = File.open('/dev/hidg0', "w+b")
     when is_available_device?(PROCON2_PATH)
       ProconBypassMan.logger.info "proconのデバイスファイルは#{PROCON2_PATH}を使います"
-      @procon = File.open(PROCON2_PATH, "w+")
-      @gadget = File.open('/dev/hidg0', "w+")
+      @procon = File.open(PROCON2_PATH, "w+b")
+      @gadget = File.open('/dev/hidg0', "w+b")
     else
       raise "/dev/hidraw0, /dev/hidraw1の両方見つかりませんでした"
     end

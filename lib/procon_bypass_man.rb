@@ -3,6 +3,7 @@ require 'yaml'
 require "fileutils"
 
 require_relative "procon_bypass_man/version"
+require_relative "procon_bypass_man/analog_stick_position"
 require_relative "procon_bypass_man/timer"
 require_relative "procon_bypass_man/bypass"
 require_relative "procon_bypass_man/device_connector"
@@ -10,11 +11,16 @@ require_relative "procon_bypass_man/runner"
 require_relative "procon_bypass_man/processor"
 require_relative "procon_bypass_man/configuration"
 require_relative "procon_bypass_man/procon"
+require_relative "procon_bypass_man/procon/debug_dumper"
+require_relative "procon_bypass_man/procon/analog_stick_cap"
+require_relative "procon_bypass_man/reporter"
+require_relative "procon_bypass_man/error_reporter"
+require_relative "procon_bypass_man/on_memory_cache"
 
 STDOUT.sync = true
 Thread.abort_on_exception = true
 
-# new feature from ruby3.0's
+# new feature from ruby3.0
 if GC.respond_to?(:auto_compact)
   GC.auto_compact = true
 end
@@ -38,6 +44,8 @@ module ProconBypassMan
   end
 
   def self.run(setting_path: nil, &block)
+    ProconBypassMan.logger.info "PBMを起動しています"
+    puts "PBMを起動しています"
     configure(setting_path: setting_path, &block)
     File.write(pid_path, $$)
     Runner.new.run
@@ -63,8 +71,24 @@ module ProconBypassMan
 
   # @return [Logger]
   def self.logger
+    if ENV["PBM_ENV"] == 'test'
+      return Logger.new($stdout)
+    end
+
     if defined?(@@logger) && @@logger.is_a?(Logger)
       @@logger
+    else
+      Logger.new(nil)
+    end
+  end
+
+  def self.enable_critical_error_logging!
+    @@enable_critical_error_logging = true
+  end
+
+  def self.error_logger
+    if defined?(@@enable_critical_error_logging)
+      @@error_logger ||= Logger.new("#{ProconBypassMan.root}/error.log", 5, 1024 * 1024 * 10)
     else
       Logger.new(nil)
     end
@@ -92,6 +116,22 @@ module ProconBypassMan
 
   def self.root=(path)
     @@root = path
+  end
+
+  def self.api_server=(api_server)
+    @@api_server = api_server
+  end
+
+  def self.api_server
+    if defined?(@@api_server)
+      @@api_server
+    else
+      nil
+    end
+  end
+
+  def self.cache
+    @@cache_table ||= ProconBypassMan::OnMemoryCache.new
   end
 
   def self.digest_path
