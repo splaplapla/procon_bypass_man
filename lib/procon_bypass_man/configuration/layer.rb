@@ -114,7 +114,7 @@ module ProconBypassMan
         when Array
           # sono mama
         else
-          raise "not support class"
+          raise "unknown"
         end
         button.each do |b|
           disables[b] = true
