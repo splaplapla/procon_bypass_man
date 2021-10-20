@@ -31,6 +31,8 @@ class ProconBypassMan::Procon
     end
 
     def unpress_button(button)
+      return if not pressed_button?(button)
+
       byte_position = ButtonCollection.load(button).byte_position
       value = binary[byte_position].unpack("H*").first.to_i(16) - (2**ButtonCollection.load(button).bit_position)
       binary[byte_position] = ["%02X" % value.to_s].pack("H*")
@@ -41,6 +43,8 @@ class ProconBypassMan::Procon
     end
 
     def press_button(button)
+      return if pressed_button?(button)
+
       byte_position = ButtonCollection.load(button).byte_position
       value = binary[byte_position].unpack("H*").first.to_i(16) + (2**ButtonCollection.load(button).bit_position)
       binary[byte_position] = ["%02X" % value.to_s].pack("H*")
