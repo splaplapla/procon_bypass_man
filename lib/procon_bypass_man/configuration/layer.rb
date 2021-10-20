@@ -108,9 +108,9 @@ module ProconBypassMan
         when TrueClass, FalseClass, NilClass
           raise "not support class"
         when Symbol
-          disables.push button
+          disables << button
         when String
-          disables.push button.to_sym
+          disables << button.to_sym
         when Array
           button.each { |b| disables << b }
         else
