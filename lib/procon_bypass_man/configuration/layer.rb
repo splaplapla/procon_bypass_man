@@ -9,7 +9,7 @@ module ProconBypassMan
         self.macros = {}
         self.remaps = {}
         self.left_analog_stick_caps = {}
-        self.disables = {}
+        self.disables = []
         instance_eval(&block) if block_given?
       end
 
@@ -108,16 +108,13 @@ module ProconBypassMan
         when TrueClass, FalseClass, NilClass
           raise "not support class"
         when Symbol
-          button = [button]
+          disables.push button
         when String
-          button = [button.to_sym]
+          disables.push button.to_sym
         when Array
-          # sono mama
+          button.each { |b| disables << b }
         else
           raise "unknown"
-        end
-        button.each do |b|
-          disables[b] = true
         end
       end
 

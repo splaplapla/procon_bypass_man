@@ -95,10 +95,14 @@ class ProconBypassMan::Procon
       return user_operation.binary
     end
 
+    current_layer.disables.each do |button|
+      user_operation.unpress_button(button) if user_operation.pressed_button?(button)
+    end
+
     current_layer.left_analog_stick_caps.each do |button, options|
       if button.nil? || button.all? { |b| user_operation.pressed_button?(b) }
         options[:force_neutral]&.each do |force_neutral_button|
-          user_operation.pressed_button?(force_neutral_button) && user_operation.unpress_button(force_neutral_button)
+          user_operation.unpress_button(force_neutral_button) if user_operation.pressed_button?(force_neutral_button)
         end
         user_operation.apply_left_analog_stick_cap(cap: options[:cap])
       end
@@ -118,7 +122,7 @@ class ProconBypassMan::Procon
         end
 
         options[:force_neutral]&.each do |force_neutral_button|
-          user_operation.pressed_button?(force_neutral_button) && user_operation.unpress_button(force_neutral_button)
+          user_operation.unpress_button(force_neutral_button) if user_operation.pressed_button?(force_neutral_button)
         end
       end
     end

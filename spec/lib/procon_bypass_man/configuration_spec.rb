@@ -360,7 +360,7 @@ describe ProconBypassMan::Configuration do
             disable [:b]
           end
         end
-        expect(ProconBypassMan::Configuration.instance.layers[:up].disables).to eq({ a: true, b: true, l: true })
+        expect(ProconBypassMan::Configuration.instance.layers[:up].disables.sort).to eq([:a, :b, :l].sort)
       end
     end
 

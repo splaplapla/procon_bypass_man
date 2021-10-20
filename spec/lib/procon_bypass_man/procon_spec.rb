@@ -7,6 +7,26 @@ describe ProconBypassMan::Procon do
     ProconBypassMan.reset!
   end
 
+  context 'with disable' do
+    let(:pressed_y_and_b) { "30778105800099277344e86b0a7909f4f5a8f4b500c5ff8dff6c09cdf5b8f49a00c5ff92ff6a0979f5eef46500d5ff9bff000000000000000000000000000000" }
+    let(:data) { pressed_y_and_b }
+    it do
+      ProconBypassMan.configure do
+        prefix_keys_for_changing_layer [:zr]
+        layer :up do
+          disable [:y]
+        end
+      end
+      procon = ProconBypassMan::Procon.new(binary)
+      expect(procon.user_operation.pressed_y?).to eq(true)
+      expect(procon.user_operation.pressed_b?).to eq(true)
+
+      procon = ProconBypassMan::Procon.new(procon.to_binary)
+      expect(procon.user_operation.pressed_y?).to eq(false)
+      expect(procon.user_operation.pressed_b?).to eq(true)
+    end
+  end
+
   context 'with left_analog_stick_caps' do
     let(:data) { "30f28100800078c77448287509550274ff131029001b0022005a0271ff191028001e00210064027cff1410280020002100000000000000000000000000000000" } # no_action
     it do
