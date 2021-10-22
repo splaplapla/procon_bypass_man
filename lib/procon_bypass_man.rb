@@ -20,11 +20,6 @@ require_relative "procon_bypass_man/on_memory_cache"
 STDOUT.sync = true
 Thread.abort_on_exception = true
 
-# new feature from ruby3.0
-if GC.respond_to?(:auto_compact)
-  GC.auto_compact = true
-end
-
 module ProconBypassMan
   class ProConRejected < StandardError; end
   class CouldNotLoadConfigError < StandardError; end
