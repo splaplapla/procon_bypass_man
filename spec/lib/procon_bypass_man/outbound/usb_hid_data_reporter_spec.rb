@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe ProconBypassMan::Reporter do
+describe ProconBypassMan::UsbHidDataReporter do
   describe '.report' do
     it do
       http_response = double(:http_response).as_null_object

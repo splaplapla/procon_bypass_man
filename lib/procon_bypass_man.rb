@@ -12,18 +12,22 @@ require_relative "procon_bypass_man/bypass"
 require_relative "procon_bypass_man/device_connector"
 require_relative "procon_bypass_man/runner"
 require_relative "procon_bypass_man/processor"
+require_relative "procon_bypass_man/configuration"
 require_relative "procon_bypass_man/buttons_setting_configuration"
 require_relative "procon_bypass_man/procon"
 require_relative "procon_bypass_man/procon/debug_dumper"
 require_relative "procon_bypass_man/procon/analog_stick_cap"
 require_relative "procon_bypass_man/outbound/reporter"
 require_relative "procon_bypass_man/outbound/error_reporter"
+require_relative "procon_bypass_man/outbound/usb_hid_data_reporter"
 require_relative "procon_bypass_man/on_memory_cache"
 
 STDOUT.sync = true
 Thread.abort_on_exception = true
 
 module ProconBypassMan
+  extend ProconBypassMan::Configuration::ClassAttributes
+
   class ProConRejected < StandardError; end
   class CouldNotLoadConfigError < StandardError; end
   class FirstConnectionError < StandardError; end
@@ -63,37 +67,14 @@ module ProconBypassMan
     retry
   end
 
-  def self.logger=(logger)
-    @@logger = logger
+  def self.configure(&block)
+    @@configuration = ProconBypassMan::Configuration.new
+    @@configuration.instance_eval(&block)
+    @@configuration
   end
 
-  # @return [Logger]
-  def self.logger
-    if ENV["PBM_ENV"] == 'test'
-      return Logger.new($stdout)
-    end
-
-    if defined?(@@logger) && @@logger.is_a?(Logger)
-      @@logger
-    else
-      Logger.new(nil)
-    end
-  end
-
-  def self.enable_critical_error_logging!
-    @@enable_critical_error_logging = true
-  end
-
-  def self.error_logger
-    if defined?(@@enable_critical_error_logging)
-      @@error_logger ||= Logger.new("#{ProconBypassMan.root}/error.log", 5, 1024 * 1024 * 10)
-    else
-      Logger.new(nil)
-    end
-  end
-
-  def self.pid_path
-    @@pid_path ||= File.expand_path("#{root}/pbm_pid", __dir__).freeze
+  def self.config
+    @@configuration ||= ProconBypassMan::Configuration.new
   end
 
   def self.reset!
@@ -102,49 +83,5 @@ module ProconBypassMan
     ProconBypassMan::Procon.reset!
     ProconBypassMan::ButtonsSettingConfiguration.instance.reset!
     ProconBypassMan::IOMonitor.reset!
-  end
-
-  def self.root
-    if defined?(@@root)
-      @@root
-    else
-      File.expand_path('..', __dir__).freeze
-    end
-  end
-
-  def self.root=(path)
-    @@root = path
-  end
-
-  def self.api_server=(api_server)
-    @@api_server = api_server
-  end
-
-  def self.api_server
-    if defined?(@@api_server)
-      @@api_server
-    else
-      nil
-    end
-  end
-
-  # @return [String] pbm-webの接続先
-  def self.internal_api_servers
-    if !!ENV["INTERNAL_API_SERVER"]
-      [ENV["INTERNAL_API_SERVER"]]
-    else
-      [ ENV["INTERNAL_API_SERVER"],
-        'http://localhost:9090',
-        'http://localhost:8080',
-      ].compact
-    end
-  end
-
-  def self.cache
-    @@cache_table ||= ProconBypassMan::OnMemoryCache.new
-  end
-
-  def self.digest_path
-    "#{root}/.setting_yaml_digest"
   end
 end

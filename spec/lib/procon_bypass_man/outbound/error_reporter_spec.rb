@@ -4,17 +4,21 @@ describe ProconBypassMan::ErrorReporter do
   describe '.report' do
     context 'ProconBypassMan.api_serverが設定されていない時' do
       before do
-        ProconBypassMan.api_server = nil
+        ProconBypassMan.configure do |config|
+          config.api_server = nil
+        end
       end
       it do
-        expect(ProconBypassMan.api_server).to be_nil
+        expect(ProconBypassMan.config.api_server).to be_nil
         expect { described_class.report(body: RuntimeError.new) }.not_to raise_error
       end
     end
 
     context 'ProconBypassMan.api_serverが設定しているとき' do
       before do
-        ProconBypassMan.api_server = "http://localhost:3000"
+        ProconBypassMan.configure do |config|
+          config.api_server = "http://localhost:3000"
+        end
       end
       it do
         http_response = double(:http_response).as_null_object

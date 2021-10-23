@@ -9,12 +9,12 @@ gemfile do
   gem 'procon_bypass_man-splatoon2', github: 'splaplapla/procon_bypass_man-splatoon2', tag: "0.1.1"
 end
 
-ProconBypassMan.tap do |pbm|
-  pbm.root = File.expand_path(__dir__)
-  pbm.logger = Logger.new("#{ProconBypassMan.root}/app.log", 5, 1024 * 1024 * 10)
-  pbm.logger.level = :debug
+ProconBypassMan.configure do |config|
+  config.root = File.expand_path(__dir__)
+  config.logger = Logger.new("#{ProconBypassMan.root}/app.log", 5, 1024 * 1024 * 10)
+  config.logger.level = :debug
   # pbm.api_server = 'https://...'
-  pbm.enable_critical_error_logging!
+  config.enable_critical_error_logging!
 end
 
 ProconBypassMan.run(setting_path: "/usr/share/pbm/current/setting.yml")

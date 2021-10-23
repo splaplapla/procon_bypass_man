@@ -4,9 +4,13 @@ describe ProconBypassMan::DeviceConnector do
   subject(:s) { described_class.new(throw_error_if_mismatch: true) }
 
   around do |example|
-    ProconBypassMan.logger = Logger.new(STDOUT)
+    ProconBypassMan.configure do |config|
+      config.logger = Logger.new(STDOUT)
+    end
     example.run
-    ProconBypassMan.logger = Logger.new(nil)
+    ProconBypassMan.configure do |config|
+      config.logger = Logger.new(nil)
+    end
   end
 
   let(:switch) do

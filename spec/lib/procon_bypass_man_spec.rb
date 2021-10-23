@@ -15,24 +15,35 @@ describe ProconBypassMan do
 
   describe 'internal_api_servers' do
     it do
-      expect(described_class.internal_api_servers).to be_a(Array)
+      expect(described_class.config.internal_api_servers).to be_a(Array)
     end
   end
 
   describe 'class methods' do
-    [ :logger=,
-      :logger,
-      :enable_critical_error_logging!,
+    [ :logger,
       :error_logger,
       :pid_path,
+      :root,
+      :digest_path,
+    ].each do |me|
+      it "has #{me} method" do
+        expect(described_class.respond_to?(me)).to eq(true)
+      end
+    end
+  end
+
+  describe '.configで公開しているメソッド' do
+    [ :logger=,
+      :logger,
+      :error_logger,
       :root,
       :root=,
       :api_server=,
       :api_server,
       :digest_path,
     ].each do |me|
-      it "has #{me} method" do
-        expect(described_class.respond_to?(me)).to eq(true)
+      it "has config.#{me} method" do
+        expect(described_class.config.respond_to?(me)).to eq(true)
       end
     end
   end
