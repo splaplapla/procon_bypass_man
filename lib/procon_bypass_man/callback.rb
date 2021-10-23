@@ -2,9 +2,10 @@ module ProconBypassMan
   module Callbacks
     class CallbacksChain
       attr_accessor :filter, :chain_method
-      def initialize(filter: , chain_method: )
+      def initialize(filter: , chain_method: , block: )
         @filter = filter
         @chain_method = chain_method
+        @block = block
       end
     end
 
@@ -32,6 +33,7 @@ module ProconBypassMan
         ProconBypassMan::Callbacks::M.__callbacks[kind] = CallbacksChain.new(
           filter: filter,
           chain_method: chain_method,
+          block: block,
         )
       end
     end
@@ -39,24 +41,24 @@ module ProconBypassMan
     # TODO haltしたらcallbackを止める
     # TODO 複数をチェインできるようにする
     def run_callbacks(kind, &block)
-      chain = ProconBypassMan::Callbacks::M.__callbacks[kind] or raise("unknown callback")
+      chain = get_callbacks(kind) or raise("unknown callback")
       case chain.filter
       when :before
-        send ProconBypassMan::Callbacks::M.__callbacks[kind].chain_method
-        yield
+        send chain.chain_method
+        block.call
       when :after
-        yield
-        send ProconBypassMan::Callbacks::M.__callbacks[kind].chain_method
+        block.call
+        send chain.chain_method
       else
         raise("unknown filter")
       end
     end
 
-    def __run_callbacks__(name, &block)
-      puts "called"
-    end
+    # def __run_callbacks__(name, &block)
+    #   puts "called"
+    # end
 
-    def get_callbacks(name) # :nodoc:
+    def get_callbacks(kind) # :nodoc:
       ProconBypassMan::Callbacks::M.__callbacks[kind.to_sym]
     end
 
