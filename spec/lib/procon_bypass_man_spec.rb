@@ -9,7 +9,13 @@ describe ProconBypassMan do
 
   describe '.cache' do
     it do
-      expect(ProconBypassMan.cache.respond_to?(:fetch)).to eq(true)
+      expect(described_class.cache.respond_to?(:fetch)).to eq(true)
+    end
+  end
+
+  describe 'internal_api_servers' do
+    it do
+      expect(described_class.internal_api_servers).to be_a(Array)
     end
   end
 end

@@ -128,6 +128,18 @@ module ProconBypassMan
     end
   end
 
+  # @return [String] pbm-webの接続先
+  def self.internal_api_servers
+    if !!ENV["INTERNAL_API_SERVER"]
+      [ENV["INTERNAL_API_SERVER"]]
+    else
+      [ ENV["INTERNAL_API_SERVER"],
+        'http://localhost:9090',
+        'http://localhost:8080',
+      ].compact
+    end
+  end
+
   def self.cache
     @@cache_table ||= ProconBypassMan::OnMemoryCache.new
   end

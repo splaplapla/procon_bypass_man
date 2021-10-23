@@ -4,7 +4,11 @@ module ProconBypassMan
       class Client
         def initialize(path: , server: )
           @path = path
-          @server = server
+          if server.is_a?(Array)
+            @server = server.first
+          else
+            @server = server
+          end
           @hostname = `hostname`.chomp
         end
 
