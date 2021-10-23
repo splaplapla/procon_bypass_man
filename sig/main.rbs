@@ -63,7 +63,7 @@ class AnalogStickPosition
 end
 
 module ProconBypassMan
-  class Configuration
+  class ButtonsSettingConfiguration
     attr_accessor layers: untyped
 
     attr_accessor setting_path: untyped
@@ -101,7 +101,7 @@ module ProconBypassMan
 end
 
 module ProconBypassMan
-  class Configuration
+  class ButtonsSettingConfiguration
     class Layer
       attr_accessor mode: untyped
 
@@ -131,7 +131,7 @@ module ProconBypassMan
 end
 
 module ProconBypassMan
-  class Configuration
+  class ButtonsSettingConfiguration
     module Loader
       def self.load: (setting_path: untyped setting_path) -> untyped
 
@@ -141,7 +141,7 @@ module ProconBypassMan
 end
 
 module ProconBypassMan
-  class Configuration
+  class ButtonsSettingConfiguration
     class Validator
       def initialize: (untyped config) -> untyped
 
@@ -166,6 +166,46 @@ module ProconBypassMan
     end
   end
 end
+
+class ProconBypassMan::Configuration
+  module ClassAttributes
+    def root: () -> untyped
+
+    def logger: () -> untyped
+
+    def error_logger: () -> untyped
+
+    def pid_path: () -> untyped
+
+    def digest_path: () -> untyped
+
+    def cache: () -> untyped
+
+    def config: () -> untyped
+  end
+
+  attr_reader api_server: untyped
+
+  attr_accessor enable_critical_error_logging: untyped
+
+  def root=: (untyped path) -> untyped
+
+  def root: () -> untyped
+
+  def api_server=: (untyped api_server) -> untyped
+
+  def logger=: (untyped logger) -> untyped
+
+  def logger: () -> untyped
+
+  def error_logger: () -> untyped
+
+  def digest_path: () -> ::String
+
+  # @return [String] pbm-webの接続先
+  def internal_api_servers: () -> untyped
+end
+
 
 class ProconBypassMan::DeviceConnector
   class BytesMismatchError < StandardError

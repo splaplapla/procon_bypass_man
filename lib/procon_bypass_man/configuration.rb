@@ -37,7 +37,7 @@ class ProconBypassMan::Configuration
     if defined?(@root)
       @root
     else
-      File.expand_path('..', __dir__).freeze
+      File.expand_path('..', __dir__ || ".").freeze
     end
   end
 
@@ -59,7 +59,7 @@ class ProconBypassMan::Configuration
     if defined?(@logger) && @logger.is_a?(Logger)
       @logger
     else
-      Logger.new(nil)
+      Logger.new(File.open("/dev/null"))
     end
   end
 
@@ -67,7 +67,7 @@ class ProconBypassMan::Configuration
     if enable_critical_error_logging
       @@error_logger ||= Logger.new("#{ProconBypassMan.root}/error.log", 5, 1024 * 1024 * 10)
     else
-      Logger.new(nil)
+      Logger.new(File.open("/dev/null"))
     end
     self
   end
