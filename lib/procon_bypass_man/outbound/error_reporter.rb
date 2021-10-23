@@ -5,9 +5,10 @@ class ProconBypassMan::ErrorReporter < ProconBypassMan::Outbound::Base
 
   def self.report(body: )
     ProconBypassMan.logger.error(body)
-    Client.new(path: PATH).post(body: body.full_message.to_json)
-  rescue => e
-    ProconBypassMan.logger.error(e)
+    Client.new(
+      path: PATH,
+      server: ProconBypassMan.api_server,
+    ).post(body: body.full_message.to_json)
   end
 end
 

@@ -2,9 +2,9 @@ module ProconBypassMan
   module Outbound
     class Base
       class Client
-        def initialize(path: )
+        def initialize(path: , server: )
           @path = path
-          @server = ProconBypassMan.api_server
+          @server = server
           @hostname = `hostname`.chomp
         end
 
