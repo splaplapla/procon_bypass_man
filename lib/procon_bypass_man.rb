@@ -1,9 +1,11 @@
 require "logger"
 require 'yaml'
+require "json"
+require "net/http"
 require "fileutils"
 
 require_relative "procon_bypass_man/version"
-require_relative "procon_bypass_man/callback"
+require_relative "procon_bypass_man/callbacks"
 require_relative "procon_bypass_man/analog_stick_position"
 require_relative "procon_bypass_man/timer"
 require_relative "procon_bypass_man/bypass"
@@ -14,8 +16,8 @@ require_relative "procon_bypass_man/configuration"
 require_relative "procon_bypass_man/procon"
 require_relative "procon_bypass_man/procon/debug_dumper"
 require_relative "procon_bypass_man/procon/analog_stick_cap"
-require_relative "procon_bypass_man/reporter"
-require_relative "procon_bypass_man/error_reporter"
+require_relative "procon_bypass_man/outbound/reporter"
+require_relative "procon_bypass_man/outbound/error_reporter"
 require_relative "procon_bypass_man/on_memory_cache"
 
 STDOUT.sync = true
