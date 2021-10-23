@@ -18,4 +18,22 @@ describe ProconBypassMan do
       expect(described_class.internal_api_servers).to be_a(Array)
     end
   end
+
+  describe 'class methods' do
+    [ :logger=,
+      :logger,
+      :enable_critical_error_logging!,
+      :error_logger,
+      :pid_path,
+      :root,
+      :root=,
+      :api_server=,
+      :api_server,
+      :digest_path,
+    ].each do |me|
+      it "has #{me} method" do
+        expect(described_class.respond_to?(me)).to eq(true)
+      end
+    end
+  end
 end
