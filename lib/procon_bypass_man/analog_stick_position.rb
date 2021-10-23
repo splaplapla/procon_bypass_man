@@ -1,14 +1,8 @@
 class AnalogStickPosition
+  attr_accessor :x, :y
+
   def initialize(x: , y: )
     @x = x
     @y = y
-  end
-
-  def y
-    @y
-  end
-
-  def x
-    @x
   end
 end
