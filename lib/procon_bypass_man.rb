@@ -29,7 +29,7 @@ module ProconBypassMan
   class FirstConnectionError < StandardError; end
   class EternalConnectionError < StandardError; end
 
-  def self.configure(setting_path: nil, &block)
+  def self.buttons_setting_configure(setting_path: nil, &block)
     unless setting_path
       logger.warn "setting_pathが未設定です。設定ファイルのライブリロードが使えません。"
     end
@@ -44,7 +44,7 @@ module ProconBypassMan
   def self.run(setting_path: nil, &block)
     ProconBypassMan.logger.info "PBMを起動しています"
     puts "PBMを起動しています"
-    configure(setting_path: setting_path, &block)
+    buttons_setting_configure(setting_path: setting_path, &block)
     File.write(pid_path, $$)
     Runner.new.run
   rescue CouldNotLoadConfigError

@@ -330,7 +330,7 @@ describe ProconBypassMan::Configuration do
     end
   end
 
-  describe '.configure' do
+  describe '.buttons_setting_configure' do
     context 'with setting_path' do
       let(:setting_content) do
         <<~EOH
@@ -343,7 +343,7 @@ describe ProconBypassMan::Configuration do
         EOH
       end
       it do
-        ProconBypassMan.configure(setting_path: setting.path)
+        ProconBypassMan.buttons_setting_configure(setting_path: setting.path)
         expect(ProconBypassMan::Configuration.instance.prefix_keys).to eq([:zr, :r, :zl, :l])
         expect(ProconBypassMan::Configuration.instance.layers[:up].flip_buttons).to eq(zr: { if_pressed: [:zr] })
         expect(ProconBypassMan::Configuration.instance.layers[:down].flips).to eq({})
@@ -353,7 +353,7 @@ describe ProconBypassMan::Configuration do
 
     context 'with disable' do
       it do
-        ProconBypassMan.configure do
+        ProconBypassMan.buttons_setting_configure do
           install_macro_plugin(AMacroPlugin)
           layer :up do
             disable [:a, :l]
@@ -370,7 +370,7 @@ describe ProconBypassMan::Configuration do
           def self.name; :the_macro; end
           def self.steps; [:a, :b]; end
         end
-        ProconBypassMan.configure do
+        ProconBypassMan.buttons_setting_configure do
           install_macro_plugin(AMacroPlugin)
           layer :up do
             macro :the_macro, if_pressed: [:a, :y]
@@ -386,7 +386,7 @@ describe ProconBypassMan::Configuration do
           def self.name; :the_macro; end
           def self.steps; [:a, :b]; end
         end
-        ProconBypassMan.configure do
+        ProconBypassMan.buttons_setting_configure do
           install_macro_plugin(AMacroPlugin)
           layer :up do
             macro AMacroPlugin, if_pressed: [:a, :y]
@@ -404,7 +404,7 @@ describe ProconBypassMan::Configuration do
           def self.name; :foo; end
           def self.binaries; ['a']; end
         end
-        ProconBypassMan.configure do
+        ProconBypassMan.buttons_setting_configure do
           install_mode_plugin(AModePlugin)
           layer :up, mode: AModePlugin.name
         end
@@ -414,7 +414,7 @@ describe ProconBypassMan::Configuration do
 
     context 'with if_pressed' do
       it do
-        ProconBypassMan.configure do
+        ProconBypassMan.buttons_setting_configure do
           layer :up do
             flip :l, if_pressed: [:y, :b], force_neutral: :y
           end
@@ -426,7 +426,7 @@ describe ProconBypassMan::Configuration do
 
     context do
       it  'with remap' do
-        ProconBypassMan.configure do
+        ProconBypassMan.buttons_setting_configure do
           layer :up do
             remap :l, to: :zr
           end
@@ -435,7 +435,7 @@ describe ProconBypassMan::Configuration do
       end
       it  'with remap' do
         expect {
-          ProconBypassMan.configure do
+          ProconBypassMan.buttons_setting_configure do
             layer :up do
               remap :l, to: []
             end
@@ -443,7 +443,7 @@ describe ProconBypassMan::Configuration do
         }.to raise_error RuntimeError, "ボタンを渡してください"
       end
       it  'with remap' do
-        ProconBypassMan.configure do
+        ProconBypassMan.buttons_setting_configure do
           layer :up do
             remap :l, to: [:zr]
           end
@@ -458,7 +458,7 @@ describe ProconBypassMan::Configuration do
           def self.name; 'foo'; end
           def self.binaries; ['a']; end
         end
-        ProconBypassMan.configure do
+        ProconBypassMan.buttons_setting_configure do
           install_mode_plugin AModePlugin
           layer :up do
             flip :l, if_pressed: true
@@ -486,7 +486,7 @@ describe ProconBypassMan::Configuration do
 
     context 'has values' do
       it do
-        ProconBypassMan.configure do
+        ProconBypassMan.buttons_setting_configure do
           layer :up do
             flip :l
             flip :r
@@ -506,7 +506,7 @@ describe ProconBypassMan::Configuration do
 
     context '全部空' do
       it do
-        ProconBypassMan.configure do
+        ProconBypassMan.buttons_setting_configure do
           layer :up do
           end
           layer :down do
@@ -525,7 +525,7 @@ describe ProconBypassMan::Configuration do
 
     describe 'prefix_keys_for_changing_layer' do
       it do
-        ProconBypassMan.configure do
+        ProconBypassMan.buttons_setting_configure do
           prefix_keys_for_changing_layer [:zr]
         end
         expect(ProconBypassMan::Configuration.instance.prefix_keys).to eq([:zr])
@@ -534,7 +534,7 @@ describe ProconBypassMan::Configuration do
 
     context 'flip_interval' do
       it do
-        ProconBypassMan.configure do
+        ProconBypassMan.buttons_setting_configure do
           layer :up do
             flip :zr, flip_interval: "8F"
           end
@@ -549,7 +549,7 @@ describe ProconBypassMan::Configuration do
       it do
         # TODO validationとして捕捉したい
         expect {
-        ProconBypassMan.configure do
+        ProconBypassMan.buttons_setting_configure do
           prefix_keys_for_changing_layer [:zr]
           layer :up do
             flip :zr, if_pressed: [:y]
@@ -563,7 +563,7 @@ describe ProconBypassMan::Configuration do
     end
     context '同じレイヤーで1つのボタンへのflipとremapを設定をしているとき' do
       it do
-        ProconBypassMan.configure do
+        ProconBypassMan.buttons_setting_configure do
           prefix_keys_for_changing_layer [:zr]
           layer :up do
             flip :zr, if_pressed: [:y]
@@ -586,7 +586,7 @@ describe ProconBypassMan::Configuration do
           def self.name; :foo; end
           def self.binaries; ['a']; end
         end
-        ProconBypassMan.configure do
+        ProconBypassMan.buttons_setting_configure do
           prefix_keys_for_changing_layer [:zr]
           install_mode_plugin AModePlugin
           layer :up, mode: AModePlugin do
