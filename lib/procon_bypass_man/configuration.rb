@@ -61,7 +61,6 @@ class ProconBypassMan::Configuration
     else
       Logger.new(nil)
     end
-    self
   end
 
   def error_logger

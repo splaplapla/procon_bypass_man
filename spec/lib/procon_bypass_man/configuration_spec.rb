@@ -12,6 +12,7 @@ describe ProconBypassMan::Configuration do
 
       expect(ProconBypassMan.config.enable_critical_error_logging).to eq(true)
       expect(ProconBypassMan.config.root).to eq("/tmp")
+      expect(ProconBypassMan.logger).to be_a(Logger)
     end
   end
 end
