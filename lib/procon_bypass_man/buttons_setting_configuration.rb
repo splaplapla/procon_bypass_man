@@ -3,7 +3,7 @@ require "procon_bypass_man/configuration/loader"
 require "procon_bypass_man/configuration/layer"
 
 module ProconBypassMan
-  class Configuration
+  class ButtonsSettingConfiguration
     attr_accessor :layers,
       :setting_path,
       :mode_plugins,

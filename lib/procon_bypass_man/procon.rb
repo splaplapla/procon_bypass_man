@@ -31,7 +31,7 @@ class ProconBypassMan::Procon
   def current_layer_key; @@status[:current_layer_key]; end
 
   def current_layer
-    ProconBypassMan::Configuration.instance.layers[current_layer_key]
+    ProconBypassMan::ButtonsSettingConfiguration.instance.layers[current_layer_key]
   end
 
   def apply!

@@ -35,7 +35,7 @@ class ProconBypassMan::Runner
         Process.wait
         ProconBypassMan.logger.info("Reloading config file")
         begin
-          ProconBypassMan::Configuration::Loader.reload_setting
+          ProconBypassMan::ButtonsSettingConfiguration::Loader.reload_setting
           puts "設定ファイルの再読み込みができました"
         rescue ProconBypassMan::CouldNotLoadConfigError
           ProconBypassMan.logger.error "設定ファイルが不正です。再読み込みができませんでした"

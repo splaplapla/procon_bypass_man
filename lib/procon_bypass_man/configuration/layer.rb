@@ -1,5 +1,5 @@
 module ProconBypassMan
-  class Configuration
+  class ButtonsSettingConfiguration
     class Layer
       attr_accessor :mode, :flips, :macros, :remaps, :left_analog_stick_caps, :disables
 

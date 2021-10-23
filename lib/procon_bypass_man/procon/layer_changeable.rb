@@ -16,10 +16,10 @@ module ProconBypassMan::Procon::LayerChangeable
   end
 
   def change_layer?
-    if ProconBypassMan::Configuration.instance.prefix_keys.empty?
+    if ProconBypassMan::ButtonsSettingConfiguration.instance.prefix_keys.empty?
       raise "prefix_keysが未設定です"
     end
-    ProconBypassMan::Configuration.instance.prefix_keys.map { |b| pressed_button?(b) }.all?
+    ProconBypassMan::ButtonsSettingConfiguration.instance.prefix_keys.map { |b| pressed_button?(b) }.all?
   end
 
   def pressed_next_layer?

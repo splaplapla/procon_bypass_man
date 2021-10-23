@@ -1,5 +1,5 @@
 module ProconBypassMan
-  class Configuration
+  class ButtonsSettingConfiguration
     class Validator
       def initialize(config)
         @layers = config.layers

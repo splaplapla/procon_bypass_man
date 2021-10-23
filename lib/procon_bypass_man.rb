@@ -12,7 +12,7 @@ require_relative "procon_bypass_man/bypass"
 require_relative "procon_bypass_man/device_connector"
 require_relative "procon_bypass_man/runner"
 require_relative "procon_bypass_man/processor"
-require_relative "procon_bypass_man/configuration"
+require_relative "procon_bypass_man/buttons_setting_configuration"
 require_relative "procon_bypass_man/procon"
 require_relative "procon_bypass_man/procon/debug_dumper"
 require_relative "procon_bypass_man/procon/analog_stick_cap"
@@ -35,9 +35,9 @@ module ProconBypassMan
     end
 
     if block_given?
-      ProconBypassMan::Configuration.instance.instance_eval(&block)
+      ProconBypassMan::ButtonsSettingConfiguration.instance.instance_eval(&block)
     else
-      ProconBypassMan::Configuration::Loader.load(setting_path: setting_path)
+      ProconBypassMan::ButtonsSettingConfiguration::Loader.load(setting_path: setting_path)
     end
   end
 
@@ -100,7 +100,7 @@ module ProconBypassMan
     ProconBypassMan::Procon::MacroRegistry.reset!
     ProconBypassMan::Procon::ModeRegistry.reset!
     ProconBypassMan::Procon.reset!
-    ProconBypassMan::Configuration.instance.reset!
+    ProconBypassMan::ButtonsSettingConfiguration.instance.reset!
     ProconBypassMan::IOMonitor.reset!
   end
 
