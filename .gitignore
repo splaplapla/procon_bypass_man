@@ -8,3 +8,7 @@
 /tmp/
 vendor
 todo.local.md
+*.log
+.setting_yaml_digest
+pbm_pid
+setting.yml

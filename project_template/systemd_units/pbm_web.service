@@ -1,0 +1,11 @@
+[Unit]
+Description=PBM WEB
+
+[Service]
+Type=simple
+WorkingDirectory=/home/pi/src/procon_bypass_man_sample
+ExecStart=/bin/bash -c "/home/pi/.rbenv/versions/3.0.1/bin/ruby /usr/share/pbm/current/web.rb"
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

@@ -31,7 +31,7 @@ class ProconBypassMan::Procon
   def current_layer_key; @@status[:current_layer_key]; end
 
   def current_layer
-    ProconBypassMan::Configuration.instance.layers[current_layer_key]
+    ProconBypassMan::ButtonsSettingConfiguration.instance.layers[current_layer_key]
   end
 
   def apply!
@@ -95,10 +95,14 @@ class ProconBypassMan::Procon
       return user_operation.binary
     end
 
+    current_layer.disables.each do |button|
+      user_operation.unpress_button(button)
+    end
+
     current_layer.left_analog_stick_caps.each do |button, options|
       if button.nil? || button.all? { |b| user_operation.pressed_button?(b) }
         options[:force_neutral]&.each do |force_neutral_button|
-          user_operation.pressed_button?(force_neutral_button) && user_operation.unpress_button(force_neutral_button)
+          user_operation.unpress_button(force_neutral_button)
         end
         user_operation.apply_left_analog_stick_cap(cap: options[:cap])
       end
@@ -107,7 +111,7 @@ class ProconBypassMan::Procon
     current_layer.flip_buttons.each do |button, options|
       # 何もしないで常に連打
       if !options[:if_pressed] && status[button]
-        user_operation.press_button(button) unless user_operation.pressed_button?(button)
+        user_operation.press_button(button)
         next
       end
 
@@ -118,7 +122,7 @@ class ProconBypassMan::Procon
         end
 
         options[:force_neutral]&.each do |force_neutral_button|
-          user_operation.pressed_button?(force_neutral_button) && user_operation.unpress_button(force_neutral_button)
+          user_operation.unpress_button(force_neutral_button)
         end
       end
     end
@@ -128,7 +132,7 @@ class ProconBypassMan::Procon
         user_operation.unpress_button(from_button)
         # TODO 2重でpressしないようにしたい
         to_buttons[:to].each do |to_button|
-          user_operation.press_button(to_button) unless user_operation.pressed_button?(to_button)
+          user_operation.press_button(to_button)
         end
       end
     end

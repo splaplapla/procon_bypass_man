@@ -3,6 +3,7 @@ https://github.com/splaplapla/pbmenv で使っているファイルです
 
 ## systemd
 * sudo ln -s /usr/share/pbm/current/systemd_units/pbm.service /etc/systemd/system/pbm.service
+* sudo ln -s /usr/share/pbm/current/systemd_units/pbm_web.service /etc/systemd/system/pbm_web.service
 * commands
   * systemctl daemon-reload
   * systemctl enable pbm.service
@@ -14,4 +15,3 @@ https://github.com/splaplapla/pbmenv で使っているファイルです
 
 ### ログ
 * journalctl -xe -f
-

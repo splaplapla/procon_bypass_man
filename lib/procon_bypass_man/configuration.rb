@@ -1,100 +1,90 @@
-require "procon_bypass_man/configuration/validator"
-require "procon_bypass_man/configuration/loader"
-require "procon_bypass_man/configuration/layer"
-
-module ProconBypassMan
-  class Configuration
-    attr_accessor :layers,
-      :setting_path,
-      :mode_plugins,
-      :macro_plugins,
-      :context,
-      :current_context_key,
-      :neutral_position
-
-    def self.instance
-      @@current_context_key ||= :main
-      @@context ||= {}
-      @@context[@@current_context_key] ||= new
+class ProconBypassMan::Configuration
+  module ClassAttributes
+    def root
+      config.root
     end
 
-    def self.switch_new_context(key)
-      @@context[key] = new
-      previous_key = @@current_context_key
-      if block_given?
-        @@current_context_key = key
-        value = yield(@@context[key])
-        @@current_context_key = previous_key
-        return value
-      else
-        @@current_context_key = key
-      end
+    def logger
+      config.logger
     end
 
-    def initialize
-      reset!
+    def error_logger
+      config.error_logger
     end
 
-    module ManualMode
-      def self.name
-        'manual'
-      end
-    end
-    MODES = [:manual]
-    def layer(direction, mode: ManualMode, &block)
-      mode_name = case mode
-                  when String
-                    mode.to_sym
-                  when Symbol
-                    mode
-                  else
-                    mode.name.to_sym
-                  end
-      unless (MODES + ProconBypassMan::Procon::ModeRegistry.plugins.keys).include?(mode_name)
-        raise("#{mode_name} mode is unknown")
-      end
-
-      layer = Layer.new(mode: mode_name)
-      layer.instance_eval(&block) if block_given?
-      self.layers[direction] = layer
-      self
+    def pid_path
+      @@pid_path ||= File.expand_path("#{root}/pbm_pid", __dir__).freeze
     end
 
-    def install_mode_plugin(klass)
-      ProconBypassMan::Procon::ModeRegistry.install_plugin(klass)
-      self
+    def digest_path
+      config.digest_path
     end
 
-    def install_macro_plugin(klass)
-      ProconBypassMan::Procon::MacroRegistry.install_plugin(klass)
-      self
+    def cache
+      @@cache_table ||= ProconBypassMan::OnMemoryCache.new
+    end
+  end
+
+  attr_reader :api_server
+  attr_accessor :enable_critical_error_logging
+
+  def root=(path)
+    @root = path
+    return self
+  end
+
+  def root
+    if defined?(@root)
+      @root
+    else
+      File.expand_path('..', __dir__ || ".").freeze
+    end
+  end
+
+  def api_server=(api_server)
+    @api_server = api_server
+    return self
+  end
+
+  def logger=(logger)
+    @logger = logger
+    return self
+  end
+
+  def logger
+    if ENV["PBM_ENV"] == 'test'
+      return Logger.new($stdout)
     end
 
-    def prefix_keys_for_changing_layer(buttons)
-      @prefix_keys_for_changing_layer = buttons
-      self
+    if defined?(@logger) && @logger.is_a?(Logger)
+      @logger
+    else
+      Logger.new(File.open("/dev/null"))
     end
+  end
 
-    def set_neutral_position(x, y)
-      self.neutral_position = AnalogStickPosition.new(x: x, y: y)
-      self
+  def error_logger
+    if enable_critical_error_logging
+      @@error_logger ||= Logger.new("#{ProconBypassMan.root}/error.log", 5, 1024 * 1024 * 10)
+    else
+      Logger.new(File.open("/dev/null"))
     end
+    self
+  end
 
-    def prefix_keys
-      @prefix_keys_for_changing_layer
-    end
+  def digest_path
+    "#{root}/.setting_yaml_digest"
+  end
 
-    def reset!
-      @prefix_keys_for_changing_layer = []
-      self.mode_plugins = {}
-      self.macro_plugins = {}
-      self.layers = {
-        up: Layer.new,
-        down: Layer.new,
-        left: Layer.new,
-        right: Layer.new,
-      }
-      @neutral_position = AnalogStickPosition.new(x: 2124, y: 1808)
+  # @return [String] pbm-webの接続先
+  def internal_api_servers
+    if !!ENV["INTERNAL_API_SERVER"]
+      [ENV["INTERNAL_API_SERVER"]]
+    else
+      [ ENV["INTERNAL_API_SERVER"],
+        'http://localhost:9090',
+        'http://localhost:8080',
+      ].compact
     end
   end
 end

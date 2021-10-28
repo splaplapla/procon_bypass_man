@@ -22,3 +22,5 @@ Lint/UselessAssignment:
     Enabled: false
 Lint/EmptyBlock:
     Enabled: false
+Lint/ReturnInVoidContext:
+    Enabled: false

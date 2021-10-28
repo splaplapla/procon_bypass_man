@@ -35,11 +35,11 @@ class ProconBypassMan::Procon::ModeRegistry
   end
 
   def self.reset!
-    ProconBypassMan::Configuration.instance.mode_plugins = {}
+    ProconBypassMan::ButtonsSettingConfiguration.instance.mode_plugins = {}
   end
 
   def self.plugins
-    ProconBypassMan::Configuration.instance.mode_plugins
+    ProconBypassMan::ButtonsSettingConfiguration.instance.mode_plugins
   end
 
   reset!

@@ -6,7 +6,7 @@ class ProconBypassMan::BootMessage
     @table[:pid] = $$
     @table[:root_path] = ProconBypassMan.root
     @table[:pid_path] = ProconBypassMan.pid_path
-    @table[:setting_path] = ProconBypassMan::Configuration.instance.setting_path
+    @table[:setting_path] = ProconBypassMan::ButtonsSettingConfiguration.instance.setting_path
     @table[:uptime_from_boot] = ProconBypassMan::Uptime.from_boot
 
     build_version = `git rev-parse --short HEAD`.chomp

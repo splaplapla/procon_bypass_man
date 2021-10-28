@@ -82,7 +82,7 @@ sudo kill -USR2 `cat ./pbm_pid`
   * `message = ProconBypassMan::BootMessage.new; ProconBypassMan::Reporter.report(body: message.to_hash)"`
 
 ### リリース手順
-* project_template/app.rb, lib/procon_bypass_man/version.rb のバージョンをあげる
+* project_template/web.rb, project_template/app.rb, lib/procon_bypass_man/version.rb のバージョンをあげる
 * be rake release
 
 ## License

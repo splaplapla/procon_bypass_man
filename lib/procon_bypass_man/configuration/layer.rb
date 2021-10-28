@@ -1,7 +1,7 @@
 module ProconBypassMan
-  class Configuration
+  class ButtonsSettingConfiguration
     class Layer
-      attr_accessor :mode, :flips, :macros, :remaps, :left_analog_stick_caps
+      attr_accessor :mode, :flips, :macros, :remaps, :left_analog_stick_caps, :disables
 
       def initialize(mode: :manual)
         self.mode = mode
@@ -9,6 +9,7 @@ module ProconBypassMan
         self.macros = {}
         self.remaps = {}
         self.left_analog_stick_caps = {}
+        self.disables = []
         instance_eval(&block) if block_given?
       end
 
@@ -100,6 +101,21 @@ module ProconBypassMan
         end
 
         left_analog_stick_caps[if_pressed] = hash
+      end
+
+      def disable(button)
+        case button
+        when TrueClass, FalseClass, NilClass
+          raise "not support class"
+        when Symbol
+          disables << button
+        when String
+          disables << button.to_sym
+        when Array
+          button.each { |b| disables << b }
+        else
+          raise "unknown"
+        end
       end
 
       # @return [Array]

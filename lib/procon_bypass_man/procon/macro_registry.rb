@@ -37,11 +37,11 @@ class ProconBypassMan::Procon::MacroRegistry
   end
 
   def self.reset!
-    ProconBypassMan::Configuration.instance.macro_plugins = {}
+    ProconBypassMan::ButtonsSettingConfiguration.instance.macro_plugins = {}
   end
 
   def self.plugins
-    ProconBypassMan::Configuration.instance.macro_plugins
+    ProconBypassMan::ButtonsSettingConfiguration.instance.macro_plugins
   end
 
   reset!
