@@ -59,13 +59,7 @@ Switch <-- (PBM): ZR連打
 * 設定ファイル マクロの引数に、ボタンを取れるようにする
 
 ## 開発系
-```ruby
-ProconBypassMan.tap do |pbm|
-  pbm.root = File.expand_path(__dir__)
-  pbm.logger = Logger.new("#{ProconBypassMan.root}/app.log", 5, 1024 * 1024 * 10)
-  pbm.logger.level = :debug
-end
-```
+* pbmenvで生成するapp.rbに開発用ブランチを参照してください
 
 ### プロコンとの接続を維持したまま、現在の設定ファイルをPBMに反映する
 ```shell
