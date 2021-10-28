@@ -6,7 +6,6 @@ require "fileutils"
 
 require_relative "procon_bypass_man/version"
 require_relative "procon_bypass_man/callbacks"
-require_relative "procon_bypass_man/analog_stick_position"
 require_relative "procon_bypass_man/timer"
 require_relative "procon_bypass_man/bypass"
 require_relative "procon_bypass_man/device_connector"
