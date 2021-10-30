@@ -1,7 +1,7 @@
 class ProconBypassMan::Procon
   class UserOperation
     include LayerChangeable
-    extend PushedButtonHelper::Dynamic
+    extend PressedButtonHelper::Dynamic
 
     attr_reader :binary
 

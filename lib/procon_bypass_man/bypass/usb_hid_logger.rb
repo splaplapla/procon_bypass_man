@@ -15,6 +15,14 @@ class ProconBypassMan::Bypass
 
     def log_procon_to_gadget
       ProconBypassMan.logger.debug { "<<< #{bypass_status.to_text}" }
+
+      ProconBypassMan.cache.fetch key: 'reporter', expires_in: 5 do
+        # TODO Button's hashを送る
+        ProconBypassMan::Background::Reporter.queue.push({
+          data: ProconBypassMan::ReadonlyProController.new(binary: bypass_status.binary).to_hash,
+          reporter_class: ProconBypassMan::PressedButtonsReporter
+        })
+      end
     end
   end
 end

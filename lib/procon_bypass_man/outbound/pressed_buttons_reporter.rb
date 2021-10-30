@@ -1,6 +1,6 @@
 require "procon_bypass_man/outbound/base"
 
-class ProconBypassMan::UsbHidDataReporter < ProconBypassMan::Outbound::Base
+class ProconBypassMan::PressedButtonsReporter < ProconBypassMan::Outbound::Base
   PATH = "/api/usb_hid_chunks"
 
   def self.report(body: )
