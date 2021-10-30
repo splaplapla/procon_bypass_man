@@ -11,4 +11,11 @@ describe ProconBypassMan::ReadonlyProController do
       expect(actual).to include(:y=>true, :b=>true)
     end
   end
+
+  describe '#left_analog_stick' do
+    it do
+      actual = ProconBypassMan::ReadonlyProController.new(binary: binary).left_analog_stick
+      expect(actual).to eq({:x=>-179, :y=>34})
+    end
+  end
 end

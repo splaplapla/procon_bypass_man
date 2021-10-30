@@ -3,6 +3,7 @@ class ProconBypassMan::ReadonlyProController
   def initialize(binary: )
     @binary = binary
     @user_operation = ProconBypassMan::Procon::UserOperation.new(binary.dup)
+    @analog_stick = ProconBypassMan::Procon::AnalogStick.new(binary: binary)
   end
 
   # @return [Array<Symbol>]
@@ -11,11 +12,11 @@ class ProconBypassMan::ReadonlyProController
       acc[button] = @user_operation.pressed_button?(button)
       acc
     end
-    pressed_table.select { |key, value| value }
+    pressed_table.select { |_key, value| value }
   end
 
   def left_analog_stick
-    { x: 0, y: 0 }
+    { x: @analog_stick.relative_x, y: @analog_stick.relative_y }
   end
 
   def to_hash
