@@ -7,7 +7,7 @@ module ProconBypassMan
 
       def start!
         return if defined?(@@thread)
-        @@queue = SizedQueue.new(200)
+        @@queue = Queue.new
         @@thread = Thread.new do
           while(item = @@queue.pop)
             item[:reporter_class].report(body: item[:data])
