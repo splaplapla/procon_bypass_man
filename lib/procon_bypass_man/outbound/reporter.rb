@@ -7,6 +7,6 @@ class ProconBypassMan::Reporter < ProconBypassMan::Outbound::Base
     Client.new(
       path: PATH,
       server: ProconBypassMan.config.api_server,
-    ).post(body: body.to_json)
+    ).post(body: body)
   end
 end

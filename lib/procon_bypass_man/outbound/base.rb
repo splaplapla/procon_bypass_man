@@ -24,15 +24,17 @@ module ProconBypassMan
           http.use_ssl = uri.scheme === "https"
           response = http.post(
             uri.path,
-            { report: body.to_json, hostname: @hostname }.to_json,
+            { report: body, hostname: @hostname }.to_json,
             { "Content-Type" => "application/json" },
           )
-          unless response.code == /^20/
-            ProconBypassMan.logger.error(response.body)
+          case response.code
+          when /^200/
+          else
+            ProconBypassMan.logger.error("200以外(#{response.code})が帰ってきました. #{response.body}")
           end
         rescue => e
           puts e
-          ProconBypassMan.logger.error(e)
+          ProconBypassMan.logger.error("erro: #{e}")
         end
       end
     end

@@ -70,7 +70,7 @@ sudo kill -USR2 `cat ./pbm_pid`
 * `ProconBypassMan.api_server = "http://.."` を設定すると、 `POST /api/reports` に対して起動ログを送信するようになります
 
 ### 開発環境でログの送信を確認する方法
-* `bundle exec bin/report_receive_server.rb`
+* `bundle exec bin/dev_api_server.rb`
 * `bin/console`
   * `ProconBypassMan.api_server = "http://localhost:4567"`
   * `message = ProconBypassMan::BootMessage.new; ProconBypassMan::Reporter.report(body: message.to_hash)"`

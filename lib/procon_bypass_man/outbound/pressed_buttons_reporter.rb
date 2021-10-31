@@ -7,7 +7,7 @@ class ProconBypassMan::PressedButtonsReporter < ProconBypassMan::Outbound::Base
     Client.new(
       path: PATH,
       server: ProconBypassMan.config.internal_api_servers,
-    ).post(body: body.to_json)
+    ).post(body: body)
   end
 end
 
