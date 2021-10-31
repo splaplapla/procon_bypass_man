@@ -5,7 +5,7 @@ describe ProconBypassMan::Background::Reporter do
     it do
       class Result < Struct.new(:stats); end
       reporter_class = Class.new do
-        def self.report(body: ); Result.new(true); end
+        def self.report(*); Result.new(true); end
       end
       expect {
         ProconBypassMan::Background::Reporter.push({

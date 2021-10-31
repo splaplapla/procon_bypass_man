@@ -31,8 +31,7 @@ module ProconBypassMan
           return
         end
 
-        unless @@latest_request_result[:stats]
-          @@latese_request_result[:timestamp] < (Time.now + 30)
+        if !@@latest_request_result[:stats] && @@latese_request_result[:timestamp] < (Time.now + 30)
           ProconBypassMan.logger.error('Skip report because need cooldown!!')
           return
         end
