@@ -12,7 +12,7 @@ class ProconBypassMan::ReadonlyProcon
       acc[button] = @user_operation.pressed_button?(button)
       acc
     end
-    pressed_table.select { |_key, value| value }
+    pressed_table.select { |_key, value| value }.keys
   end
 
   def left_analog_stick
@@ -21,7 +21,7 @@ class ProconBypassMan::ReadonlyProcon
 
   def to_hash
     { left_analog_stick: left_analog_stick,
-      pressed_buttons: pressed.keys,
+      pressed_buttons: pressed,
     }
   end
 end

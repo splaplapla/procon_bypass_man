@@ -8,7 +8,7 @@ describe ProconBypassMan::ReadonlyProcon do
   describe '#pressed' do
     it do
       actual = described_class.new(binary: binary).pressed
-      expect(actual).to include(:y=>true, :b=>true)
+      expect(actual).to include(:y, :b)
     end
   end
 
