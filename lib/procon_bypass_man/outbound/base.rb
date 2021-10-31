@@ -7,6 +7,7 @@ module ProconBypassMan
         def initialize(path: , server: )
           @path = path
           if server.is_a?(Array)
+            # TODO エラーが起きたらローテーションする
             @server = server.first
           else
             @server = server
