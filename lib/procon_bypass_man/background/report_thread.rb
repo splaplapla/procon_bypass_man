@@ -1,6 +1,8 @@
 module ProconBypassMan
   module Background
     class Reporter
+      MAX_QUEUE_SIZE = 100
+
       def self.start!
         new.start!
       end
@@ -24,13 +26,13 @@ module ProconBypassMan
       end
 
       def self.push(hash)
-        if queue.size > 100
+        if queue.size > MAX_QUEUE_SIZE
           ProconBypassMan.logger.error('Over queue size cap!!')
           return
         end
 
         unless @@latest_request_result[:stats]
-          @@latest_request_result[:timestamp] < (Time.now + 30)
+          @@latese_request_result[:timestamp] < (Time.now + 30)
           ProconBypassMan.logger.error('Skip report because need cooldown!!')
           return
         end
