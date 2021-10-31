@@ -8,7 +8,7 @@ class ProconBypassMan::ReadonlyProcon
 
   # @return [Array<Symbol>]
   def pressed
-    pressed_table = ::ProconBypassMan::Procon::ButtonCollection::BUTTONS_MAP.keys.reduce({}) do |acc, button|
+    pressed_table = ::ProconBypassMan::Procon::ButtonCollection::BUTTONS.reduce({}) do |acc, button|
       acc[button] = @user_operation.pressed_button?(button)
       acc
     end
