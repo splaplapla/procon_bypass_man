@@ -30,8 +30,9 @@ module ProconBypassMan
           ProconBypassMan.logger.error('Over queue size cap!!')
           return
         end
+        return if not defined?(@@latest_request_result)
 
-        if !@@latest_request_result[:stats] && @@latese_request_result[:timestamp] < (Time.now + 30)
+        if !@@latest_request_result[:stats] && @@latest_request_result[:timestamp] < (Time.now + 30)
           ProconBypassMan.logger.error('Skip report because need cooldown!!')
           return
         end
