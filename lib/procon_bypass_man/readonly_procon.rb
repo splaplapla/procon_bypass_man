@@ -26,7 +26,7 @@ class ProconBypassMan::ReadonlyProcon
   def to_hash
     { left_analog_stick: left_analog_stick,
       left_analog_stick_by_abs: left_analog_stick_by_abs,
-      pressed_buttons: pressed,
+      buttons: pressed,
     }
   end
 end
