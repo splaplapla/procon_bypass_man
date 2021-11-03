@@ -22,12 +22,17 @@ module ProconBypassMan
             return Result.new(false)
           end
 
+          unless body.is_a?(Hash)
+            body = { value: body }
+          end
+
           uri = URI.parse("#{@server}#{@path}")
           http = Net::HTTP.new(uri.host, uri.port)
           http.use_ssl = uri.scheme === "https"
+          params = { hostname: @hostname }.merge(body)
           response = http.post(
             uri.path,
-            { report: body, hostname: @hostname }.to_json,
+            params.to_json,
             { "Content-Type" => "application/json" },
           )
           case response.code
