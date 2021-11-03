@@ -14,7 +14,7 @@ ProconBypassMan.configure do |config|
   config.logger = Logger.new("#{ProconBypassMan.root}/app.log", 5, 1024 * 1024 * 10)
   config.logger.level = :debug
   # pbm.api_server = 'https://...'
-  config.enable_critical_error_logging!
+  config.enable_critical_error_logging = true
 end
 
 ProconBypassMan.run(setting_path: "/usr/share/pbm/current/setting.yml")
