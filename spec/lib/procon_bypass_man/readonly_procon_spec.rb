@@ -18,4 +18,11 @@ describe ProconBypassMan::ReadonlyProcon do
       expect(actual).to eq({:x=>-179, :y=>34})
     end
   end
+
+  describe '#left_analog_stick_by_abs' do
+    it do
+      actual = described_class.new(binary: binary).left_analog_stick_by_abs
+      expect(actual).to eq({:x=>1945, :y=>1842})
+    end
+  end
 end
