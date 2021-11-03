@@ -13,9 +13,13 @@ module ProconBypassMan
         @@queue = Queue.new
         @@thread = Thread.new do
           while(item = @@queue.pop)
-            result = item[:reporter_class].report(body: item[:data])
-            @@latest_request_result = { stats: result.stats, timestamp: Time.now }
-            sleep(1)
+            begin
+              result = item[:reporter_class].report(body: item[:data])
+              @@latest_request_result = { stats: result.stats, timestamp: Time.now }
+              sleep(1)
+            rescue => e
+              ProconBypassMan.logger.error(e)
+            end
           end
         end
       end
