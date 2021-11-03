@@ -97,6 +97,7 @@ GEM
 PLATFORMS
   arm-linux
   arm64-darwin-20
+  arm64-darwin-21
   armv7l-linux
   x86_64-linux
 
