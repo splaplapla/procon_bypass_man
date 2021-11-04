@@ -1,4 +1,4 @@
-module ProconBypassMan::Procon::PushedButtonHelper
+module ProconBypassMan::Procon::PressedButtonHelper
   module Dynamic
     @@compiled = false
     def compile_if_not_compile_yet!

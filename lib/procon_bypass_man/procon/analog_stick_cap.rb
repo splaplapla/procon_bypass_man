@@ -18,19 +18,9 @@ class ProconBypassMan::Procon::AnalogStickCap
     end
   end
 
-  attr_accessor :bin_x, :bin_y
-  attr_accessor :neutral_position
-
   def initialize(binary)
-    @neutral_position = ProconBypassMan::ButtonsSettingConfiguration.instance.neutral_position
     @binary = binary
-
-    byte6 = binary[6].unpack("H*").first.to_i(16).to_s(2).rjust(8, "0")
-    byte7 = binary[7].unpack("H*").first.to_i(16).to_s(2).rjust(8, "0")
-    byte8 = binary[8].unpack("H*").first.to_i(16).to_s(2).rjust(8, "0")
-
-    self.bin_x = "#{byte7[4..7]}#{byte6}"
-    self.bin_y = "#{byte8}#{byte7[0..3]}"
+    @analog_stick = ProconBypassMan::Procon::AnalogStick.new(binary: binary)
   end
 
   # @return [ProconBypassMan::Procon::AnalogStickCap::Position]
@@ -41,8 +31,8 @@ class ProconBypassMan::Procon::AnalogStickCap
       relative_capped_x = -(relative_capped_x.abs) if relative_x.negative?
       relative_capped_y = -(relative_capped_y.abs) if relative_y.negative?
       return Position.new(
-        x: relative_capped_x + neutral_position.x,
-        y: relative_capped_y + neutral_position.y,
+        x: relative_capped_x + @analog_stick.neutral_position.x,
+        y: relative_capped_y + @analog_stick.neutral_position.y,
       )
     else
       return position
@@ -54,23 +44,10 @@ class ProconBypassMan::Procon::AnalogStickCap
     Position.new(x: abs_x, y: abs_y)
   end
 
-  # 0, 0からのx
-  def abs_x
-    bin_x.to_i(2)
-  end
-
-  # 0, 0からのy
-  def abs_y
-    bin_y.to_i(2)
-  end
-
-  def relative_x
-    bin_x.to_i(2) - neutral_position.x
-  end
-
-  def relative_y
-    bin_y.to_i(2) - neutral_position.y
-  end
+  def abs_x; @analog_stick.abs_x; end # 0, 0からのx
+  def abs_y; @analog_stick.abs_y; end # 0, 0からのy
+  def relative_x; @analog_stick.relative_x; end
+  def relative_y; @analog_stick.relative_y; end
 
   # @deprecated
   def x; relative_x; end
@@ -78,11 +55,11 @@ class ProconBypassMan::Procon::AnalogStickCap
 
   def rad
     (
-      Math.atan(y / x.to_f) * 180 / Math::PI
+      Math.atan(relative_y / relative_x.to_f) * 180 / Math::PI
     ).floor(6)
   end
 
   def hypotenuse
-    Math.sqrt(x**2 + y**2).floor(6)
+    Math.sqrt(relative_x**2 + relative_y**2).floor(6)
   end
 end

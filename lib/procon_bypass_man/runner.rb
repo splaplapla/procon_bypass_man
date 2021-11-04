@@ -1,6 +1,7 @@
 require_relative "io_monitor"
 require_relative "uptime"
 require_relative "boot_message"
+require_relative "background/report_thread"
 
 class ProconBypassMan::Runner
   class InterruptForRestart < StandardError; end
@@ -58,6 +59,8 @@ class ProconBypassMan::Runner
 
   def main_loop
     ProconBypassMan::IOMonitor.start!
+    ProconBypassMan::Background::Reporter.start!
+
     # gadget => procon
     # 遅くていい
     monitor1 = ProconBypassMan::IOMonitor.new(label: "switch -> procon")

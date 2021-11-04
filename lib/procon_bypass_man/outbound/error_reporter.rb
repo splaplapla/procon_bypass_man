@@ -7,7 +7,7 @@ class ProconBypassMan::ErrorReporter < ProconBypassMan::Outbound::Base
     Client.new(
       path: PATH,
       server: ProconBypassMan.config.api_server,
-    ).post(body: body.full_message.to_json)
+    ).post(body: body.full_message)
   end
 end
 

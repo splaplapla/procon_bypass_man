@@ -9,3 +9,10 @@ post '/api/reports' do
   status 200
   body ''
 end
+
+post '/api/pressed_buttons' do
+  r = JSON.parse(request.body.read)
+  puts r
+  status 200
+  body ''
+end

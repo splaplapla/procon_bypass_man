@@ -423,7 +423,7 @@ class ProconBypassMan::Procon::ModeRegistry
   def self.plugins: () -> untyped
 end
 
-module ProconBypassMan::Procon::PushedButtonHelper
+module ProconBypassMan::Procon::PressedButtonHelper
   module Static
     def pressed_button?: (untyped button) -> untyped
   end
@@ -437,9 +437,9 @@ class ProconBypassMan::Procon
   class UserOperation
     include LayerChangeable
 
-    include PushedButtonHelper::Static
+    include PressedButtonHelper::Static
 
-    extend PushedButtonHelper::Dynamic
+    extend PressedButtonHelper::Dynamic
 
     attr_reader binary: untyped
 

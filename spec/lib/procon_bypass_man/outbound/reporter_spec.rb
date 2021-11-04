@@ -10,7 +10,7 @@ describe ProconBypassMan::Reporter do
       end
       it do
         expect(ProconBypassMan.config.api_server).to be_nil
-        expect { described_class.report(body: nil) }.not_to raise_error
+        expect { described_class.report(body: {}) }.not_to raise_error
       end
     end
 

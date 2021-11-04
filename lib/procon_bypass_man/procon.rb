@@ -139,7 +139,9 @@ class ProconBypassMan::Procon
 
     b = user_operation.binary
     ProconBypassMan.cache.fetch key: 'user_operation.binary', expires_in: 60 do
-      ProconBypassMan::Procon::DebugDumper.new(binary: b).dump_analog_sticks
+      left_analog_stick = ProconBypassMan::ReadonlyProcon.new(binary: b).left_analog_stick
+      ProconBypassMan.logger.debug "x: #{left_analog_stick[:x]}, val: #{left_analog_stick[:x].to_s(2)}"
+      ProconBypassMan.logger.debug "y: #{left_analog_stick[:y]}, val: #{left_analog_stick[:y].to_s(2)}"
     end
     b
   end

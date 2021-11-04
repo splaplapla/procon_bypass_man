@@ -5,7 +5,7 @@ require 'bundler/inline'
 gemfile do
   source 'https://rubygems.org'
   git_source(:github) {|repo_name| "https://github.com/#{repo_name}" }
-  gem 'procon_bypass_man-web', '0.1.2'
+  gem 'procon_bypass_man-web', '0.1.3'
 end
 
 ProconBypassMan::Web.configure do |config|

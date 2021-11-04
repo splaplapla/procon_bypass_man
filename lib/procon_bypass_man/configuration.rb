@@ -81,8 +81,7 @@ class ProconBypassMan::Configuration
     if !!ENV["INTERNAL_API_SERVER"]
       [ENV["INTERNAL_API_SERVER"]]
     else
-      [ ENV["INTERNAL_API_SERVER"],
-        'http://localhost:9090',
+      [ 'http://localhost:9090',
         'http://localhost:8080',
       ].compact
     end

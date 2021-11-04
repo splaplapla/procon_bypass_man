@@ -37,6 +37,7 @@ class ProconBypassMan::Procon::ButtonCollection
   BUTTONS_MAP = BYTES_MAP.reduce({}) { |acc, value|
     next acc if value[1].nil?
     value[1].reverse.each.with_index do |button, index|
+      next(acc) if button == :grip || button == :_undefined_key
       acc[button] = { byte_position: value[0], bit_position: index }
     end
     acc
