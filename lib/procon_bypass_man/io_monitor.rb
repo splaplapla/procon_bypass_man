@@ -24,7 +24,7 @@ module ProconBypassMan
       self
     end
 
-    def formated_previous_table
+    def formatted_previous_table
       t = previous_table.dup
       start_function = t[:start_function] || 0
       end_function = t[:end_function] || 0
@@ -58,7 +58,7 @@ module ProconBypassMan
           end
 
           line = list.map { |counter|
-            "#{counter.label}(#{counter.formated_previous_table})"
+            "#{counter.label}(#{counter.formatted_previous_table})"
           }.join(", ")
           max_output_length = line.length
           sleep 0.7
