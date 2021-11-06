@@ -1,11 +1,12 @@
 module ProconBypassMan
   class Counter
-    attr_accessor :label, :table, :previous_table
+    attr_accessor :label, :table, :previous_table, :active
 
     def initialize(label: )
       self.label = label
       self.table = {}
       self.previous_table = {}
+      self.active = true
     end
 
     # アクティブなバケットは1つだけ
@@ -32,6 +33,10 @@ module ProconBypassMan
       eagain_wait_readable_on_write = t[:eagain_wait_readable_on_write] || 0
       "(#{(end_function / start_function.to_f * 100).floor(1)}%(#{end_function}/#{start_function}), loss: #{eagain_wait_readable_on_read}, #{eagain_wait_readable_on_write})"
     end
+
+    def shutdown
+      self.active = false
+    end
   end
 
   module IOMonitor
@@ -51,7 +56,7 @@ module ProconBypassMan
       Thread.start do
         max_output_length = 0
         loop do
-          list = @@list.dup
+          list = @@list.select(&:active).dup
           unless list.all? { |x| x&.previous_table.is_a?(Hash) }
             sleep 0.5
             next
