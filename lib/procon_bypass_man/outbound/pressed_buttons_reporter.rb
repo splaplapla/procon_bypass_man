@@ -6,7 +6,7 @@ class ProconBypassMan::PressedButtonsReporter < ProconBypassMan::Outbound::Base
   def self.report(body: )
     Client.new(
       path: PATH,
-      server: ProconBypassMan.config.internal_api_servers,
+      servers: ProconBypassMan.config.internal_api_servers,
     ).post(body: body)
   end
 end

@@ -9,7 +9,7 @@ describe ProconBypassMan::Reporter do
         end
       end
       it do
-        expect(ProconBypassMan.config.api_server).to be_nil
+        expect(ProconBypassMan.config.api_servers).to be_nil
         expect { described_class.report(body: {}) }.not_to raise_error
       end
     end
@@ -17,7 +17,7 @@ describe ProconBypassMan::Reporter do
     context 'ProconBypassMan.api_serverが設定しているとき' do
       before do
         ProconBypassMan.configure do |config|
-          config.api_server = "http://localhost:3000"
+          config.api_servers = ["http://localhost:3000"]
         end
       end
       it do
