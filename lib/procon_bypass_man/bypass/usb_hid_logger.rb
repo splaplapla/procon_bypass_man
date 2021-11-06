@@ -14,7 +14,13 @@ class ProconBypassMan::Bypass
     end
 
     def log_procon_to_gadget
-      ProconBypassMan.logger.debug { "<<< #{bypass_status.to_text}" }
+      if ProconBypassMan.config.verbose_bypass_log
+        ProconBypassMan.logger.debug { "<<< #{bypass_status.to_text}" }
+      else
+        ProconBypassMan.cache.fetch key: 'bypass_log', expires_in: 1 do
+          ProconBypassMan.logger.debug { "<<< #{bypass_status.to_text}" }
+        end
+      end
 
       ProconBypassMan.cache.fetch key: 'reporter', expires_in: 5 do
         ProconBypassMan::Background::Reporter.push({

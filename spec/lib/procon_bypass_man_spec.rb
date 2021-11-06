@@ -40,6 +40,8 @@ describe ProconBypassMan do
       :root=,
       :api_server=,
       :api_server,
+      :verbose_bypass_log,
+      :verbose_bypass_log=,
       :digest_path,
     ].each do |me|
       it "has config.#{me} method" do
