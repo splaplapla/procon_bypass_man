@@ -1,6 +1,6 @@
 module ProconBypassMan
-  module Background
-    class Reporter
+  module Outbound
+    class Worker
       MAX_QUEUE_SIZE = 100
 
       def self.start!

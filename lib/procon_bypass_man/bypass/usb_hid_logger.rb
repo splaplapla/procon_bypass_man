@@ -23,7 +23,7 @@ class ProconBypassMan::Bypass
       end
 
       ProconBypassMan.cache.fetch key: 'reporter', expires_in: 5 do
-        ProconBypassMan::Background::Reporter.push({
+        ProconBypassMan::Outbound::Worker.push({
           data: ProconBypassMan::ReadonlyProcon.new(binary: bypass_status.binary).to_hash,
           reporter_class: ProconBypassMan::PressedButtonsReporter
         })

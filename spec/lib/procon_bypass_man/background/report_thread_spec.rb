@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe ProconBypassMan::Background::Reporter do
+describe ProconBypassMan::Outbound::Worker do
   describe '.push' do
     it do
       class Result < Struct.new(:stats); end
@@ -8,7 +8,7 @@ describe ProconBypassMan::Background::Reporter do
         def self.report(*); Result.new(true); end
       end
       expect {
-        ProconBypassMan::Background::Reporter.push({
+        ProconBypassMan::Outbound::Worker.push({
           reporter_class: reporter_class,
           data: {},
         })
@@ -18,10 +18,10 @@ describe ProconBypassMan::Background::Reporter do
       let(:dummy_queue) { [] }
       before do
         101.times { dummy_queue << true }
-        allow(ProconBypassMan::Background::Reporter).to receive(:queue) { dummy_queue }
+        allow(ProconBypassMan::Outbound::Worker).to receive(:queue) { dummy_queue }
       end
       it do
-        expect(ProconBypassMan::Background::Reporter.push(true)).to be_nil
+        expect(ProconBypassMan::Outbound::Worker.push(true)).to be_nil
       end
     end
   end
