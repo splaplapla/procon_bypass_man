@@ -30,6 +30,7 @@ module ProconBypassMan
         )
         case response.code
         when /^200/
+          return
         else
           @server_picker.next!
           ProconBypassMan.logger.error("200以外(#{response.code})が帰ってきました. #{response.body}")
