@@ -1,6 +1,8 @@
 require "procon_bypass_man/outbound/client"
 
 class ProconBypassMan::Reporter
+  extend ProconBypassMan::Outbound::HasServerPicker
+
   PATH = "/api/reports"
 
   def self.report(body: )
@@ -10,13 +12,7 @@ class ProconBypassMan::Reporter
     ).post(body: body)
   end
 
-  def self.server_picker
-    @@server_picker ||= ProconBypassMan::Outbound::ServersPicker.new(
-      servers: ProconBypassMan.config.api_servers
-    )
-  end
-
-  def self.reset!
-    @@server_picker = nil
+  def self.servers
+    ProconBypassMan.config.api_servers
   end
 end

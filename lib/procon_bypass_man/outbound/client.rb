@@ -1,4 +1,5 @@
 require "procon_bypass_man/outbound/servers_picker"
+require "procon_bypass_man/outbound/has_server_picker"
 
 module ProconBypassMan
   module Outbound
