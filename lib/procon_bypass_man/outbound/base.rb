@@ -1,44 +1,20 @@
+require "procon_bypass_man/outbound/servers_picker"
+
 module ProconBypassMan
   module Outbound
     class Base
       class Client
-        class ServerList
-          def initialize(servers: )
-            if servers.nil? || servers.empty?
-              return
-            end
-
-            @servers = servers
-            if @servers.size >= 1
-              @index = 0
-            else
-              @index = nil
-            end
-          end
-
-          def get_server
-            if @index.nil?
-              return @servers&.first
-            end
-            @servers[@index] || reset
-            @servers[@index]
-          end
-
-          def reset
-            @index = 0
-          end
-        end
-
         class Result < Struct.new(:stats); end
 
         def initialize(path: , servers: )
           @path = path
-          @server = ServerList.new(servers: servers).get_server
+          @server_picker = ProconBypassMan::Outbound::ServersPicker.new(servers: servers)
           @hostname = `hostname`.chomp
         end
 
         def post(body: )
-          # TODO ここでvalidationする
+          @server = @server_picker.pick
+
           if @server.nil?
             ProconBypassMan.logger.info('送信先が未設定なのでスキップしました')
             return Result.new(false)
