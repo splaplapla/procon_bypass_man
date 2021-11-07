@@ -9,6 +9,7 @@ class ProconBypassMan::Reporter
     ProconBypassMan::Outbound::Client.new(
       path: PATH,
       server_picker: server_picker,
+      retry_on_connection_error: true,
     ).post(body: body)
   end
 

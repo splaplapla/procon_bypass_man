@@ -4,10 +4,11 @@ require "procon_bypass_man/outbound/has_server_picker"
 module ProconBypassMan
   module Outbound
     class Client
-      def initialize(path: , server_picker: )
+      def initialize(path: , server_picker: , retry_on_connection_error: false)
         @path = path
         @server_picker = server_picker
         @hostname = `hostname`.chomp
+        @retry_on_connection_error = retry_on_connection_error
       end
 
       def post(body: )
@@ -36,9 +37,15 @@ module ProconBypassMan
           @server_picker.next!
           ProconBypassMan.logger.error("200以外(#{response.code})が帰ってきました. #{response.body}")
         end
+      rescue SocketError => e
+        ProconBypassMan.logger.error("error in outbound module: #{e}")
+        if @retry_on_connection_error
+          sleep(10)
+          retry
+        end
       rescue => e
         puts e
-        ProconBypassMan.logger.error("erro: #{e}")
+        ProconBypassMan.logger.error("error in outbound module: #{e}")
       end
     end
   end
