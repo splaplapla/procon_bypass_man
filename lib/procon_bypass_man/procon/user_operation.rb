@@ -51,7 +51,7 @@ class ProconBypassMan::Procon
     end
 
     def press_button_only(button)
-      [ProconBypassMan::Procon::Data::NO_ACTION.dup].pack("H*").tap do |no_action_binary|
+      [ProconBypassMan::Procon::Consts::NO_ACTION.dup].pack("H*").tap do |no_action_binary|
         ButtonCollection.load(button).byte_position
         byte_position = ButtonCollection.load(button).byte_position
         value = 2**ButtonCollection.load(button).bit_position
