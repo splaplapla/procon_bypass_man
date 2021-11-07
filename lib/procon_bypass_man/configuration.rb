@@ -25,7 +25,7 @@ class ProconBypassMan::Configuration
     end
   end
 
-  attr_reader :api_server
+  attr_reader :api_server, :api_servers
   attr_accessor :enable_critical_error_logging
 
   def root=(path)
@@ -41,8 +41,14 @@ class ProconBypassMan::Configuration
     end
   end
 
+  # @deprecated
   def api_server=(api_server)
     @api_server = api_server
+    return self
+  end
+
+  def api_servers=(api_servers)
+    @api_servers = api_servers
     return self
   end
 

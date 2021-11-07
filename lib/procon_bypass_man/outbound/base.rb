@@ -2,16 +2,38 @@ module ProconBypassMan
   module Outbound
     class Base
       class Client
+        class ServerList
+          def initialize(servers: )
+            if servers.nil? || servers.empty?
+              return
+            end
+
+            @servers = servers
+            if @servers.size >= 1
+              @index = 0
+            else
+              @index = nil
+            end
+          end
+
+          def get_server
+            if @index.nil?
+              return @servers&.first
+            end
+            @servers[@index] || reset
+            @servers[@index]
+          end
+
+          def reset
+            @index = 0
+          end
+        end
+
         class Result < Struct.new(:stats); end
 
-        def initialize(path: , server: )
+        def initialize(path: , servers: )
           @path = path
-          if server.is_a?(Array)
-            # TODO エラーが起きたらローテーションする
-            @server = server.first
-          else
-            @server = server
-          end
+          @server = ServerList.new(servers: servers).get_server
           @hostname = `hostname`.chomp
         end
 
