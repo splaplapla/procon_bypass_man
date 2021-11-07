@@ -1,10 +1,10 @@
-require "procon_bypass_man/outbound/base"
+require "procon_bypass_man/outbound/client"
 
-class ProconBypassMan::ErrorReporter < ProconBypassMan::Outbound::Base
+class ProconBypassMan::ErrorReporter
   PATH = "/api/error_reports"
 
   def self.report(body: )
-    Client.new(
+    ProconBypassMan::Outbound::Client.new(
       path: PATH,
       servers: ProconBypassMan.config.api_server,
     ).post(body: body.full_message)
