@@ -3,9 +3,9 @@ require "procon_bypass_man/outbound/servers_picker"
 module ProconBypassMan
   module Outbound
     class Client
-      def initialize(path: , servers: )
+      def initialize(path: , server_picker: )
         @path = path
-        @server_picker = ProconBypassMan::Outbound::ServersPicker.new(servers: servers)
+        @server_picker = server_picker
         @hostname = `hostname`.chomp
       end
 
