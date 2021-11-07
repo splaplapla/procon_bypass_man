@@ -18,9 +18,16 @@ module ProconBypassMan
         if @index.nil?
           return @servers&.first
         end
-        val = @servers[@index] || (reset && @servers[@index])
+        @servers[@index] or raise "bug!!!"
+      end
+      def server; pick; end
+
+      def next!
         inc_index
-        return val
+        if @servers[@index].nil?
+          reset
+          return
+        end
       end
 
       def reset

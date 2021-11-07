@@ -13,9 +13,7 @@ module ProconBypassMan
         end
 
         def post(body: )
-          @server = @server_picker.pick
-
-          if @server.nil?
+          if @server_picker.server.nil?
             ProconBypassMan.logger.info('送信先が未設定なのでスキップしました')
             return Result.new(false)
           end
@@ -24,7 +22,7 @@ module ProconBypassMan
             body = { value: body }
           end
 
-          uri = URI.parse("#{@server}#{@path}")
+          uri = URI.parse("#{@server_picker.server}#{@path}")
           http = Net::HTTP.new(uri.host, uri.port)
           http.use_ssl = uri.scheme === "https"
           params = { hostname: @hostname }.merge(body)
@@ -37,6 +35,7 @@ module ProconBypassMan
           when /^200/
             return Result.new(true)
           else
+            @server_picker.next!
             ProconBypassMan.logger.error("200以外(#{response.code})が帰ってきました. #{response.body}")
             return Result.new(false)
           end

@@ -29,7 +29,10 @@ describe ProconBypassMan::Outbound::ServersPicker do
       it 'rotate' do
         picker = described_class.new(servers: [1, 2])
         expect(picker.pick).to eq(1)
+        expect(picker.pick).to eq(1)
+        picker.next!
         expect(picker.pick).to eq(2)
+        picker.next!
         expect(picker.pick).to eq(1)
       end
     end
