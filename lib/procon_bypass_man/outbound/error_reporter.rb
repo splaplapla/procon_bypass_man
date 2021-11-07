@@ -6,7 +6,7 @@ class ProconBypassMan::ErrorReporter
   def self.report(body: )
     ProconBypassMan::Outbound::Client.new(
       path: PATH,
-      servers: ProconBypassMan.config.api_server,
+      servers: ProconBypassMan.config.api_servers,
     ).post(body: body.full_message)
   end
 end
