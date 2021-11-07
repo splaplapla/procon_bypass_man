@@ -4,8 +4,6 @@ module ProconBypassMan
   module Outbound
     class Base
       class Client
-        class Result < Struct.new(:stats); end
-
         def initialize(path: , servers: )
           @path = path
           @server_picker = ProconBypassMan::Outbound::ServersPicker.new(servers: servers)
@@ -15,7 +13,7 @@ module ProconBypassMan
         def post(body: )
           if @server_picker.server.nil?
             ProconBypassMan.logger.info('送信先が未設定なのでスキップしました')
-            return Result.new(false)
+            return
           end
 
           unless body.is_a?(Hash)
@@ -33,16 +31,13 @@ module ProconBypassMan
           )
           case response.code
           when /^200/
-            return Result.new(true)
           else
             @server_picker.next!
             ProconBypassMan.logger.error("200以外(#{response.code})が帰ってきました. #{response.body}")
-            return Result.new(false)
           end
         rescue => e
           puts e
           ProconBypassMan.logger.error("erro: #{e}")
-          Result.new(false)
         end
       end
     end
