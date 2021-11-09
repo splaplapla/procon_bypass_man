@@ -20,6 +20,7 @@ require_relative "procon_bypass_man/procon/analog_stick_cap"
 require_relative "procon_bypass_man/outbound/reporter"
 require_relative "procon_bypass_man/outbound/error_reporter"
 require_relative "procon_bypass_man/outbound/pressed_buttons_reporter"
+require_relative "procon_bypass_man/commands/print_boot_message_command"
 require_relative "procon_bypass_man/on_memory_cache"
 
 STDOUT.sync = true

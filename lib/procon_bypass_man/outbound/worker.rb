@@ -9,9 +9,8 @@ module ProconBypassMan
 
       def start!
         return if defined?(@@thread)
-        @@queue = Queue.new
         @@thread = Thread.new do
-          while(item = @@queue.pop)
+          while(item = self.class.queue.pop)
             begin
               result = item[:reporter_class].report(body: item[:data])
               sleep(1)
@@ -23,8 +22,7 @@ module ProconBypassMan
       end
 
       def self.queue
-        raise "Do not start this thread yet" unless defined?(@@queue)
-        @@queue
+        @@queue ||= Queue.new
       end
 
       def self.push(hash)
