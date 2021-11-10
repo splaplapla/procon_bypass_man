@@ -168,7 +168,7 @@ module ProconBypassMan
 end
 
 class ProconBypassMan::Configuration
-  module ClassAttributes
+  module ClassMethods
     def root: () -> untyped
 
     def logger: () -> untyped

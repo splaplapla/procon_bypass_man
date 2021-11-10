@@ -46,6 +46,7 @@ module ProconBypassMan
     end
   end
 
+  # @return [void]
   def self.run(setting_path: nil, &block)
     ProconBypassMan.logger.info "PBMを起動しています"
     puts "PBMを起動しています"
@@ -74,10 +75,12 @@ module ProconBypassMan
     @@configuration
   end
 
+  # @return [ProconBypassMan::Configuration]
   def self.config
     @@configuration ||= ProconBypassMan::Configuration.new
   end
 
+  # @return [void]
   def self.reset!
     ProconBypassMan::Procon::MacroRegistry.reset!
     ProconBypassMan::Procon::ModeRegistry.reset!
