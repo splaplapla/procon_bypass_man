@@ -23,10 +23,10 @@ class ProconBypassMan::Bypass
     input = nil
     self.bypass_status = BypassStatus.new(input, sent = false)
 
-    run_callbacks :send_gadget_to_procon do
+    run_callbacks(:send_gadget_to_procon) do
       begin
-        return if $will_terminate_token
-        # TODO blocking readにしたいが、接続時のフェーズによって長さが違宇野で厳しい
+        break if $will_terminate_token
+        # TODO blocking readにしたいが、接続時のフェーズによって長さが違うので厳しい
         input = self.gadget.read_nonblock(64)
         self.bypass_status.binary = input
       rescue IO::EAGAINWaitReadable
@@ -40,7 +40,7 @@ class ProconBypassMan::Bypass
         self.bypass_status.sent = true
       rescue IO::EAGAINWaitReadable
         monitor.record(:eagain_wait_readable_on_write)
-        return
+        break
       end
     end
 
@@ -54,7 +54,7 @@ class ProconBypassMan::Bypass
 
     run_callbacks(:send_procon_to_gadget) do
       begin
-        return if $will_terminate_token
+        break if $will_terminate_token
         Timeout.timeout(1) do
           output = self.procon.read(64)
           self.bypass_status.binary = output
@@ -76,7 +76,7 @@ class ProconBypassMan::Bypass
         self.bypass_status.sent = true
       rescue IO::EAGAINWaitReadable
         monitor.record(:eagain_wait_readable_on_write)
-        return
+        break
       end
     end
     monitor.record(:end_function)
