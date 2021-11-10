@@ -427,10 +427,6 @@ module ProconBypassMan::Procon::PressedButtonHelper
   module Static
     def pressed_button?: (untyped button) -> untyped
   end
-
-  module Dynamic
-    def compile_if_not_compile_yet!: () -> untyped
-  end
 end
 
 class ProconBypassMan::Procon
@@ -438,8 +434,6 @@ class ProconBypassMan::Procon
     include LayerChangeable
 
     include PressedButtonHelper::Static
-
-    extend PressedButtonHelper::Dynamic
 
     attr_reader binary: untyped
 

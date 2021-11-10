@@ -4,7 +4,6 @@ class ProconBypassMan::Procon
   require "procon_bypass_man/procon/macro_registry"
   require "procon_bypass_man/procon/layer_changeable"
   require "procon_bypass_man/procon/button_collection"
-  require "procon_bypass_man/procon/pressed_button_helper"
   require "procon_bypass_man/procon/user_operation"
   require "procon_bypass_man/procon/flip_cache"
   require "procon_bypass_man/procon/press_button_aware"

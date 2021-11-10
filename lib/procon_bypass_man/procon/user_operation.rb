@@ -1,12 +1,16 @@
 class ProconBypassMan::Procon
   class UserOperation
     include LayerChangeable
-    extend PressedButtonHelper::Dynamic
 
     attr_reader :binary
 
+    ::ProconBypassMan::Procon::ButtonCollection::BUTTONS_MAP.each do |button, _value|
+      define_method "pressed_#{button}?" do
+        pressed_button?(button)
+      end
+    end
+
     def initialize(binary)
-      self.class.compile_if_not_compile_yet!
       unless binary.encoding.name == ASCII_ENCODING
         raise "おかしいです"
       end
