@@ -1,5 +1,5 @@
 # read
-class ProconBypassMan::ReadonlyProcon
+class ProconBypassMan::ProconReader
   def initialize(binary: )
     @binary = binary
     @user_operation = ProconBypassMan::Procon::UserOperation.new(binary.dup)
