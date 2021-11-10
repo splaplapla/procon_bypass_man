@@ -1,6 +1,6 @@
-require "procon_bypass_man/configuration/validator"
-require "procon_bypass_man/configuration/loader"
-require "procon_bypass_man/configuration/layer"
+require "procon_bypass_man/buttons_setting_configuration/validator"
+require "procon_bypass_man/buttons_setting_configuration/loader"
+require "procon_bypass_man/buttons_setting_configuration/layer"
 
 module ProconBypassMan
   class AnalogStickPosition < Struct.new(:x, :y); end
