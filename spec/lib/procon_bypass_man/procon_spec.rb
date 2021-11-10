@@ -302,8 +302,10 @@ describe ProconBypassMan::Procon do
           procon = ProconBypassMan::Procon.new(binary)
           expect(procon.current_layer_key).to eq(:up)
           expect(procon.current_layer.mode).to eq(:manual)
-          expect(procon.user_operation.change_layer?).to eq(true)
-          expect(procon.user_operation.next_layer_key).to eq(:right)
+          ProconBypassMan::Procon::LayerChanger.new(binary: binary).tap do |layer_changer|
+            expect(layer_changer.change_layer?).to eq(true)
+            expect(layer_changer.next_layer_key).to eq(:right)
+          end
           procon.apply! # change layer
 
           expect(procon.current_layer_key).to eq(:right)
@@ -320,7 +322,9 @@ describe ProconBypassMan::Procon do
           procon.apply! # change layer
           expect(procon.current_layer_key).to eq(:up)
           expect(procon.current_layer.mode).to eq(:manual)
-          expect(procon.user_operation.change_layer?).to eq(false)
+          ProconBypassMan::Procon::LayerChanger.new(binary: procon.user_operation.binary).tap do |layer_changer|
+            expect(layer_changer.change_layer?).to eq(false)
+          end
 
           # zrを押す
           pressed_zr_data = "3012818a8000b0377246f8750988f5c70bfb011400e9ff180083f5d00bf9011100ecff190088f5d10bf9011000f1ff1c00000000000000000000000000000000"
@@ -347,7 +351,9 @@ describe ProconBypassMan::Procon do
           procon.apply! # change layer
           expect(procon.current_layer_key).to eq(:down)
           expect(procon.current_layer.mode).to eq(:manual)
-          expect(procon.user_operation.change_layer?).to eq(false)
+          ProconBypassMan::Procon::LayerChanger.new(binary: procon.user_operation.binary).tap do |layer_changer|
+            expect(layer_changer.change_layer?).to eq(false)
+          end
 
           procon = ProconBypassMan::Procon.new(pressed_zr_binary)
           procon.user_operation.press_button(:zl)

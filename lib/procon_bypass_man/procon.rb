@@ -2,7 +2,7 @@ class ProconBypassMan::Procon
   require "procon_bypass_man/procon/consts"
   require "procon_bypass_man/procon/mode_registry"
   require "procon_bypass_man/procon/macro_registry"
-  require "procon_bypass_man/procon/layer_changeable"
+  require "procon_bypass_man/procon/layer_changer"
   require "procon_bypass_man/procon/button_collection"
   require "procon_bypass_man/procon/user_operation"
   require "procon_bypass_man/procon/flip_cache"
@@ -34,8 +34,9 @@ class ProconBypassMan::Procon
   end
 
   def apply!
-    if user_operation.change_layer?
-      @@status[:current_layer_key] = user_operation.next_layer_key if user_operation.pressed_next_layer?
+    layer_changer = ProconBypassMan::Procon::LayerChanger.new(binary: user_operation.binary)
+    if layer_changer.change_layer?
+      @@status[:current_layer_key] = layer_changer.next_layer_key if layer_changer.pressed_next_layer?
       user_operation.set_no_action!
       return
     end

@@ -1,7 +1,5 @@
 class ProconBypassMan::Procon
   class UserOperation
-    include LayerChangeable
-
     attr_reader :binary
 
     ::ProconBypassMan::Procon::ButtonCollection::BUTTONS_MAP.each do |button, _value|
