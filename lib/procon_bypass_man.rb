@@ -27,7 +27,7 @@ STDOUT.sync = true
 Thread.abort_on_exception = true
 
 module ProconBypassMan
-  extend ProconBypassMan::Configuration::ClassAttributes
+  extend ProconBypassMan::Configuration::ClassMethods
 
   class ProConRejected < StandardError; end
   class CouldNotLoadConfigError < StandardError; end

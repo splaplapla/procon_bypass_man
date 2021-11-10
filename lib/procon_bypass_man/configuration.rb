@@ -1,5 +1,5 @@
 class ProconBypassMan::Configuration
-  module ClassAttributes
+  module ClassMethods
     def root
       config.root
     end
