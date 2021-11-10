@@ -20,18 +20,14 @@ class ProconBypassMan::Procon
     ZERO_BIT = ["0"].pack("H*").freeze
     ASCII_ENCODING = "ASCII-8BIT"
 
-    # @depilicate
-    def binary=(binary)
-      unless binary.encoding.name == ASCII_ENCODING
-        raise "おかしいです"
-      end
-      @binary = binary
-    end
-
     def set_no_action!
       binary[3] = ZERO_BIT
       binary[4] = ZERO_BIT
       binary[5] = ZERO_BIT
+    end
+
+    def apply_left_analog_stick_cap(cap: )
+      binary[6..8] = ProconBypassMan::Procon::AnalogStickCap.new(binary).capped_position(cap_hypotenuse: cap).to_binary
     end
 
     def unpress_button(button)
@@ -40,10 +36,6 @@ class ProconBypassMan::Procon
       byte_position = ButtonCollection.load(button).byte_position
       value = binary[byte_position].unpack("H*").first.to_i(16) - (2**ButtonCollection.load(button).bit_position)
       binary[byte_position] = ["%02X" % value.to_s].pack("H*")
-    end
-
-    def apply_left_analog_stick_cap(cap: )
-      binary[6..8] = ProconBypassMan::Procon::AnalogStickCap.new(binary).capped_position(cap_hypotenuse: cap).to_binary
     end
 
     def press_button(button)
