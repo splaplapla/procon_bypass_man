@@ -492,7 +492,14 @@ end
 
 module ProconBypassMan
   class Uptime
-    def self.from_boot: () -> untyped
+    # @return [Integer]
+    def self.from_boot: () -> Integer
+
+    # @param [String] uptime_cmd_result
+    def initialize: (uptime_cmd_result: String uptime_cmd_result) -> void
+
+    # @return [Integer]
+    def from_boot: () -> Integer
   end
 end
 
