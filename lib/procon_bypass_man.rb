@@ -29,7 +29,6 @@ Thread.abort_on_exception = true
 module ProconBypassMan
   extend ProconBypassMan::Configuration::ClassMethods
 
-  class ProConRejected < StandardError; end
   class CouldNotLoadConfigError < StandardError; end
   class FirstConnectionError < StandardError; end
   class EternalConnectionError < StandardError; end

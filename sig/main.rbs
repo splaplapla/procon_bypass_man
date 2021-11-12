@@ -8,9 +8,6 @@ interface _Pluginable
 end
 
 module ProconBypassMan
-  class ProConRejected < StandardError
-  end
-
   class CouldNotLoadConfigError < StandardError
   end
 
