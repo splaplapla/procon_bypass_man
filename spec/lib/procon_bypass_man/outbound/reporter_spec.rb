@@ -14,7 +14,7 @@ describe ProconBypassMan::BootReporter do
       end
 
       it do
-        expect(ProconBypassMan.config.api_servers).to be_nil
+        expect(ProconBypassMan.config.api_servers).to eq([])
         expect { described_class.report(body: {}) }.not_to raise_error
       end
     end

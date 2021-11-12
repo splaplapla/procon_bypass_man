@@ -13,7 +13,7 @@ describe ProconBypassMan::ErrorReporter do
         end
       end
       it do
-        expect(ProconBypassMan.config.api_servers).to be_nil
+        expect(ProconBypassMan.config.api_servers).to eq([])
         expect { described_class.report(body: RuntimeError.new) }.not_to raise_error
       end
     end

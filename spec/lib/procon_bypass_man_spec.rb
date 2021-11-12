@@ -38,8 +38,6 @@ describe ProconBypassMan do
       :error_logger,
       :root,
       :root=,
-      :api_server=,
-      :api_server,
       :verbose_bypass_log,
       :verbose_bypass_log=,
       :digest_path,

@@ -94,9 +94,9 @@ class ProconBypassMan::Configuration
 
   def api_servers
     if !!ENV["API_SERVER"]
-      [ENV["API_SERVER"]]
+      [ENV["API_SERVER"]].reject(&:nil?)
     else
-      [@api_servers].flatten
+      [@api_servers].flatten.reject(&:nil?)
     end
   end
 
