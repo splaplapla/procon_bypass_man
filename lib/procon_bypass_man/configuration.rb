@@ -25,7 +25,6 @@ class ProconBypassMan::Configuration
     end
   end
 
-  attr_reader :api_server, :api_servers
   attr_accessor :enable_critical_error_logging
 
   def root=(path)
@@ -90,6 +89,14 @@ class ProconBypassMan::Configuration
       [ 'http://localhost:9090',
         'http://localhost:8080',
       ].compact
+    end
+  end
+
+  def api_servers
+    if !!ENV["API_SERVER"]
+      [ENV["API_SERVER"]]
+    else
+      [@api_servers].flatten
     end
   end
 

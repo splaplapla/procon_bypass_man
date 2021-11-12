@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe ProconBypassMan::Reporter do
+describe ProconBypassMan::BootReporter do
   before do
     described_class.reset!
   end

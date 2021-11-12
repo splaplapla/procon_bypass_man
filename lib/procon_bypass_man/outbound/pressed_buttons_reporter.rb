@@ -9,7 +9,7 @@ class ProconBypassMan::PressedButtonsReporter
     ProconBypassMan::Outbound::Client.new(
       path: PATH,
       server_picker: server_picker,
-    ).post(body: body)
+    ).post(body: body, event_type: :internal)
   end
 
   def self.servers

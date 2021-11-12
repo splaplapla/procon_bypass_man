@@ -8,10 +8,6 @@ module ProconBypassMan
         class Response < Struct.new(:code, :body); end
 
         def initialize(uri: , hostname: , body: )
-          unless body.is_a?(Hash)
-            body = { value: body }
-          end
-
           @uri = uri
           @http = Net::HTTP.new(uri.host, uri.port)
           @http.use_ssl = uri.scheme === "https"
@@ -34,11 +30,15 @@ module ProconBypassMan
         @retry_on_connection_error = retry_on_connection_error
       end
 
-      def post(body: )
+      def post(body: , event_type: )
         if @server_picker.server.nil?
           ProconBypassMan.logger.info('送信先が未設定なのでスキップしました')
           return
         end
+        unless body.is_a?(Hash)
+          body = { value: body }
+        end
+        body[:event_type] = event_type
 
         response = Http.new(
           uri: URI.parse("#{@server_picker.server}#{@path}"), hostname: @hostname, body: body
