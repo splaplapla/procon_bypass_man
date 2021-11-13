@@ -26,6 +26,7 @@ require_relative "procon_bypass_man/outbound/pressed_buttons_reporter"
 # TODO 依存クラスは # Dir.glob("#{ProconBypassMan.root}/procon_bypass_man/commands/*.rb") { |path| require path } みたいな感じで読み出したい
 require_relative "procon_bypass_man/commands/print_boot_message_command"
 require_relative "procon_bypass_man/commands/write_session_id_command"
+require_relative "procon_bypass_man/commands/save_machine_identifier"
 require_relative "procon_bypass_man/on_memory_cache"
 
 STDOUT.sync = true
@@ -55,6 +56,7 @@ module ProconBypassMan
     ProconBypassMan.logger.info "PBMを起動しています"
     puts "PBMを起動しています"
     buttons_setting_configure(setting_path: setting_path, &block)
+    initialize_pbm
     File.write(pid_path, $$)
     ProconBypassMan::WriteSessionIdCommand.execute
     Runner.new.run
@@ -92,5 +94,9 @@ module ProconBypassMan
     ProconBypassMan::Procon.reset!
     ProconBypassMan::ButtonsSettingConfiguration.instance.reset!
     ProconBypassMan::IOMonitor.reset!
+  end
+
+  def self.initialize_pbm
+    ProconBypassMan::SaveMachineIdentifierCommand.execute
   end
 end

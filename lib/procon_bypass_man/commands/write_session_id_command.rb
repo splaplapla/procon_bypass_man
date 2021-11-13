@@ -7,7 +7,7 @@ class ProconBypassMan::WriteSessionIdCommand
       return sid
     end
   rescue Errno::ENOENT
-    File.write(path, SecureRandom.uuid)
+    File.write(path, "s_#{SecureRandom.uuid}")
     return SecureRandom.uuid
   end
 end
