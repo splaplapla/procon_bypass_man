@@ -13,7 +13,7 @@ ProconBypassMan.configure do |config|
   config.root = File.expand_path(__dir__)
   config.logger = Logger.new("#{ProconBypassMan.root}/app.log", 5, 1024 * 1024 * 10)
   config.logger.level = :debug
-  # pbm.api_server = 'https://...'
+  # config.api_servers = ['https://...']
   config.enable_critical_error_logging = true
 end
 

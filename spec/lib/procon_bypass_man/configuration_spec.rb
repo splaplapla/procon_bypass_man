@@ -26,4 +26,18 @@ describe ProconBypassMan::Configuration do
       expect(config.verbose_bypass_log).to eq(true)
     end
   end
+
+  describe '#api_servers=' do
+    it do
+      config = described_class.new
+      config.api_servers = ["http://hoge.com"]
+      expect(config.api_servers).to eq(["http://hoge.com"])
+    end
+
+    it do
+      config = described_class.new
+      config.api_servers = "http://hoge.com"
+      expect(config.api_servers).to eq(["http://hoge.com"])
+    end
+  end
 end
