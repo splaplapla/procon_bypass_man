@@ -3,6 +3,7 @@ require 'yaml'
 require "json"
 require "net/http"
 require "fileutils"
+require "securerandom"
 
 require_relative "procon_bypass_man/version"
 require_relative "procon_bypass_man/callbacks"
@@ -21,7 +22,10 @@ require_relative "procon_bypass_man/outbound/boot_reporter"
 require_relative "procon_bypass_man/outbound/heartbeat_reporter"
 require_relative "procon_bypass_man/outbound/error_reporter"
 require_relative "procon_bypass_man/outbound/pressed_buttons_reporter"
+
+# TODO 依存クラスは # Dir.glob("#{ProconBypassMan.root}/procon_bypass_man/commands/*.rb") { |path| require path } みたいな感じで読み出したい
 require_relative "procon_bypass_man/commands/print_boot_message_command"
+require_relative "procon_bypass_man/commands/write_session_id_command"
 require_relative "procon_bypass_man/on_memory_cache"
 
 STDOUT.sync = true
@@ -52,6 +56,7 @@ module ProconBypassMan
     puts "PBMを起動しています"
     buttons_setting_configure(setting_path: setting_path, &block)
     File.write(pid_path, $$)
+    ProconBypassMan::WriteSessionIdCommand.execute
     Runner.new.run
   rescue CouldNotLoadConfigError
     ProconBypassMan.logger.error "設定ファイルが不正です。設定ファイルの読み込みに失敗しました"

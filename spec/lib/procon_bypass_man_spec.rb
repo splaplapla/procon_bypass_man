@@ -25,6 +25,7 @@ describe ProconBypassMan do
       :pid_path,
       :root,
       :digest_path,
+      :session_id,
     ].each do |me|
       it "has #{me} method" do
         expect(described_class.respond_to?(me)).to eq(true)

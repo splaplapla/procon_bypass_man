@@ -23,6 +23,11 @@ class ProconBypassMan::Configuration
     def cache
       @@cache_table ||= ProconBypassMan::OnMemoryCache.new
     end
+
+    # @return [String]
+    def session_id
+      ProconBypassMan::WriteSessionIdCommand.execute
+    end
   end
 
   attr_accessor :enable_critical_error_logging
