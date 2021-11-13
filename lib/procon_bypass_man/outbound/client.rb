@@ -35,10 +35,12 @@ module ProconBypassMan
           ProconBypassMan.logger.info('送信先が未設定なのでスキップしました')
           return
         end
-        unless body.is_a?(Hash)
-          body = { value: body }
+        if body.is_a?(Hash)
+          body[:event_type] = event_type
+          body = { body: body }
+        else
+          body = { body: { value: body, event_type: event_type } }
         end
-        body[:event_type] = event_type
 
         response = Http.new(
           uri: URI.parse("#{@server_picker.server}#{@path}"), hostname: @hostname, body: body
