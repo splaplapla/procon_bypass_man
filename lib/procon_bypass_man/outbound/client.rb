@@ -5,16 +5,11 @@ module ProconBypassMan
   module Outbound
     class Client
       class Http
-        class Response < Struct.new(:code, :body); end
-
-        def initialize(uri: , hostname: , body: )
+        def self.request!(uri: , hostname: , body: , session_id: nil)
           @uri = uri
           @http = Net::HTTP.new(uri.host, uri.port)
           @http.use_ssl = uri.scheme === "https"
           @params = { hostname: hostname }.merge(body)
-        end
-
-        def request!
           @http.post(
             @uri.path,
             @params.to_json,
@@ -42,9 +37,9 @@ module ProconBypassMan
           body = { body: { value: body, event_type: event_type } }
         end
 
-        response = Http.new(
-          uri: URI.parse("#{@server_picker.server}#{@path}"), hostname: @hostname, body: body
-        ).request!
+        response = Http.request!(
+          uri: URI.parse("#{@server_picker.server}#{@path}"), hostname: @hostname, session_id: nil, body: body
+        )
         case response.code
         when /^200/
           return
