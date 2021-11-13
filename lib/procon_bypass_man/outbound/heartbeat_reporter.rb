@@ -7,6 +7,6 @@ class ProconBypassMan::HeartbeatReporter < ProconBypassMan::BaseEventReporter
       path: path,
       server_picker: server_picker,
       retry_on_connection_error: false,
-    ).post(body: body, event_type: :heartbeat,)
+    ).post(body: body, event_type: :heartbeat)
   end
 end
