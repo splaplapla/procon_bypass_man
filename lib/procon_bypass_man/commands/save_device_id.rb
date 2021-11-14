@@ -1,4 +1,4 @@
-class ProconBypassMan::SaveDeviceIdCommand
+class ProconBypassMan::WriteDeviceIdCommand
   def self.execute
     path = "#{ProconBypassMan.root}/device_id"
     if(sid = File.read(path))

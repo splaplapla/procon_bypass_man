@@ -97,6 +97,6 @@ module ProconBypassMan
   end
 
   def self.initialize_pbm
-    ProconBypassMan::SaveDeviceIdCommand.execute
+    ProconBypassMan::WriteDeviceIdCommand.execute
   end
 end

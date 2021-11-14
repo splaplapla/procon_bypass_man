@@ -31,7 +31,7 @@ class ProconBypassMan::Configuration
 
     # @return [String]
     def device_id
-      ProconBypassMan::SaveDeviceIdCommand.execute
+      ProconBypassMan::WriteDeviceIdCommand.execute
     end
   end
 
