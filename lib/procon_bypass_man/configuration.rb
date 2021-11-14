@@ -28,6 +28,11 @@ class ProconBypassMan::Configuration
     def session_id
       ProconBypassMan::WriteSessionIdCommand.execute
     end
+
+    # @return [String]
+    def device_id
+      ProconBypassMan::SaveDeviceIdCommand.execute
+    end
   end
 
   attr_accessor :enable_critical_error_logging
