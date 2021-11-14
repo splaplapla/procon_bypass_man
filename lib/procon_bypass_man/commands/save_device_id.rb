@@ -1,6 +1,6 @@
-class ProconBypassMan::SaveMachineIdentifierCommand
+class ProconBypassMan::SaveDeviceIdCommand
   def self.execute
-    path = "#{ProconBypassMan.root}/mathine_id"
+    path = "#{ProconBypassMan.root}/device_id"
     if(sid = File.read(path))
       return sid
     end
