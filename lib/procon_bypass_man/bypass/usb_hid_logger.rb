@@ -22,10 +22,17 @@ class ProconBypassMan::Bypass
         end
       end
 
-      ProconBypassMan.cache.fetch key: 'reporter', expires_in: 5 do
+      ProconBypassMan.cache.fetch key: 'pressed_buttons_reporter', expires_in: 5 do
         ProconBypassMan::Outbound::Worker.push({
-          data: ProconBypassMan::ProconReader.new(binary: bypass_value.binary).to_hash,
+          body: ProconBypassMan::ProconReader.new(binary: bypass_value.binary).to_hash,
           reporter_class: ProconBypassMan::PressedButtonsReporter
+        })
+      end
+
+      ProconBypassMan.cache.fetch key: 'heartbeat_reporter', expires_in: 60 do
+        ProconBypassMan::Outbound::Worker.push({
+          body: ProconBypassMan::BootMessage.new.to_hash,
+          reporter_class: ProconBypassMan::HeartbeatReporter
         })
       end
     end

@@ -10,7 +10,7 @@ describe ProconBypassMan::Outbound::Worker do
       expect {
         ProconBypassMan::Outbound::Worker.push({
           reporter_class: reporter_class,
-          data: {},
+          body: {},
         })
       }.not_to raise_error
     end

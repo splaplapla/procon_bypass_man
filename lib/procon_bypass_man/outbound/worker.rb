@@ -12,7 +12,7 @@ module ProconBypassMan
         @@thread = Thread.new do
           while(item = self.class.queue.pop)
             begin
-              result = item[:reporter_class].report(body: item[:data])
+              result = item[:reporter_class].report(body: item[:body])
               sleep(1)
             rescue => e
               ProconBypassMan.logger.error(e)

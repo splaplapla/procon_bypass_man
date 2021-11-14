@@ -3,7 +3,7 @@ class ProconBypassMan::PrintBootMessageCommand
   def self.execute
     message = ProconBypassMan::BootMessage.new
     ProconBypassMan::Outbound::Worker.push(
-      data: message.to_hash,
+      body: message.to_hash,
       reporter_class: ProconBypassMan::BootReporter,
     )
     puts message.to_s
