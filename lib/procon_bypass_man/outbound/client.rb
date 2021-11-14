@@ -5,7 +5,7 @@ module ProconBypassMan
   module Outbound
     class Client
       class Http
-        def self.request!(uri: , hostname: , body: , session_id: nil, event_type: )
+        def self.request!(uri: , hostname: , body: , device_id: , session_id: nil, event_type: )
           @uri = uri
           @http = Net::HTTP.new(uri.host, uri.port)
           @http.use_ssl = uri.scheme === "https"
@@ -13,6 +13,7 @@ module ProconBypassMan
             hostname: hostname,
             event_type: event_type,
             session_id: session_id,
+            device_id: device_id,
           }.merge(body)
           @http.post(
             @uri.path,
@@ -39,10 +40,16 @@ module ProconBypassMan
         else
           body = { body: { value: body, event_type: event_type } }
         end
-        session_id = ProconBypassMan::WriteSessionIdCommand.execute
+        session_id = ProconBypassMan.session_id
+        device_id = ProconBypassMan.device_id
 
         response = Http.request!(
-          uri: URI.parse("#{@server_picker.server}#{@path}"), hostname: @hostname, session_id: session_id, body: body, event_type: event_type
+          uri: URI.parse("#{@server_picker.server}#{@path}"),
+          hostname: @hostname,
+          device_id: device_id,
+          session_id: session_id,
+          body: body,
+          event_type: event_type,
         )
         case response.code
         when /^200/
