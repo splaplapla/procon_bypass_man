@@ -9,12 +9,15 @@ class ProconBypassMan::BootMessage
     @table[:setting_path] = ProconBypassMan::ButtonsSettingConfiguration.instance.setting_path
     @table[:uptime_from_boot] = ProconBypassMan::Uptime.from_boot
 
-    build_version = `git rev-parse --short HEAD`.chomp
-    if build_version.empty?
-      @table[:build_version] = 'release version'
-    else
-      @table[:build_version] = build_version
-    end
+    # 開発中のHEADを取りたかったけど、Gem::Specification経由から取得する必要がありそう
+    # build_version = `git rev-parse --short HEAD`.chomp
+    # if build_version.empty?
+    #   @table[:build_version] = 'release version'
+    # else
+    #   @table[:build_version] = build_version
+    # end
+
+    # build version: #{@table[:build_version]}
   end
 
   # @return [String]
@@ -28,7 +31,6 @@ class ProconBypassMan::BootMessage
       pid_path: #{@table[:pid_path]}
       setting_path: #{@table[:setting_path]}
       uptime from boot: #{@table[:uptime_from_boot]} sec
-      build version: #{@table[:build_version]}
       ----
     EOF
   end
