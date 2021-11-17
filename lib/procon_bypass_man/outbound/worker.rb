@@ -1,10 +1,27 @@
 module ProconBypassMan
   module Outbound
     class Worker
+      class Job
+        def initialize(klass: , args: )
+          @klass = klass
+          @args = args
+        end
+
+        def perform
+          @klass.perform(*@args)
+        end
+      end
+
       MAX_QUEUE_SIZE = 100
 
       def self.start!
         new.start!
+      end
+
+      # for test
+      def self.stop!
+        return unless defined?(@@thread)
+        @@thread.kill
       end
 
       def start!
@@ -12,7 +29,7 @@ module ProconBypassMan
         @@thread = Thread.new do
           while(item = self.class.queue.pop)
             begin
-              result = item[:reporter_class].report(body: item[:body])
+              Job.new(klass: item[:reporter_class], args: item[:args]).perform
               sleep(1)
             rescue => e
               ProconBypassMan.logger.error(e)

@@ -1,6 +1,24 @@
 require "spec_helper"
 
 describe ProconBypassMan::Outbound::Worker do
+  describe ProconBypassMan::Outbound::Worker::Job do
+    it do
+      args = [1]
+      ProconBypassMan::Outbound::Worker::Job.new(
+        klass: ProconBypassMan::PressedButtonsReporter,
+        args: args,
+      ).perform
+    end
+  end
+
+  describe '.perform_async' do
+    it do
+      ProconBypassMan::ErrorReporter.perform_async("a")
+      job = ProconBypassMan::Outbound::Worker.queue.pop
+      expect(job).to eq(:args=>["a"], :reporter_class=>ProconBypassMan::ErrorReporter)
+    end
+  end
+
   describe '.push' do
     it do
       class Result < Struct.new(:stats); end

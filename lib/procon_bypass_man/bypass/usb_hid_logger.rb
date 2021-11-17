@@ -30,10 +30,7 @@ class ProconBypassMan::Bypass
       end
 
       ProconBypassMan.cache.fetch key: 'heartbeat_reporter', expires_in: 60 do
-        ProconBypassMan::Outbound::Worker.push({
-          body: ProconBypassMan::BootMessage.new.to_hash,
-          reporter_class: ProconBypassMan::HeartbeatReporter
-        })
+        ProconBypassMan::HeartbeatReporter.perform_async(ProconBypassMan::BootMessage.new.to_hash)
       end
     end
   end

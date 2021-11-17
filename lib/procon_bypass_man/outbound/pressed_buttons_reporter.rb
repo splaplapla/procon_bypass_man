@@ -5,7 +5,7 @@ class ProconBypassMan::PressedButtonsReporter
 
   PATH = "/api/pressed_buttons"
 
-  def self.report(body: )
+  def self.perform(body)
     ProconBypassMan::Outbound::Client.new(
       path: PATH,
       server_picker: server_picker,

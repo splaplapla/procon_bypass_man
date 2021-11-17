@@ -2,7 +2,7 @@ require "procon_bypass_man/outbound/client"
 require "procon_bypass_man/outbound/base_event_reporter"
 
 class ProconBypassMan::BootReporter <  ProconBypassMan::BaseEventReporter
-  def self.report(body: )
+  def self.perform(body)
     ProconBypassMan::Outbound::Client.new(
       path: path,
       server_picker: server_picker,

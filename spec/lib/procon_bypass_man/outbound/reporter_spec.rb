@@ -5,7 +5,7 @@ describe ProconBypassMan::BootReporter do
     described_class.reset!
   end
 
-  describe '.report' do
+  describe '.perform' do
     context 'ProconBypassMan.api_serverが設定されていない時' do
       before do
         ProconBypassMan.configure do |config|
@@ -15,7 +15,7 @@ describe ProconBypassMan::BootReporter do
 
       it do
         expect(ProconBypassMan.config.api_servers).to eq([])
-        expect { described_class.report(body: {}) }.not_to raise_error
+        expect { described_class.perform({}) }.not_to raise_error
       end
     end
 
@@ -30,7 +30,7 @@ describe ProconBypassMan::BootReporter do
         http_response = double(:http_response).as_null_object
         expect(http_response).to receive(:code) { "200" }
         expect_any_instance_of(Net::HTTP).to receive(:post) { http_response }
-        expect { described_class.report(body: nil) }.not_to raise_error
+        expect { described_class.perform(nil) }.not_to raise_error
       end
 
       it '送信に失敗したらローテすること' do
@@ -41,8 +41,8 @@ describe ProconBypassMan::BootReporter do
         allow(http_response).to receive(:code) { "300" }
         allow_any_instance_of(Net::HTTP).to receive(:post) { http_response }
 
-        described_class.report(body: nil)
-        described_class.report(body: nil)
+        described_class.perform(nil)
+        described_class.perform(body: nil)
       end
     end
   end
