@@ -6,11 +6,15 @@ require_relative "background/job_runner"
 class ProconBypassMan::Runner
   class InterruptForRestart < StandardError; end
 
-  def run
-    first_negotiation
+  def initialize(gadget: , procon: )
+    @gadget = gadget
+    @procon = procon
+
     ProconBypassMan::PrintBootMessageCommand.execute
     ProconBypassMan::Background::JobRunner.start!
+  end
 
+  def run
     self_read, self_write = IO.pipe
     %w(TERM INT USR1 USR2).each do |sig|
       begin
@@ -133,15 +137,6 @@ class ProconBypassMan::Runner
       @procon&.close
       exit 1
     end
-  end
-
-  def first_negotiation
-    @gadget, @procon = ProconBypassMan::DeviceConnector.connect
-  rescue ProconBypassMan::Timer::Timeout
-    ::ProconBypassMan.logger.error "デバイスとの通信でタイムアウトが起きて接続ができませんでした。"
-    @gadget&.close
-    @procon&.close
-    raise ::ProconBypassMan::EternalConnectionError
   end
 
   def handle_signal(sig)

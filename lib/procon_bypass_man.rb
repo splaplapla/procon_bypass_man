@@ -52,7 +52,8 @@ module ProconBypassMan
     initialize_pbm
     File.write(pid_path, $$)
     ProconBypassMan::WriteSessionIdCommand.execute
-    Runner.new.run
+    gadget, procon = ProconBypassMan::ConnectDeviceCommand.execute!
+    Runner.new(gadget: gadget, procon: procon).run
   rescue CouldNotLoadConfigError
     ProconBypassMan::SendErrorCommand.execute(error: "設定ファイルが不正です。設定ファイルの読み込みに失敗しました")
     FileUtils.rm_rf(ProconBypassMan.pid_path)
