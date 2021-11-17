@@ -4,10 +4,10 @@ module ProconBypassMan
       require 'digest/md5'
 
       def self.load(setting_path: )
-        ProconBypassMan::ButtonsSettingConfiguration.switch_new_context(:validation) do |validation_instance|
+        ProconBypassMan::ButtonsSettingConfiguration.switch_new_context(:validation) do |new_instance|
           yaml = YAML.load_file(setting_path) or raise "読み込みに失敗しました"
-          validation_instance.instance_eval(yaml["setting"])
-          validator = Validator.new(validation_instance)
+          new_instance.instance_eval(yaml["setting"])
+          validator = Validator.new(new_instance)
           if validator.valid?
             next
           else
