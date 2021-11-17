@@ -1,10 +1,7 @@
-require "procon_bypass_man/outbound/round_robin_server"
-require "procon_bypass_man/outbound/has_round_robin_server"
-
 module ProconBypassMan
   module Outbound
     class HttpClient
-      class Http
+      class HttpRequest
         def self.request!(uri: , hostname: , body: , device_id: , session_id: nil, event_type: )
           @uri = uri
           @http = Net::HTTP.new(uri.host, uri.port)
@@ -43,7 +40,7 @@ module ProconBypassMan
         session_id = ProconBypassMan.session_id
         device_id = ProconBypassMan.device_id
 
-        response = Http.request!(
+        response = HttpRequest.request!(
           uri: URI.parse("#{@server_picker.server}#{@path}"),
           hostname: @hostname,
           device_id: device_id,
