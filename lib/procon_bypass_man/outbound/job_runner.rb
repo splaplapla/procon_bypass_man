@@ -1,6 +1,6 @@
 module ProconBypassMan
   module Outbound
-    class Worker
+    class JobRunner
       class Job
         def initialize(klass: , args: )
           @klass = klass

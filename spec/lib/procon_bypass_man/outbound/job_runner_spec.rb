@@ -1,10 +1,10 @@
 require "spec_helper"
 
-describe ProconBypassMan::Outbound::Worker do
-  describe ProconBypassMan::Outbound::Worker::Job do
+describe ProconBypassMan::Outbound::JobRunner do
+  describe ProconBypassMan::Outbound::JobRunner::Job do
     it do
       args = [1]
-      ProconBypassMan::Outbound::Worker::Job.new(
+      ProconBypassMan::Outbound::JobRunner::Job.new(
         klass: ProconBypassMan::PressedButtonsReporter,
         args: args,
       ).perform
@@ -14,7 +14,7 @@ describe ProconBypassMan::Outbound::Worker do
   describe '.perform_async' do
     it do
       ProconBypassMan::ErrorReporter.perform_async("a")
-      job = ProconBypassMan::Outbound::Worker.queue.pop
+      job = ProconBypassMan::Outbound::JobRunner.queue.pop
       expect(job).to eq(:args=>["a"], :reporter_class=>ProconBypassMan::ErrorReporter)
     end
   end
@@ -26,7 +26,7 @@ describe ProconBypassMan::Outbound::Worker do
         def self.report(*); Result.new(true); end
       end
       expect {
-        ProconBypassMan::Outbound::Worker.push({
+        ProconBypassMan::Outbound::JobRunner.push({
           reporter_class: reporter_class,
           body: {},
         })
@@ -36,10 +36,10 @@ describe ProconBypassMan::Outbound::Worker do
       let(:dummy_queue) { [] }
       before do
         101.times { dummy_queue << true }
-        allow(ProconBypassMan::Outbound::Worker).to receive(:queue) { dummy_queue }
+        allow(ProconBypassMan::Outbound::JobRunner).to receive(:queue) { dummy_queue }
       end
       it do
-        expect(ProconBypassMan::Outbound::Worker.push(true)).to be_nil
+        expect(ProconBypassMan::Outbound::JobRunner.push(true)).to be_nil
       end
     end
   end

@@ -5,7 +5,7 @@ class ProconBypassMan::BaseEventReporter
   extend ProconBypassMan::Outbound::HasRoundRobinServer
 
   def self.perform_async(*args)
-    ProconBypassMan::Outbound::Worker.push(
+    ProconBypassMan::Outbound::JobRunner.push(
       args: args,
       reporter_class: self,
     )
