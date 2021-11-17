@@ -1,7 +1,8 @@
 require "procon_bypass_man/outbound/http_client"
-require "procon_bypass_man/outbound/base_event_reporter"
+require "procon_bypass_man/outbound/jobs/base_event_job"
 
 class ProconBypassMan::HeartbeatReporter < ProconBypassMan::BaseEventReporter
+  # @param [String] body
   def self.perform(body)
     ProconBypassMan::Outbound::HttpClient.new(
       path: path,

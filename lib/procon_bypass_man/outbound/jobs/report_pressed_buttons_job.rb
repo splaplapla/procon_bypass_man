@@ -2,9 +2,11 @@ require "procon_bypass_man/outbound/http_client"
 
 class ProconBypassMan::PressedButtonsReporter
   extend ProconBypassMan::Outbound::HasRoundRobinServer
+  extend ProconBypassMan::Outbound::JobRunnable
 
   PATH = "/api/pressed_buttons"
 
+  # @param [String] body
   def self.perform(body)
     ProconBypassMan::Outbound::HttpClient.new(
       path: PATH,
