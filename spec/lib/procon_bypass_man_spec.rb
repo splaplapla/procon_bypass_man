@@ -43,6 +43,8 @@ describe ProconBypassMan do
       :verbose_bypass_log,
       :verbose_bypass_log=,
       :digest_path,
+      :raw_setting,
+      :raw_setting=,
     ].each do |me|
       it "has config.#{me} method" do
         expect(described_class.config.respond_to?(me)).to eq(true)

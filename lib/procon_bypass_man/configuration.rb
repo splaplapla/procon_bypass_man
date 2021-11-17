@@ -35,7 +35,8 @@ class ProconBypassMan::Configuration
     end
   end
 
-  attr_accessor :enable_critical_error_logging
+  attr_accessor :enable_critical_error_logging, :raw_setting
+  attr_writer :verbose_bypass_log
 
   def root=(path)
     @root = path
@@ -48,12 +49,6 @@ class ProconBypassMan::Configuration
     else
       File.expand_path('..', __dir__ || ".").freeze
     end
-  end
-
-  # @deprecated
-  def api_server=(api_server)
-    @api_server = api_server
-    return self
   end
 
   def api_servers=(api_servers)
@@ -108,10 +103,6 @@ class ProconBypassMan::Configuration
     else
       [@api_servers].flatten.reject(&:nil?)
     end
-  end
-
-  def verbose_bypass_log=(value)
-    @verbose_bypass_log = value
   end
 
   def verbose_bypass_log
