@@ -3,7 +3,7 @@ require "procon_bypass_man/outbound/has_round_robin_server"
 
 module ProconBypassMan
   module Outbound
-    class Client
+    class HttpClient
       class Http
         def self.request!(uri: , hostname: , body: , device_id: , session_id: nil, event_type: )
           @uri = uri

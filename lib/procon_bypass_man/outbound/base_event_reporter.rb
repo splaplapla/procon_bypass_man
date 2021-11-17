@@ -1,4 +1,4 @@
-require "procon_bypass_man/outbound/client"
+require "procon_bypass_man/outbound/http_client"
 
 class ProconBypassMan::BaseEventReporter
   extend ProconBypassMan::Outbound::HasRoundRobinServer
