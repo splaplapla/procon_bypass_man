@@ -1,5 +1,4 @@
 require "procon_bypass_man/outbound/http_client"
-require "procon_bypass_man/outbound/jobs/base_event_job"
 
 class ProconBypassMan::ErrorReporter < ProconBypassMan::BaseEventReporter
   # @param [String] body
