@@ -17,7 +17,7 @@ class ProconBypassMan::Runner
           self_write.puts(sig)
         end
       rescue ArgumentError
-        ProconBypassMan.logger.error("Signal #{sig} not supported")
+        ProconBypassMan::SendErrorCommand.execute(error: "Signal #{sig} not supported")
       end
     end
 
@@ -39,7 +39,7 @@ class ProconBypassMan::Runner
           ProconBypassMan::ButtonsSettingConfiguration::Loader.reload_setting
           puts "設定ファイルの再読み込みができました"
         rescue ProconBypassMan::CouldNotLoadConfigError
-          ProconBypassMan.logger.error "設定ファイルが不正です。再読み込みができませんでした"
+          ProconBypassMan::SendErrorCommand.execute(error: "設定ファイルが不正です。再読み込みができませんでした")
         end
         ProconBypassMan.logger.info("バイパス処理を再開します")
       rescue Interrupt
@@ -80,12 +80,11 @@ class ProconBypassMan::Runner
         puts "10秒経過したのでThread1を終了します"
         break
       rescue Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError => e
-        ProconBypassMan.logger.error "Proconが切断されました.終了処理を開始します"
+        ProconBypassMan::SendErrorCommand.execute(error: "Switchとの切断されました.終了処理を開始します. #{e.full_message}")
         Process.kill "TERM", Process.ppid
       rescue Errno::ETIMEDOUT => e
         # TODO まれにこれが発生する. 再接続したい
-        ProconBypassMan::ErrorReporter.report(body: e)
-        ProconBypassMan.logger.error "Switchとの切断されました.終了処理を開始します"
+        ProconBypassMan::SendErrorCommand.execute(error: "Switchとの切断されました.終了処理を開始します. #{e.full_message}")
         Process.kill "TERM", Process.ppid
       end
       ProconBypassMan.logger.info "Thread1を終了します"
@@ -100,10 +99,10 @@ class ProconBypassMan::Runner
         break if $will_terminate_token
         bypass.send_procon_to_gadget!
       rescue EOFError => e
-        ProconBypassMan.logger.error "Proconと通信ができませんでした.終了処理を開始します"
+        ProconBypassMan::SendErrorCommand.execute(error: "Proconが切断されました。終了処理を開始します. #{e.full_message}")
         Process.kill "TERM", Process.ppid
       rescue Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError => e
-        ProconBypassMan.logger.error "Proconが切断されました。終了処理を開始します"
+        ProconBypassMan::SendErrorCommand.execute(error: "Proconが切断されました。終了処理を開始します. #{e.full_message}")
         Process.kill "TERM", Process.ppid
       end
       ProconBypassMan.logger.info "Thread2を終了します"

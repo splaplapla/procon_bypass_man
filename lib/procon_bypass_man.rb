@@ -27,6 +27,7 @@ require_relative "procon_bypass_man/outbound/pressed_buttons_reporter"
 require_relative "procon_bypass_man/commands/print_boot_message_command"
 require_relative "procon_bypass_man/commands/write_session_id_command"
 require_relative "procon_bypass_man/commands/write_device_id_command"
+require_relative "procon_bypass_man/commands/send_error_command"
 require_relative "procon_bypass_man/on_memory_cache"
 
 STDOUT.sync = true
@@ -61,18 +62,16 @@ module ProconBypassMan
     ProconBypassMan::WriteSessionIdCommand.execute
     Runner.new.run
   rescue CouldNotLoadConfigError
-    ProconBypassMan.logger.error "設定ファイルが不正です。設定ファイルの読み込みに失敗しました"
-    puts "設定ファイルが不正です。設定ファイルの読み込みに失敗しました"
+    ProconBypassMan::SendErrorCommand.execute(error: "設定ファイルが不正です。設定ファイルの読み込みに失敗しました")
     FileUtils.rm_rf(ProconBypassMan.pid_path)
     FileUtils.rm_rf(ProconBypassMan.digest_path)
     exit 1
   rescue EternalConnectionError
-    ProconBypassMan.logger.error "接続の見込みがないのでsleepしまくります"
-    puts "接続の見込みがないのでsleepしまくります"
+    ProconBypassMan::SendErrorCommand.execute(error: "接続の見込みがないのでsleepしまくります")
     FileUtils.rm_rf(ProconBypassMan.pid_path)
     sleep(999999999)
   rescue FirstConnectionError
-    puts "接続を確立できませんでした。やりなおします。"
+    ProconBypassMan::SendErrorCommand.execute(error: "接続を確立できませんでした。やりなおします。")
     retry
   end
 

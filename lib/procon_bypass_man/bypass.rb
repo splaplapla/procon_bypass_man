@@ -62,6 +62,7 @@ class ProconBypassMan::Bypass
       rescue Timeout::Error
         ProconBypassMan.logger.debug { "read timeout! do sleep. by send_procon_to_gadget!" }
         ProconBypassMan.error_logger.error { "read timeout! do sleep. by send_procon_to_gadget!" }
+        ProconBypassMan::SendErrorCommand.execute(error: "read timeout! do sleep. by send_procon_to_gadget!")
         monitor.record(:eagain_wait_readable_on_read)
         retry
       rescue IO::EAGAINWaitReadable

@@ -309,8 +309,7 @@ class ProconBypassMan::DeviceConnector
     end
   rescue Errno::ENXIO => e
     # /dev/hidg0 をopenできないときがある
-    ProconBypassMan.logger.error "Errno::ENXIO (No such device or address @ rb_sysopen - /dev/hidg0)が起きました。resetします"
-    ProconBypassMan.logger.error e
+    ProconBypassMan::SendErrorCommand.execute(error: "Errno::ENXIO (No such device or address @ rb_sysopen - /dev/hidg0)が起きました。resetします. #{e.full_message}")
     system('echo > /sys/kernel/config/usb_gadget/procon/UDC')
     system('ls /sys/class/udc > /sys/kernel/config/usb_gadget/procon/UDC')
     sleep 2
