@@ -2,10 +2,6 @@ require "spec_helper"
 
 describe ProconBypassMan::PrintBootMessageCommand do
   describe '.execute' do
-    before do
-      ProconBypassMan::Background::JobRunner.queue.clear
-    end
-
     it do
       expect { described_class.execute }.to change { ProconBypassMan::Background::JobRunner.queue.size }.by(2)
     end
