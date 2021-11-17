@@ -84,7 +84,7 @@ class ProconBypassMan::Runner
         Process.kill "TERM", Process.ppid
       rescue Errno::ETIMEDOUT => e
         # TODO まれにこれが発生する. 再接続したい
-        ProconBypassMan::SendErrorCommand.execute(error: "Switchとの切断されました.終了処理を開始します. #{e.full_message}")
+        ProconBypassMan::SendErrorCommand.execute(error: "Switchと意図せず切断されました.終了処理を開始します. #{e.full_message}")
         Process.kill "TERM", Process.ppid
       end
       ProconBypassMan.logger.info "Thread1を終了します"
@@ -102,7 +102,7 @@ class ProconBypassMan::Runner
         ProconBypassMan::SendErrorCommand.execute(error: "Proconが切断されました。終了処理を開始します. #{e.full_message}")
         Process.kill "TERM", Process.ppid
       rescue Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError => e
-        ProconBypassMan::SendErrorCommand.execute(error: "Proconが切断されました。終了処理を開始します. #{e.full_message}")
+        ProconBypassMan::SendErrorCommand.execute(error: "Proconが切断されました。終了処理を開始します2. #{e.full_message}")
         Process.kill "TERM", Process.ppid
       end
       ProconBypassMan.logger.info "Thread2を終了します"
