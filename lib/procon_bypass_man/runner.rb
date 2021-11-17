@@ -59,7 +59,7 @@ class ProconBypassMan::Runner
 
   def main_loop
     ProconBypassMan::IOMonitor.start!
-    ProconBypassMan::Outbound::Worker.start!
+    ProconBypassMan::Outbound::JobRunner.start!
 
     # gadget => procon
     # 遅くていい
