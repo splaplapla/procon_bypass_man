@@ -1,6 +1,6 @@
 module ProconBypassMan
   module Outbound
-    class ServersPicker
+    class RoundRobinServer
       def initialize(servers: )
         if servers.nil? || servers.empty?
           return

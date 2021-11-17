@@ -1,7 +1,7 @@
 require "procon_bypass_man/outbound/client"
 
 class ProconBypassMan::PressedButtonsReporter
-  extend ProconBypassMan::Outbound::HasServerPicker
+  extend ProconBypassMan::Outbound::HasRoundRobinServer
 
   PATH = "/api/pressed_buttons"
 

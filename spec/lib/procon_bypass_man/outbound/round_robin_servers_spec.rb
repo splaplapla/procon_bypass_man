@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe ProconBypassMan::Outbound::ServersPicker do
+describe ProconBypassMan::Outbound::RoundRobinServer do
   describe '#pick' do
     context 'when provide a nil' do
       it do

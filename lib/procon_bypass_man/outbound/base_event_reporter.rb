@@ -1,7 +1,7 @@
 require "procon_bypass_man/outbound/client"
 
 class ProconBypassMan::BaseEventReporter
-  extend ProconBypassMan::Outbound::HasServerPicker
+  extend ProconBypassMan::Outbound::HasRoundRobinServer
 
   def self.servers
     ProconBypassMan.config.api_servers

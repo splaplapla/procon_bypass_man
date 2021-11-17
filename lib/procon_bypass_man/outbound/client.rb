@@ -1,5 +1,5 @@
-require "procon_bypass_man/outbound/servers_picker"
-require "procon_bypass_man/outbound/has_server_picker"
+require "procon_bypass_man/outbound/round_robin_server"
+require "procon_bypass_man/outbound/has_round_robin_server"
 
 module ProconBypassMan
   module Outbound
