@@ -23,13 +23,13 @@ class ProconBypassMan::Bypass
       end
 
       ProconBypassMan.cache.fetch key: 'pressed_buttons_reporter', expires_in: 5 do
-        ProconBypassMan::PressedButtonsReporter.perform_async(
+        ProconBypassMan::ReportPressedButtonsJob.perform_async(
           ProconBypassMan::ProconReader.new(binary: bypass_value.binary).to_hash
         )
       end
 
       ProconBypassMan.cache.fetch key: 'heartbeat_reporter', expires_in: 60 do
-        ProconBypassMan::HeartbeatReporter.perform_async(ProconBypassMan::BootMessage.new.to_hash)
+        ProconBypassMan::ReportHeartbeatJob.perform_async(ProconBypassMan::BootMessage.new.to_hash)
       end
     end
   end

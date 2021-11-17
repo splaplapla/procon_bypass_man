@@ -13,6 +13,6 @@ class ProconBypassMan::SendErrorCommand
     ProconBypassMan.logger.error body
     puts body
 
-    ProconBypassMan::ErrorReporter.perform_async(error)
+    ProconBypassMan::ReportErrorJob.perform_async(error)
   end
 end

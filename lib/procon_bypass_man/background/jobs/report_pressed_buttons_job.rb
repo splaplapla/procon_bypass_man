@@ -1,4 +1,4 @@
-class ProconBypassMan::PressedButtonsReporter
+class ProconBypassMan::ReportPressedButtonsJob
   extend ProconBypassMan::Background::HasRoundRobinServer
   extend ProconBypassMan::Background::JobRunnable
 

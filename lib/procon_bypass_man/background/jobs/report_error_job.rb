@@ -1,4 +1,4 @@
-class ProconBypassMan::ErrorReporter < ProconBypassMan::BaseJob
+class ProconBypassMan::ReportErrorJob < ProconBypassMan::BaseJob
   # @param [String] body
   def self.report(body)
     ProconBypassMan::Background::HttpClient.new(

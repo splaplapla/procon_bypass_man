@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe ProconBypassMan::ErrorReporter do
+describe ProconBypassMan::ReportErrorJob do
   before do
     described_class.reset!
   end

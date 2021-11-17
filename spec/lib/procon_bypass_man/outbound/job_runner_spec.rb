@@ -5,7 +5,7 @@ describe ProconBypassMan::Background::JobRunner do
     it do
       args = [1]
       ProconBypassMan::Background::JobRunner::Job.new(
-        klass: ProconBypassMan::PressedButtonsReporter,
+        klass: ProconBypassMan::ReportPressedButtonsJob,
         args: args,
       ).perform
     end
@@ -13,9 +13,9 @@ describe ProconBypassMan::Background::JobRunner do
 
   describe '.perform_async' do
     it do
-      ProconBypassMan::ErrorReporter.perform_async("a")
+      ProconBypassMan::ReportErrorJob.perform_async("a")
       job = ProconBypassMan::Background::JobRunner.queue.pop
-      expect(job).to eq(:args=>["a"], :reporter_class=>ProconBypassMan::ErrorReporter)
+      expect(job).to eq(:args=>["a"], :reporter_class=>ProconBypassMan::ReportErrorJob)
     end
   end
 

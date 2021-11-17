@@ -73,7 +73,7 @@ sudo kill -USR2 `cat ./pbm_pid`
 * `bundle exec bin/dev_api_server.rb`
 * `INTERNAL_API_SERVER=http://localhost:4567 bin/console`
 * `API_SERVER=http://localhost:4567 bin/console`
-  * `message = ProconBypassMan::BootMessage.new; ProconBypassMan::BootReporter.report(body: message.to_hash)`
+  * `message = ProconBypassMan::BootMessage.new; ProconBypassMan::ReportBootJob.report(body: message.to_hash)`
 
 ### リリース手順
 * project_template/web.rb, project_template/app.rb, lib/procon_bypass_man/version.rb のバージョンをあげる

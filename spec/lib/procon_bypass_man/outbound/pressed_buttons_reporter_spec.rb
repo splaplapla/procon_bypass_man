@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe ProconBypassMan::PressedButtonsReporter do
+describe ProconBypassMan::ReportPressedButtonsJob do
   before do
     described_class.reset!
   end

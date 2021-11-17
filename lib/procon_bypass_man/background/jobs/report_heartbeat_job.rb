@@ -1,4 +1,4 @@
-class ProconBypassMan::HeartbeatReporter < ProconBypassMan::BaseJob
+class ProconBypassMan::ReportHeartbeatJob < ProconBypassMan::BaseJob
   # @param [String] body
   def self.perform(body)
     ProconBypassMan::Background::HttpClient.new(
