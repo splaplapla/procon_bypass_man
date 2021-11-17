@@ -9,6 +9,7 @@ class ProconBypassMan::Runner
   def run
     first_negotiation
     ProconBypassMan::PrintBootMessageCommand.execute
+    ProconBypassMan::Background::JobRunner.start!
 
     self_read, self_write = IO.pipe
     %w(TERM INT USR1 USR2).each do |sig|
