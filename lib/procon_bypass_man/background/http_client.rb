@@ -1,5 +1,5 @@
 module ProconBypassMan
-  module Outbound
+  module Background
     class HttpClient
       class HttpRequest
         def self.request!(uri: , hostname: , body: , device_id: , session_id: nil, event_type: )

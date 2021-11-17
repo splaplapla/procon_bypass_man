@@ -1,5 +1,5 @@
 module ProconBypassMan
-  module Outbound
+  module Background
     class JobRunner
       class Job
         def initialize(klass: , args: )

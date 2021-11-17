@@ -1,4 +1,4 @@
-module ProconBypassMan::Outbound::HasRoundRobinServer
+module ProconBypassMan::Background::HasRoundRobinServer
   class RoundRobinServer
     def initialize(servers: )
       if servers.nil? || servers.empty?

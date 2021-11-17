@@ -1,9 +1,7 @@
-require "procon_bypass_man/outbound/http_client"
-
-class ProconBypassMan::BootReporter <  ProconBypassMan::BaseEventReporter
+class ProconBypassMan::BootReporter <  ProconBypassMan::BaseJob
   # @param [String] body
   def self.perform(body)
-    ProconBypassMan::Outbound::HttpClient.new(
+    ProconBypassMan::Background::HttpClient.new(
       path: path,
       server_picker: server_picker,
       retry_on_connection_error: true,

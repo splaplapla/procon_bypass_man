@@ -1,0 +1,8 @@
+require "procon_bypass_man/background/job_runnable"
+require "procon_bypass_man/background/has_round_robin_server"
+require "procon_bypass_man/background/http_client"
+require "procon_bypass_man/background/jobs/base_job"
+require "procon_bypass_man/background/jobs/report_boot_job"
+require "procon_bypass_man/background/jobs/report_error_job"
+require "procon_bypass_man/background/jobs/report_heartbeat_job"
+require "procon_bypass_man/background/jobs/report_pressed_buttons_job"
