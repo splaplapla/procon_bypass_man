@@ -3,7 +3,7 @@ class ProconBypassMan::ReportErrorJob < ProconBypassMan::BaseJob
   def self.report(body)
     ProconBypassMan::Background::HttpClient.new(
       path: path,
-      server_picker: server_picker,
+      pool_server: pool_server,
       retry_on_connection_error: false,
     ).post(body: body, event_type: :error,)
   end

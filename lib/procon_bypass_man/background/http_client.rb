@@ -20,15 +20,15 @@ module ProconBypassMan
         end
       end
 
-      def initialize(path: , server_picker: , retry_on_connection_error: false)
+      def initialize(path: , pool_server: , retry_on_connection_error: false)
         @path = path
-        @server_picker = server_picker
+        @pool_server = pool_server
         @hostname = `hostname`.chomp
         @retry_on_connection_error = retry_on_connection_error
       end
 
       def post(body: , event_type: )
-        if @server_picker.server.nil?
+        if @pool_server.server.nil?
           ProconBypassMan.logger.info('送信先が未設定なのでスキップしました')
           return
         end
@@ -41,7 +41,7 @@ module ProconBypassMan
         device_id = ProconBypassMan.device_id
 
         response = HttpRequest.request!(
-          uri: URI.parse("#{@server_picker.server}#{@path}"),
+          uri: URI.parse("#{@pool_server.server}#{@path}"),
           hostname: @hostname,
           device_id: device_id,
           session_id: session_id,
@@ -52,7 +52,7 @@ module ProconBypassMan
         when /^200/
           return
         else
-          @server_picker.next!
+          @pool_server.next!
           ProconBypassMan.logger.error("200以外(#{response.code})が帰ってきました. #{response.body}")
         end
       rescue SocketError => e

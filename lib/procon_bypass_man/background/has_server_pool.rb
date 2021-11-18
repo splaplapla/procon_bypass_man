@@ -1,5 +1,5 @@
-module ProconBypassMan::Background::HasRoundRobinServer
-  class RoundRobinServer
+module ProconBypassMan::Background::HasServerPool
+  class ServerPool
     def initialize(servers: )
       if servers.nil? || servers.empty?
         return
@@ -39,11 +39,11 @@ module ProconBypassMan::Background::HasRoundRobinServer
   end
 
   def reset!
-    @server_picker = nil
+    @pool_server = nil
   end
 
-  def server_picker
-    @server_picker ||= RoundRobinServer.new(
+  def pool_server
+    @pool_server ||= ServerPool.new(
       servers: servers
     )
   end

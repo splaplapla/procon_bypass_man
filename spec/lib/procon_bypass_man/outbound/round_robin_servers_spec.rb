@@ -1,7 +1,7 @@
 require "spec_helper"
 
-describe ProconBypassMan::Background::HasRoundRobinServer do
-  let(:target) { ProconBypassMan::Background::HasRoundRobinServer::RoundRobinServer }
+describe ProconBypassMan::Background::HasServerPool do
+  let(:target) { ProconBypassMan::Background::HasServerPool::ServerPool }
   describe '#pick' do
     context 'when provide a nil' do
       it do

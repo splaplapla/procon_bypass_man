@@ -1,5 +1,5 @@
 class ProconBypassMan::ReportPressedButtonsJob
-  extend ProconBypassMan::Background::HasRoundRobinServer
+  extend ProconBypassMan::Background::HasServerPool
   extend ProconBypassMan::Background::JobRunnable
 
   PATH = "/api/pressed_buttons"
@@ -8,7 +8,7 @@ class ProconBypassMan::ReportPressedButtonsJob
   def self.perform(body)
     ProconBypassMan::Background::HttpClient.new(
       path: PATH,
-      server_picker: server_picker,
+      pool_server: pool_server,
     ).post(body: body, event_type: :internal)
   end
 

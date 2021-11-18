@@ -1,5 +1,5 @@
 class ProconBypassMan::BaseJob
-  extend ProconBypassMan::Background::HasRoundRobinServer
+  extend ProconBypassMan::Background::HasServerPool
   extend ProconBypassMan::Background::JobRunnable
 
   def self.servers
