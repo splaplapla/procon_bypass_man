@@ -1,17 +1,6 @@
 module ProconBypassMan
   module Background
     class JobRunner
-      class Job
-        def initialize(klass: , args: )
-          @klass = klass
-          @args = args
-        end
-
-        def perform
-          @klass.perform(*@args)
-        end
-      end
-
       MAX_QUEUE_SIZE = 100
 
       def self.start!
@@ -29,7 +18,7 @@ module ProconBypassMan
         @@thread = Thread.new do
           while(item = self.class.queue.pop)
             begin
-              Job.new(klass: item[:reporter_class], args: item[:args]).perform
+              JobPerformer.new(klass: item[:reporter_class], args: item[:args]).perform
               sleep(1)
             rescue => e
               ProconBypassMan.logger.error(e)

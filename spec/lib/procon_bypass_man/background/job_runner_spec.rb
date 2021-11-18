@@ -1,16 +1,6 @@
 require "spec_helper"
 
 describe ProconBypassMan::Background::JobRunner do
-  describe ProconBypassMan::Background::JobRunner::Job do
-    it do
-      args = [1]
-      ProconBypassMan::Background::JobRunner::Job.new(
-        klass: ProconBypassMan::ReportPressedButtonsJob,
-        args: args,
-      ).perform
-    end
-  end
-
   describe '.perform_async' do
     it do
       ProconBypassMan::ReportErrorJob.perform_async("a")
