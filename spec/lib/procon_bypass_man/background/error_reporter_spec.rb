@@ -5,7 +5,7 @@ describe ProconBypassMan::ReportErrorJob do
     described_class.reset!
   end
 
-  describe '.report' do
+  describe '.perform' do
     context 'ProconBypassMan.api_serverが設定されていない時' do
       before do
         ProconBypassMan.configure do |config|
@@ -14,7 +14,7 @@ describe ProconBypassMan::ReportErrorJob do
       end
       it do
         expect(ProconBypassMan.config.api_servers).to eq([])
-        expect { described_class.report(body: RuntimeError.new) }.not_to raise_error
+        expect { described_class.perform(body: RuntimeError.new) }.not_to raise_error
       end
     end
 
@@ -28,7 +28,7 @@ describe ProconBypassMan::ReportErrorJob do
         http_response = double(:http_response).as_null_object
         expect(http_response).to receive(:code) { "200" }
         expect_any_instance_of(Net::HTTP).to receive(:post) { http_response }
-        expect { described_class.report(body: RuntimeError.new) }.not_to raise_error
+        expect { described_class.perform(body: RuntimeError.new) }.not_to raise_error
       end
     end
   end

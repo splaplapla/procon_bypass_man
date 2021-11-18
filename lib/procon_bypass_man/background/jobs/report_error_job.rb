@@ -1,6 +1,6 @@
 class ProconBypassMan::ReportErrorJob < ProconBypassMan::BaseJob
   # @param [String] body
-  def self.report(body)
+  def self.perform(body)
     ProconBypassMan::Background::HttpClient.new(
       path: path,
       pool_server: pool_server,
