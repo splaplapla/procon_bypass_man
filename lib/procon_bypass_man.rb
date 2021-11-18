@@ -3,6 +3,7 @@ require 'yaml'
 require "json"
 require "net/http"
 require "fileutils"
+require "securerandom"
 
 require_relative "procon_bypass_man/version"
 require_relative "procon_bypass_man/callbacks"
@@ -13,22 +14,20 @@ require_relative "procon_bypass_man/runner"
 require_relative "procon_bypass_man/processor"
 require_relative "procon_bypass_man/configuration"
 require_relative "procon_bypass_man/buttons_setting_configuration"
-require_relative "procon_bypass_man/readonly_procon"
+require_relative "procon_bypass_man/procon_reader"
 require_relative "procon_bypass_man/procon"
 require_relative "procon_bypass_man/procon/analog_stick"
 require_relative "procon_bypass_man/procon/analog_stick_cap"
-require_relative "procon_bypass_man/outbound/reporter"
-require_relative "procon_bypass_man/outbound/error_reporter"
-require_relative "procon_bypass_man/outbound/pressed_buttons_reporter"
+require_relative "procon_bypass_man/background"
+require_relative "procon_bypass_man/commands"
 require_relative "procon_bypass_man/on_memory_cache"
 
 STDOUT.sync = true
 Thread.abort_on_exception = true
 
 module ProconBypassMan
-  extend ProconBypassMan::Configuration::ClassAttributes
+  extend ProconBypassMan::Configuration::ClassMethods
 
-  class ProConRejected < StandardError; end
   class CouldNotLoadConfigError < StandardError; end
   class FirstConnectionError < StandardError; end
   class EternalConnectionError < StandardError; end
@@ -45,25 +44,27 @@ module ProconBypassMan
     end
   end
 
+  # @return [void]
   def self.run(setting_path: nil, &block)
     ProconBypassMan.logger.info "PBMを起動しています"
     puts "PBMを起動しています"
     buttons_setting_configure(setting_path: setting_path, &block)
+    initialize_pbm
     File.write(pid_path, $$)
-    Runner.new.run
+    ProconBypassMan::WriteSessionIdCommand.execute
+    gadget, procon = ProconBypassMan::ConnectDeviceCommand.execute!
+    Runner.new(gadget: gadget, procon: procon).run
   rescue CouldNotLoadConfigError
-    ProconBypassMan.logger.error "設定ファイルが不正です。設定ファイルの読み込みに失敗しました"
-    puts "設定ファイルが不正です。設定ファイルの読み込みに失敗しました"
+    ProconBypassMan::SendErrorCommand.execute(error: "設定ファイルが不正です。設定ファイルの読み込みに失敗しました")
     FileUtils.rm_rf(ProconBypassMan.pid_path)
     FileUtils.rm_rf(ProconBypassMan.digest_path)
     exit 1
   rescue EternalConnectionError
-    ProconBypassMan.logger.error "接続の見込みがないのでsleepしまくります"
-    puts "接続の見込みがないのでsleepしまくります"
+    ProconBypassMan::SendErrorCommand.execute(error: "接続の見込みがないのでsleepしまくります")
     FileUtils.rm_rf(ProconBypassMan.pid_path)
     sleep(999999999)
   rescue FirstConnectionError
-    puts "接続を確立できませんでした。やりなおします。"
+    ProconBypassMan::SendErrorCommand.execute(error: "接続を確立できませんでした。やりなおします。")
     retry
   end
 
@@ -73,15 +74,21 @@ module ProconBypassMan
     @@configuration
   end
 
+  # @return [ProconBypassMan::Configuration]
   def self.config
     @@configuration ||= ProconBypassMan::Configuration.new
   end
 
+  # @return [void]
   def self.reset!
     ProconBypassMan::Procon::MacroRegistry.reset!
     ProconBypassMan::Procon::ModeRegistry.reset!
     ProconBypassMan::Procon.reset!
     ProconBypassMan::ButtonsSettingConfiguration.instance.reset!
     ProconBypassMan::IOMonitor.reset!
+  end
+
+  def self.initialize_pbm
+    ProconBypassMan::WriteDeviceIdCommand.execute
   end
 end

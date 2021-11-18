@@ -1,5 +1,5 @@
 class ProconBypassMan::Configuration
-  module ClassAttributes
+  module ClassMethods
     def root
       config.root
     end
@@ -23,10 +23,20 @@ class ProconBypassMan::Configuration
     def cache
       @@cache_table ||= ProconBypassMan::OnMemoryCache.new
     end
+
+    # @return [String]
+    def session_id
+      ProconBypassMan::WriteSessionIdCommand.execute
+    end
+
+    # @return [String]
+    def device_id
+      ProconBypassMan::WriteDeviceIdCommand.execute
+    end
   end
 
-  attr_reader :api_server
-  attr_accessor :enable_critical_error_logging
+  attr_accessor :enable_critical_error_logging, :raw_setting
+  attr_writer :verbose_bypass_log
 
   def root=(path)
     @root = path
@@ -41,8 +51,8 @@ class ProconBypassMan::Configuration
     end
   end
 
-  def api_server=(api_server)
-    @api_server = api_server
+  def api_servers=(api_servers)
+    @api_servers = api_servers
     return self
   end
 
@@ -85,5 +95,17 @@ class ProconBypassMan::Configuration
         'http://localhost:8080',
       ].compact
     end
+  end
+
+  def api_servers
+    if !!ENV["API_SERVER"]
+      [ENV["API_SERVER"]].reject(&:nil?)
+    else
+      [@api_servers].flatten.reject(&:nil?)
+    end
+  end
+
+  def verbose_bypass_log
+    @verbose_bypass_log || !!ENV["VERBOSE_BYPASS_LOG"]
   end
 end

@@ -43,7 +43,7 @@ describe ProconBypassMan::IOMonitor do
     end
   end
 
-  describe '#formated_previous_table' do
+  describe '#formatted_previous_table' do
     it do
       monitor = ProconBypassMan::IOMonitor.new(label: "hai")
       monitor.previous_table = {
@@ -56,7 +56,7 @@ describe ProconBypassMan::IOMonitor do
         eagain_wait_readable_on_write: 2,
         end_function: 16,
       }
-      expect(monitor.formated_previous_table).to eq("(26.6%(16/60), loss: 3, 2)")
+      expect(monitor.formatted_previous_table).to eq("(26.6%(16/60), loss: 3, 2)")
     end
   end
 end

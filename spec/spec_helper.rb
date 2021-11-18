@@ -21,8 +21,8 @@ ENV['PBM_ENV'] = 'test'
 #
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 RSpec.configure do |config|
-  config.before(:all) do
-    ProconBypassMan::Background::Reporter.start!
+  config.before(:each) do
+    ProconBypassMan::Background::JobRunner.queue.clear
   end
 
   # rspec-expectations config goes here. You can use an alternate

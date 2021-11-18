@@ -1,6 +1,6 @@
-require "procon_bypass_man/configuration/validator"
-require "procon_bypass_man/configuration/loader"
-require "procon_bypass_man/configuration/layer"
+require "procon_bypass_man/buttons_setting_configuration/validator"
+require "procon_bypass_man/buttons_setting_configuration/loader"
+require "procon_bypass_man/buttons_setting_configuration/layer"
 
 module ProconBypassMan
   class AnalogStickPosition < Struct.new(:x, :y); end
@@ -42,7 +42,6 @@ module ProconBypassMan
         'manual'
       end
     end
-    MODES = [:manual]
     def layer(direction, mode: ManualMode, &block)
       mode_name = case mode
                   when String
@@ -52,7 +51,7 @@ module ProconBypassMan
                   else
                     mode.name.to_sym
                   end
-      unless (MODES + ProconBypassMan::Procon::ModeRegistry.plugins.keys).include?(mode_name)
+      unless ([ManualMode.name.to_sym] + ProconBypassMan::Procon::ModeRegistry.plugins.keys).include?(mode_name)
         raise("#{mode_name} mode is unknown")
       end
 

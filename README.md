@@ -67,12 +67,13 @@ sudo kill -USR2 `cat ./pbm_pid`
 ```
 
 ### 起動ログをサーバに送信する
-* `ProconBypassMan.api_server = "http://.."` を設定すると、 `POST /api/reports` に対して起動ログを送信するようになります
+* `ProconBypassMan.api_server = "http://.."` を設定すると、 `POST /api/events` に対して起動ログなどを送信するようになります
 
 ### 開発環境でログの送信を確認する方法
 * `bundle exec bin/dev_api_server.rb`
 * `INTERNAL_API_SERVER=http://localhost:4567 bin/console`
-  * `message = ProconBypassMan::BootMessage.new; ProconBypassMan::Reporter.report(body: message.to_hash)"`
+* `API_SERVER=http://localhost:4567 bin/console`
+  * `message = ProconBypassMan::BootMessage.new; ProconBypassMan::ReportBootJob.report(body: message.to_hash)`
 
 ### リリース手順
 * project_template/web.rb, project_template/app.rb, lib/procon_bypass_man/version.rb のバージョンをあげる

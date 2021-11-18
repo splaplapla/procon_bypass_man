@@ -25,6 +25,8 @@ describe ProconBypassMan do
       :pid_path,
       :root,
       :digest_path,
+      :session_id,
+      :device_id,
     ].each do |me|
       it "has #{me} method" do
         expect(described_class.respond_to?(me)).to eq(true)
@@ -38,9 +40,11 @@ describe ProconBypassMan do
       :error_logger,
       :root,
       :root=,
-      :api_server=,
-      :api_server,
+      :verbose_bypass_log,
+      :verbose_bypass_log=,
       :digest_path,
+      :raw_setting,
+      :raw_setting=,
     ].each do |me|
       it "has config.#{me} method" do
         expect(described_class.config.respond_to?(me)).to eq(true)

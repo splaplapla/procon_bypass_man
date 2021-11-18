@@ -1,15 +1,20 @@
 require_relative "io_monitor"
 require_relative "uptime"
 require_relative "boot_message"
-require_relative "background/report_thread"
+require_relative "background/job_runner"
 
 class ProconBypassMan::Runner
   class InterruptForRestart < StandardError; end
 
-  def run
-    first_negotiation
-    print_booted_message
+  def initialize(gadget: , procon: )
+    @gadget = gadget
+    @procon = procon
 
+    ProconBypassMan::PrintBootMessageCommand.execute
+    ProconBypassMan::Background::JobRunner.start!
+  end
+
+  def run
     self_read, self_write = IO.pipe
     %w(TERM INT USR1 USR2).each do |sig|
       begin
@@ -17,7 +22,7 @@ class ProconBypassMan::Runner
           self_write.puts(sig)
         end
       rescue ArgumentError
-        ProconBypassMan.logger.error("Signal #{sig} not supported")
+        ProconBypassMan::SendErrorCommand.execute(error: "Signal #{sig} not supported")
       end
     end
 
@@ -37,10 +42,10 @@ class ProconBypassMan::Runner
         ProconBypassMan.logger.info("Reloading config file")
         begin
           ProconBypassMan::ButtonsSettingConfiguration::Loader.reload_setting
-          puts "設定ファイルの再読み込みができました"
         rescue ProconBypassMan::CouldNotLoadConfigError
-          ProconBypassMan.logger.error "設定ファイルが不正です。再読み込みができませんでした"
+          ProconBypassMan::SendErrorCommand.execute(error: "設定ファイルが不正です。再読み込みができませんでした")
         end
+        ProconBypassMan::SendReloadConfigEventCommand.execute
         ProconBypassMan.logger.info("バイパス処理を再開します")
       rescue Interrupt
         $will_terminate_token = true
@@ -59,7 +64,7 @@ class ProconBypassMan::Runner
 
   def main_loop
     ProconBypassMan::IOMonitor.start!
-    ProconBypassMan::Background::Reporter.start!
+    ProconBypassMan::Background::JobRunner.start!
 
     # gadget => procon
     # 遅くていい
@@ -76,15 +81,15 @@ class ProconBypassMan::Runner
         sleep(0.005)
       rescue ProconBypassMan::Timer::Timeout
         ProconBypassMan.logger.info "10秒経過したのでThread1を終了します"
+        monitor1.shutdown
         puts "10秒経過したのでThread1を終了します"
         break
       rescue Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError => e
-        ProconBypassMan.logger.error "Proconが切断されました.終了処理を開始します"
+        ProconBypassMan::SendErrorCommand.execute(error: "Switchとの切断されました.終了処理を開始します. #{e.full_message}")
         Process.kill "TERM", Process.ppid
       rescue Errno::ETIMEDOUT => e
         # TODO まれにこれが発生する. 再接続したい
-        ProconBypassMan::ErrorReporter.report(body: e)
-        ProconBypassMan.logger.error "Switchとの切断されました.終了処理を開始します"
+        ProconBypassMan::SendErrorCommand.execute(error: "Switchと意図せず切断されました.終了処理を開始します. #{e.full_message}")
         Process.kill "TERM", Process.ppid
       end
       ProconBypassMan.logger.info "Thread1を終了します"
@@ -99,10 +104,10 @@ class ProconBypassMan::Runner
         break if $will_terminate_token
         bypass.send_procon_to_gadget!
       rescue EOFError => e
-        ProconBypassMan.logger.error "Proconと通信ができませんでした.終了処理を開始します"
+        ProconBypassMan::SendErrorCommand.execute(error: "Proconが切断されました。終了処理を開始します. #{e.full_message}")
         Process.kill "TERM", Process.ppid
       rescue Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError => e
-        ProconBypassMan.logger.error "Proconが切断されました。終了処理を開始します"
+        ProconBypassMan::SendErrorCommand.execute(error: "Proconが切断されました。終了処理を開始します2. #{e.full_message}")
         Process.kill "TERM", Process.ppid
       end
       ProconBypassMan.logger.info "Thread2を終了します"
@@ -134,15 +139,6 @@ class ProconBypassMan::Runner
     end
   end
 
-  def first_negotiation
-    @gadget, @procon = ProconBypassMan::DeviceConnector.connect
-  rescue ProconBypassMan::Timer::Timeout
-    ::ProconBypassMan.logger.error "デバイスとの通信でタイムアウトが起きて接続ができませんでした。"
-    @gadget&.close
-    @procon&.close
-    raise ::ProconBypassMan::EternalConnectionError
-  end
-
   def handle_signal(sig)
     ProconBypassMan.logger.info "#{$$}で#{sig}を受け取りました"
     case sig
@@ -151,13 +147,5 @@ class ProconBypassMan::Runner
     when 'INT', 'TERM'
       raise Interrupt
     end
-  end
-
-  # @return [void]
-  def print_booted_message
-    message = ProconBypassMan::BootMessage.new
-    ProconBypassMan.logger.info(message.to_s)
-    Thread.new { ProconBypassMan::Reporter.report(body: message.to_hash) }
-    puts message.to_s
   end
 end

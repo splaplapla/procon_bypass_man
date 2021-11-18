@@ -8,9 +8,6 @@ interface _Pluginable
 end
 
 module ProconBypassMan
-  class ProConRejected < StandardError
-  end
-
   class CouldNotLoadConfigError < StandardError
   end
 
@@ -168,7 +165,7 @@ module ProconBypassMan
 end
 
 class ProconBypassMan::Configuration
-  module ClassAttributes
+  module ClassMethods
     def root: () -> untyped
 
     def logger: () -> untyped
@@ -427,10 +424,6 @@ module ProconBypassMan::Procon::PressedButtonHelper
   module Static
     def pressed_button?: (untyped button) -> untyped
   end
-
-  module Dynamic
-    def compile_if_not_compile_yet!: () -> untyped
-  end
 end
 
 class ProconBypassMan::Procon
@@ -438,8 +431,6 @@ class ProconBypassMan::Procon
     include LayerChangeable
 
     include PressedButtonHelper::Static
-
-    extend PressedButtonHelper::Dynamic
 
     attr_reader binary: untyped
 
@@ -498,7 +489,14 @@ end
 
 module ProconBypassMan
   class Uptime
-    def self.from_boot: () -> untyped
+    # @return [Integer]
+    def self.from_boot: () -> Integer
+
+    # @param [String] uptime_cmd_result
+    def initialize: (uptime_cmd_result: String uptime_cmd_result) -> void
+
+    # @return [Integer]
+    def from_boot: () -> Integer
   end
 end
 

@@ -1,30 +1,34 @@
 require "spec_helper"
 
-describe ProconBypassMan::ErrorReporter do
-  describe '.report' do
+describe ProconBypassMan::ReportErrorJob do
+  before do
+    described_class.reset_server_pool!
+  end
+
+  describe '.perform' do
     context 'ProconBypassMan.api_serverが設定されていない時' do
       before do
         ProconBypassMan.configure do |config|
-          config.api_server = nil
+          config.api_servers = nil
         end
       end
       it do
-        expect(ProconBypassMan.config.api_server).to be_nil
-        expect { described_class.report(body: RuntimeError.new) }.not_to raise_error
+        expect(ProconBypassMan.config.api_servers).to eq([])
+        expect { described_class.perform(body: RuntimeError.new) }.not_to raise_error
       end
     end
 
     context 'ProconBypassMan.api_serverが設定しているとき' do
       before do
         ProconBypassMan.configure do |config|
-          config.api_server = "http://localhost:3000"
+          config.api_servers = ["http://localhost:3000"]
         end
       end
       it do
         http_response = double(:http_response).as_null_object
         expect(http_response).to receive(:code) { "200" }
         expect_any_instance_of(Net::HTTP).to receive(:post) { http_response }
-        expect { described_class.report(body: RuntimeError.new) }.not_to raise_error
+        expect { described_class.perform(body: RuntimeError.new) }.not_to raise_error
       end
     end
   end

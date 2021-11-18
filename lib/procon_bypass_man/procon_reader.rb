@@ -1,15 +1,14 @@
-# read
-class ProconBypassMan::ReadonlyProcon
+class ProconBypassMan::ProconReader
   def initialize(binary: )
     @binary = binary
-    @user_operation = ProconBypassMan::Procon::UserOperation.new(binary.dup)
     @analog_stick = ProconBypassMan::Procon::AnalogStick.new(binary: binary)
   end
 
   # @return [Array<Symbol>]
   def pressed
+    aware = ProconBypassMan::PpressButtonAware.new(@binary)
     pressed_table = ::ProconBypassMan::Procon::ButtonCollection::BUTTONS.reduce({}) do |acc, button|
-      acc[button] = @user_operation.pressed_button?(button)
+      acc[button] = aware.pressed_button?(button)
       acc
     end
     pressed_table.select { |_key, value| value }.keys

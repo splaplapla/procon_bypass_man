@@ -1,21 +1,24 @@
 module ProconBypassMan
   module Background
-    class Reporter
+    class JobRunner
       MAX_QUEUE_SIZE = 100
 
       def self.start!
         new.start!
       end
 
+      # for test
+      def self.stop!
+        return unless defined?(@@thread)
+        @@thread.kill
+      end
+
       def start!
         return if defined?(@@thread)
-        @@latest_request_result = { stats: true, timestamp: Time.now }
-        @@queue = Queue.new
         @@thread = Thread.new do
-          while(item = @@queue.pop)
+          while(item = self.class.queue.pop)
             begin
-              result = item[:reporter_class].report(body: item[:data])
-              @@latest_request_result = { stats: result.stats, timestamp: Time.now }
+              JobPerformer.new(klass: item[:reporter_class], args: item[:args]).perform
               sleep(1)
             rescue => e
               ProconBypassMan.logger.error(e)
@@ -25,8 +28,7 @@ module ProconBypassMan
       end
 
       def self.queue
-        raise "Do not start this thread yet" unless defined?(@@queue)
-        @@queue
+        @@queue ||= Queue.new
       end
 
       def self.push(hash)

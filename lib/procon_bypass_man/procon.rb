@@ -1,10 +1,9 @@
 class ProconBypassMan::Procon
-  require "procon_bypass_man/procon/data"
+  require "procon_bypass_man/procon/consts"
   require "procon_bypass_man/procon/mode_registry"
   require "procon_bypass_man/procon/macro_registry"
-  require "procon_bypass_man/procon/layer_changeable"
+  require "procon_bypass_man/procon/layer_changer"
   require "procon_bypass_man/procon/button_collection"
-  require "procon_bypass_man/procon/pressed_button_helper"
   require "procon_bypass_man/procon/user_operation"
   require "procon_bypass_man/procon/flip_cache"
   require "procon_bypass_man/procon/press_button_aware"
@@ -35,8 +34,9 @@ class ProconBypassMan::Procon
   end
 
   def apply!
-    if user_operation.change_layer?
-      @@status[:current_layer_key] = user_operation.next_layer_key if user_operation.pressed_next_layer?
+    layer_changer = ProconBypassMan::Procon::LayerChanger.new(binary: user_operation.binary)
+    if layer_changer.change_layer?
+      @@status[:current_layer_key] = layer_changer.next_layer_key if layer_changer.pressed_next_layer?
       user_operation.set_no_action!
       return
     end
@@ -137,13 +137,7 @@ class ProconBypassMan::Procon
       end
     end
 
-    b = user_operation.binary
-    ProconBypassMan.cache.fetch key: 'user_operation.binary', expires_in: 60 do
-      left_analog_stick = ProconBypassMan::ReadonlyProcon.new(binary: b).left_analog_stick
-      ProconBypassMan.logger.debug "x: #{left_analog_stick[:x]}, val: #{left_analog_stick[:x].to_s(2)}"
-      ProconBypassMan.logger.debug "y: #{left_analog_stick[:y]}, val: #{left_analog_stick[:y].to_s(2)}"
-    end
-    b
+    user_operation.binary
   end
 
   private

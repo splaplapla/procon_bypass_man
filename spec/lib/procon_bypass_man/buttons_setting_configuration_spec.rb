@@ -22,6 +22,10 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
           expect(ProconBypassMan::ButtonsSettingConfiguration.instance.neutral_position.x).to eq(1000)
           expect(ProconBypassMan::ButtonsSettingConfiguration.instance.neutral_position.y).to eq(1000)
         end
+        it do
+          ProconBypassMan::ButtonsSettingConfiguration::Loader.load(setting_path: setting.path)
+          expect(ProconBypassMan.config.raw_setting).to be_a(Hash)
+        end
       end
       context 'with left_analog_stick_cap' do
         context 'with force_neutral' do

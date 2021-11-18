@@ -4,7 +4,7 @@ require "sinatra"
 require "webrick"
 require "pry"
 
-post '/api/reports' do
+post '/api/events' do
   puts JSON.parse(request.body.read)
   status 200
   body ''
