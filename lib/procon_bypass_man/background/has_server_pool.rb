@@ -38,7 +38,7 @@ module ProconBypassMan::Background::HasServerPool
     end
   end
 
-  def reset!
+  def reset_server_pool!
     @pool_server = nil
   end
 

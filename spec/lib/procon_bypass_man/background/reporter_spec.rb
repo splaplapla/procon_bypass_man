@@ -2,7 +2,7 @@ require "spec_helper"
 
 describe ProconBypassMan::ReportBootJob do
   before do
-    described_class.reset!
+    described_class.reset_server_pool!
   end
 
   describe '.perform' do
