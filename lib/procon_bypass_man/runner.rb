@@ -45,10 +45,10 @@ class ProconBypassMan::Runner
         ProconBypassMan.logger.info("Reloading config file")
         begin
           ProconBypassMan::ButtonsSettingConfiguration::Loader.reload_setting
+          ProconBypassMan::SendReloadConfigEventCommand.execute
         rescue ProconBypassMan::CouldNotLoadConfigError
           ProconBypassMan::SendErrorCommand.execute(error: "設定ファイルが不正です。再読み込みができませんでした")
         end
-        ProconBypassMan::SendReloadConfigEventCommand.execute
         ProconBypassMan.logger.info("バイパス処理を再開します")
       rescue Interrupt
         $will_terminate_token = true
