@@ -2,9 +2,12 @@ require_relative "io_monitor"
 require_relative "uptime"
 require_relative "boot_message"
 require_relative "background/job_runner"
+require_relative "signal_handler"
 
 class ProconBypassMan::Runner
   class InterruptForRestart < StandardError; end
+
+  include ProconBypassMan::SignalHandler
 
   def initialize(gadget: , procon: )
     @gadget = gadget
@@ -136,16 +139,6 @@ class ProconBypassMan::Runner
       @gadget&.close
       @procon&.close
       exit 1
-    end
-  end
-
-  def handle_signal(sig)
-    ProconBypassMan.logger.info "#{$$}で#{sig}を受け取りました"
-    case sig
-    when 'USR2'
-      raise InterruptForRestart
-    when 'INT', 'TERM'
-      raise Interrupt
     end
   end
 end
