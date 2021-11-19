@@ -5,7 +5,7 @@ describe ProconBypassMan::ReportPressedButtonsJob do
     described_class.reset_server_pool!
   end
 
-  describe '.report' do
+  describe '.perform' do
     before do
       ProconBypassMan.configure do |config|
         config.api_servers = ["http://localhost:3000", "http://localhost:4000"]
