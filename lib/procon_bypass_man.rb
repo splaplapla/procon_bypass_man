@@ -21,6 +21,7 @@ require_relative "procon_bypass_man/procon/analog_stick_cap"
 require_relative "procon_bypass_man/background"
 require_relative "procon_bypass_man/commands"
 require_relative "procon_bypass_man/on_memory_cache"
+require_relative "procon_bypass_man/splatoon2"
 
 STDOUT.sync = true
 Thread.abort_on_exception = true
