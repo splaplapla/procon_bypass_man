@@ -10,7 +10,13 @@ class ProconBypassMan::Bypass
     set_callback :send_procon_to_gadget, :after, :log_procon_to_gadget
 
     def log_send_gadget_to_procon
-      ProconBypassMan.logger.debug { ">>> #{bypass_value.to_text}" }
+      if ProconBypassMan.config.verbose_bypass_log
+        ProconBypassMan.logger.debug { ">>> #{bypass_value.to_text}" }
+      else
+        ProconBypassMan.cache.fetch key: 'bypass_log', expires_in: 1 do
+          ProconBypassMan.logger.debug { ">>> #{bypass_value.to_text}" }
+        end
+      end
     end
 
     def log_procon_to_gadget
