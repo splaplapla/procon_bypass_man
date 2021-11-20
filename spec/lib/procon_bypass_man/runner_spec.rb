@@ -1,16 +1,16 @@
 require "spec_helper"
 
-describe ProconBypassMan::BypassCommand do
+describe ProconBypassMan::Runner do
   it 'signalを受けてexitすること' do
     ProconBypassMan.config.verbose_bypass_log = false
     procon = double(:procon).as_null_object
     gadget = double(:gadget).as_null_object
-    command_pid = Kernel.fork { described_class.new(procon: procon, gadget: gadget).execute }
+    runner_pid = Kernel.fork { described_class.new(gadget: gadget, procon: procon).run }
     # signal trapが完了するまで適当にsleepする
     sleep 1
 
-    Process.kill('TERM', command_pid)
-    result = Process.waitpid2(command_pid)
+    Process.kill('TERM', runner_pid)
+    result = Process.waitpid2(runner_pid)
     expect(result[1].exited?).to eq(true)
   end
 end
