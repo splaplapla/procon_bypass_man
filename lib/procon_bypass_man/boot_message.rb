@@ -26,7 +26,7 @@ class ProconBypassMan::BootMessage
     booted_message = <<~EOF
       ----
       RUBY_VERSION: #{@table[:ruby_version]}
-      ProconBypassMan: #{@table[:pbm_version]}
+      ProconBypassMan::VERSION: #{@table[:pbm_version]}
       pid: #{@table[:pid]}
       root: #{@table[:root_path]}
       pid_path: #{@table[:pid_path]}
