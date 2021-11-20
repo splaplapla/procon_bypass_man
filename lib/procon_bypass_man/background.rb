@@ -1,4 +1,5 @@
 require "procon_bypass_man/background/job_runnable"
+require "procon_bypass_man/background/job_runner"
 require "procon_bypass_man/background/job_performer"
 require "procon_bypass_man/background/has_server_pool"
 require "procon_bypass_man/background/http_client"

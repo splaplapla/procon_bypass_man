@@ -1,8 +1,5 @@
 require_relative "io_monitor"
-require_relative "uptime"
 require_relative "boot_message"
-require_relative "background/job_runner"
-require_relative "signal_handler"
 
 class ProconBypassMan::Runner
   class InterruptForRestart < StandardError; end
