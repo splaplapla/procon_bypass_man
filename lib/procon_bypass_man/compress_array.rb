@@ -1,11 +1,14 @@
 module ProconBypassMan
   class CompressArray
     class CompressibleValue
+      # @params [String] prev
+      # @params [String] current
       def initialize(prev, current)
         @prev = prev
         @current = current
       end
 
+      # @return [Boolean]
       def compress?
         @prev.include?(@current)
       end
@@ -28,6 +31,7 @@ module ProconBypassMan
       @array = array
     end
 
+    # @return [Array<String>]
     def compress
       previous_value = nil
       @array.reduce([]) do |acc, item|
