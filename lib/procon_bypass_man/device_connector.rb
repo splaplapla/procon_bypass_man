@@ -88,7 +88,8 @@ class ProconBypassMan::DeviceConnector
     end
   rescue ProconBypassMan::Timer::Timeout
     ProconBypassMan.logger.error "timeoutになりました"
-    ProconBypassMan::SendErrorCommand.execute(error: debug_log_buffer.join("\n"))
+    copressed_buffer_text = ProconBypassMan::CompressArray.new(debug_log_buffer).compress.join("\n")
+    ProconBypassMan::SendErrorCommand.execute(error: copressed_buffer_text)
     raise if @throw_error_if_timeout
   end
 
