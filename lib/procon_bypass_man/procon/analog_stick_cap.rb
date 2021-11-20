@@ -60,6 +60,6 @@ class ProconBypassMan::Procon::AnalogStickCap
   end
 
   def hypotenuse
-    Math.sqrt(relative_x**2 + relative_y**2).floor(6)
+    Math.sqrt((relative_x**2) + (relative_y**2)).floor(6)
   end
 end
