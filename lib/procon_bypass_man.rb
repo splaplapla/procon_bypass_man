@@ -53,6 +53,7 @@ module ProconBypassMan
     initialize_pbm
     File.write(pid_path, $$)
     ProconBypassMan::WriteSessionIdCommand.execute
+    ProconBypassMan::Background::JobRunner.start!
     gadget, procon = ProconBypassMan::ConnectDeviceCommand.execute!
     Runner.new(gadget: gadget, procon: procon).run
   rescue CouldNotLoadConfigError

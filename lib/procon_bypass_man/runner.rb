@@ -14,7 +14,6 @@ class ProconBypassMan::Runner
     @procon = procon
 
     ProconBypassMan::PrintBootMessageCommand.execute
-    ProconBypassMan::Background::JobRunner.start!
   end
 
   def run
