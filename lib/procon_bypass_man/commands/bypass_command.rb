@@ -6,6 +6,7 @@ class ProconBypassMan::BypassCommand
     @procon = procon
 
     ProconBypassMan::IOMonitor.start!
+    ProconBypassMan::Background::JobRunner.queue.clear # forkしたときに残留物も移ってしまうため
     ProconBypassMan::Background::JobRunner.start!
   end
 
