@@ -48,6 +48,7 @@ class ProconBypassMan::DeviceConnector
   end
 
   def drain_all
+    debug_log_buffer = []
     unless @initialized_devices
       init_devices
     end
@@ -59,7 +60,9 @@ class ProconBypassMan::DeviceConnector
         begin
           timer.throw_if_timeout!
           data = from_device(item).read_nonblock(64)
+          debug_log_buffer << "read_from(#{item.read_from}): #{data}"
         rescue IO::EAGAINWaitReadable
+          debug_log_buffer << "read_from(#{item.read_from}): IO::EAGAINWaitReadable"
           retry
         end
 
@@ -74,8 +77,10 @@ class ProconBypassMan::DeviceConnector
           end
         if result
           ProconBypassMan.logger.info "OK(expected: #{value}, got: #{data.unpack("H*")})"
+          debug_log_buffer << "OK(expected: #{value}, got: #{data.unpack("H*")})"
         else
           ProconBypassMan.logger.info "NG(expected: #{value}, got: #{data.unpack("H*")})"
+          debug_log_buffer << "NG(expected: #{value}, got: #{data.unpack("H*")})"
           raise BytesMismatchError if @throw_error_if_mismatch
         end
         to_device(item).write_nonblock(data)
@@ -83,6 +88,7 @@ class ProconBypassMan::DeviceConnector
     end
   rescue ProconBypassMan::Timer::Timeout
     ProconBypassMan.logger.error "timeoutになりました"
+    ProconBypassMan.logger.debug debug_log_buffer.join("\n")
     raise if @throw_error_if_timeout
   end
 
