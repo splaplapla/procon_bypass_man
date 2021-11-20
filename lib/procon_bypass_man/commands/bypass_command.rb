@@ -4,6 +4,9 @@ class ProconBypassMan::BypassCommand
   def initialize(gadget:, procon:)
     @gadget = gadget
     @procon = procon
+
+    ProconBypassMan::IOMonitor.start!
+    ProconBypassMan::Background::JobRunner.start!
   end
 
   def execute
@@ -17,9 +20,6 @@ class ProconBypassMan::BypassCommand
         puts "プロセスでSignal #{sig} not supported"
       end
     end
-
-    ProconBypassMan::IOMonitor.start!
-    ProconBypassMan::Background::JobRunner.start!
 
     # gadget => procon
     # 遅くていい
