@@ -3,7 +3,7 @@ module ProconBypassMan::SignalHandler
     ProconBypassMan.logger.info "#{$$}で#{sig}を受け取りました"
     case sig
     when 'USR2'
-      raise InterruptForRestart
+      raise ProconBypassMan::Runner::InterruptForRestart
     when 'INT', 'TERM'
       raise Interrupt
     end
