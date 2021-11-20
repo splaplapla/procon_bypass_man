@@ -33,7 +33,7 @@ module ProconBypassMan
           return
         end
         if body.is_a?(Hash)
-          body = { body: body, event_type: event_type }
+          body = { body: body.to_json, event_type: event_type }
         else
           body = { body: { value: body, event_type: event_type } }
         end
