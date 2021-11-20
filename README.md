@@ -71,8 +71,7 @@ sudo kill -USR2 `cat ./pbm_pid`
 
 ### 開発環境でログの送信を確認する方法
 * `bundle exec bin/dev_api_server.rb`
-* `INTERNAL_API_SERVER=http://localhost:4567 bin/console`
-* `API_SERVER=http://localhost:4567 bin/console`
+* `API_SERVER=http://localhost:4567 INTERNAL_API_SERVER=http://localhost:4567 bin/console`
   * `message = ProconBypassMan::BootMessage.new; ProconBypassMan::ReportBootJob.report(body: message.to_hash)`
 
 ### リリース手順
