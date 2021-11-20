@@ -8,14 +8,14 @@ module ProconBypassMan
       end
 
       # for test
-      def self.stop!
-        return unless defined?(@@thread)
-        @@thread.kill
+      def stop!
+        return unless defined?(@thread)
+        @thread.kill
       end
 
       def start!
-        return if defined?(@@thread)
-        @@thread = Thread.new do
+        return if defined?(@thread)
+        @thread = Thread.new do
           while(item = self.class.queue.pop)
             begin
               JobPerformer.new(klass: item[:reporter_class], args: item[:args]).perform
@@ -25,6 +25,7 @@ module ProconBypassMan
             end
           end
         end
+        self
       end
 
       def self.queue
