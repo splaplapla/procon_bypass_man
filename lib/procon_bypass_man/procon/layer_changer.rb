@@ -1,6 +1,6 @@
 class ProconBypassMan::Procon::LayerChanger
   def initialize(binary: )
-    @procon_reader = ProconBypassMan::ProconReader.new(binary: binary)
+    @procon_reader = ProconBypassMan::ProconReader.new(binary: binary).freeze
   end
 
   # @return [Symbol]
