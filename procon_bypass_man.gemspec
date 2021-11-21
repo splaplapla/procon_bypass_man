@@ -8,7 +8,7 @@ Gem::Specification.new do |spec|
   spec.authors       = ["jiikko"]
   spec.email         = ["n905i.1214@gmail.com"]
 
-  spec.summary       = "extension for Nintendo Switch Pro Controller"
+  spec.summary       = "An extension for Nintendo Switch Pro Controller"
   spec.description   = spec.summary
   spec.homepage      = "https://github.com/splaplapla/procon_bypass_man"
   spec.license       = "MIT"
@@ -16,7 +16,7 @@ Gem::Specification.new do |spec|
 
   spec.metadata["homepage_uri"] = spec.homepage
   spec.metadata["source_code_uri"] = spec.homepage
-  # spec.metadata["changelog_uri"] = "TODO: Put your gem's CHANGELOG.md URL here."
+  spec.metadata["changelog_uri"] = "https://github.com/splaplapla/procon_bypass_man/blob/master/CHANGELOG.md"
 
   # Specify which files should be added to the gem when it is released.
   # The `git ls-files -z` loads the files in the RubyGem that have been added into git.
