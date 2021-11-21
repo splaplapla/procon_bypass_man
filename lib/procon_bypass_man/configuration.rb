@@ -108,4 +108,8 @@ class ProconBypassMan::Configuration
   def verbose_bypass_log
     @verbose_bypass_log || !!ENV["VERBOSE_BYPASS_LOG"]
   end
+
+  def raw_setting
+    @raw_setting ||= {}
+  end
 end

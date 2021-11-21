@@ -37,10 +37,8 @@ module ProconBypassMan
           case body
           when Hash
             { body: body.to_json, event_type: event_type }
-          when String
-            { body: { value: body, event_type: event_type } }
           else
-            { body: { value: body.to_s, event_type: event_type } }
+            { body: { value: body.to_json, event_type: event_type } }
           end
         session_id = ProconBypassMan.session_id
         device_id = ProconBypassMan.device_id
