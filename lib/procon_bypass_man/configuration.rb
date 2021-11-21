@@ -35,8 +35,8 @@ class ProconBypassMan::Configuration
     end
   end
 
-  attr_accessor :enable_critical_error_logging, :raw_setting
-  attr_writer :verbose_bypass_log
+  attr_accessor :enable_critical_error_logging
+  attr_writer :verbose_bypass_log, :raw_setting
 
   def root=(path)
     @root = path
