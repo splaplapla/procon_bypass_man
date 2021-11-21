@@ -28,7 +28,7 @@ Switch <-- (PBM): ZR連打
 ## Usage
 * USBガジェットモードで起動するRaspberry Pi4を用意する
   * https://github.com/splaplapla/procon_bypass_man/blob/master/docs/setup_raspi.md
-* Raspberry Pi4 で sudo pbmenv install latesta && cd /usr/share/pbm/current && sudo ruby app.rb
+* Raspberry Pi4 で sudo pbmenv install latest && cd /usr/share/pbm/current && sudo ruby app.rb
   * 動いたのを確認したらserviceとして登録にするなどしてください
 
 ## Plugins
@@ -85,3 +85,7 @@ sudo kill -USR2 `cat ./pbm_pid`
 ## License
 
 The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
+
+
+## Links
+* https://discord.gg/bEcRNKf4ep
