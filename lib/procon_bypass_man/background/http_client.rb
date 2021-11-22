@@ -33,13 +33,7 @@ module ProconBypassMan
           return
         end
 
-        params =
-          case body
-          when Hash
-            { body: body.to_json, event_type: event_type }
-          else
-            { body: { value: body.to_json, event_type: event_type } }
-          end
+        params = { body: body.to_json }
         session_id = ProconBypassMan.session_id
         device_id = ProconBypassMan.device_id
 
