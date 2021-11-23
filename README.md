@@ -67,7 +67,7 @@ sudo kill -USR2 `cat ./pbm_pid`
 ```
 
 ### 起動ログをサーバに送信する
-* `ProconBypassMan.api_server = "http://.."` を設定すると、 `POST /api/events` に対して起動ログなどを送信するようになります
+* `ProconBypassMan.api_servers = "http://.."` を設定すると、 `POST /api/events` に対して起動ログなどを送信するようになります
 
 ### 開発環境でログの送信を確認する方法
 * `bundle exec bin/dev_api_server.rb`
