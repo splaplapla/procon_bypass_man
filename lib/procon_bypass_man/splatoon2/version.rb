@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
 module ProconBypassMan
-  VERSION = "0.1.13"
+  module Splatoon2
+    VERSION = "0.1.1"
+  end
 end

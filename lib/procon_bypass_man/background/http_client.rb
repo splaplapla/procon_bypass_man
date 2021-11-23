@@ -2,7 +2,7 @@ module ProconBypassMan
   module Background
     class HttpClient
       class HttpRequest
-        def self.request!(uri: , hostname: , body: , device_id: , session_id: nil, event_type: )
+        def self.request!(uri: , hostname: , params: , device_id: , session_id: nil, event_type: )
           @uri = uri
           @http = Net::HTTP.new(uri.host, uri.port)
           @http.use_ssl = uri.scheme === "https"
@@ -11,7 +11,7 @@ module ProconBypassMan
             event_type: event_type,
             session_id: session_id,
             device_id: device_id,
-          }.merge(body)
+          }.merge(params)
           @http.post(
             @uri.path,
             @params.to_json,
@@ -32,11 +32,8 @@ module ProconBypassMan
           ProconBypassMan.logger.info('送信先が未設定なのでスキップしました')
           return
         end
-        if body.is_a?(Hash)
-          body = { body: body, event_type: event_type }
-        else
-          body = { body: { value: body, event_type: event_type } }
-        end
+
+        params = { body: body.to_json }
         session_id = ProconBypassMan.session_id
         device_id = ProconBypassMan.device_id
 
@@ -45,7 +42,7 @@ module ProconBypassMan
           hostname: @hostname,
           device_id: device_id,
           session_id: session_id,
-          body: body,
+          params: params,
           event_type: event_type,
         )
         case response.code

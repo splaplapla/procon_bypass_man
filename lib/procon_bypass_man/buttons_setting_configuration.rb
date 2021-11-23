@@ -77,7 +77,7 @@ module ProconBypassMan
     end
 
     def set_neutral_position(x, y)
-      self.neutral_position = AnalogStickPosition.new(x, y)
+      self.neutral_position = AnalogStickPosition.new(x, y).freeze
       self
     end
 
@@ -95,7 +95,7 @@ module ProconBypassMan
         left: Layer.new,
         right: Layer.new,
       }
-      @neutral_position = AnalogStickPosition.new(2124, 1808)
+      @neutral_position = AnalogStickPosition.new(2124, 1808).freeze
     end
   end
 end

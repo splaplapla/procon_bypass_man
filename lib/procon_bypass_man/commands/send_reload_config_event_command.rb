@@ -1,4 +1,5 @@
 class ProconBypassMan::SendReloadConfigEventCommand
+  # @return [void]
   def self.execute
     puts "設定ファイルの再読み込みができました"
     ProconBypassMan.logger.info "設定ファイルの再読み込みができました"

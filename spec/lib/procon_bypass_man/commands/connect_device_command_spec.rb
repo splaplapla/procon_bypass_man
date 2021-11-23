@@ -12,7 +12,7 @@ describe ProconBypassMan::ConnectDeviceCommand do
 
     context 'when timeout' do
       before do
-        allow(ProconBypassMan::DeviceConnector).to receive(:connect) { raise ProconBypassMan::Timer::Timeout }
+        allow(ProconBypassMan::DeviceConnector).to receive(:connect) { raise ProconBypassMan::SafeTimeout::Timeout }
       end
 
       it do

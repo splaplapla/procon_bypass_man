@@ -20,21 +20,26 @@ module ProconBypassMan
           if_pressed = [button]
         when Symbol, String
           if_pressed = [if_pressed]
-        when Array, FalseClass
-          # sono mama
+        when Array
+          # if_pressed = if_pressed
+        when FalseClass, NilClass
+          # no-op
         else
           raise "not support class"
         end
+
         hash = { if_pressed: if_pressed }
-        if force_neutral
-          case force_neutral
-          when TrueClass, FalseClass
-            raise "ボタンを渡してください"
-          when Symbol, String
-            hash[:force_neutral] = [force_neutral]
-          when Array
-            hash[:force_neutral] = force_neutral
-          end
+        case force_neutral
+        when TrueClass
+          raise "ボタンを渡してください"
+        when Symbol, String
+          hash[:force_neutral] = [force_neutral]
+        when Array
+          hash[:force_neutral] = force_neutral
+        when FalseClass, NilClass
+          # no-op
+        else
+          raise "not support value"
         end
 
         if flip_interval
@@ -63,7 +68,7 @@ module ProconBypassMan
 
       def remap(button, to: )
         case to
-        when TrueClass, FalseClass
+        when TrueClass, FalseClass, NilClass
           raise "ボタンを渡してください"
         when Symbol, String
           self.remaps[button] = { to: [to] }
@@ -77,27 +82,27 @@ module ProconBypassMan
         hash = { cap: cap }
 
         case if_pressed
-        when TrueClass
-          raise "not support class"
+        when TrueClass, FalseClass
+          raise "ボタンを渡してください"
         when Symbol, String
           if_pressed = [if_pressed]
-        when Array, FalseClass
-          # sono mama
-        when NilClass
-          if_pressed = nil
+        when Array, NilClass
+          # no-op
         else
-          raise "not support if_pressed"
+          raise "not support value"
         end
 
-        if force_neutral
-          case force_neutral
-          when TrueClass, FalseClass
-            raise "ボタンを渡してください"
-          when Symbol, String
-            hash[:force_neutral] = [force_neutral]
-          when Array
-            hash[:force_neutral] = force_neutral
-          end
+        case force_neutral
+        when TrueClass
+          raise "ボタンを渡してください"
+        when Symbol, String
+          hash[:force_neutral] = [force_neutral]
+        when Array
+          hash[:force_neutral] = force_neutral
+        when FalseClass, NilClass
+          # no-op
+        else
+          raise "not support value"
         end
 
         left_analog_stick_caps[if_pressed] = hash
@@ -114,7 +119,7 @@ module ProconBypassMan
         when Array
           button.each { |b| disables << b }
         else
-          raise "unknown"
+          raise "not support value"
         end
       end
 

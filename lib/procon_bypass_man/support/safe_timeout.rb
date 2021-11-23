@@ -1,5 +1,5 @@
 module ProconBypassMan
-  class Timer
+  class SafeTimeout
     class Timeout < StandardError; end
 
     # 5秒後がタイムアウト

@@ -1,17 +1,16 @@
 require_relative "io_monitor"
-require_relative "uptime"
 require_relative "boot_message"
-require_relative "background/job_runner"
 
 class ProconBypassMan::Runner
   class InterruptForRestart < StandardError; end
+
+  include ProconBypassMan::SignalHandler
 
   def initialize(gadget: , procon: )
     @gadget = gadget
     @procon = procon
 
     ProconBypassMan::PrintBootMessageCommand.execute
-    ProconBypassMan::Background::JobRunner.start!
   end
 
   def run
@@ -28,7 +27,8 @@ class ProconBypassMan::Runner
 
     loop do
       $will_terminate_token = false
-      main_loop_pid = fork { main_loop }
+      # TODO forkしないでThreadでいいのでは？
+      main_loop_pid = Kernel.fork { ProconBypassMan::BypassCommand.new(gadget: @gadget, procon: @procon).execute }
 
       begin
         while(readable_io = IO.select([self_read]))
@@ -42,10 +42,10 @@ class ProconBypassMan::Runner
         ProconBypassMan.logger.info("Reloading config file")
         begin
           ProconBypassMan::ButtonsSettingConfiguration::Loader.reload_setting
+          ProconBypassMan::SendReloadConfigEventCommand.execute
         rescue ProconBypassMan::CouldNotLoadConfigError
           ProconBypassMan::SendErrorCommand.execute(error: "設定ファイルが不正です。再読み込みができませんでした")
         end
-        ProconBypassMan::SendReloadConfigEventCommand.execute
         ProconBypassMan.logger.info("バイパス処理を再開します")
       rescue Interrupt
         $will_terminate_token = true
@@ -57,95 +57,6 @@ class ProconBypassMan::Runner
         FileUtils.rm_rf(ProconBypassMan.digest_path)
         exit 1
       end
-    end
-  end
-
-  private
-
-  def main_loop
-    ProconBypassMan::IOMonitor.start!
-    ProconBypassMan::Background::JobRunner.start!
-
-    # gadget => procon
-    # 遅くていい
-    monitor1 = ProconBypassMan::IOMonitor.new(label: "switch -> procon")
-    monitor2 = ProconBypassMan::IOMonitor.new(label: "procon -> switch")
-    ProconBypassMan.logger.info "Thread1を起動します"
-    t1 = Thread.new do
-      timer = ProconBypassMan::Timer.new(timeout: Time.now + 10)
-      bypass = ProconBypassMan::Bypass.new(gadget: @gadget, procon: @procon, monitor: monitor1)
-      loop do
-        break if $will_terminate_token
-        timer.throw_if_timeout!
-        bypass.send_gadget_to_procon!
-        sleep(0.005)
-      rescue ProconBypassMan::Timer::Timeout
-        ProconBypassMan.logger.info "10秒経過したのでThread1を終了します"
-        monitor1.shutdown
-        puts "10秒経過したのでThread1を終了します"
-        break
-      rescue Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError => e
-        ProconBypassMan::SendErrorCommand.execute(error: "Switchとの切断されました.終了処理を開始します. #{e.full_message}")
-        Process.kill "TERM", Process.ppid
-      rescue Errno::ETIMEDOUT => e
-        # TODO まれにこれが発生する. 再接続したい
-        ProconBypassMan::SendErrorCommand.execute(error: "Switchと意図せず切断されました.終了処理を開始します. #{e.full_message}")
-        Process.kill "TERM", Process.ppid
-      end
-      ProconBypassMan.logger.info "Thread1を終了します"
-    end
-
-    # procon => gadget
-    # シビア
-    ProconBypassMan.logger.info "Thread2を起動します"
-    t2 = Thread.new do
-      bypass = ProconBypassMan::Bypass.new(gadget: @gadget, procon: @procon, monitor: monitor2)
-      loop do
-        break if $will_terminate_token
-        bypass.send_procon_to_gadget!
-      rescue EOFError => e
-        ProconBypassMan::SendErrorCommand.execute(error: "Proconが切断されました。終了処理を開始します. #{e.full_message}")
-        Process.kill "TERM", Process.ppid
-      rescue Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError => e
-        ProconBypassMan::SendErrorCommand.execute(error: "Proconが切断されました。終了処理を開始します2. #{e.full_message}")
-        Process.kill "TERM", Process.ppid
-      end
-      ProconBypassMan.logger.info "Thread2を終了します"
-    end
-
-    self_read, self_write = IO.pipe
-    %w(TERM INT).each do |sig|
-      begin
-        trap sig do
-          self_write.puts(sig)
-        end
-      rescue ArgumentError
-        puts "プロセスでSignal #{sig} not supported"
-      end
-    end
-
-    ProconBypassMan.logger.info "子プロセスでgraceful shutdownの準備ができました"
-    begin
-      while(readable_io = IO.select([self_read]))
-        signal = readable_io.first[0].gets.strip
-        handle_signal(signal)
-      end
-    rescue Interrupt
-      $will_terminate_token = true
-      [t1, t2].each(&:join)
-      @gadget&.close
-      @procon&.close
-      exit 1
-    end
-  end
-
-  def handle_signal(sig)
-    ProconBypassMan.logger.info "#{$$}で#{sig}を受け取りました"
-    case sig
-    when 'USR2'
-      raise InterruptForRestart
-    when 'INT', 'TERM'
-      raise Interrupt
     end
   end
 end

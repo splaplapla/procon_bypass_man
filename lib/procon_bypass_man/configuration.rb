@@ -35,8 +35,8 @@ class ProconBypassMan::Configuration
     end
   end
 
-  attr_accessor :enable_critical_error_logging, :raw_setting
-  attr_writer :verbose_bypass_log
+  attr_accessor :enable_critical_error_logging
+  attr_writer :verbose_bypass_log, :raw_setting
 
   def root=(path)
     @root = path
@@ -75,11 +75,10 @@ class ProconBypassMan::Configuration
 
   def error_logger
     if enable_critical_error_logging
-      @@error_logger ||= Logger.new("#{ProconBypassMan.root}/error.log", 5, 1024 * 1024 * 10)
+      @error_logger ||= Logger.new("#{ProconBypassMan.root}/error.log", 5, 1024 * 1024 * 10)
     else
       Logger.new(File.open("/dev/null"))
     end
-    self
   end
 
   def digest_path
@@ -107,5 +106,9 @@ class ProconBypassMan::Configuration
 
   def verbose_bypass_log
     @verbose_bypass_log || !!ENV["VERBOSE_BYPASS_LOG"]
+  end
+
+  def raw_setting
+    @raw_setting ||= {}
   end
 end

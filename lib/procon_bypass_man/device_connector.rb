@@ -48,6 +48,7 @@ class ProconBypassMan::DeviceConnector
   end
 
   def drain_all
+    debug_log_buffer = []
     unless @initialized_devices
       init_devices
     end
@@ -55,11 +56,13 @@ class ProconBypassMan::DeviceConnector
     while(item = @stack.shift)
       item.values.each do |value|
         data = nil
-        timer = ProconBypassMan::Timer.new
+        timer = ProconBypassMan::SafeTimeout.new
         begin
           timer.throw_if_timeout!
           data = from_device(item).read_nonblock(64)
+          debug_log_buffer << "read_from(#{item.read_from}): #{data}"
         rescue IO::EAGAINWaitReadable
+          debug_log_buffer << "read_from(#{item.read_from}): IO::EAGAINWaitReadable"
           retry
         end
 
@@ -74,15 +77,19 @@ class ProconBypassMan::DeviceConnector
           end
         if result
           ProconBypassMan.logger.info "OK(expected: #{value}, got: #{data.unpack("H*")})"
+          debug_log_buffer << "OK(expected: #{value}, got: #{data.unpack("H*")})"
         else
           ProconBypassMan.logger.info "NG(expected: #{value}, got: #{data.unpack("H*")})"
+          debug_log_buffer << "NG(expected: #{value}, got: #{data.unpack("H*")})"
           raise BytesMismatchError if @throw_error_if_mismatch
         end
         to_device(item).write_nonblock(data)
       end
     end
-  rescue ProconBypassMan::Timer::Timeout
+  rescue ProconBypassMan::SafeTimeout::Timeout
     ProconBypassMan.logger.error "timeoutになりました"
+    copressed_buffer_text = ProconBypassMan::CompressArray.new(debug_log_buffer).compress.join("\n")
+    ProconBypassMan::SendErrorCommand.execute(error: copressed_buffer_text)
     raise if @throw_error_if_timeout
   end
 
@@ -95,31 +102,31 @@ class ProconBypassMan::DeviceConnector
       init_devices
     end
 
-    timer = ProconBypassMan::Timer.new
+    timer = ProconBypassMan::SafeTimeout.new
     data = nil
     begin
       timer.throw_if_timeout!
       switch.write_nonblock(data)
     rescue IO::EAGAINWaitReadable
       retry
-    rescue ProconBypassMan::Timer::Timeout
+    rescue ProconBypassMan::SafeTimeout::Timeout
       ProconBypassMan.logger.error "writeでtimeoutになりました"
       raise
     end
     return(data.unpack("H*")) if only_write
 
-    timer = ProconBypassMan::Timer.new
+    timer = ProconBypassMan::SafeTimeout.new
     begin
       timer.throw_if_timeout!
       data = switch.read_nonblock(64)
       ProconBypassMan.logger.debug { " >>> #{data.unpack("H*")})" }
     rescue IO::EAGAINWaitReadable
       retry
-    rescue ProconBypassMan::Timer::Timeout
+    rescue ProconBypassMan::SafeTimeout::Timeout
       ProconBypassMan.logger.error "readでtimeoutになりました"
       raise
     end
-  rescue ProconBypassMan::Timer::Timeout
+  rescue ProconBypassMan::SafeTimeout::Timeout
     raise if @throw_error_if_timeout
   end
 
@@ -131,30 +138,30 @@ class ProconBypassMan::DeviceConnector
       init_devices
     end
 
-    timer = ProconBypassMan::Timer.new
+    timer = ProconBypassMan::SafeTimeout.new
     begin
       timer.throw_if_timeout!
       procon.write_nonblock(data)
     rescue IO::EAGAINWaitReadable
       retry
-    rescue ProconBypassMan::Timer::Timeout
+    rescue ProconBypassMan::SafeTimeout::Timeout
       ProconBypassMan.logger.error "writeでtimeoutになりました"
       raise
     end
     return(data.unpack("H*")) if only_write
 
-    timer = ProconBypassMan::Timer.new
+    timer = ProconBypassMan::SafeTimeout.new
     begin
       timer.throw_if_timeout!
       data = procon.read_nonblock(64)
       ProconBypassMan.logger.error " <<< #{data.unpack("H*")})"
     rescue IO::EAGAINWaitReadable
       retry
-    rescue ProconBypassMan::Timer::Timeout
+    rescue ProconBypassMan::SafeTimeout::Timeout
       ProconBypassMan.logger.error "readでtimeoutになりました"
       raise
     end
-  rescue ProconBypassMan::Timer::Timeout
+  rescue ProconBypassMan::SafeTimeout::Timeout
     raise if @throw_error_if_timeout
   end
 
@@ -164,30 +171,30 @@ class ProconBypassMan::DeviceConnector
     end
 
     data = nil
-    timer = ProconBypassMan::Timer.new
+    timer = ProconBypassMan::SafeTimeout.new
     begin
       timer.throw_if_timeout!
       data = procon.read_nonblock(64)
       ProconBypassMan.logger.debug { " <<< #{data.unpack("H*")})" }
     rescue IO::EAGAINWaitReadable
       retry
-    rescue ProconBypassMan::Timer::Timeout
+    rescue ProconBypassMan::SafeTimeout::Timeout
       ProconBypassMan.logger.error "readでtimeoutになりました"
       raise
     end
     return(data.unpack("H*")) if only_read
 
-    timer = ProconBypassMan::Timer.new
+    timer = ProconBypassMan::SafeTimeout.new
     begin
       timer.throw_if_timeout!
       switch.write_nonblock(data)
     rescue IO::EAGAINWaitReadable
       retry
-    rescue ProconBypassMan::Timer::Timeout
+    rescue ProconBypassMan::SafeTimeout::Timeout
       ProconBypassMan.logger.error "writeでtimeoutになりました"
       raise
     end
-  rescue ProconBypassMan::Timer::Timeout
+  rescue ProconBypassMan::SafeTimeout::Timeout
     raise if @throw_error_if_timeout
   end
 
@@ -197,30 +204,30 @@ class ProconBypassMan::DeviceConnector
     end
 
     data = nil
-    timer = ProconBypassMan::Timer.new
+    timer = ProconBypassMan::SafeTimeout.new
     begin
       timer.throw_if_timeout!
       data = switch.read_nonblock(64)
       ProconBypassMan.logger.debug { " >>> #{data.unpack("H*")})" }
     rescue IO::EAGAINWaitReadable
       retry
-    rescue ProconBypassMan::Timer::Timeout
+    rescue ProconBypassMan::SafeTimeout::Timeout
       ProconBypassMan.logger.error "readでtimeoutになりました"
       raise
     end
     return(data.unpack("H*")) if only_read
 
-    timer = ProconBypassMan::Timer.new
+    timer = ProconBypassMan::SafeTimeout.new
     begin
       timer.throw_if_timeout!
       procon.write_nonblock(data)
     rescue IO::EAGAINWaitReadable
       retry
-    rescue ProconBypassMan::Timer::Timeout
+    rescue ProconBypassMan::SafeTimeout::Timeout
       ProconBypassMan.logger.error "writeでtimeoutになりました"
       raise
     end
-  rescue ProconBypassMan::Timer::Timeout
+  rescue ProconBypassMan::SafeTimeout::Timeout
     raise if @throw_error_if_timeout
   end
 
@@ -312,7 +319,7 @@ class ProconBypassMan::DeviceConnector
     ProconBypassMan::SendErrorCommand.execute(error: "Errno::ENXIO (No such device or address @ rb_sysopen - /dev/hidg0)が起きました。resetします. #{e.full_message}")
     system('echo > /sys/kernel/config/usb_gadget/procon/UDC')
     system('ls /sys/class/udc > /sys/kernel/config/usb_gadget/procon/UDC')
-    sleep 2
+    sleep 0.5
     retry
   end
 end

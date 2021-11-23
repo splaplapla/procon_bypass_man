@@ -6,21 +6,25 @@ require "fileutils"
 require "securerandom"
 
 require_relative "procon_bypass_man/version"
-require_relative "procon_bypass_man/callbacks"
-require_relative "procon_bypass_man/timer"
+require_relative "procon_bypass_man/support/signal_handler"
+require_relative "procon_bypass_man/support/callbacks"
+require_relative "procon_bypass_man/support/safe_timeout"
+require_relative "procon_bypass_man/support/compress_array"
+require_relative "procon_bypass_man/support/uptime"
+require_relative "procon_bypass_man/support/on_memory_cache"
+require_relative "procon_bypass_man/background"
+require_relative "procon_bypass_man/commands"
 require_relative "procon_bypass_man/bypass"
 require_relative "procon_bypass_man/device_connector"
 require_relative "procon_bypass_man/runner"
 require_relative "procon_bypass_man/processor"
 require_relative "procon_bypass_man/configuration"
 require_relative "procon_bypass_man/buttons_setting_configuration"
-require_relative "procon_bypass_man/procon_reader"
 require_relative "procon_bypass_man/procon"
+require_relative "procon_bypass_man/procon_reader"
 require_relative "procon_bypass_man/procon/analog_stick"
 require_relative "procon_bypass_man/procon/analog_stick_cap"
-require_relative "procon_bypass_man/background"
-require_relative "procon_bypass_man/commands"
-require_relative "procon_bypass_man/on_memory_cache"
+require_relative "procon_bypass_man/splatoon2"
 
 STDOUT.sync = true
 Thread.abort_on_exception = true
@@ -52,6 +56,7 @@ module ProconBypassMan
     initialize_pbm
     File.write(pid_path, $$)
     ProconBypassMan::WriteSessionIdCommand.execute
+    ProconBypassMan::Background::JobRunner.start!
     gadget, procon = ProconBypassMan::ConnectDeviceCommand.execute!
     Runner.new(gadget: gadget, procon: procon).run
   rescue CouldNotLoadConfigError
