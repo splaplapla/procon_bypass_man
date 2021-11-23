@@ -28,14 +28,14 @@ class ProconBypassMan::BypassCommand
     monitor2 = ProconBypassMan::IOMonitor.new(label: "procon -> switch")
     ProconBypassMan.logger.info "Thread1を起動します"
     t1 = Thread.new do
-      timer = ProconBypassMan::Timer.new(timeout: Time.now + 10)
+      timer = ProconBypassMan::SafeTimeout.new(timeout: Time.now + 10)
       bypass = ProconBypassMan::Bypass.new(gadget: @gadget, procon: @procon, monitor: monitor1)
       loop do
         break if $will_terminate_token
         timer.throw_if_timeout!
         bypass.send_gadget_to_procon!
         sleep(0.005)
-      rescue ProconBypassMan::Timer::Timeout
+      rescue ProconBypassMan::SafeTimeout::Timeout
         ProconBypassMan.logger.info "10秒経過したのでThread1を終了します"
         monitor1.shutdown
         puts "10秒経過したのでThread1を終了します"
