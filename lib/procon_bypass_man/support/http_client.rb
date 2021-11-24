@@ -1,21 +1,32 @@
 module ProconBypassMan
   class HttpClient
     class HttpRequest
-      def self.request!(uri: , hostname: , params: , device_id: , session_id: nil, event_type: )
+      def self.request!(http_method:, uri: , hostname: , params: , device_id: , session_id: nil, event_type: nil)
         @uri = uri
         @http = Net::HTTP.new(uri.host, uri.port)
         @http.use_ssl = uri.scheme === "https"
-        @params = {
-          hostname: hostname,
-          event_type: event_type,
-          session_id: session_id,
-          device_id: device_id,
-        }.merge(params)
-        @http.post(
-          @uri.path,
-          @params.to_json,
-          { "Content-Type" => "application/json" },
-        )
+
+        case http_method
+        when :get
+          @http.public_send(
+            http_method,
+            @uri.path,
+            { "Content-Type" => "application/json" },
+          )
+        when :post
+          @params = {
+            hostname: hostname,
+            session_id: session_id,
+            device_id: device_id,
+            event_type: event_type,
+          }.merge!(params)
+          @http.public_send(
+            http_method,
+            @uri.path,
+            @params.to_json,
+            { "Content-Type" => "application/json" },
+          )
+        end
       end
     end
 
@@ -32,17 +43,20 @@ module ProconBypassMan
         return
       end
 
+      session_id = ProconBypassMan.session_id
+      device_id = ProconBypassMan.device_id
+
       response = HttpRequest.request!(
+        http_method: :get,
         uri: URI.parse("#{@pool_server.server}#{@path}"),
         hostname: @hostname,
         device_id: device_id,
         session_id: session_id,
-        params: params,
-        event_type: event_type,
+        params: {},
       )
       case response.code
       when /^200/
-        return
+        return JSON.parse(response.body)
       else
         @pool_server.next!
         ProconBypassMan.logger.error("200以外(#{response.code})が帰ってきました. #{response.body}")
@@ -69,6 +83,7 @@ module ProconBypassMan
       device_id = ProconBypassMan.device_id
 
       response = HttpRequest.request!(
+        http_method: :post,
         uri: URI.parse("#{@pool_server.server}#{@path}"),
         hostname: @hostname,
         device_id: device_id,
