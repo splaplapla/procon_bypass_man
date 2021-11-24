@@ -1,4 +1,6 @@
 class ProconBypassMan::ReportHeartbeatJob < ProconBypassMan::BaseJob
+  extend ProconBypassMan::HasExternalApiSetting
+
   # @param [String] body
   def self.perform(body)
     ProconBypassMan::Background::HttpClient.new(
