@@ -1,4 +1,4 @@
-class ProconBypassMan::ReportErrorJob < ProconBypassMan::BaseJob
+class ProconBypassMan::ReportErrorJob < ProconBypassMan::ReportBaseJob
   extend ProconBypassMan::HasExternalApiSetting
 
   # @param [String] body
