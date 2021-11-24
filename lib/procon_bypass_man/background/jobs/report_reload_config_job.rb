@@ -3,7 +3,7 @@ class ProconBypassMan::ReportReloadConfigJob <  ProconBypassMan::ReportBaseJob
 
   # @param [String] body
   def self.perform(body)
-    ProconBypassMan::Background::HttpClient.new(
+    ProconBypassMan::HttpClient.new(
       path: path,
       pool_server: pool_server,
       retry_on_connection_error: false,
