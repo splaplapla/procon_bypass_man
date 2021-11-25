@@ -50,14 +50,8 @@ module ProconBypassMan
         uri: URI.parse("#{@pool_server.server}#{@path}"),
         hostname: @hostname,
       )
+      process_response(response)
 
-      case response.code
-      when /^200/
-        return JSON.parse(response.body)
-      else
-        @pool_server.next!
-        ProconBypassMan.logger.error("200以外(#{response.code})が帰ってきました. #{response.body}")
-      end
     rescue SocketError => e
       ProconBypassMan.logger.error("error in outbound module: #{e}")
       if @retry_on_connection_error
@@ -83,14 +77,8 @@ module ProconBypassMan
         params: params,
         event_type: event_type,
       )
+      process_response(response)
 
-      case response.code
-      when /^200/
-        return JSON.parse(response.body)
-      else
-        @pool_server.next!
-        ProconBypassMan.logger.error("200以外(#{response.code})が帰ってきました. #{response.body}")
-      end
     rescue SocketError => e
       ProconBypassMan.logger.error("error in outbound module: #{e}")
       if @retry_on_connection_error
@@ -100,6 +88,18 @@ module ProconBypassMan
     rescue => e
       puts e
       ProconBypassMan.logger.error("error in outbound module: #{e}")
+    end
+
+    private
+
+    def process_response(response)
+      case response.code
+      when /^200/
+        return JSON.parse(response.body)
+      else
+        @pool_server.next!
+        ProconBypassMan.logger.error("200以外(#{response.code})が帰ってきました. #{response.body}")
+      end
     end
   end
 end
