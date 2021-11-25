@@ -1,31 +1,21 @@
 module ProconBypassMan
   class HttpClient
     class HttpRequest
-      def self.request!(http_method:, uri: , hostname: , params: {}, event_type: nil)
-        @uri = uri
-        @http = Net::HTTP.new(uri.host, uri.port)
-        @http.use_ssl = uri.scheme === "https"
-        session_id = ProconBypassMan.session_id
-        device_id = ProconBypassMan.device_id
-
+      def self.request!(http_method:, uri: , hostname: , request_body: {}, event_type: nil)
+        http = Net::HTTP.new(uri.host, uri.port)
+        http.use_ssl = uri.scheme === "https"
         case http_method
         when :get
-          @http.public_send(
+          http.public_send(
             http_method,
-            @uri.path,
+            uri.path,
             { "Content-Type" => "application/json" },
           )
         when :post
-          @params = {
-            hostname: hostname,
-            session_id: session_id,
-            device_id: device_id,
-            event_type: event_type,
-          }.merge!(params)
-          @http.public_send(
+          http.public_send(
             http_method,
-            @uri.path,
-            @params.to_json,
+            uri.path,
+            request_body.to_json,
             { "Content-Type" => "application/json" },
           )
         end
@@ -52,12 +42,18 @@ module ProconBypassMan
 
     def post(body: , event_type: )
       handle_request do
-        params = { body: body.to_json }
+        request_body = {
+          body: body.to_json,
+          hostname: @hostname,
+          session_id: ProconBypassMan.session_id,
+          device_id: ProconBypassMan.device_id,
+          event_type: event_type,
+        }
         response = HttpRequest.request!(
           http_method: :post,
           uri: URI.parse("#{@pool_server.server}#{@path}"),
           hostname: @hostname,
-          params: params,
+          request_body: request_body,
           event_type: event_type,
         )
         break process_response(response)
@@ -76,7 +72,7 @@ module ProconBypassMan
       end
     end
 
-    def handle_request 
+    def handle_request
       raise "need block" unless block_given?
       if @pool_server.server.nil?
         ProconBypassMan.logger.info('送信先が未設定なのでスキップしました')
