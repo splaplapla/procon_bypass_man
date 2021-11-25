@@ -2,7 +2,7 @@ module ProconBypassMan
   class HttpClient
     class HttpRequest
       class Get
-        def self.request!(uri: , hostname: , request_body: {}, event_type: nil)
+        def self.request!(uri: )
           http = Net::HTTP.new(uri.host, uri.port)
           http.use_ssl = uri.scheme === "https"
           http.get(uri.path, { "Content-Type" => "application/json" })
@@ -10,7 +10,7 @@ module ProconBypassMan
       end
 
       class Post
-        def self.request!(uri: , hostname: , request_body: {}, event_type: nil)
+        def self.request!(uri: , request_body: {})
           http = Net::HTTP.new(uri.host, uri.port)
           http.use_ssl = uri.scheme === "https"
           http.post(uri.path, request_body.to_json, { "Content-Type" => "application/json" })
@@ -21,7 +21,6 @@ module ProconBypassMan
     def initialize(path: , pool_server: , retry_on_connection_error: false)
       @pool_server = pool_server
       @uri = URI.parse("#{pool_server.server}#{path}")
-      @hostname = `hostname`.chomp
       @retry_on_connection_error = retry_on_connection_error
     end
 
@@ -29,7 +28,6 @@ module ProconBypassMan
       handle_request do
         response = HttpRequest::Get.request!(
           uri: @uri,
-          hostname: @hostname,
         )
         break process_response(response)
       end
@@ -39,16 +37,14 @@ module ProconBypassMan
       handle_request do
         request_body = {
           body: body.to_json,
-          hostname: @hostname,
+          hostname: `hostname`.chomp,
           session_id: ProconBypassMan.session_id,
           device_id: ProconBypassMan.device_id,
           event_type: event_type,
         }
         response = HttpRequest::Post.request!(
           uri: @uri,
-          hostname: @hostname,
           request_body: request_body,
-          event_type: event_type,
         )
         break process_response(response)
       end
