@@ -25,6 +25,7 @@ require_relative "procon_bypass_man/procon"
 require_relative "procon_bypass_man/procon_reader"
 require_relative "procon_bypass_man/procon/analog_stick"
 require_relative "procon_bypass_man/procon/analog_stick_cap"
+require_relative "procon_bypass_man/value_objects/remote_pbm_action_object"
 require_relative "procon_bypass_man/splatoon2"
 
 STDOUT.sync = true
