@@ -1,39 +1,34 @@
 module ProconBypassMan
   class HttpClient
     class HttpRequest
-      def self.request!(http_method:, uri: , hostname: , request_body: {}, event_type: nil)
-        http = Net::HTTP.new(uri.host, uri.port)
-        http.use_ssl = uri.scheme === "https"
-        case http_method
-        when :get
-          http.public_send(
-            http_method,
-            uri.path,
-            { "Content-Type" => "application/json" },
-          )
-        when :post
-          http.public_send(
-            http_method,
-            uri.path,
-            request_body.to_json,
-            { "Content-Type" => "application/json" },
-          )
+      class Get
+        def self.request!(uri: , hostname: , request_body: {}, event_type: nil)
+          http = Net::HTTP.new(uri.host, uri.port)
+          http.use_ssl = uri.scheme === "https"
+          http.get(uri.path, { "Content-Type" => "application/json" })
+        end
+      end
+
+      class Post
+        def self.request!(uri: , hostname: , request_body: {}, event_type: nil)
+          http = Net::HTTP.new(uri.host, uri.port)
+          http.use_ssl = uri.scheme === "https"
+          http.post(uri.path, request_body.to_json, { "Content-Type" => "application/json" })
         end
       end
     end
 
     def initialize(path: , pool_server: , retry_on_connection_error: false)
-      @path = path
       @pool_server = pool_server
+      @uri = URI.parse("#{pool_server.server}#{path}")
       @hostname = `hostname`.chomp
       @retry_on_connection_error = retry_on_connection_error
     end
 
     def get
       handle_request do
-        response = HttpRequest.request!(
-          http_method: :get,
-          uri: URI.parse("#{@pool_server.server}#{@path}"),
+        response = HttpRequest::Get.request!(
+          uri: @uri,
           hostname: @hostname,
         )
         break process_response(response)
@@ -49,9 +44,8 @@ module ProconBypassMan
           device_id: ProconBypassMan.device_id,
           event_type: event_type,
         }
-        response = HttpRequest.request!(
-          http_method: :post,
-          uri: URI.parse("#{@pool_server.server}#{@path}"),
+        response = HttpRequest::Post.request!(
+          uri: @uri,
           hostname: @hostname,
           request_body: request_body,
           event_type: event_type,
@@ -80,14 +74,14 @@ module ProconBypassMan
       end
       return yield
     rescue SocketError => e
-      ProconBypassMan.logger.error("error in outbound module: #{e}")
+      ProconBypassMan.logger.error(e)
       if @retry_on_connection_error
         sleep(10)
         retry
       end
     rescue => e
       puts e
-      ProconBypassMan.logger.error("error in outbound module: #{e}")
+      ProconBypassMan.logger.error(e)
     end
   end
 end
