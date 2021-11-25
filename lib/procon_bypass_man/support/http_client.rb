@@ -46,7 +46,7 @@ module ProconBypassMan
           uri: URI.parse("#{@pool_server.server}#{@path}"),
           hostname: @hostname,
         )
-        process_response(response)
+        break process_response(response)
       end
     end
 
@@ -60,7 +60,7 @@ module ProconBypassMan
           params: params,
           event_type: event_type,
         )
-        process_response(response)
+        break process_response(response)
       end
     end
 
@@ -82,7 +82,7 @@ module ProconBypassMan
         ProconBypassMan.logger.info('送信先が未設定なのでスキップしました')
         return
       end
-      yield
+      return yield
     rescue SocketError => e
       ProconBypassMan.logger.error("error in outbound module: #{e}")
       if @retry_on_connection_error
