@@ -40,54 +40,28 @@ module ProconBypassMan
     end
 
     def get
-      if @pool_server.server.nil?
-        ProconBypassMan.logger.info('送信先が未設定なのでスキップしました')
-        return
+      handle_request do
+        response = HttpRequest.request!(
+          http_method: :get,
+          uri: URI.parse("#{@pool_server.server}#{@path}"),
+          hostname: @hostname,
+        )
+        process_response(response)
       end
-
-      response = HttpRequest.request!(
-        http_method: :get,
-        uri: URI.parse("#{@pool_server.server}#{@path}"),
-        hostname: @hostname,
-      )
-      process_response(response)
-
-    rescue SocketError => e
-      ProconBypassMan.logger.error("error in outbound module: #{e}")
-      if @retry_on_connection_error
-        sleep(10)
-        retry
-      end
-    rescue => e
-      puts e
-      ProconBypassMan.logger.error("error in outbound module: #{e}")
     end
 
     def post(body: , event_type: )
-      if @pool_server.server.nil?
-        ProconBypassMan.logger.info('送信先が未設定なのでスキップしました')
-        return
+      handle_request do
+        params = { body: body.to_json }
+        response = HttpRequest.request!(
+          http_method: :post,
+          uri: URI.parse("#{@pool_server.server}#{@path}"),
+          hostname: @hostname,
+          params: params,
+          event_type: event_type,
+        )
+        process_response(response)
       end
-
-      params = { body: body.to_json }
-      response = HttpRequest.request!(
-        http_method: :post,
-        uri: URI.parse("#{@pool_server.server}#{@path}"),
-        hostname: @hostname,
-        params: params,
-        event_type: event_type,
-      )
-      process_response(response)
-
-    rescue SocketError => e
-      ProconBypassMan.logger.error("error in outbound module: #{e}")
-      if @retry_on_connection_error
-        sleep(10)
-        retry
-      end
-    rescue => e
-      puts e
-      ProconBypassMan.logger.error("error in outbound module: #{e}")
     end
 
     private
@@ -100,6 +74,24 @@ module ProconBypassMan
         @pool_server.next!
         ProconBypassMan.logger.error("200以外(#{response.code})が帰ってきました. #{response.body}")
       end
+    end
+
+    def handle_request 
+      raise "need block" unless block_given?
+      if @pool_server.server.nil?
+        ProconBypassMan.logger.info('送信先が未設定なのでスキップしました')
+        return
+      end
+      yield
+    rescue SocketError => e
+      ProconBypassMan.logger.error("error in outbound module: #{e}")
+      if @retry_on_connection_error
+        sleep(10)
+        retry
+      end
+    rescue => e
+      puts e
+      ProconBypassMan.logger.error("error in outbound module: #{e}")
     end
   end
 end
