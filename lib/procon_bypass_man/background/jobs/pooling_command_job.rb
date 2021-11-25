@@ -2,7 +2,7 @@ class ProconBypassMan::PoolingCommandJob < ProconBypassMan::BaseJob
   extend ProconBypassMan::HasExternalApiSetting
 
   def self.perform
-    ProconBypassMan::HttpClient.new(
+    response = ProconBypassMan::HttpClient.new(
       path: path,
       pool_server: pool_server,
     ).get
