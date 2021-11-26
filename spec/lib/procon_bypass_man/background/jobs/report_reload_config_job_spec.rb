@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe ProconBypassMan::ReportLoadConfigJob do
+describe ProconBypassMan::ReportReloadConfigJob do
   before do
     described_class.reset_server_pool!
   end
