@@ -2,7 +2,7 @@ class ProconBypassMan::FetchAndRunRemotePbmActionJob < ProconBypassMan::BaseJob
   extend ProconBypassMan::HasExternalApiSetting
 
   def self.perform
-    pbm_jobs = response = ProconBypassMan::HttpClient.new(path: path, pool_server: pool_server).get
+    pbm_jobs = ProconBypassMan::HttpClient.new(path: path, pool_server: pool_server).get
     if pbm_jobs.size.zero?
       return
     else
@@ -15,7 +15,7 @@ class ProconBypassMan::FetchAndRunRemotePbmActionJob < ProconBypassMan::BaseJob
         pbm_job_object.validate!
         ProconBypassMan::RunRemotePbmActionCommand.execute(uuid: pbm_job_object.uuid)
       rescue ProconBypassMan::RemotePbmActionObject::ValidationError => e
-        ProconBypassMan::SendErrorCommand.execute!(error: e)
+        ProconBypassMan::SendErrorCommand.execute(error: e)
       end
     end
   end
