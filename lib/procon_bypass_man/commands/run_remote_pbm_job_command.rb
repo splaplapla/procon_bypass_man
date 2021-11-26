@@ -1,5 +1,5 @@
 class ProconBypassMan::RunRemotePbmActionCommand
-  def self.execute(uuid: )
+  def self.execute(action: , uuid: )
     case action
     when ProconBypassMan::RemotePbmAction::CHANGE_PBM_VERSION
       ProconBypassMan::RemotePbmAction::ChangePbmVersionAction.new(pbm_job_uuid: uuid).run!
