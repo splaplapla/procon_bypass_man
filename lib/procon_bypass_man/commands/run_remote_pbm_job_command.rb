@@ -8,7 +8,7 @@ class ProconBypassMan::RunRemotePbmActionCommand
     when ProconBypassMan::RemotePbmAction::REBOOT_OS
       ProconBypassMan::RemotePbmAction::RebootOsAction.new(pbm_job_uuid: uuid).run!
     else
-      raise "unknown action"
+      ProconBypassMan::SendErrorCommand.execute(error: "#{action}は対応していないアクションです")
     end
   rescue ProconBypassMan::RemotePbmAction::ActionUnexpectedError => e
     ProconBypassMan::SendErrorCommand.execute(error: e)
