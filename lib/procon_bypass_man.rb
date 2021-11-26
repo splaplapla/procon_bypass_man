@@ -6,6 +6,7 @@ require "fileutils"
 require "securerandom"
 
 require_relative "procon_bypass_man/version"
+require_relative "procon_bypass_man/remote_pbm_action"
 require_relative "procon_bypass_man/support/signal_handler"
 require_relative "procon_bypass_man/support/callbacks"
 require_relative "procon_bypass_man/support/safe_timeout"
