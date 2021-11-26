@@ -55,7 +55,11 @@ module ProconBypassMan
     def process_response(response)
       case response.code
       when /^200/
-        return JSON.parse(response.body)
+        begin
+          return JSON.parse(response.body)
+        rescue JSON::ParserError
+          return response.body
+        end
       else
         @pool_server.next!
         ProconBypassMan.logger.error("200以外(#{response.code})が帰ってきました. #{response.body}")
