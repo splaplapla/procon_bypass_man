@@ -1,9 +1,9 @@
 module ProconBypassMan
   class RemotePbmActionObject
     # valueobjectがvalidatorの責務も持っている. 今度分離する
+    class ValidationError < StandardError; end
     class MustBeNotNilError < ValidationError; end
     class NonSupportAction < ValidationError; end
-    class ValidationError < StandardError; end
 
     attr_accessor :action, :status, :uuid, :created_at
 

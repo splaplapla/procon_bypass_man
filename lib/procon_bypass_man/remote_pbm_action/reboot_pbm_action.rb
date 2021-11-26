@@ -1,9 +1,15 @@
 module ProconBypassMan
   module RemotePbmAction
-    class ActionUnexpectedError < StandardError; end
-
     class RebootPbmAction < BaseAction
-      def self.execute!
+
+      def action_content
+        # TODO
+      end
+
+      private
+
+      def before_action
+        be_processed
       end
     end
   end
