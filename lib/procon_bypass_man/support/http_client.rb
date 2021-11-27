@@ -26,9 +26,9 @@ module ProconBypassMan
       end
     end
 
-    def initialize(path: , pool_server: nil, retry_on_connection_error: false)
-      @pool_server = pool_server
-      @uri = URI.parse("#{pool_server.server}#{path}")
+    def initialize(path: , server_pool: , retry_on_connection_error: false)
+      @server_pool = server_pool
+      @uri = URI.parse("#{server_pool.server}#{path}")
       @retry_on_connection_error = retry_on_connection_error
     end
 
@@ -76,14 +76,14 @@ module ProconBypassMan
           return response.body
         end
       else
-        @pool_server.next!
+        @server_pool.next!
         ProconBypassMan.logger.error("200以外(#{response.code})が帰ってきました. #{response.body}")
       end
     end
 
     def handle_request
       raise "need block" unless block_given?
-      if @pool_server.server.nil?
+      if @server_pool.server.nil?
         ProconBypassMan.logger.info('送信先が未設定なのでスキップしました')
         return
       end

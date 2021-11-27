@@ -1,10 +1,6 @@
 require "spec_helper"
 
 describe ProconBypassMan::ReportLoadConfigJob do
-  before do
-    described_class.reset_server_pool!
-  end
-
   describe '.perform' do
     context 'ProconBypassMan.api_serverが設定されていない時' do
       before do

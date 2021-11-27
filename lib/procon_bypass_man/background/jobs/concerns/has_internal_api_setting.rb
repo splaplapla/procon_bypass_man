@@ -1,5 +1,5 @@
 module ProconBypassMan::HasInternalApiSetting
-  def servers
-    ProconBypassMan.config.internal_api_servers
+  def server_pool
+    ProconBypassMan.config.internal_server_pool
   end
 end

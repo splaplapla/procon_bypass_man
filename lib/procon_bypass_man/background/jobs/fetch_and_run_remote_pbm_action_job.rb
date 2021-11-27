@@ -2,7 +2,7 @@ class ProconBypassMan::FetchAndRunRemotePbmActionJob < ProconBypassMan::BaseJob
   extend ProconBypassMan::HasExternalApiSetting
 
   def self.perform
-    pbm_jobs = ProconBypassMan::HttpClient.new(path: path, pool_server: pool_server).get
+    pbm_jobs = ProconBypassMan::HttpClient.new(path: path, server_pool: server_pool).get
     if pbm_jobs.size.zero?
       return
     else

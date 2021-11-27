@@ -96,6 +96,15 @@ class ProconBypassMan::Configuration
     end
   end
 
+  def internal_server_pool
+    @server_pool ||= ProconBypassMan::Background::ServerPool.new(servers: internal_api_servers)
+  end
+
+
+  def server_pool
+    @server_pool ||= ProconBypassMan::Background::ServerPool.new(servers: api_servers)
+  end
+
   def api_servers
     if !!ENV["API_SERVER"]
       [ENV["API_SERVER"]].reject(&:nil?)

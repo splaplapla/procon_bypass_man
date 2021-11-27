@@ -5,7 +5,7 @@ class ProconBypassMan::ReportPressedButtonsJob < ProconBypassMan::BaseJob
   def self.perform(body)
     ProconBypassMan::ReportHttpClient.new(
       path: path,
-      pool_server: pool_server,
+      server_pool: server_pool,
     ).post(body: body, event_type: :internal)
   end
 

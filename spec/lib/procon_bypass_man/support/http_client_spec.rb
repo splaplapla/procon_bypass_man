@@ -14,7 +14,7 @@ describe ProconBypassMan::HttpClient do
       let(:pool) { ProconBypassMan::Background::ServerPool.new(servers: ["http://localhost:3000", "http://localhost:4000"]) }
 
       it do
-        expect(described_class.new(path: "/", pool_server: pool).get).to eq("a" => 1)
+        expect(described_class.new(path: "/", server_pool: pool).get).to eq("a" => 1)
       end
     end
 
@@ -22,7 +22,7 @@ describe ProconBypassMan::HttpClient do
       let(:pool) { ProconBypassMan::Background::ServerPool.new(servers: []) }
 
       it do
-        expect(described_class.new(path: "/", pool_server: pool).get).to eq(nil)
+        expect(described_class.new(path: "/", server_pool: pool).get).to eq(nil)
       end
     end
   end
@@ -41,7 +41,7 @@ describe ProconBypassMan::HttpClient do
 
       it do
         expect(
-          described_class.new(path: "/", pool_server: pool).post(request_body: {})
+          described_class.new(path: "/", server_pool: pool).post(request_body: {})
         ).to eq("a" => 1)
       end
     end
@@ -50,7 +50,7 @@ describe ProconBypassMan::HttpClient do
       let(:pool) { ProconBypassMan::Background::ServerPool.new(servers: []) }
 
       it do
-        expect(described_class.new(path: "/", pool_server: pool).post(request_body: {})).to eq(nil)
+        expect(described_class.new(path: "/", server_pool: pool).post(request_body: {})).to eq(nil)
       end
     end
   end
@@ -69,7 +69,7 @@ describe ProconBypassMan::HttpClient do
 
       it do
         expect(
-          described_class.new(path: "/", pool_server: pool).post(request_body: {})
+          described_class.new(path: "/", server_pool: pool).post(request_body: {})
         ).to eq("a" => 1)
       end
     end
@@ -78,7 +78,7 @@ describe ProconBypassMan::HttpClient do
       let(:pool) { ProconBypassMan::Background::ServerPool.new(servers: []) }
 
       it do
-        expect(described_class.new(path: "/", pool_server: pool).post(request_body: {})).to eq(nil)
+        expect(described_class.new(path: "/", server_pool: pool).post(request_body: {})).to eq(nil)
       end
     end
   end

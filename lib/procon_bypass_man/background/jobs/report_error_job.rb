@@ -5,8 +5,7 @@ class ProconBypassMan::ReportErrorJob < ProconBypassMan::ReportBaseJob
   def self.perform(body)
     ProconBypassMan::ReportHttpClient.new(
       path: path,
-      pool_server: pool_server,
-      retry_on_connection_error: false,
+      server_pool: server_pool,
     ).post(body: body, event_type: :error)
   end
 end
