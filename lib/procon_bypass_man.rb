@@ -30,6 +30,7 @@ require_relative "procon_bypass_man/procon_reader"
 require_relative "procon_bypass_man/procon/analog_stick"
 require_relative "procon_bypass_man/procon/analog_stick_cap"
 require_relative "procon_bypass_man/value_objects/remote_pbm_action_object"
+require_relative "procon_bypass_man/scheduler"
 require_relative "procon_bypass_man/splatoon2"
 
 STDOUT.sync = true
@@ -56,6 +57,8 @@ module ProconBypassMan
 
   # @return [void]
   def self.run(setting_path: nil, &block)
+    ProconBypassMan::Scheduler.start!
+
     ProconBypassMan.logger.info "PBMを起動しています"
     puts "PBMを起動しています"
     buttons_setting_configure(setting_path: setting_path, &block)
