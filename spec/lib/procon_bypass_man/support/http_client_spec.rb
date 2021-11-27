@@ -41,7 +41,7 @@ describe ProconBypassMan::HttpClient do
 
       it do
         expect(
-          described_class.new(path: "/", pool_server: pool).post(body: {}, event_type: :a)
+          described_class.new(path: "/", pool_server: pool).post(request_body: {})
         ).to eq("a" => 1)
       end
     end
@@ -50,7 +50,7 @@ describe ProconBypassMan::HttpClient do
       let(:pool) { ProconBypassMan::Background::ServerPool.new(servers: []) }
 
       it do
-        expect(described_class.new(path: "/", pool_server: pool).post(body: {}, event_type: :a)).to eq(nil)
+        expect(described_class.new(path: "/", pool_server: pool).post(request_body: {})).to eq(nil)
       end
     end
   end

@@ -3,7 +3,7 @@ class ProconBypassMan::ReportErrorJob < ProconBypassMan::ReportBaseJob
 
   # @param [String] body
   def self.perform(body)
-    ProconBypassMan::HttpClient.new(
+    ProconBypassMan::ReportHttpClient.new(
       path: path,
       pool_server: pool_server,
       retry_on_connection_error: false,

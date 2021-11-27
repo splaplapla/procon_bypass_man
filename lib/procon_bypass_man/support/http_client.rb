@@ -33,24 +33,28 @@ module ProconBypassMan
       end
     end
 
-    def post(body: , event_type: )
+    def post(request_body: )
       handle_request do
-        request_body = {
-          body: body.to_json,
-          hostname: `hostname`.chomp,
-          session_id: ProconBypassMan.session_id,
-          device_id: ProconBypassMan.device_id,
-          event_type: event_type,
-        }
+        body = {}.merge!(request_body)
         response = HttpRequest::Post.request!(
           uri: @uri,
-          request_body: request_body,
+          request_body: body,
         )
         break process_response(response)
       end
     end
 
-    def put(to_status: nil)
+    def put(request_body: )
+      handle_request do
+        body = {
+          hostname: `hostname`.chomp,
+        }.merge!(request_body)
+        response = HttpRequest::Post.request!(
+          uri: @uri,
+          request_body: body,
+        )
+        break process_response(response)
+      end
     end
 
     private
