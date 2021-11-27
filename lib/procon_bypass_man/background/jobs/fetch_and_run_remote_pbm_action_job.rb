@@ -3,7 +3,7 @@ class ProconBypassMan::FetchAndRunRemotePbmActionJob < ProconBypassMan::BaseJob
 
   def self.perform
     pbm_jobs = ProconBypassMan::HttpClient.new(path: path, server_pool: server_pool).get
-    if pbm_jobs.size.zero?
+    if pbm_jobs.nil? || pbm_jobs.size.zero?
       ProconBypassMan.logger.info "remote pbm_jobsはありませんでした"
       return
     else
