@@ -9,11 +9,13 @@ module ProconBypassMan
     ACTION_CHANGE_PBM_VERSION = "change_pbm_version"
     ACTION_REBOOT_PBM = "reboot_pbm"
     ACTION_REBOOT_OS = "reboot_os"
+    ACTION_RESTORE_SETTING = "restore_setting" # TODO
 
     ACTIONS = [
       ACTION_CHANGE_PBM_VERSION,
       ACTION_REBOOT_PBM,
       ACTION_REBOOT_OS,
+      ACTION_RESTORE_SETTING,
     ]
 
     STATUS_FAILED = :failed
