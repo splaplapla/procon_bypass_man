@@ -14,15 +14,15 @@ module ProconBypassMan
       end
 
       def run!
-        before_action
+        before_action_callback
         action_content
-        after_action
+        after_action_callback
       rescue
         be_failed
       end
 
-      def before_action; end
-      def after_action; end
+      def before_action_callback; end
+      def after_action_callback; end
 
       def be_failed
         ProconBypassMan::UpdateRemotePbmActionCommand.new(pbm_job_uuid: pbm_job_uuid).execute(to_status: :failed)

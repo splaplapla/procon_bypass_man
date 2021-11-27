@@ -8,7 +8,7 @@ module ProconBypassMan
 
       private
 
-      def before_action
+      def before_action_callback
         be_processed
       end
     end
