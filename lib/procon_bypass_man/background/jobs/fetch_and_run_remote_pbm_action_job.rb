@@ -13,7 +13,7 @@ class ProconBypassMan::FetchAndRunRemotePbmActionJob < ProconBypassMan::BaseJob
                                                                     uuid: pbm_job_hash["uuid"],
                                                                     created_at: pbm_job_hash["created_at"])
         pbm_job_object.validate!
-        ProconBypassMan::RunRemotePbmActionCommand.execute(action: pbm_job_object.action, uuid: pbm_job_object.uuid)
+        ProconBypassMan::RunRemotePbmActionDispatchCommand.execute(action: pbm_job_object.action, uuid: pbm_job_object.uuid)
       rescue ProconBypassMan::RemotePbmActionObject::ValidationError => e
         ProconBypassMan::SendErrorCommand.execute(error: e)
       end

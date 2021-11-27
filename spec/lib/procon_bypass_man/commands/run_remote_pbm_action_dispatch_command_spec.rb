@@ -1,8 +1,8 @@
 require "spec_helper"
 
-describe ProconBypassMan::RunRemotePbmActionCommand do
+describe ProconBypassMan::RunRemotePbmActionDispatchCommand do
   describe '.execute' do
-    subject { ProconBypassMan::RunRemotePbmActionCommand.execute(action: action, uuid: "a") }
+    subject { described_class.execute(action: action, uuid: "a") }
 
     context ProconBypassMan::RemotePbmAction::CHANGE_PBM_VERSION do
       let(:action) { ProconBypassMan::RemotePbmAction::CHANGE_PBM_VERSION }

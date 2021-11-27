@@ -36,7 +36,7 @@ describe ProconBypassMan::FetchAndRunRemotePbmActionJob do
         let(:response) { [{ "action" => "reboot_pbm", "uuid" => "a", "status" => "foo" }] }
 
         it do
-          expect(ProconBypassMan::RunRemotePbmActionCommand).to receive(:execute).with(action: "reboot_pbm", uuid: "a")
+          expect(ProconBypassMan::RunRemotePbmActionDispatchCommand).to receive(:execute).with(action: "reboot_pbm", uuid: "a")
           subject
         end
       end

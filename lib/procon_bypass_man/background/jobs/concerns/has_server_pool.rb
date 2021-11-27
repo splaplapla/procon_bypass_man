@@ -1,3 +1,5 @@
+# TODO extendしているクラスごとに送信先が変わるのでglobalにpoolを持つ
+# TODO %s/pool_server/server_pool/g
 module ProconBypassMan::Background::HasServerPool
   def reset_server_pool!
     @pool_server = nil

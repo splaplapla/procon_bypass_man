@@ -18,7 +18,7 @@ module ProconBypassMan
       end
     end
 
-    def initialize(path: , pool_server: , retry_on_connection_error: false)
+    def initialize(path: , pool_server: nil, retry_on_connection_error: false)
       @pool_server = pool_server
       @uri = URI.parse("#{pool_server.server}#{path}")
       @retry_on_connection_error = retry_on_connection_error
@@ -48,6 +48,9 @@ module ProconBypassMan
         )
         break process_response(response)
       end
+    end
+
+    def put(to_status: nil)
     end
 
     private
