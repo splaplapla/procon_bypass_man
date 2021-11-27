@@ -1,7 +1,6 @@
 require "procon_bypass_man/background/jobs/concerns/has_internal_api_setting"
 require "procon_bypass_man/background/jobs/concerns/has_external_api_setting"
 require "procon_bypass_man/background/jobs/concerns/job_runnable"
-require "procon_bypass_man/background/server_pool"
 require "procon_bypass_man/background/job_runner"
 require "procon_bypass_man/background/job_performer"
 require "procon_bypass_man/background/jobs/base_job"

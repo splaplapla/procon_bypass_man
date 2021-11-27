@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe ProconBypassMan::Background::ServerPool do
+describe ProconBypassMan::ServerPool do
   describe '#pick' do
     context 'when provide a nil' do
       it do
