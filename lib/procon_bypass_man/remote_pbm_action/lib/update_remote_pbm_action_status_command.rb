@@ -8,9 +8,9 @@ module ProconBypassMan
     # @param [Symbol] to_status
     def execute(to_status: )
       ProconBypassMan::UpdateRemotePbmActionStatusHttpClient.new(
-        server_pool: ProconBypassMan.config.server_pool,
         path: path,
-      ).put(to_status: "a")
+        server_pool: ProconBypassMan.config.server_pool,
+      ).put(to_status: to_status)
     end
 
     private
