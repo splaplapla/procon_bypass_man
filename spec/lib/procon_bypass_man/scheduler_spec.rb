@@ -56,7 +56,14 @@ describe ProconBypassMan::Scheduler do
       subject { schedule.enqueue }
 
       it 'next_enqueue_atを更新すること' do
-        expect { subject }.to change { schedule.next_enqueue_at }
+        Timecop.freeze '2021-11-11 00:00:00' do
+          schedule.enqueue
+        end
+        base = schedule.next_enqueue_at.to_i
+        Timecop.freeze '2021-11-11 00:00:03' do
+          schedule.enqueue
+          expect(schedule.next_enqueue_at.to_i - base).to eq(3)
+        end
       end
 
       it 'be call perform_async' do
