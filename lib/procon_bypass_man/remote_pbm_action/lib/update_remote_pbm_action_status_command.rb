@@ -15,6 +15,7 @@ module ProconBypassMan
 
     private
 
+    # @return [String]
     def path
       "/api/devices/#{ProconBypassMan.device_id}/pbm_jobs/#{@pbm_job_uuid}"
     end

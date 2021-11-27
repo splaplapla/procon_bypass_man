@@ -1,6 +1,7 @@
 module ProconBypassMan
   module RemotePbmAction
     class RebootOsAction < BaseAction
+
       def action_content
         # TODO
       end

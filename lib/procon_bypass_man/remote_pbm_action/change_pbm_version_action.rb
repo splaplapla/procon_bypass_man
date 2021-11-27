@@ -1,6 +1,7 @@
 module ProconBypassMan
   module RemotePbmAction
     class ChangePbmVersionAction < BaseAction
+
       def action_content
         # TODO
       end
