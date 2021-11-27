@@ -3,7 +3,7 @@ module ProconBypassMan
     class ChangePbmVersionAction < BaseAction
 
       def action_content
-        # TODO
+        ProconBypassMan.logger.info "execute ChangePbmVersionAction!"
       end
 
       private

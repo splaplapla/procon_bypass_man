@@ -3,7 +3,7 @@ module ProconBypassMan
     class RebootOsAction < BaseAction
 
       def action_content
-        # TODO
+        ProconBypassMan.logger.info "execute RebootOsAction!"
       end
 
       private
