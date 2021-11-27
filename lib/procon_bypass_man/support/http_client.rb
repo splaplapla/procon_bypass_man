@@ -16,6 +16,14 @@ module ProconBypassMan
           http.post(uri.path, request_body.to_json, { "Content-Type" => "application/json" })
         end
       end
+
+      class Put
+        def self.request!(uri: , request_body: {})
+          http = Net::HTTP.new(uri.host, uri.port)
+          http.use_ssl = uri.scheme === "https"
+          http.put(uri.path, request_body.to_json, { "Content-Type" => "application/json" })
+        end
+      end
     end
 
     def initialize(path: , pool_server: nil, retry_on_connection_error: false)
@@ -49,7 +57,7 @@ module ProconBypassMan
         body = {
           hostname: `hostname`.chomp,
         }.merge!(request_body)
-        response = HttpRequest::Post.request!(
+        response = HttpRequest::Put.request!(
           uri: @uri,
           request_body: body,
         )
