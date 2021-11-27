@@ -1,6 +1,6 @@
 module ProconBypassMan
-  class UpdateRemotePbmJobCommand
-    def initialize
+  class UpdateRemotePbmActionStatusCommand
+    def initialize(pbm_job_uuid: )
     end
 
     # @return [void]
