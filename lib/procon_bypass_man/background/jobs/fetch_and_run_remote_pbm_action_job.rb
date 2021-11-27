@@ -21,7 +21,7 @@ class ProconBypassMan::FetchAndRunRemotePbmActionJob < ProconBypassMan::BaseJob
   end
 
   def self.path
-    device_id = ENV["DEBUG_DEVICE_ID"] || ProconBypassMan.device_id
+    device_id = ProconBypassMan.device_id
     "/api/devices/#{device_id}/pbm_jobs"
   end
 end

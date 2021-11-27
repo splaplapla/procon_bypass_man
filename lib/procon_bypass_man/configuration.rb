@@ -31,7 +31,7 @@ class ProconBypassMan::Configuration
 
     # @return [String]
     def device_id
-      ProconBypassMan::WriteDeviceIdCommand.execute
+      ENV["DEBUG_DEVICE_ID"] || ProconBypassMan::WriteDeviceIdCommand.execute
     end
   end
 

@@ -1,11 +1,12 @@
 module ProconBypassMan
   class UpdateRemotePbmActionStatusCommand
+    # @param [String] pbm_job_uuid
     def initialize(pbm_job_uuid: )
       @pbm_job_uuid = pbm_job_uuid
     end
 
+    # @param [String] to_status
     # @return [void]
-    # @param [Symbol] to_status
     def execute(to_status: )
       ProconBypassMan::UpdateRemotePbmActionStatusHttpClient.new(
         path: path,
