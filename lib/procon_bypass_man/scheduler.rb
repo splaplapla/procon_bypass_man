@@ -25,19 +25,19 @@ module ProconBypassMan
       end
     end
 
-    # @return [Array<Schedule>]
+    # @return [Hash]
     def self.schedules
       @@schedules
     end
 
-    @@schedules = []
+    @@schedules = {}
 
     def self.start!
       register_schedules
 
       @@thread = Thread.start do
         loop do
-          schedules.each do |schedule|
+          schedules.each do |_key, schedule|
             if schedule.past_interval?
               schedule.enqueue
             end
@@ -53,7 +53,7 @@ module ProconBypassMan
 
     # @param [Schedule] schedule
     def self.register(schedule: )
-      schedules.push(schedule)
+      schedules[schedule.klass] = schedule
     end
   end
 end
