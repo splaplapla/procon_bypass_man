@@ -182,6 +182,7 @@ class ProconBypassMan::Configuration
   end
 
   attr_reader api_server: untyped
+  attr_reader api_servers: untyped
 
   attr_accessor enable_critical_error_logging: untyped
 
