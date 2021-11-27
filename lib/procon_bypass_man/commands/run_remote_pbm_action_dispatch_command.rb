@@ -1,4 +1,7 @@
 class ProconBypassMan::RunRemotePbmActionDispatchCommand
+  # @param [String] action
+  # @param [String] uuid
+  # @return [void]
   def self.execute(action: , uuid: )
     case action
     when ProconBypassMan::RemotePbmAction::ACTION_CHANGE_PBM_VERSION
