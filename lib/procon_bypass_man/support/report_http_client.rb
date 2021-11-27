@@ -1,8 +1,12 @@
 module ProconBypassMan
-  class UpdateRemotePbmActionStatusHttpClient < HttpClient
-    def put(to_status: )
+  class ReportHttpClient < HttpClient
+    def post(body: , event_type: )
       super(request_body: {
-        body: { status: to_status },
+        session_id: ProconBypassMan.session_id,
+        device_id: ProconBypassMan.device_id,
+        hostname: `hostname`.chomp,
+        event_type: event_type,
+        body: body.to_json,
       })
     end
   end
