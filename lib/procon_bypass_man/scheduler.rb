@@ -72,7 +72,7 @@ module ProconBypassMan
         schedule: Schedule.new(
           klass: ProconBypassMan::FetchAndRunRemotePbmActionJob,
           args: [],
-          interval: 60,
+          interval: 3,
         )
       )
       register(
