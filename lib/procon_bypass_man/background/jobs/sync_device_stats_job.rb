@@ -1,12 +1,12 @@
 class ProconBypassMan::SyncDeviceStatsJob
   extend ProconBypassMan::HasExternalApiSetting
 
-  # @param [Symbol] stats
-  def self.perform(stats)
+  # @param [Symbol] status
+  def self.perform(status)
     ProconBypassMan::SendDeviceStatsHttpClient.new(
       path: path,
       server_pool: server_pool,
-    ).post(stats: stats)
+    ).post(status: status)
   end
 
   def self.path

@@ -1,8 +1,8 @@
 module ProconBypassMan
   class SendDeviceStatsHttpClient < HttpClient
-    def post(stats: )
+    def post(status: )
       super(request_body: {
-        body: { status: stats },
+        body: { status: status },
       })
     end
   end
