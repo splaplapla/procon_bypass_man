@@ -1,7 +1,7 @@
 require "spec_helper"
 
 describe ProconBypassMan::ConnectDeviceCommand do
-  describe '.execute1h!' do
+  describe '.execute!' do
     before do
       allow(ProconBypassMan::DeviceConnector).to receive(:connect)
     end
@@ -17,6 +17,16 @@ describe ProconBypassMan::ConnectDeviceCommand do
 
       it do
         expect { described_class.execute! }.to raise_error(::ProconBypassMan::EternalConnectionError)
+      end
+    end
+
+    context 'when procon not found ' do
+      before do
+        allow(ProconBypassMan::DeviceConnector).to receive(:connect) { raise ProconBypassMan::DeviceConnector::NotFoundProconError }
+      end
+
+      it do
+        expect { described_class.execute! }.to raise_error(ProconBypassMan::NotFoundProconError)
       end
     end
   end

@@ -14,11 +14,4 @@ describe ProconBypassMan::DeviceStatus do
       expect(described_class.current).to eq(ProconBypassMan::DeviceStatus::CONNECTED_BUT_SLEEPING)
     end
   end
-
-  describe '.change_to_device_error!' do
-    it do
-      described_class.change_to_device_error!
-      expect(described_class.current).to eq(ProconBypassMan::DeviceStatus::DEVICE_ERROR)
-    end
-  end
 end

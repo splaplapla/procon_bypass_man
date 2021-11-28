@@ -51,4 +51,64 @@ describe ProconBypassMan do
       end
     end
   end
+
+  describe '.run' do
+    describe 'error handling' do
+      subject { described_class.run }
+
+      before do
+        allow(described_class).to receive(:buttons_setting_configure)
+        allow(ProconBypassMan::ConnectDeviceCommand).to receive(:execute!)
+      end
+
+      context 'エラーが起きない' do
+        before do
+          allow(ProconBypassMan::Runner).to receive(:new) { double(:a).as_null_object }
+        end
+
+        it do
+          expect { subject }.not_to raise_error
+        end
+
+        it do
+          subject
+          expect(ProconBypassMan::DeviceStatus.current).to eq(ProconBypassMan::DeviceStatus::RUNNING)
+        end
+      end
+
+      context 'CouldNotLoadConfigErrorが起きるとき' do
+        before do
+          allow(ProconBypassMan::Runner).to receive(:new) { raise ProconBypassMan::CouldNotLoadConfigError }
+        end
+
+        it do
+          expect{ subject }.to raise_error(SystemExit)
+          expect(ProconBypassMan::DeviceStatus.current).to eq(ProconBypassMan::DeviceStatus::SETTING_SYNTAX_ERROR_AND_SHUTDOWN)
+        end
+      end
+
+      context 'NotFoundProconErrorが起きるとき' do
+        before do
+          allow(ProconBypassMan::Runner).to receive(:new) { raise ProconBypassMan::NotFoundProconError }
+        end
+
+        it do
+          expect{ subject }.to raise_error(SystemExit)
+          expect(ProconBypassMan::DeviceStatus.current).to eq(ProconBypassMan::DeviceStatus::PROCON_NOT_FOUND_ERROR)
+        end
+      end
+
+      context 'EternalConnectionErrorが起きるとき' do
+        before do
+          allow(ProconBypassMan::Runner).to receive(:new) { raise ProconBypassMan::EternalConnectionError }
+        end
+
+        it do
+          expect(ProconBypassMan).to receive(:eternal_sleep)
+          subject
+          expect(ProconBypassMan::DeviceStatus.current).to eq(ProconBypassMan::DeviceStatus::CONNECTED_BUT_SLEEPING)
+        end
+      end
+    end
+  end
 end
