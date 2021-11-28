@@ -8,7 +8,7 @@ describe ProconBypassMan::Scheduler do
   }
 
   describe '.register' do
-    subject { described_class.register(schedule: ProconBypassMan::Scheduler::Schedule.new(klass: job_class, interval: 2)) }
+    subject { described_class.register(schedule: ProconBypassMan::Scheduler::Schedule.new(klass: job_class, args: [], interval: 2)) }
 
     it do
       expect { subject }.to change { described_class.schedules.size }.by(1)
@@ -17,7 +17,7 @@ describe ProconBypassMan::Scheduler do
 
   describe ProconBypassMan::Scheduler::Schedule do
     describe '#past_interval?' do
-      let(:schedule) { described_class.new(klass: job_class, interval: 2) }
+      let(:schedule) { described_class.new(klass: job_class, args: [], interval: 2) }
 
       subject { schedule.past_interval? }
 
@@ -51,7 +51,7 @@ describe ProconBypassMan::Scheduler do
     end
 
     describe '#enqueue' do
-      let(:schedule) { described_class.new(klass: job_class, interval: 2) }
+      let(:schedule) { described_class.new(klass: job_class, args: [], interval: 2) }
 
       subject { schedule.enqueue }
 

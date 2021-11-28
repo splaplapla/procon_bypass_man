@@ -1,16 +1,17 @@
 module ProconBypassMan
   class Scheduler
     class Schedule
-      attr_accessor :klass, :interval, :next_enqueue_at
+      attr_accessor :klass, :args, :interval, :next_enqueue_at
 
-      def initialize(klass: , interval: )
+      def initialize(klass: , args: , interval: )
         self.klass = klass
+        self.args = args
         self.interval = interval
         set_next_enqueue_at!
       end
 
       def enqueue
-        @klass.perform_async
+        klass.perform_async(*args)
         set_next_enqueue_at!
       end
 
@@ -48,7 +49,7 @@ module ProconBypassMan
     end
 
     def self.register_schedules
-      register(schedule: Schedule.new(klass: ProconBypassMan::FetchAndRunRemotePbmActionJob, interval: 60))
+      register(schedule: Schedule.new(klass: ProconBypassMan::FetchAndRunRemotePbmActionJob, args: [], interval: 60))
     end
 
     # @param [Schedule] schedule
