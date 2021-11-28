@@ -3,6 +3,9 @@ module ProconBypassMan
     class Schedule
       attr_accessor :klass, :args, :interval, :next_enqueue_at
 
+      # @param [any] klass
+      # @param [Array] args
+      # @param [Integer] interval
       def initialize(klass: , args: , interval: )
         self.klass = klass
         self.args = args
@@ -10,19 +13,35 @@ module ProconBypassMan
         set_next_enqueue_at!
       end
 
+      # @return [void]
       def enqueue
-        klass.perform_async(*args)
+        klass.perform_async(*unwrap_args(args))
         set_next_enqueue_at!
       end
 
+      # @return [boolean]
       def past_interval?
         next_enqueue_at < Time.now
       end
 
       private
 
+      # @return [void]
       def set_next_enqueue_at!
         self.next_enqueue_at = Time.now + interval
+      end
+
+      # @param [Array] args
+      # @return [void]
+      def unwrap_args(args)
+        args.map do |arg|
+          case arg
+          when Proc
+            arg.call
+          else
+            arg
+          end
+        end
       end
     end
 
@@ -49,7 +68,20 @@ module ProconBypassMan
     end
 
     def self.register_schedules
-      register(schedule: Schedule.new(klass: ProconBypassMan::FetchAndRunRemotePbmActionJob, args: [], interval: 60))
+      register(
+        schedule: Schedule.new(
+          klass: ProconBypassMan::FetchAndRunRemotePbmActionJob,
+          args: [],
+          interval: 60,
+        )
+      )
+      register(
+        schedule: Schedule.new(
+          klass: ProconBypassMan::SyncDeviceStatsJob,
+          args: [->{ ProconBypassMan::DeviceStatus.current }],
+          interval: 60,
+        )
+      )
     end
 
     # @param [Schedule] schedule

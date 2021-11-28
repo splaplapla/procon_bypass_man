@@ -77,7 +77,7 @@ module ProconBypassMan
         end
       else
         @server_pool.next!
-        ProconBypassMan.logger.error("200以外(#{response.code})が帰ってきました. #{response.body}")
+        ProconBypassMan.logger.error("#{@uri}から200以外(#{response.code})が帰ってきました. #{response.body}")
       end
     end
 

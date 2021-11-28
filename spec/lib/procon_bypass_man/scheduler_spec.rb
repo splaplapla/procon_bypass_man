@@ -3,7 +3,7 @@ require "spec_helper"
 describe ProconBypassMan::Scheduler do
   let(:job_class) {
     Class.new do
-      def self.perform_async; end
+      def self.perform_async(*any); end
     end
   }
 
@@ -51,7 +51,7 @@ describe ProconBypassMan::Scheduler do
     end
 
     describe '#enqueue' do
-      let(:schedule) { described_class.new(klass: job_class, args: [], interval: 2) }
+      let(:schedule) { described_class.new(klass: job_class, args: [->{1}], interval: 2) }
 
       subject { schedule.enqueue }
 
