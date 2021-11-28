@@ -61,6 +61,7 @@ module ProconBypassMan
   # @return [void]
   def self.run(setting_path: nil, &block)
     ProconBypassMan::Scheduler.start!
+    ProconBypassMan::Background::JobRunner.start!
 
     ProconBypassMan.logger.info "PBMを起動しています"
     puts "PBMを起動しています"
@@ -68,7 +69,6 @@ module ProconBypassMan
     initialize_pbm
     File.write(pid_path, $$)
     ProconBypassMan::WriteSessionIdCommand.execute
-    ProconBypassMan::Background::JobRunner.start!
     gadget, procon = ProconBypassMan::ConnectDeviceCommand.execute!
     ProconBypassMan::DeviceStatus.change_to_running!
     Runner.new(gadget: gadget, procon: procon).run

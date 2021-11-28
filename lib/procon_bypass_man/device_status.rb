@@ -1,4 +1,3 @@
-# 定期的に送信、ステータスが変わった時とプロセス終了時に送信
 class ProconBypassMan::DeviceStatus
   INITIALIZED = :initialized
   RUNNING = :running
@@ -15,25 +14,31 @@ class ProconBypassMan::DeviceStatus
 
   def self.change_to_running!
     @@status = RUNNING
+    ProconBypassMan::SyncDeviceStatsJob.perform_async(ProconBypassMan::DeviceStatus.current)
   end
 
   def self.change_to_connected_but_sleeping!
     @@status = CONNECTED_BUT_SLEEPING
+    ProconBypassMan::SyncDeviceStatsJob.perform_async(ProconBypassMan::DeviceStatus.current)
   end
 
   def self.change_to_procon_not_found_error!
     @@status = PROCON_NOT_FOUND_ERROR
+    ProconBypassMan::SyncDeviceStatsJob.perform_async(ProconBypassMan::DeviceStatus.current)
   end
 
   def self.change_to_device_error!
     @@status = DEVICE_ERROR
+    ProconBypassMan::SyncDeviceStatsJob.perform_async(ProconBypassMan::DeviceStatus.current)
   end
 
   def self.change_to_connected_but_error!
     @@status = CONNECTED_BUT_ERROR
+    ProconBypassMan::SyncDeviceStatsJob.perform_async(ProconBypassMan::DeviceStatus.current)
   end
 
   def self.change_to_setting_syntax_error_and_shutdown!
     @@status = SETTING_SYNTAX_ERROR_AND_SHUTDOWN
+    ProconBypassMan::SyncDeviceStatsJob.perform_async(ProconBypassMan::DeviceStatus.current)
   end
 end

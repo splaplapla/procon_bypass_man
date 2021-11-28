@@ -1,4 +1,4 @@
-class ProconBypassMan::SyncDeviceStatsJob
+class ProconBypassMan::SyncDeviceStatsJob < ProconBypassMan::BaseJob
   extend ProconBypassMan::HasExternalApiSetting
 
   # @param [Symbol] status
