@@ -1,6 +1,6 @@
 # クラス変数のstatsを書き換える
 # 定期的に送信、ステータスが変わった時とプロセス終了時に送信
-class ProconBypassMan::DeviceStats
+class ProconBypassMan::DeviceStatus
   RUNNING = :running
   CONNECTED_BUT_SLEEPING = :connected_but_sleeping # コードはつながっているが、switchがsleepしているとき
   DEVICE_ERROR = :device_error # 繋がっていないとか、デバイスが使えない時
