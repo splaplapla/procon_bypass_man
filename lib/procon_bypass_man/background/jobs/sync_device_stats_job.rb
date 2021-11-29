@@ -6,7 +6,7 @@ class ProconBypassMan::SyncDeviceStatsJob < ProconBypassMan::BaseJob
     ProconBypassMan::SendDeviceStatsHttpClient.new(
       path: path,
       server_pool: server_pool,
-    ).post(status: status)
+    ).post(status: status, pbm_sessions_id: ProconBypassMan.session_id)
   end
 
   def self.path
