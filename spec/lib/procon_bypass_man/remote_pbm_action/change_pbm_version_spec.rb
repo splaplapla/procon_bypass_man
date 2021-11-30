@@ -20,10 +20,11 @@ describe ProconBypassMan::RemotePbmAction::ChangePbmVersionAction do
 
     context 'エラーが起きるとき' do
       before do
-        expect(action).to receive(:action_content) { raise RuntimeError }
+        allow(action).to receive(:action_content) { raise RuntimeError }
       end
 
       it do
+        expect(ProconBypassMan::SendErrorCommand).to receive(:execute)
         expect(action).not_to receive(:be_processed)
         expect(action).to receive(:be_in_progress)
         expect(action).to receive(:be_failed)

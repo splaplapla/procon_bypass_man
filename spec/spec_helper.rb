@@ -26,6 +26,8 @@ RSpec.configure do |config|
 
     allow(ProconBypassMan::HttpClient::HttpRequest::Get).to receive(:new)
     allow(ProconBypassMan::HttpClient::HttpRequest::Post).to receive(:new)
+    allow(ProconBypassMan.config).to receive(:internal_server_pool) { ProconBypassMan::ServerPool.new(servers: []) }
+    allow(ProconBypassMan.config).to receive(:server_pool) { ProconBypassMan::ServerPool.new(servers: []) }
   end
 
   # rspec-expectations config goes here. You can use an alternate
