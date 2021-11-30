@@ -4,6 +4,7 @@ module ProconBypassMan
 
       def action_content
         ProconBypassMan.logger.info "execute StopPbmAction!"
+        Process.kill("TERM", ProconBypassMan.pid)
       end
 
       private
