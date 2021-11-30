@@ -33,11 +33,22 @@ describe ProconBypassMan::FetchAndRunRemotePbmActionJob do
       end
 
       context 'validなとき' do
-        let(:response) { [{ "action" => ProconBypassMan::RemotePbmAction::ACTION_STOP_PBM, "uuid" => "a", "status" => "foo" }] }
+        context 'args: {}' do
+          let(:response) { [{ "action" => ProconBypassMan::RemotePbmAction::ACTION_STOP_PBM, "uuid" => "a", "status" => "foo", "args" => {} }] }
 
-        it do
-          expect(ProconBypassMan::RunRemotePbmActionDispatchCommand).to receive(:execute).with(action: ProconBypassMan::RemotePbmAction::ACTION_STOP_PBM, uuid: "a")
-          subject
+          it do
+            expect(ProconBypassMan::RunRemotePbmActionDispatchCommand).to receive(:execute).with(action: ProconBypassMan::RemotePbmAction::ACTION_STOP_PBM, uuid: "a", job_args: {})
+            subject
+          end
+        end
+
+        context 'args: { pbm_version: "0.1.1" }' do
+          let(:response) { [{ "action" => ProconBypassMan::RemotePbmAction::ACTION_STOP_PBM, "uuid" => "a", "status" => "foo", "args" => { pbm_version: "0.1.1" } }] }
+
+          it do
+            expect(ProconBypassMan::RunRemotePbmActionDispatchCommand).to receive(:execute).with(action: ProconBypassMan::RemotePbmAction::ACTION_STOP_PBM, uuid: "a", job_args: { pbm_version: "0.1.1" })
+            subject
+          end
         end
       end
     end

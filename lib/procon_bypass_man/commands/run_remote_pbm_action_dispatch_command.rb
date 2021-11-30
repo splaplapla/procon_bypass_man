@@ -2,10 +2,10 @@ class ProconBypassMan::RunRemotePbmActionDispatchCommand
   # @param [String] action
   # @param [String] uuid
   # @return [void]
-  def self.execute(action: , uuid: )
+  def self.execute(action: , uuid: , job_args: )
     case action
     when ProconBypassMan::RemotePbmAction::ACTION_CHANGE_PBM_VERSION
-      ProconBypassMan::RemotePbmAction::ChangePbmVersionAction.new(pbm_job_uuid: uuid).run!
+      ProconBypassMan::RemotePbmAction::ChangePbmVersionAction.new(pbm_job_uuid: uuid).run!(job_args: job_args)
     when ProconBypassMan::RemotePbmAction::ACTION_STOP_PBM
       ProconBypassMan::RemotePbmAction::StopPbmAction.new(pbm_job_uuid: uuid).run!
     when ProconBypassMan::RemotePbmAction::ACTION_REBOOT_OS

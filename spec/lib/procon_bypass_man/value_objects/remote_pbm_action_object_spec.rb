@@ -5,7 +5,7 @@ describe ProconBypassMan::RemotePbmActionObject do
 
   describe 'accessoring' do
     it do
-      object = described_class.new(action: source_hash["action"], status: source_hash["status"], uuid: source_hash["uuid"], created_at: source_hash["created_at"])
+      object = described_class.new(action: source_hash["action"], status: source_hash["status"], uuid: source_hash["uuid"], created_at: source_hash["created_at"], job_args: {})
       expect(object.action).to eq("reboot_os")
       expect(object.uuid).to eq(source_hash["uuid"])
     end
@@ -14,14 +14,14 @@ describe ProconBypassMan::RemotePbmActionObject do
   describe '#validate!' do
     context 'actionが不明なとき' do
       it do
-        object = described_class.new(action: "something", status: source_hash["status"], uuid: source_hash["uuid"], created_at: source_hash["created_at"])
+        object = described_class.new(action: "something", status: source_hash["status"], uuid: source_hash["uuid"], created_at: source_hash["created_at"], job_args: {})
         expect { object.validate! }.to raise_error(ProconBypassMan::RemotePbmActionObject::NonSupportAction)
       end
     end
 
     context 'uuidがnilなとき' do
       it do
-        object = described_class.new(action: "something", status: source_hash["status"], uuid: nil, created_at: source_hash["created_at"])
+        object = described_class.new(action: "something", status: source_hash["status"], uuid: nil, created_at: source_hash["created_at"], job_args: {})
         expect { object.validate! }.to raise_error(ProconBypassMan::RemotePbmActionObject::MustBeNotNilError)
       end
     end

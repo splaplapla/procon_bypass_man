@@ -5,17 +5,19 @@ module ProconBypassMan
     class MustBeNotNilError < ValidationError; end
     class NonSupportAction < ValidationError; end
 
-    attr_accessor :action, :status, :uuid, :created_at
+    attr_accessor :action, :status, :uuid, :created_at, :job_args
 
-    # @return [String] action
-    # @return [String] status
-    # @return [String] #uuid
-    # @return [Time] created_at
-    def initialize(action: , status:, uuid:, created_at:)
+    # @param [String] action
+    # @param [String] status
+    # @param [String] #uuid
+    # @param [Time] created_at
+    # @return [Hash] job_args
+    def initialize(action: , status:, uuid:, created_at:, job_args: )
       self.action = action
       self.status = status
       self.uuid = uuid
       self.created_at = created_at
+      self.job_args = job_args
 
       freeze
     end
