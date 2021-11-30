@@ -10,7 +10,7 @@ module ProconBypassMan
         self.klass = klass
         self.args = args
         self.interval = interval
-        set_next_enqueue_at!
+        self.next_enqueue_at = Time.now
       end
 
       # @return [void]

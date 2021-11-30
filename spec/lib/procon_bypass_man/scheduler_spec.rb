@@ -36,7 +36,7 @@ describe ProconBypassMan::Scheduler do
 
         it do
           Timecop.freeze '2021-11-11 00:00:01' do
-            is_expected.to eq(false)
+            is_expected.to eq(true)
           end
         end
       end
