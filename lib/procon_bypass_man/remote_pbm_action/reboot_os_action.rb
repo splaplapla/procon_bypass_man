@@ -2,7 +2,7 @@ module ProconBypassMan
   module RemotePbmAction
     class RebootOsAction < BaseAction
 
-      def action_content
+      def action_content(_args)
         ProconBypassMan.logger.info "execute RebootOsAction!"
         `reboot`
       end

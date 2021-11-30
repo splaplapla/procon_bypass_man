@@ -1,6 +1,7 @@
 module ProconBypassMan
   module RemotePbmAction
     class ActionUnexpectedError < StandardError; end
+    class NeedPbmVersionError < ActionUnexpectedError; end
 
     class BaseAction
       attr_accessor :pbm_job_uuid
@@ -11,14 +12,15 @@ module ProconBypassMan
       end
 
       # @return [void]
-      def action_content
+      def action_content(_args)
         raise NotImplementedError, nil
       end
 
+      # @param [Hash] args
       # @return [void]
-      def run!
+      def run!(args)
         before_action_callback
-        action_content
+        action_content(args)
         after_action_callback
       rescue => e
         be_failed

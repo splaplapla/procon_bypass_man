@@ -3,7 +3,7 @@ require "spec_helper"
 describe ProconBypassMan::RemotePbmAction::ChangePbmVersionAction do
   describe '#run!' do
     let(:action) { described_class.new(pbm_job_uuid: "a") }
-    subject { action.run! }
+    subject { action.run!(job_args: {}) }
 
     context 'エラーが起きないとき' do
       before do
