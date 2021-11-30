@@ -33,10 +33,10 @@ describe ProconBypassMan::FetchAndRunRemotePbmActionJob do
       end
 
       context 'validなとき' do
-        let(:response) { [{ "action" => "reboot_pbm", "uuid" => "a", "status" => "foo" }] }
+        let(:response) { [{ "action" => ProconBypassMan::RemotePbmAction::ACTION_STOP_PBM, "uuid" => "a", "status" => "foo" }] }
 
         it do
-          expect(ProconBypassMan::RunRemotePbmActionDispatchCommand).to receive(:execute).with(action: "reboot_pbm", uuid: "a")
+          expect(ProconBypassMan::RunRemotePbmActionDispatchCommand).to receive(:execute).with(action: ProconBypassMan::RemotePbmAction::ACTION_STOP_PBM, uuid: "a")
           subject
         end
       end

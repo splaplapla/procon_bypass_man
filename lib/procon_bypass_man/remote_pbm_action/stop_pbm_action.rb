@@ -1,9 +1,9 @@
 module ProconBypassMan
   module RemotePbmAction
-    class RebootPbmAction < BaseAction
+    class StopPbmAction < BaseAction
 
       def action_content
-        ProconBypassMan.logger.info "execute RebootPbmAction!"
+        ProconBypassMan.logger.info "execute StopPbmAction!"
       end
 
       private

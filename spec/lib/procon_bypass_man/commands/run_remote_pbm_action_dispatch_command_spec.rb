@@ -13,11 +13,11 @@ describe ProconBypassMan::RunRemotePbmActionDispatchCommand do
       end
     end
 
-    context ProconBypassMan::RemotePbmAction::ACTION_REBOOT_PBM do
-      let(:action) { ProconBypassMan::RemotePbmAction::ACTION_REBOOT_PBM }
+    context ProconBypassMan::RemotePbmAction::ACTION_STOP_PBM do
+      let(:action) { ProconBypassMan::RemotePbmAction::ACTION_STOP_PBM }
 
       it do
-        expect(ProconBypassMan::RemotePbmAction::RebootPbmAction).to receive(:new) { double(:o).as_null_object }
+        expect(ProconBypassMan::RemotePbmAction::StopPbmAction).to receive(:new) { double(:o).as_null_object }
         subject
       end
     end
