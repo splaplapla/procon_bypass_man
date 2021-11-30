@@ -4,6 +4,7 @@ module ProconBypassMan
 
       def action_content
         ProconBypassMan.logger.info "execute RebootOsAction!"
+        `reboot`
       end
 
       private
