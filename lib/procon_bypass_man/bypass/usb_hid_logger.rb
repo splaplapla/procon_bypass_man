@@ -33,10 +33,6 @@ class ProconBypassMan::Bypass
           ProconBypassMan::ProconReader.new(binary: bypass_value.binary).to_hash
         )
       end
-
-      ProconBypassMan.cache.fetch key: 'heartbeat_reporter', expires_in: 60 do
-        ProconBypassMan::ReportHeartbeatJob.perform_async(ProconBypassMan::BootMessage.new.to_hash)
-      end
     end
   end
 end

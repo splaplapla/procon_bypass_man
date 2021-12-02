@@ -1,4 +1,4 @@
-module ProconBypassMan::Background::HasServerPool
+module ProconBypassMan
   class ServerPool
     def initialize(servers: )
       if servers.nil? || servers.empty?
@@ -29,6 +29,8 @@ module ProconBypassMan::Background::HasServerPool
       end
     end
 
+    private
+
     def reset
       @index = 0
     end
@@ -36,19 +38,5 @@ module ProconBypassMan::Background::HasServerPool
     def inc_index
       @index = @index + 1
     end
-  end
-
-  def reset_server_pool!
-    @pool_server = nil
-  end
-
-  def pool_server
-    @pool_server ||= ServerPool.new(
-      servers: servers
-    )
-  end
-
-  def servers
-    raise NotImplementedError, nil
   end
 end

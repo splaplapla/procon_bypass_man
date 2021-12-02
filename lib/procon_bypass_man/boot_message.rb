@@ -9,6 +9,8 @@ class ProconBypassMan::BootMessage
     @table[:setting_path] = ProconBypassMan::ButtonsSettingConfiguration.instance.setting_path
     @table[:uptime_from_boot] = ProconBypassMan::Uptime.from_boot
     @table[:use_pbmenv] = !(!!`which pbmenv`.empty?)
+    @table[:session_id] = ProconBypassMan.session_id
+    @table[:device_id] = ProconBypassMan.device_id
 
     # 開発中のHEADを取りたかったけど、Gem::Specification経由から取得する必要がありそう
     # build_version = `git rev-parse --short HEAD`.chomp
@@ -33,6 +35,8 @@ class ProconBypassMan::BootMessage
       setting_path: #{@table[:setting_path]}
       uptime from boot: #{@table[:uptime_from_boot]} sec
       use_pbmenv: #{@table[:use_pbmenv]}
+      session_id: #{ProconBypassMan.session_id}
+      device_id: #{ProconBypassMan.device_id}
       ----
     EOF
   end

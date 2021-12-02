@@ -6,16 +6,23 @@ require "fileutils"
 require "securerandom"
 
 require_relative "procon_bypass_man/version"
+require_relative "procon_bypass_man/remote_pbm_action"
 require_relative "procon_bypass_man/support/signal_handler"
 require_relative "procon_bypass_man/support/callbacks"
 require_relative "procon_bypass_man/support/safe_timeout"
 require_relative "procon_bypass_man/support/compress_array"
 require_relative "procon_bypass_man/support/uptime"
 require_relative "procon_bypass_man/support/on_memory_cache"
+require_relative "procon_bypass_man/support/http_client"
+require_relative "procon_bypass_man/support/report_http_client"
+require_relative "procon_bypass_man/support/update_remote_pbm_action_status_http_client"
+require_relative "procon_bypass_man/support/send_device_stats_http_client"
+require_relative "procon_bypass_man/support/server_pool"
 require_relative "procon_bypass_man/background"
 require_relative "procon_bypass_man/commands"
 require_relative "procon_bypass_man/bypass"
 require_relative "procon_bypass_man/device_connector"
+require_relative "procon_bypass_man/device_status"
 require_relative "procon_bypass_man/runner"
 require_relative "procon_bypass_man/processor"
 require_relative "procon_bypass_man/configuration"
@@ -24,6 +31,8 @@ require_relative "procon_bypass_man/procon"
 require_relative "procon_bypass_man/procon_reader"
 require_relative "procon_bypass_man/procon/analog_stick"
 require_relative "procon_bypass_man/procon/analog_stick_cap"
+require_relative "procon_bypass_man/value_objects/remote_pbm_action_object"
+require_relative "procon_bypass_man/scheduler"
 require_relative "procon_bypass_man/splatoon2"
 
 STDOUT.sync = true
@@ -34,6 +43,7 @@ module ProconBypassMan
 
   class CouldNotLoadConfigError < StandardError; end
   class FirstConnectionError < StandardError; end
+  class NotFoundProconError < StandardError; end
   class EternalConnectionError < StandardError; end
 
   def self.buttons_setting_configure(setting_path: nil, &block)
@@ -50,25 +60,36 @@ module ProconBypassMan
 
   # @return [void]
   def self.run(setting_path: nil, &block)
+    ProconBypassMan::Scheduler.start!
+    ProconBypassMan::Background::JobRunner.start!
+
     ProconBypassMan.logger.info "PBMを起動しています"
     puts "PBMを起動しています"
     buttons_setting_configure(setting_path: setting_path, &block)
     initialize_pbm
     File.write(pid_path, $$)
     ProconBypassMan::WriteSessionIdCommand.execute
-    ProconBypassMan::Background::JobRunner.start!
     gadget, procon = ProconBypassMan::ConnectDeviceCommand.execute!
+    ProconBypassMan::DeviceStatus.change_to_running!
     Runner.new(gadget: gadget, procon: procon).run
-  rescue CouldNotLoadConfigError
+  rescue ProconBypassMan::CouldNotLoadConfigError
     ProconBypassMan::SendErrorCommand.execute(error: "設定ファイルが不正です。設定ファイルの読み込みに失敗しました")
+    ProconBypassMan::DeviceStatus.change_to_setting_syntax_error_and_shutdown!
     FileUtils.rm_rf(ProconBypassMan.pid_path)
     FileUtils.rm_rf(ProconBypassMan.digest_path)
     exit 1
-  rescue EternalConnectionError
-    ProconBypassMan::SendErrorCommand.execute(error: "接続の見込みがないのでsleepしまくります")
+  rescue ProconBypassMan::NotFoundProconError
+    ProconBypassMan::SendErrorCommand.execute(error: "プロコンが見つかりませんでした。終了します。")
+    ProconBypassMan::DeviceStatus.change_to_procon_not_found_error!
     FileUtils.rm_rf(ProconBypassMan.pid_path)
-    sleep(999999999)
-  rescue FirstConnectionError
+    FileUtils.rm_rf(ProconBypassMan.digest_path)
+    exit 1
+  rescue ProconBypassMan::EternalConnectionError
+    ProconBypassMan::SendErrorCommand.execute(error: "接続の見込みがないのでsleepしまくります")
+    ProconBypassMan::DeviceStatus.change_to_connected_but_sleeping!
+    FileUtils.rm_rf(ProconBypassMan.pid_path)
+    eternal_sleep
+  rescue ProconBypassMan::FirstConnectionError
     ProconBypassMan::SendErrorCommand.execute(error: "接続を確立できませんでした。やりなおします。")
     retry
   end
@@ -95,5 +116,9 @@ module ProconBypassMan
 
   def self.initialize_pbm
     ProconBypassMan::WriteDeviceIdCommand.execute
+  end
+
+  def self.eternal_sleep
+    sleep(999999999)
   end
 end

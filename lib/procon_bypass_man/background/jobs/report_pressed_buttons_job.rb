@@ -1,18 +1,15 @@
-class ProconBypassMan::ReportPressedButtonsJob
-  extend ProconBypassMan::Background::HasServerPool
-  extend ProconBypassMan::Background::JobRunnable
-
-  PATH = "/api/pressed_buttons"
+class ProconBypassMan::ReportPressedButtonsJob < ProconBypassMan::BaseJob
+  extend ProconBypassMan::HasInternalApiSetting
 
   # @param [String] body
   def self.perform(body)
-    ProconBypassMan::Background::HttpClient.new(
-      path: PATH,
-      pool_server: pool_server,
+    ProconBypassMan::ReportHttpClient.new(
+      path: path,
+      server_pool: server_pool,
     ).post(body: body, event_type: :internal)
   end
 
-  def self.servers
-    ProconBypassMan.config.internal_api_servers
+  def self.path
+    "/api/pressed_buttons"
   end
 end

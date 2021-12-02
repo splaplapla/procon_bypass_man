@@ -1,10 +1,11 @@
-class ProconBypassMan::ReportLoadConfigJob <  ProconBypassMan::BaseJob
+class ProconBypassMan::ReportLoadConfigJob < ProconBypassMan::ReportEventBaseJob
+  extend ProconBypassMan::HasExternalApiSetting
+
   # @param [String] body
   def self.perform(body)
-    ProconBypassMan::Background::HttpClient.new(
+    ProconBypassMan::ReportHttpClient.new(
       path: path,
-      pool_server: pool_server,
-      retry_on_connection_error: false,
+      server_pool: server_pool,
     ).post(body: body, event_type: :load_config)
   end
 end

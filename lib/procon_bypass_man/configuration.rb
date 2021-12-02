@@ -16,6 +16,11 @@ class ProconBypassMan::Configuration
       @@pid_path ||= File.expand_path("#{root}/pbm_pid", __dir__).freeze
     end
 
+    # @return [Integer]
+    def pid
+      File.read(pid_path).to_i
+    end
+
     def digest_path
       config.digest_path
     end
@@ -31,7 +36,7 @@ class ProconBypassMan::Configuration
 
     # @return [String]
     def device_id
-      ProconBypassMan::WriteDeviceIdCommand.execute
+      ENV["DEBUG_DEVICE_ID"] || ProconBypassMan::WriteDeviceIdCommand.execute
     end
   end
 
@@ -96,6 +101,17 @@ class ProconBypassMan::Configuration
     end
   end
 
+  # @return [Array<ProconBypassMan::ServerPool>]
+  def internal_server_pool
+    @internal_server_pool ||= ProconBypassMan::ServerPool.new(servers: internal_api_servers)
+  end
+
+  # @return [Array<ProconBypassMan::ServerPool>]
+  def server_pool
+    @server_pool ||= ProconBypassMan::ServerPool.new(servers: api_servers)
+  end
+
+  # @return [Array<String>]
   def api_servers
     if !!ENV["API_SERVER"]
       [ENV["API_SERVER"]].reject(&:nil?)

@@ -1,10 +1,6 @@
 require "spec_helper"
 
 describe ProconBypassMan::ReportPressedButtonsJob do
-  before do
-    described_class.reset_server_pool!
-  end
-
   describe '.perform' do
     before do
       ProconBypassMan.configure do |config|

@@ -1,5 +1,6 @@
 class ProconBypassMan::DeviceConnector
   class BytesMismatchError < StandardError; end
+  class NotFoundProconError < StandardError; end
 
   class Value
     attr_accessor :read_from, :values
@@ -300,7 +301,7 @@ class ProconBypassMan::DeviceConnector
       @procon = File.open(PROCON2_PATH, "w+b")
       @gadget = File.open('/dev/hidg0', "w+b")
     else
-      raise "/dev/hidraw0, /dev/hidraw1の両方見つかりませんでした"
+      raise NotFoundProconError, "/dev/hidraw0, /dev/hidraw1の両方見つかりませんでした"
     end
     system('echo > /sys/kernel/config/usb_gadget/procon/UDC')
     system('ls /sys/class/udc > /sys/kernel/config/usb_gadget/procon/UDC')
