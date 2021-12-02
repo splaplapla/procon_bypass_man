@@ -12,7 +12,6 @@ describe ProconBypassMan::RemotePbmAction::ChangePbmVersionAction do
 
       it do
         expect(action).to receive(:be_processed)
-        expect(action).to receive(:be_in_progress)
         expect(action).not_to receive(:be_failed)
         subject
       end
@@ -25,8 +24,7 @@ describe ProconBypassMan::RemotePbmAction::ChangePbmVersionAction do
 
       it do
         expect(ProconBypassMan::SendErrorCommand).to receive(:execute)
-        expect(action).not_to receive(:be_processed)
-        expect(action).to receive(:be_in_progress)
+        expect(action).to receive(:be_processed)
         expect(action).to receive(:be_failed)
         subject
       end
