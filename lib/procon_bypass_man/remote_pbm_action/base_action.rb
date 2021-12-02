@@ -18,9 +18,9 @@ module ProconBypassMan
 
       # @param [Hash] args
       # @return [void]
-      def run!(args)
+      def run!(job_args: )
         before_action_callback
-        action_content(args)
+        action_content(args: job_args)
         after_action_callback
       rescue => e
         be_failed

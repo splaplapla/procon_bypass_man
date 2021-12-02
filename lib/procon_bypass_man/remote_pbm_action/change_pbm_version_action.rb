@@ -2,7 +2,7 @@ module ProconBypassMan
   module RemotePbmAction
     class ChangePbmVersionAction < BaseAction
 
-      def action_content(args)
+      def action_content(args: )
         require "pbmenv"
         ProconBypassMan.logger.info "execute ChangePbmVersionAction!"
         pbm_version = args["pbm_version"] or raise(ProconBypassMan::RemotePbmAction::NeedPbmVersionError, "pbm_versionが必要です, #{args.inspect}")
