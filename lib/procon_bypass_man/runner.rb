@@ -27,7 +27,7 @@ class ProconBypassMan::Runner
 
     loop do
       $will_terminate_token = false
-      # TODO forkしないでThreadでいいのでは？
+      # NOTE メインプロセスではThreadをいくつか起動しているので念のため別プロセスで動かしていく
       main_loop_pid = Kernel.fork { ProconBypassMan::BypassCommand.new(gadget: @gadget, procon: @procon).execute }
 
       begin
