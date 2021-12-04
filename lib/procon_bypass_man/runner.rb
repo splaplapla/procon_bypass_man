@@ -27,7 +27,7 @@ class ProconBypassMan::Runner
 
     loop do
       $will_terminate_token = false
-      # NOTE メインプロセスではThreadをいくつか起動しているので念のため別プロセスで動かしていく
+      # NOTE メインプロセスではThreadをいくつか起動しているので念のためパフォーマンスを優先するためにforkしていく
       main_loop_pid = Kernel.fork { ProconBypassMan::BypassCommand.new(gadget: @gadget, procon: @procon).execute }
 
       begin
