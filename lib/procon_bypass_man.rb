@@ -42,9 +42,10 @@ module ProconBypassMan
   extend ProconBypassMan::Configuration::ClassMethods
 
   class CouldNotLoadConfigError < StandardError; end
-  class FirstConnectionError < StandardError; end
   class NotFoundProconError < StandardError; end
-  class EternalConnectionError < StandardError; end
+  class ConnectionError < StandardError; end
+  class FirstConnectionError < ConnectionError; end
+  class EternalConnectionError < ConnectionError; end
 
   def self.buttons_setting_configure(setting_path: nil, &block)
     unless setting_path
@@ -84,14 +85,18 @@ module ProconBypassMan
     FileUtils.rm_rf(ProconBypassMan.pid_path)
     FileUtils.rm_rf(ProconBypassMan.digest_path)
     exit 1
-  rescue ProconBypassMan::EternalConnectionError
-    ProconBypassMan::SendErrorCommand.execute(error: "接続の見込みがないのでsleepしまくります")
-    ProconBypassMan::DeviceStatus.change_to_connected_but_sleeping!
-    FileUtils.rm_rf(ProconBypassMan.pid_path)
-    eternal_sleep
-  rescue ProconBypassMan::FirstConnectionError
-    ProconBypassMan::SendErrorCommand.execute(error: "接続を確立できませんでした。やりなおします。")
-    retry
+  rescue ProconBypassMan::ConnectionError
+    begin
+      raise
+    rescue ProconBypassMan::EternalConnectionError
+      ProconBypassMan::SendErrorCommand.execute(error: "接続の見込みがないのでsleepしまくります")
+      ProconBypassMan::DeviceStatus.change_to_connected_but_sleeping!
+      FileUtils.rm_rf(ProconBypassMan.pid_path)
+      eternal_sleep
+    rescue ProconBypassMan::FirstConnectionError
+      ProconBypassMan::SendErrorCommand.execute(error: "接続を確立できませんでした。やりなおします。")
+      retry
+    end
   end
 
   def self.configure(&block)
