@@ -1,12 +1,12 @@
 version: 1.0
 setting: |-
-  fast_return = ProconBypassMan::Splatoon2::Macro::FastReturn
-  guruguru = ProconBypassMan::Splatoon2::Mode::Guruguru
+  fast_return = ProconBypassMan::Plugin::Splatoon2::Macro::FastReturn
+  guruguru = ProconBypassMan::Plugin::Splatoon2::Mode::Guruguru
 
   install_macro_plugin fast_return
-  install_macro_plugin ProconBypassMan::Splatoon2::Macro::JumpToUpKey
-  install_macro_plugin ProconBypassMan::Splatoon2::Macro::JumpToRightKey
-  install_macro_plugin ProconBypassMan::Splatoon2::Macro::JumpToLeftKey
+  install_macro_plugin ProconBypassMan::Plugin::Splatoon2::Macro::JumpToUpKey
+  install_macro_plugin ProconBypassMan::Plugin::Splatoon2::Macro::JumpToRightKey
+  install_macro_plugin ProconBypassMan::Plugin::Splatoon2::Macro::JumpToLeftKey
   install_mode_plugin guruguru
 
   prefix_keys_for_changing_layer [:zr, :zl, :l]
@@ -18,9 +18,9 @@ setting: |-
     flip :a, if_pressed: [:a]
     flip :down, if_pressed: :down
     macro fast_return.name, if_pressed: [:y, :b, :down]
-    macro ProconBypassMan::Splatoon2::Macro::JumpToUpKey, if_pressed: [:y, :b, :up]
-    macro ProconBypassMan::Splatoon2::Macro::JumpToRightKey, if_pressed: [:y, :b, :right]
-    macro ProconBypassMan::Splatoon2::Macro::JumpToLeftKey, if_pressed: [:y, :b, :left]
+    macro ProconBypassMan::Plugin::Splatoon2::Macro::JumpToUpKey, if_pressed: [:y, :b, :up]
+    macro ProconBypassMan::Plugin::Splatoon2::Macro::JumpToRightKey, if_pressed: [:y, :b, :right]
+    macro ProconBypassMan::Plugin::Splatoon2::Macro::JumpToLeftKey, if_pressed: [:y, :b, :left]
     remap :l, to: :zr
   end
   layer :right, mode: guruguru.name
