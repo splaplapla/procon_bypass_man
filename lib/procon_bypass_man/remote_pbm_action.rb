@@ -4,6 +4,7 @@ module ProconBypassMan
     require "procon_bypass_man/remote_pbm_action/change_pbm_version_action"
     require "procon_bypass_man/remote_pbm_action/reboot_os_action"
     require "procon_bypass_man/remote_pbm_action/stop_pbm_action"
+    require "procon_bypass_man/remote_pbm_action/restore_pbm_setting.rb"
     require "procon_bypass_man/remote_pbm_action/lib/update_remote_pbm_action_status_command"
 
     ACTION_CHANGE_PBM_VERSION = "change_pbm_version"

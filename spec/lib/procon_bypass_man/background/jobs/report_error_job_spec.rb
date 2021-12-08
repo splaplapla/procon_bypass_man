@@ -2,15 +2,38 @@ require "spec_helper"
 
 describe ProconBypassMan::ReportErrorJob do
   describe '.perform' do
-    let(:post_body) { "hoge" }
+    before do
+      ProconBypassMan.configure do |config|
+        config.api_servers = ["http://localhost:3000", "http://localhost:4000"]
+      end
+    end
 
-    subject { described_class.perform(post_body) }
+    after do
+      ProconBypassMan.configure do |config|
+        config.api_servers = nil
+      end
+    end
 
-    it do
-      http_client = double(:http_client)
-      expect(http_client).to receive(:post).with(body: post_body, event_type: :error)
-      expect(ProconBypassMan::HttpClient).to receive(:new) { http_client }
-      subject
+    context 'provide String' do
+      let(:post_body) { "hoge" }
+
+      subject { described_class.perform(post_body) }
+
+      it do
+        http_client = double(:http_client)
+        subject
+      end
+    end
+
+    context 'provide Error' do
+      let(:post_body) { RuntimeError.new("ffffffffff") }
+
+      subject { described_class.perform(post_body) }
+
+      it do
+        http_client = double(:http_client)
+        subject
+      end
     end
   end
 end
