@@ -16,6 +16,10 @@ module ProconBypassMan
       def before_action_callback
         be_processed
       end
+
+      def after_action_callback
+        # no-op
+      end
     end
   end
 end

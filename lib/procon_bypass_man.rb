@@ -126,4 +126,9 @@ module ProconBypassMan
   def self.eternal_sleep
     sleep(999999999)
   end
+
+  # @return [Void]
+  def self.hot_reload!
+    Process.kill(:URS2, pid)
+  end
 end
