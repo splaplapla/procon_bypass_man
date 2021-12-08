@@ -129,6 +129,6 @@ module ProconBypassMan
 
   # @return [Void]
   def self.hot_reload!
-    Process.kill(:URS2, pid)
+    Process.kill(:USR2, pid)
   end
 end
