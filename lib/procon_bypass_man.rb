@@ -47,29 +47,15 @@ module ProconBypassMan
   class FirstConnectionError < ConnectionError; end
   class EternalConnectionError < ConnectionError; end
 
-  def self.buttons_setting_configure(setting_path: nil, &block)
-    unless setting_path
-      logger.warn "setting_pathが未設定です。設定ファイルのライブリロードが使えません。"
-    end
-
-    if block_given?
-      ProconBypassMan::ButtonsSettingConfiguration.instance.instance_eval(&block)
-    else
-      ProconBypassMan::ButtonsSettingConfiguration::Loader.load(setting_path: setting_path)
-    end
-  end
-
   # @return [void]
-  def self.run(setting_path: nil, &block)
+  def self.run(setting_path: nil)
     ProconBypassMan::Scheduler.start!
     ProconBypassMan::Background::JobRunner.start!
 
     ProconBypassMan.logger.info "PBMを起動しています"
     puts "PBMを起動しています"
-    buttons_setting_configure(setting_path: setting_path, &block)
+    ProconBypassMan::ButtonsSettingConfiguration::Loader.load(setting_path: setting_path)
     initialize_pbm
-    File.write(pid_path, $$)
-    ProconBypassMan::WriteSessionIdCommand.execute
     gadget, procon = ProconBypassMan::ConnectDeviceCommand.execute!
     ProconBypassMan::DeviceStatus.change_to_running!
     Runner.new(gadget: gadget, procon: procon).run
@@ -121,6 +107,8 @@ module ProconBypassMan
 
   def self.initialize_pbm
     ProconBypassMan::WriteDeviceIdCommand.execute
+    ProconBypassMan::WriteSessionIdCommand.execute
+    File.write(pid_path, $$)
   end
 
   def self.eternal_sleep
