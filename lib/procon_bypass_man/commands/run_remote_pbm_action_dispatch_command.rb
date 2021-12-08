@@ -10,6 +10,8 @@ class ProconBypassMan::RunRemotePbmActionDispatchCommand
       ProconBypassMan::RemotePbmAction::StopPbmAction.new(pbm_job_uuid: uuid).run!(job_args: {})
     when ProconBypassMan::RemotePbmAction::ACTION_REBOOT_OS
       ProconBypassMan::RemotePbmAction::RebootOsAction.new(pbm_job_uuid: uuid).run!(job_args: {})
+    when ProconBypassMan::RemotePbmAction::ACTION_RESTORE_SETTING
+      ProconBypassMan::RemotePbmAction::RestorePbmSettingAction.new(pbm_job_uuid: uuid).run!(job_args: job_args)
     else
       ProconBypassMan::SendErrorCommand.execute(error: "#{action}は対応していないアクションです")
     end

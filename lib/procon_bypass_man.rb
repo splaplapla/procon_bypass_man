@@ -33,7 +33,7 @@ require_relative "procon_bypass_man/procon/analog_stick"
 require_relative "procon_bypass_man/procon/analog_stick_cap"
 require_relative "procon_bypass_man/value_objects/remote_pbm_action_object"
 require_relative "procon_bypass_man/scheduler"
-require_relative "procon_bypass_man/splatoon2"
+require_relative "procon_bypass_man/plugin"
 
 STDOUT.sync = true
 Thread.abort_on_exception = true
@@ -42,35 +42,21 @@ module ProconBypassMan
   extend ProconBypassMan::Configuration::ClassMethods
 
   class CouldNotLoadConfigError < StandardError; end
-  class FirstConnectionError < StandardError; end
   class NotFoundProconError < StandardError; end
-  class EternalConnectionError < StandardError; end
-
-  def self.buttons_setting_configure(setting_path: nil, &block)
-    unless setting_path
-      logger.warn "setting_pathが未設定です。設定ファイルのライブリロードが使えません。"
-    end
-
-    if block_given?
-      ProconBypassMan::ButtonsSettingConfiguration.instance.instance_eval(&block)
-    else
-      ProconBypassMan::ButtonsSettingConfiguration::Loader.load(setting_path: setting_path)
-    end
-  end
+  class ConnectionError < StandardError; end
+  class FirstConnectionError < ConnectionError; end
+  class EternalConnectionError < ConnectionError; end
 
   # @return [void]
-  def self.run(setting_path: nil, &block)
+  def self.run(setting_path: nil)
     ProconBypassMan::Scheduler.start!
     ProconBypassMan::Background::JobRunner.start!
 
     ProconBypassMan.logger.info "PBMを起動しています"
     puts "PBMを起動しています"
-    buttons_setting_configure(setting_path: setting_path, &block)
+    ProconBypassMan::ButtonsSettingConfiguration::Loader.load(setting_path: setting_path)
     initialize_pbm
-    File.write(pid_path, $$)
-    ProconBypassMan::WriteSessionIdCommand.execute
     gadget, procon = ProconBypassMan::ConnectDeviceCommand.execute!
-    ProconBypassMan::DeviceStatus.change_to_running!
     Runner.new(gadget: gadget, procon: procon).run
   rescue ProconBypassMan::CouldNotLoadConfigError
     ProconBypassMan::SendErrorCommand.execute(error: "設定ファイルが不正です。設定ファイルの読み込みに失敗しました")
@@ -84,14 +70,18 @@ module ProconBypassMan
     FileUtils.rm_rf(ProconBypassMan.pid_path)
     FileUtils.rm_rf(ProconBypassMan.digest_path)
     exit 1
-  rescue ProconBypassMan::EternalConnectionError
-    ProconBypassMan::SendErrorCommand.execute(error: "接続の見込みがないのでsleepしまくります")
-    ProconBypassMan::DeviceStatus.change_to_connected_but_sleeping!
-    FileUtils.rm_rf(ProconBypassMan.pid_path)
-    eternal_sleep
-  rescue ProconBypassMan::FirstConnectionError
-    ProconBypassMan::SendErrorCommand.execute(error: "接続を確立できませんでした。やりなおします。")
-    retry
+  rescue ProconBypassMan::ConnectionError
+    begin
+      raise
+    rescue ProconBypassMan::EternalConnectionError
+      ProconBypassMan::SendErrorCommand.execute(error: "接続の見込みがないのでsleepしまくります")
+      ProconBypassMan::DeviceStatus.change_to_connected_but_sleeping!
+      FileUtils.rm_rf(ProconBypassMan.pid_path)
+      eternal_sleep
+    rescue ProconBypassMan::FirstConnectionError
+      ProconBypassMan::SendErrorCommand.execute(error: "接続を確立できませんでした。やりなおします。")
+      retry
+    end
   end
 
   def self.configure(&block)
@@ -116,9 +106,17 @@ module ProconBypassMan
 
   def self.initialize_pbm
     ProconBypassMan::WriteDeviceIdCommand.execute
+    ProconBypassMan::WriteSessionIdCommand.execute
+    File.write(pid_path, $$)
+    ProconBypassMan::DeviceStatus.change_to_running!
   end
 
   def self.eternal_sleep
     sleep(999999999)
+  end
+
+  # @return [Void]
+  def self.hot_reload!
+    Process.kill(:USR2, pid)
   end
 end

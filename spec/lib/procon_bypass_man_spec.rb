@@ -57,7 +57,7 @@ describe ProconBypassMan do
       subject { described_class.run }
 
       before do
-        allow(described_class).to receive(:buttons_setting_configure)
+        allow(ProconBypassMan::ButtonsSettingConfiguration::Loader).to receive(:load)
         allow(ProconBypassMan::ConnectDeviceCommand).to receive(:execute!)
       end
 

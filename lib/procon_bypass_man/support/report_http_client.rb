@@ -1,10 +1,10 @@
 module ProconBypassMan
   class ReportHttpClient < HttpClient
     def post(body: , event_type: )
-      if body.is_a?(String)
-        b = { text: body }
-      else
+      if body.is_a?(Hash)
         b = body
+      else
+        b = { text: body }
       end
 
       super(request_body: {
