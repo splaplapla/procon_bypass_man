@@ -57,7 +57,6 @@ module ProconBypassMan
     ProconBypassMan::ButtonsSettingConfiguration::Loader.load(setting_path: setting_path)
     initialize_pbm
     gadget, procon = ProconBypassMan::ConnectDeviceCommand.execute!
-    ProconBypassMan::DeviceStatus.change_to_running!
     Runner.new(gadget: gadget, procon: procon).run
   rescue ProconBypassMan::CouldNotLoadConfigError
     ProconBypassMan::SendErrorCommand.execute(error: "設定ファイルが不正です。設定ファイルの読み込みに失敗しました")
@@ -109,6 +108,7 @@ module ProconBypassMan
     ProconBypassMan::WriteDeviceIdCommand.execute
     ProconBypassMan::WriteSessionIdCommand.execute
     File.write(pid_path, $$)
+    ProconBypassMan::DeviceStatus.change_to_running!
   end
 
   def self.eternal_sleep
