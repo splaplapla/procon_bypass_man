@@ -8,7 +8,7 @@ module ProconBypassMan
         setting = args["setting"] or raise(ProconBypassMan::RemotePbmAction::NeedPbmVersionError, "settingが必要です, #{args.inspect}")
         File.write(
           ProconBypassMan::ButtonsSettingConfiguration.instance.setting_path,
-          setting,
+          setting.to_yaml,
         )
         ProconBypassMan.hot_reload!
       end
