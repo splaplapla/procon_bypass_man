@@ -36,6 +36,7 @@ require_relative "procon_bypass_man/procon/analog_stick_cap"
 require_relative "procon_bypass_man/value_objects/remote_pbm_action_object"
 require_relative "procon_bypass_man/scheduler"
 require_relative "procon_bypass_man/plugin"
+require_relative "procon_bypass_man/websocket/pbm_job_client"
 
 STDOUT.sync = true
 Thread.abort_on_exception = true
@@ -53,6 +54,7 @@ module ProconBypassMan
   def self.run(setting_path: nil)
     ProconBypassMan::Scheduler.start!
     ProconBypassMan::Background::JobRunner.start!
+    ProconBypassMan::Websocket::PbmJobClient.start!
 
     ProconBypassMan.logger.info "PBMを起動しています"
     puts "PBMを起動しています"
