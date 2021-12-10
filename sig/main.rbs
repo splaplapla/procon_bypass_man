@@ -201,7 +201,21 @@ class ProconBypassMan::Configuration
   def digest_path: () -> ::String
 
   # @return [String] pbm-webの接続先
-  def internal_api_servers: () -> untyped
+  def current_server: () -> ::String
+
+  def current_ws_server: () -> (::String | nil)
+
+  def current_ws_server_url: () -> ::String
+
+  def enable_ws?: () -> bool
+
+  def server_pool: () -> untyped
+
+  def internal_server_pool: () -> untyped
+
+  def internal_servers: () -> ::Array[string | nil]
+
+  def internal_api_servers: () -> ::Array[untyped]
 end
 
 
