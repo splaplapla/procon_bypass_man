@@ -2,11 +2,14 @@ PATH
   remote: .
   specs:
     procon_bypass_man (0.1.16)
+      action_cable_client
       pbmenv
 
 GEM
   remote: https://rubygems.org/
   specs:
+    action_cable_client (3.1.0)
+      websocket-eventmachine-client (>= 1.2.0)
     activesupport (6.1.4.1)
       concurrent-ruby (~> 1.0, >= 1.0.2)
       i18n (>= 1.6, < 2)
@@ -17,6 +20,7 @@ GEM
     coderay (1.1.3)
     concurrent-ruby (1.1.9)
     diff-lcs (1.4.4)
+    eventmachine (1.2.7)
     ffi (1.15.4)
     i18n (1.8.11)
       concurrent-ruby (~> 1.0)
@@ -29,7 +33,7 @@ GEM
     mustermann (1.1.1)
       ruby2_keywords (~> 0.0.1)
     parallel (1.21.0)
-    parser (3.0.2.0)
+    parser (3.0.3.2)
       ast (~> 2.4.1)
     pbmenv (0.1.6)
     pry (0.14.1)
@@ -43,8 +47,8 @@ GEM
     rb-fsevent (0.11.0)
     rb-inotify (0.10.1)
       ffi (~> 1.0)
-    rbs (1.7.1)
-    regexp_parser (2.1.1)
+    rbs (1.8.0)
+    regexp_parser (2.2.0)
     rexml (3.2.5)
     rspec (3.10.0)
       rspec-core (~> 3.10.0)
@@ -68,7 +72,7 @@ GEM
       rubocop-ast (>= 1.12.0, < 2.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 1.4.0, < 3.0)
-    rubocop-ast (1.13.0)
+    rubocop-ast (1.14.0)
       parser (>= 3.0.1.1)
     ruby-progressbar (1.11.0)
     ruby2_keywords (0.0.5)
@@ -94,6 +98,14 @@ GEM
       concurrent-ruby (~> 1.0)
     unicode-display_width (2.1.0)
     webrick (1.7.0)
+    websocket (1.2.9)
+    websocket-eventmachine-base (1.2.0)
+      eventmachine (~> 1.0)
+      websocket (~> 1.0)
+      websocket-native (~> 1.0)
+    websocket-eventmachine-client (1.3.0)
+      websocket-eventmachine-base (~> 1.0)
+    websocket-native (1.0.0)
     zeitwerk (2.5.1)
 
 PLATFORMS
