@@ -42,8 +42,8 @@ module ProconBypassMan
           }
           client.connected { puts :connected}
           client.subscribed { puts :subscribed}
-          client.errored { |msg|  puts :errored}
-          client.pinged { |msg| puts :disconnected }
+          client.errored { |msg|  puts :errored; puts msg }
+          client.pinged { |msg| puts :disconnected; puts msg }
         end
       end
     end
