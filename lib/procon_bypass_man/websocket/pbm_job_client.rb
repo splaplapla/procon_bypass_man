@@ -13,7 +13,7 @@ module ProconBypassMan
         EventMachine.run do
           client = ActionCableClient.new(
             ProconBypassMan.config.current_ws_server_url, {
-              channel: CHANNEL, device_id: ProconBypassMan.device_id
+              channel: CHANNEL, device_id: ProconBypassMan.device_id,
             }
           )
           client.connected { puts 'successfully connected.' }
@@ -25,7 +25,7 @@ module ProconBypassMan
                                                                         uuid: pbm_job_hash["uuid"],
                                                                         created_at: pbm_job_hash["created_at"],
                                                                         job_args: pbm_job_hash["args"])
-            ProconBypassMan.logger.info message
+            puts data
             pbm_job_object.validate!
             ProconBypassMan::RunRemotePbmActionDispatchCommand.execute(action: pbm_job_object.action, uuid: pbm_job_object.uuid, job_args: pbm_job_object.job_args)
           rescue ProconBypassMan::RemotePbmActionObject::ValidationError => e
