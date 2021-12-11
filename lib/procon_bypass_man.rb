@@ -6,6 +6,7 @@ require "fileutils"
 require "securerandom"
 require 'em/pure_ruby'
 require "action_cable_client"
+require "ext/em_pure_ruby"
 
 require_relative "procon_bypass_man/version"
 require_relative "procon_bypass_man/remote_pbm_action"
