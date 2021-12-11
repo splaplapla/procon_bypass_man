@@ -4,7 +4,11 @@ module ProconBypassMan
       CHANNEL = 'PbmJobChannel'
 
       def self.start!
-        Thread.start { run }
+        loop do
+          Thread.start { run }.join
+        rescue
+          retry
+        end
       end
 
       def self.run
@@ -16,7 +20,11 @@ module ProconBypassMan
               channel: CHANNEL, device_id: ProconBypassMan.device_id,
             }
           )
-          client.connected { puts 'successfully connected.' }
+
+          client.connected {
+            ProconBypassMan.logger.info('successfully connected in ProconBypassMan::Websocket::PbmJobClient')
+          }
+          client.subscribed { |msg| puts({ event: :subscribed, msg: msg }) }
 
           client.received do |data|
             pbm_job_hash = data["message"]
@@ -31,19 +39,17 @@ module ProconBypassMan
           rescue ProconBypassMan::RemotePbmActionObject::ValidationError => e
             ProconBypassMan::SendErrorCommand.execute(error: e)
           end
-
-          client.connected {
-            ProconBypassMan.logger.info('successfully connected in ProconBypassMan::Websocket::PbmJobClient' )
-          }
           client.disconnected {
             puts :disconnected
             client.reconnect!
             sleep 2
           }
-          client.connected { puts :connected}
-          client.subscribed { puts :subscribed}
           client.errored { |msg|  puts :errored; puts msg }
-          client.pinged { |msg| puts :disconnected; puts msg }
+          client.pinged { |msg|
+            ProconBypassMan.cache.fetch key: 'ws_pinged', expires_in: 10 do
+              ProconBypassMan.logger.info(msg)
+            end
+          }
         end
       end
     end
