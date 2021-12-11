@@ -4,6 +4,8 @@ module ProconBypassMan
       CHANNEL = 'PbmJobChannel'
 
       def self.start!
+        return unless ProconBypassMan.config.enable_ws?
+
         loop do
           Thread.start { run }.join
         rescue
@@ -12,8 +14,6 @@ module ProconBypassMan
       end
 
       def self.run
-        return unless ProconBypassMan.config.enable_ws?
-
         EventMachine.run do
           client = ActionCableClient.new(
             ProconBypassMan.config.current_ws_server_url, {
@@ -27,18 +27,11 @@ module ProconBypassMan
           client.subscribed { |msg| puts({ event: :subscribed, msg: msg }) }
 
           client.received do |data|
-            pbm_job_hash = data["message"]
-            pbm_job_object = ProconBypassMan::RemotePbmActionObject.new(action: pbm_job_hash["action"],
-                                                                        status: pbm_job_hash["status"],
-                                                                        uuid: pbm_job_hash["uuid"],
-                                                                        created_at: pbm_job_hash["created_at"],
-                                                                        job_args: pbm_job_hash["args"])
-            puts data
-            pbm_job_object.validate!
-            ProconBypassMan::RunRemotePbmActionDispatchCommand.execute(action: pbm_job_object.action, uuid: pbm_job_object.uuid, job_args: pbm_job_object.job_args)
-          rescue ProconBypassMan::RemotePbmActionObject::ValidationError => e
+            validate_and_run(data)
+          rescue => e
             ProconBypassMan::SendErrorCommand.execute(error: e)
           end
+
           client.disconnected {
             puts :disconnected
             client.reconnect!
@@ -51,6 +44,29 @@ module ProconBypassMan
             end
           }
         end
+      end
+
+      # TODO spec
+      def self.validate_and_run(data)
+        ProconBypassMan.logger.debug { data }
+        pbm_job_hash = data.dig("message")
+        begin
+          pbm_job_object = ProconBypassMan::RemotePbmActionObject.new(action: pbm_job_hash["action"],
+                                                                      status: pbm_job_hash["status"],
+                                                                      uuid: pbm_job_hash["uuid"],
+                                                                      created_at: pbm_job_hash["created_at"],
+                                                                      job_args: pbm_job_hash["args"])
+          pbm_job_object.validate!
+        rescue ProconBypassMan::RemotePbmActionObject::ValidationError => e
+          ProconBypassMan::SendErrorCommand.execute(error: e)
+          return
+        end
+
+        ProconBypassMan::RunRemotePbmActionDispatchCommand.execute(
+          action: action,
+          uuid: uuid,
+          job_args: job_args
+        )
       end
     end
   end

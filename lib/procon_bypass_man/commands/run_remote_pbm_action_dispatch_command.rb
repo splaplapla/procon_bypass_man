@@ -13,7 +13,7 @@ class ProconBypassMan::RunRemotePbmActionDispatchCommand
     when ProconBypassMan::RemotePbmAction::ACTION_RESTORE_SETTING
       ProconBypassMan::RemotePbmAction::RestorePbmSettingAction.new(pbm_job_uuid: uuid).run!(job_args: job_args)
     else
-      ProconBypassMan::SendErrorCommand.execute(error: "#{action}は対応していないアクションです")
+      raise "#{action}は対応していないアクションです"
     end
   rescue ProconBypassMan::RemotePbmAction::ActionUnexpectedError => e
     ProconBypassMan::SendErrorCommand.execute(error: e)
