@@ -119,7 +119,11 @@ class ProconBypassMan::Configuration
   # @return [String, NilClass]
   def current_ws_server
     if (uri = URI.parse(server_pool.server))
-      return "ws://#{uri.host}"
+      if uri.port == 443
+        return "ws://#{uri.host}"
+      else
+        return "ws://#{uri.host}:#{uri.port}"
+      end
     end
   rescue URI::InvalidURIError
     nil
