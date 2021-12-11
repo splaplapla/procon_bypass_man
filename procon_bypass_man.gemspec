@@ -30,6 +30,7 @@ Gem::Specification.new do |spec|
   # Uncomment to register a new dependency of your gem
   spec.add_dependency "pbmenv"
   spec.add_dependency "action_cable_client"
+  spec.add_dependency "sorted_set"
 
   # For more information and examples about making a new gem, checkout our
   # guide at: https://bundler.io/guides/creating_gem.html
