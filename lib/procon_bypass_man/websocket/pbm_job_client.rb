@@ -27,7 +27,7 @@ module ProconBypassMan
           client.subscribed { |msg| puts({ event: :subscribed, msg: msg }) }
 
           client.received do |data|
-            validate_and_run(data)
+            validate_and_run(data: data)
           rescue => e
             ProconBypassMan::SendErrorCommand.execute(error: e)
           end
@@ -46,8 +46,10 @@ module ProconBypassMan
         end
       end
 
-      # TODO spec
-      def self.validate_and_run(data)
+      # @raise [ProconBypassMan::RemotePbmActionObject::ValidationError]
+      # @param [Hash] data
+      # @return [Void]
+      def self.validate_and_run(data: )
         ProconBypassMan.logger.debug { data }
         pbm_job_hash = data.dig("message")
         begin
@@ -58,14 +60,13 @@ module ProconBypassMan
                                                                       job_args: pbm_job_hash["args"])
           pbm_job_object.validate!
         rescue ProconBypassMan::RemotePbmActionObject::ValidationError => e
-          ProconBypassMan::SendErrorCommand.execute(error: e)
-          return
+          raise
         end
 
         ProconBypassMan::RunRemotePbmActionDispatchCommand.execute(
-          action: action,
-          uuid: uuid,
-          job_args: job_args
+          action: pbm_job_object.action,
+          uuid: pbm_job_object.uuid,
+          job_args: pbm_job_object.job_args
         )
       end
     end
