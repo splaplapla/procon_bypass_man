@@ -57,8 +57,7 @@ module ProconBypassMan
     ProconBypassMan::Background::JobRunner.start!
     ProconBypassMan::Websocket::PbmJobClient.start!
 
-    ProconBypassMan.logger.info "PBMを起動しています"
-    puts "PBMを起動しています"
+    ProconBypassMan::PrintMessageCommand.execute(text: "PBMを起動しています")
     ProconBypassMan::ButtonsSettingConfiguration::Loader.load(setting_path: setting_path)
     initialize_pbm
     gadget, procon = ProconBypassMan::ConnectDeviceCommand.execute!

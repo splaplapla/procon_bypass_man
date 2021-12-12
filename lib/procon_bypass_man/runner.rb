@@ -39,14 +39,14 @@ class ProconBypassMan::Runner
         $will_terminate_token = true
         Process.kill("TERM", main_loop_pid)
         Process.wait
-        ProconBypassMan.logger.info("Reloading config file")
+        ProconBypassMan::PrintMessageCommand.execute(text: "Reloading config file")
         begin
           ProconBypassMan::ButtonsSettingConfiguration::Loader.reload_setting
           ProconBypassMan::SendReloadConfigEventCommand.execute
         rescue ProconBypassMan::CouldNotLoadConfigError
           ProconBypassMan::SendErrorCommand.execute(error: "設定ファイルが不正です。再読み込みができませんでした")
         end
-        ProconBypassMan.logger.info("バイパス処理を再開します")
+        ProconBypassMan::PrintMessageCommand.execute(text: "バイパス処理を再開します")
       rescue Interrupt
         $will_terminate_token = true
         Process.kill("TERM", main_loop_pid)
