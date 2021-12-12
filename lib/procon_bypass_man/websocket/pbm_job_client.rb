@@ -6,10 +6,12 @@ module ProconBypassMan
       def self.start!
         return unless ProconBypassMan.config.enable_ws?
 
-        loop do
-          Thread.start { run }.join
-        rescue
-          retry
+        Thread.start do
+          loop do
+            run
+          rescue
+            retry
+          end
         end
       end
 
