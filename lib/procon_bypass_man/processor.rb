@@ -1,16 +1,15 @@
 class ProconBypassMan::Processor
-  # @return [String] binary
+
+  # @param [ProconBypassMan::Domains::InboundProconBinary] binary
   def initialize(binary)
     @binary = binary
   end
 
   # @return [String] 加工後の入力データ
   def process
-    unless @binary[0] == "\x30".b
-      return @binary
-    end
+    return @binary.raw unless @binary.input_data_from_user?
 
-    procon = ProconBypassMan::Procon.new(@binary)
+    procon = ProconBypassMan::Procon.new(@binary.raw)
     procon.apply!
     procon.to_binary
   end

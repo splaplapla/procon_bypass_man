@@ -20,8 +20,12 @@ class ProconBypassMan::Procon
   end
   reset!
 
+  # @param [string] binary
   def initialize(binary)
-    self.user_operation = ProconBypassMan::Procon::UserOperation.new(binary.dup)
+    # TODO ProconBypassMan::Domains::ProcessingProconBinaryでラップする
+    self.user_operation = ProconBypassMan::Procon::UserOperation.new(
+      binary.dup
+    )
   end
 
   def status; @@status[:buttons]; end
