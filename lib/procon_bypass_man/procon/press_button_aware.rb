@@ -4,10 +4,11 @@ class ProconBypassMan::PpressButtonAware
   end
 
   def pressed_button?(button)
+    button_obj = ProconBypassMan::Procon::Button.new(button)
     @binary[
-      ::ProconBypassMan::Procon::ButtonCollection.load(button).byte_position
+      button_obj.byte_position
     ].unpack("H*").first.to_i(16).to_s(2).reverse[
-      ::ProconBypassMan::Procon::ButtonCollection.load(button).bit_position
+      button_obj.bit_position
     ] == '1'
   end
 end

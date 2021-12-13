@@ -29,26 +29,27 @@ class ProconBypassMan::Procon
     end
 
     def unpress_button(button)
+      button_obj = ProconBypassMan::Procon::Button.new(button)
       return if not pressed_button?(button)
 
-      byte_position = ButtonCollection.load(button).byte_position
-      value = binary[byte_position].unpack("H*").first.to_i(16) - (2**ButtonCollection.load(button).bit_position)
-      binary[byte_position] = ["%02X" % value.to_s].pack("H*")
+      value = binary[button_obj.byte_position].unpack("H*").first.to_i(16) - (2**button_obj.bit_position)
+      binary[button_obj.byte_position] = ["%02X" % value.to_s].pack("H*")
     end
 
     def press_button(button)
+      button_obj = ProconBypassMan::Procon::Button.new(button)
       return if pressed_button?(button)
 
-      byte_position = ButtonCollection.load(button).byte_position
-      value = binary[byte_position].unpack("H*").first.to_i(16) + (2**ButtonCollection.load(button).bit_position)
-      binary[byte_position] = ["%02X" % value.to_s].pack("H*")
+      value = binary[button_obj.byte_position].unpack("H*").first.to_i(16) + (2**button_obj.bit_position)
+      binary[button_obj.byte_position] = ["%02X" % value.to_s].pack("H*")
     end
 
     def press_button_only(button)
+      button_obj = ProconBypassMan::Procon::Button.new(button)
+
       [ProconBypassMan::Procon::Consts::NO_ACTION.dup].pack("H*").tap do |no_action_binary|
-        ButtonCollection.load(button).byte_position
-        byte_position = ButtonCollection.load(button).byte_position
-        value = 2**ButtonCollection.load(button).bit_position
+        byte_position = button_obj.byte_position
+        value = 2**button_obj.bit_position
         no_action_binary[byte_position] = ["%02X" % value.to_s].pack("H*")
         binary[3] = no_action_binary[3]
         binary[4] = no_action_binary[4]
