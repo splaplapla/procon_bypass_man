@@ -26,7 +26,10 @@ module ProconBypassMan
           client.connected {
             ProconBypassMan.logger.info('successfully connected in ProconBypassMan::Websocket::PbmJobClient')
           }
-          client.subscribed { |msg| puts({ event: :subscribed, msg: msg }) }
+          client.subscribed { |msg|
+            puts({ event: :subscribed, msg: msg })
+            ProconBypassMan::SyncDeviceStatsJob.perform(ProconBypassMan::DeviceStatus.current)
+          }
 
           client.received do |data|
             validate_and_run(data: data)
