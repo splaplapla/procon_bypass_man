@@ -15,13 +15,13 @@ class ProconBypassMan::Procon
       @binary = binary
     end
 
-    ZERO_BIT = ["0"].pack("H*").freeze
+    ALL_ZERO_BIT = ["0"].pack("H*").freeze
     ASCII_ENCODING = "ASCII-8BIT"
 
     def set_no_action!
-      binary[3] = ZERO_BIT
-      binary[4] = ZERO_BIT
-      binary[5] = ZERO_BIT
+      binary[3] = ALL_ZERO_BIT
+      binary[4] = ALL_ZERO_BIT
+      binary[5] = ALL_ZERO_BIT
     end
 
     def apply_left_analog_stick_cap(cap: )
