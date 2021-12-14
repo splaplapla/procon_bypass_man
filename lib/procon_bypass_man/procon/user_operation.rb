@@ -63,7 +63,7 @@ class ProconBypassMan::Procon
     end
 
     def pressed_button?(button)
-      ProconBypassMan::PpressButtonAware.new(binary.raw).pressed_button?(button)
+      ProconBypassMan::PressButtonAware.new(binary.raw).pressed_button?(button)
     end
   end
 end

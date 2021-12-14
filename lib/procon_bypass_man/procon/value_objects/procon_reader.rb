@@ -6,7 +6,7 @@ class ProconBypassMan::ProconReader
 
   # @return [Array<Symbol>]
   def pressed
-    aware = ProconBypassMan::PpressButtonAware.new(@binary)
+    aware = ProconBypassMan::PressButtonAware.new(@binary)
     pressed_table = ::ProconBypassMan::Procon::ButtonCollection::BUTTONS.reduce({}) do |acc, button|
       acc[button] = aware.pressed_button?(button)
       acc

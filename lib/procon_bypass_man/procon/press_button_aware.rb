@@ -1,4 +1,4 @@
-class ProconBypassMan::PpressButtonAware
+class ProconBypassMan::PressButtonAware
   def initialize(binary)
     @binary = binary
   end
