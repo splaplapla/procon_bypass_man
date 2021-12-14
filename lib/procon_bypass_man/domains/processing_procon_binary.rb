@@ -45,4 +45,12 @@ class ProconBypassMan::Domains::ProcessingProconBinary
     @binary[11] = tb[11]
     self
   end
+
+  def pressed_button?(button)
+    ProconBypassMan::PressButtonAware.new(@binary).pressed_button?(button)
+  end
+
+  def apply_left_analog_stick_cap(cap: )
+    @binary[6..8] = ProconBypassMan::Procon::AnalogStickCap.new(@binary).capped_position(cap_hypotenuse: cap).to_binary
+  end
 end

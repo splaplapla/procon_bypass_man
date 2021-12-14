@@ -24,7 +24,7 @@ class ProconBypassMan::Procon
     end
 
     def apply_left_analog_stick_cap(cap: )
-      binary[6..8] = ProconBypassMan::Procon::AnalogStickCap.new(binary.raw).capped_position(cap_hypotenuse: cap).to_binary
+      binary.apply_left_analog_stick_cap(cap: cap)
     end
 
     def unpress_button(button)
@@ -56,14 +56,17 @@ class ProconBypassMan::Procon
       end
     end
 
+    # @return [void]
     def merge(target_binary)
       binary.merge!(
         ProconBypassMan::Domains::ProcessingProconBinary.new(binary: target_binary)
-      ).raw
+      )
     end
 
+    # @param [Symbol]
+    # @return [Boolean]
     def pressed_button?(button)
-      ProconBypassMan::PressButtonAware.new(binary.raw).pressed_button?(button)
+      binary.pressed_button?(button)
     end
   end
 end
