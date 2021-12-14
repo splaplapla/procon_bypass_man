@@ -38,7 +38,7 @@ require_relative "procon_bypass_man/procon/value_objects/procon_reader"
 require_relative "procon_bypass_man/procon/analog_stick_cap"
 require_relative "procon_bypass_man/remote_pbm_action/value_objects/remote_pbm_action_object"
 require_relative "procon_bypass_man/scheduler"
-require_relative "procon_bypass_man/plugin"
+require_relative "procon_bypass_man/plugins"
 require_relative "procon_bypass_man/websocket/pbm_job_client"
 
 STDOUT.sync = true

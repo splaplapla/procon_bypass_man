@@ -20,7 +20,7 @@ class ProconBypassMan::Domains::InboundProconBinary
   end
 
   # @return [Boolean]
-  def input_data_from_user?
+  def user_operation_data?
     @binary[0] == "\x30".b
   end
 end

@@ -7,7 +7,7 @@ class ProconBypassMan::Processor
 
   # @return [String] 加工後の入力データ
   def process
-    return @binary.raw unless @binary.input_data_from_user?
+    return @binary.raw unless @binary.user_operation_data?
 
     procon = ProconBypassMan::Procon.new(@binary.raw)
     procon.apply!
