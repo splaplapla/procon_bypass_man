@@ -79,7 +79,7 @@ class ProconBypassMan::Procon
         @@status[:ongoing_mode] = ProconBypassMan::Procon::ModeRegistry.load(current_layer.mode)
       end
       if(binary = ongoing_mode.next_binary)
-        self.user_operation.merge(target_binary: binary)
+        self.user_operation.merge(binary)
       end
       return
     end
@@ -87,16 +87,16 @@ class ProconBypassMan::Procon
     status
   end
 
-  # @return [String<binary>]
+  # @return [ProconBypassMan::Domains::ProcessingProconBinary]
   def to_binary
     if ongoing_mode.name != :manual
-      return user_operation.binary
+      return user_operation.binary.raw
     end
 
     if ongoing_macro.ongoing?
-      step = ongoing_macro.next_step or return(user_operation.binary)
+      step = ongoing_macro.next_step or return(user_operation.binary.raw)
       user_operation.press_button_only(step)
-      return user_operation.binary
+      return user_operation.binary.raw
     end
 
     current_layer.disables.each do |button|
@@ -141,7 +141,7 @@ class ProconBypassMan::Procon
       end
     end
 
-    user_operation.binary
+    user_operation.binary.raw
   end
 
   private
