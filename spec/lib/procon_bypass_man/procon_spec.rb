@@ -322,7 +322,7 @@ describe ProconBypassMan::Procon do
           procon.apply! # change layer
           expect(procon.current_layer_key).to eq(:up)
           expect(procon.current_layer.mode).to eq(:manual)
-          ProconBypassMan::Procon::LayerChanger.new(binary: procon.user_operation.binary).tap do |layer_changer|
+          ProconBypassMan::Procon::LayerChanger.new(binary: procon.user_operation.binary.raw).tap do |layer_changer|
             expect(layer_changer.change_layer?).to eq(false)
           end
 
@@ -351,7 +351,7 @@ describe ProconBypassMan::Procon do
           procon.apply! # change layer
           expect(procon.current_layer_key).to eq(:down)
           expect(procon.current_layer.mode).to eq(:manual)
-          ProconBypassMan::Procon::LayerChanger.new(binary: procon.user_operation.binary).tap do |layer_changer|
+          ProconBypassMan::Procon::LayerChanger.new(binary: procon.user_operation.binary.raw).tap do |layer_changer|
             expect(layer_changer.change_layer?).to eq(false)
           end
 

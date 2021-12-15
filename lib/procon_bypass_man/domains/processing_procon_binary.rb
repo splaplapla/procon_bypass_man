@@ -18,14 +18,6 @@ class ProconBypassMan::Domains::ProcessingProconBinary
     binary.unpack(...)
   end
 
-  def [](index)
-    binary[index]
-  end
-
-  def []=(index, value)
-    binary[index] = value
-  end
-
   def set_no_action!
     binary[3] = ALL_ZERO_BIT
     binary[4] = ALL_ZERO_BIT
@@ -73,6 +65,6 @@ class ProconBypassMan::Domains::ProcessingProconBinary
   end
 
   def write_as_apply_left_analog_stick_cap(cap: )
-    binary[6..8] = ProconBypassMan::Procon::AnalogStickCap.new(binary).capped_position(cap_hypotenuse: cap).to_binary
+    binary[6..8] = ProconBypassMan::Procon::AnalogStickCap.new(binary.raw).capped_position(cap_hypotenuse: cap).to_binary
   end
 end

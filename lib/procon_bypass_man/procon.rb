@@ -37,7 +37,7 @@ class ProconBypassMan::Procon
   end
 
   def apply!
-    layer_changer = ProconBypassMan::Procon::LayerChanger.new(binary: user_operation.binary)
+    layer_changer = ProconBypassMan::Procon::LayerChanger.new(binary: user_operation.binary.raw)
     if layer_changer.change_layer?
       @@status[:current_layer_key] = layer_changer.next_layer_key if layer_changer.pressed_next_layer?
       user_operation.set_no_action!
