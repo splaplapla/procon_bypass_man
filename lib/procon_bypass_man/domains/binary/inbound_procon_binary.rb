@@ -1,11 +1,6 @@
 # proconから取得したばかりのバイナリ
-class ProconBypassMan::Domains::InboundProconBinary
+class ProconBypassMan::Domains::InboundProconBinary < ProconBypassMan::Domains::Binary::Base
   include ProconBypassMan::Domains::HasImmutableBinary
-
-  # @param [String] binary
-  def initialize(binary: )
-    @binary = binary
-  end
 
   # @return [String]
   def raw

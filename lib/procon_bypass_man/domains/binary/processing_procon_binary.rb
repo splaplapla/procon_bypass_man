@@ -1,13 +1,8 @@
 # バイナリの書き換えのみをする
-class ProconBypassMan::Domains::ProcessingProconBinary
+class ProconBypassMan::Domains::ProcessingProconBinary < ProconBypassMan::Domains::Binary::Base
   include ProconBypassMan::Domains::HasMutableBinary
 
   ALL_ZERO_BIT = ["0"].pack("H*").freeze
-
-  # @param [String] binary
-  def initialize(binary: )
-    @binary = binary or raise("need binary")
-  end
 
   # @return [String]
   def raw
