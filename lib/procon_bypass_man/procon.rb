@@ -78,7 +78,7 @@ class ProconBypassMan::Procon
         @@status[:ongoing_mode] = ProconBypassMan::Procon::ModeRegistry.load(current_layer.mode)
       end
       if(binary = ongoing_mode.next_binary)
-        self.user_operation.merge(binary)
+        self.user_operation.merge([binary].pack("H*"))
       end
       return
     end
