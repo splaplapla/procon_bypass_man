@@ -65,6 +65,6 @@ class ProconBypassMan::Domains::ProcessingProconBinary
   end
 
   def write_as_apply_left_analog_stick_cap(cap: )
-    binary[6..8] = ProconBypassMan::Procon::AnalogStickCap.new(binary.raw).capped_position(cap_hypotenuse: cap).to_binary
+    binary[6..8] = ProconBypassMan::Procon::AnalogStickCap.new(binary).capped_position(cap_hypotenuse: cap).to_binary
   end
 end
