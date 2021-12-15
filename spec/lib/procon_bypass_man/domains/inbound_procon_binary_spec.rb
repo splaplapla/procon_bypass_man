@@ -1,8 +1,9 @@
 require "spec_helper"
 
 describe ProconBypassMan::Domains::InboundProconBinary do
+  let(:binary) { [data].pack("H*") }
+
   describe '#raw' do
-    let(:binary) { [data].pack("H*") }
     let(:data) { "30778105800099277344e86b0a7909f4f5a8f4b500c5ff8dff6c09cdf5b8f49a00c5ff92ff6a0979f5eef46500d5ff9bff000000000000000000000000000000" }
 
     subject { described_class.new(binary: binary).raw }
@@ -13,7 +14,6 @@ describe ProconBypassMan::Domains::InboundProconBinary do
   end
 
   describe '#unpack' do
-    let(:binary) { [data].pack("H*") }
     let(:data) { "30778105800099277344e86b0a7909f4f5a8f4b500c5ff8dff6c09cdf5b8f49a00c5ff92ff6a0979f5eef46500d5ff9bff000000000000000000000000000000" }
 
     subject { described_class.new(binary: binary).unpack("H*") }
@@ -24,7 +24,6 @@ describe ProconBypassMan::Domains::InboundProconBinary do
   end
 
   describe '#to_procon_reader' do
-    let(:binary) { [data].pack("H*") }
     let(:data) { "30778105800099277344e86b0a7909f4f5a8f4b500c5ff8dff6c09cdf5b8f49a00c5ff92ff6a0979f5eef46500d5ff9bff000000000000000000000000000000" }
 
     subject { described_class.new(binary: binary).to_procon_reader }
@@ -36,7 +35,6 @@ describe ProconBypassMan::Domains::InboundProconBinary do
 
   describe '#user_operation_data?' do
     context 'when yes' do
-      let(:binary) { [data].pack("H*") }
       let(:data) { "30778105800099277344e86b0a7909f4f5a8f4b500c5ff8dff6c09cdf5b8f49a00c5ff92ff6a0979f5eef46500d5ff9bff000000000000000000000000000000" }
 
       subject { described_class.new(binary: binary).user_operation_data? }
@@ -48,7 +46,6 @@ describe ProconBypassMan::Domains::InboundProconBinary do
   end
 
   context 'when no' do
-    let(:binary) { [data].pack("H*") }
     let(:data) { "20778105800099277344e86b0a7909f4f5a8f4b500c5ff8dff6c09cdf5b8f49a00c5ff92ff6a0979f5eef46500d5ff9bff000000000000000000000000000000" }
 
     subject { described_class.new(binary: binary).user_operation_data? }
