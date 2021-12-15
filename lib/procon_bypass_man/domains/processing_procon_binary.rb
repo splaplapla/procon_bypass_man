@@ -26,7 +26,7 @@ class ProconBypassMan::Domains::ProcessingProconBinary
 
   # @param [ProconBypassMan::Domains::ProcessingProconBinary]
   # @return [ProconBypassMan::Domains::ProcessingProconBinary]
-  # ボタンだけマージする
+  # アナログスティックは上書きし、ボタンだけマージする
   def write_as_merge!(target_binary)
     current_buttons = ProconBypassMan::ProconReader.new(binary: binary).pressed
     target_buttons = ProconBypassMan::ProconReader.new(binary: target_binary.raw).pressed
@@ -35,6 +35,16 @@ class ProconBypassMan::Domains::ProcessingProconBinary
     (current_buttons + target_buttons).uniq.each do |button|
       write_as_press_button(button)
     end
+
+    # override analog stick
+    tb = [target_binary.raw].pack("H*")
+    binary[6] = tb[6]
+    binary[7] = tb[7]
+    binary[8] = tb[8]
+    binary[9] = tb[9]
+    binary[10] = tb[10]
+    binary[11] = tb[11]
+
     self
   end
 
