@@ -11,6 +11,7 @@ class ProconBypassMan::Procon::AnalogStick
 
     self.bin_x = "#{byte7[4..7]}#{byte6}"
     self.bin_y = "#{byte8}#{byte7[0..3]}"
+    freeze
   end
 
   def abs_x
