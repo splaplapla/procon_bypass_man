@@ -14,8 +14,8 @@ class ProconBypassMan::Domains::ProcessingProconBinary
     binary
   end
 
-  def unpack(...)
-    binary.unpack(...)
+  def unpack
+    binary.unpack("H*")
   end
 
   def set_no_action!

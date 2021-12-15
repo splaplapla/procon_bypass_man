@@ -16,7 +16,7 @@ describe ProconBypassMan::Domains::InboundProconBinary do
   describe '#unpack' do
     let(:data) { "30778105800099277344e86b0a7909f4f5a8f4b500c5ff8dff6c09cdf5b8f49a00c5ff92ff6a0979f5eef46500d5ff9bff000000000000000000000000000000" }
 
-    subject { described_class.new(binary: binary).unpack("H*") }
+    subject { described_class.new(binary: binary).unpack }
 
     it do
       is_expected.to eq([data])

@@ -12,8 +12,8 @@ class ProconBypassMan::Domains::InboundProconBinary
     binary.dup
   end
 
-  def unpack(...)
-    binary.unpack(...)
+  def unpack
+    binary.unpack("H*")
   end
 
   # @return [ProconBypassMan::ProconReader]

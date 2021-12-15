@@ -5,7 +5,7 @@ class ProconBypassMan::Bypass
 
   class BypassValue < Struct.new(:binary, :sent)
     def to_text
-      "#{binary.unpack("H*").first} #{'x' unless sent}"
+      "#{binary.unpack.first} #{'x' unless sent}"
     end
   end
 

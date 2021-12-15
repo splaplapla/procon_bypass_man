@@ -6,7 +6,7 @@ describe ProconBypassMan::Procon::UserOperation do
       binary = ["30f28101800078c77448287509550274ff131029001b0022005a0271ff191028001e00210064027cff1410280020002100000000000000000000000000000000"].pack("H*")
       o = ProconBypassMan::Procon::UserOperation.new(binary)
       o.unpress_button(:y)
-      expect(o.binary.unpack("H*")).to eq([
+      expect(o.binary.unpack).to eq([
         "30f28100800078c77448287509550274ff131029001b0022005a0271ff191028001e00210064027cff1410280020002100000000000000000000000000000000"
       ])
     end
@@ -19,7 +19,7 @@ describe ProconBypassMan::Procon::UserOperation do
     it '特定のbitだけを立てること' do
       o = ProconBypassMan::Procon::UserOperation.new(no_action_binary)
       o.press_button(:y)
-      expect(o.binary.unpack("H*")).to eq(
+      expect(o.binary.unpack).to eq(
         ["30f28101800078c77448287509550274ff131029001b0022005a0271ff191028001e00210064027cff1410280020002100000000000000000000000000000000"]
       )
     end
