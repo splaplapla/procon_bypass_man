@@ -22,7 +22,6 @@ class ProconBypassMan::Procon
 
   # @param [string] binary
   def initialize(binary)
-    # TODO ProconBypassMan::Domains::ProcessingProconBinaryでラップする
     self.user_operation = ProconBypassMan::Procon::UserOperation.new(
       binary.dup
     )

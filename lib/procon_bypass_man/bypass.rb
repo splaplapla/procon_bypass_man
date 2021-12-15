@@ -72,6 +72,9 @@ class ProconBypassMan::Bypass
         retry
       end
 
+      # blocking readをしているのでnilが入ることはないが、雑なテストでnilが通るので分岐を入れる。できれば消したい
+      break if output.nil?
+
       begin
         self.gadget.write_nonblock(
           ProconBypassMan::Processor.new(
