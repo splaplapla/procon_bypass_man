@@ -44,12 +44,16 @@ class ProconBypassMan::Domains::ProcessingProconBinary < ProconBypassMan::Domain
   end
 
   def write_as_press_button(button)
+    raise "already pressed button(#{button})" if ProconBypassMan::PressButtonAware.new(binary).pressed_button?(button)
+
     button_obj = ProconBypassMan::Procon::Button.new(button)
     value = binary[button_obj.byte_position].unpack("H*").first.to_i(16) + (2**button_obj.bit_position)
     binary[button_obj.byte_position] = ["%02X" % value.to_s].pack("H*")
   end
 
   def write_as_unpress_button(button)
+    raise "not press button(#{button}) yet" if not ProconBypassMan::PressButtonAware.new(binary).pressed_button?(button)
+
     button_obj = ProconBypassMan::Procon::Button.new(button)
     value = binary[button_obj.byte_position].unpack("H*").first.to_i(16) - (2**button_obj.bit_position)
     binary[button_obj.byte_position] = ["%02X" % value.to_s].pack("H*")
