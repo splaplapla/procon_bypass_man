@@ -3,6 +3,7 @@ module ProconBypassMan
     def initialize(binary: )
       @binary = binary
       @analog_stick = ProconBypassMan::Procon::AnalogStick.new(binary: binary)
+      freeze
     end
 
     # @return [Array<Symbol>]
