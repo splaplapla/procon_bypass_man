@@ -5,10 +5,10 @@ class ProconBypassMan::ProconReader
   end
 
   # @return [Array<Symbol>]
-  def pressed
+  def pressing
     aware = ProconBypassMan::PressButtonAware.new(@binary)
     pressed_table = ::ProconBypassMan::Procon::ButtonCollection::BUTTONS.reduce({}) do |acc, button|
-      acc[button] = aware.pressed_button?(button)
+      acc[button] = aware.pressing_button?(button)
       acc
     end
     pressed_table.select { |_key, value| value }.keys
@@ -25,7 +25,7 @@ class ProconBypassMan::ProconReader
   def to_hash
     { left_analog_stick: left_analog_stick,
       left_analog_stick_by_abs: left_analog_stick_by_abs,
-      buttons: pressed,
+      buttons: pressing,
     }
   end
 end

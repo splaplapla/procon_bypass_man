@@ -4,12 +4,6 @@ class ProconBypassMan::Procon::UserOperation
 
   ASCII_ENCODING = "ASCII-8BIT"
 
-  ::ProconBypassMan::Procon::ButtonCollection::BUTTONS_MAP.each do |button, _value|
-    define_method "pressed_#{button}?" do
-      pressed_button?(button)
-    end
-  end
-
   # @param [String] binary
   def initialize(binary)
     unless binary.encoding.name == ASCII_ENCODING
@@ -29,13 +23,13 @@ class ProconBypassMan::Procon::UserOperation
 
   # @param [Symbol] button
   def unpress_button(button)
-    return if not pressed_button?(button)
+    return if not pressing_button?(button)
     binary.write_as_unpress_button(button)
   end
 
   # @param [Symbol] button
   def press_button(button)
-    return if pressed_button?(button)
+    return if pressing_button?(button)
     binary.write_as_press_button(button)
   end
 
@@ -53,14 +47,14 @@ class ProconBypassMan::Procon::UserOperation
 
   # @param [Symbol] button
   # @return [Boolean]
-  def pressed_button?(button)
-    ProconBypassMan::PressButtonAware.new(@binary.raw).pressed_button?(button)
+  def pressing_button?(button)
+    ProconBypassMan::PressButtonAware.new(@binary.raw).pressing_button?(button)
   end
 
   # @param [Array<Symbol>] button
   # @return [Boolean]
   def pressing_all_buttons?(buttons)
     aware = ProconBypassMan::PressButtonAware.new(@binary.raw)
-    buttons.all? { |b| aware.pressed_button?(b) }
+    buttons.all? { |b| aware.pressing_button?(b) }
   end
 end

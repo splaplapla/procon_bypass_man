@@ -3,7 +3,7 @@ class ProconBypassMan::PressButtonAware
     @binary = binary
   end
 
-  def pressed_button?(button)
+  def pressing_button?(button)
     button_obj = ProconBypassMan::Procon::Button.new(button)
     @binary[
       button_obj.byte_position

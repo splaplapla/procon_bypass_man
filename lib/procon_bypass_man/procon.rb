@@ -131,7 +131,7 @@ class ProconBypassMan::Procon
     end
 
     current_layer.remaps.each do |from_button, to_buttons|
-      if user_operation.pressed_button?(from_button)
+      if user_operation.pressing_button?(from_button)
         user_operation.unpress_button(from_button)
         # TODO 2重でpressしないようにしたい
         to_buttons[:to].each do |to_button|

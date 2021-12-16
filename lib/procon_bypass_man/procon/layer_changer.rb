@@ -35,6 +35,6 @@ class ProconBypassMan::Procon::LayerChanger
 
   # @return [Boolean]
   def pressed?(button: )
-    @procon_reader.pressed.include?(button)
+    @procon_reader.pressing.include?(button)
   end
 end

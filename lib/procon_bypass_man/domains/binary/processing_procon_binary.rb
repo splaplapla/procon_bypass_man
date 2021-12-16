@@ -23,8 +23,8 @@ class ProconBypassMan::Domains::ProcessingProconBinary < ProconBypassMan::Domain
   # @return [ProconBypassMan::Domains::ProcessingProconBinary]
   # アナログスティックは上書きし、ボタンだけマージする
   def write_as_merge!(target_binary)
-    current_buttons = ProconBypassMan::ProconReader.new(binary: binary).pressed
-    target_buttons = ProconBypassMan::ProconReader.new(binary: target_binary.raw).pressed
+    current_buttons = ProconBypassMan::ProconReader.new(binary: binary).pressing
+    target_buttons = ProconBypassMan::ProconReader.new(binary: target_binary.raw).pressing
 
     set_no_action!
     (current_buttons + target_buttons).uniq.each do |button|
@@ -44,7 +44,7 @@ class ProconBypassMan::Domains::ProcessingProconBinary < ProconBypassMan::Domain
   end
 
   def write_as_press_button(button)
-    raise "already pressed button(#{button})" if ProconBypassMan::PressButtonAware.new(binary).pressed_button?(button)
+    raise "already pressing button(#{button})" if ProconBypassMan::PressButtonAware.new(binary).pressing_button?(button)
 
     button_obj = ProconBypassMan::Procon::Button.new(button)
     value = binary[button_obj.byte_position].unpack("H*").first.to_i(16) + (2**button_obj.bit_position)
@@ -52,7 +52,7 @@ class ProconBypassMan::Domains::ProcessingProconBinary < ProconBypassMan::Domain
   end
 
   def write_as_unpress_button(button)
-    raise "not press button(#{button}) yet" if not ProconBypassMan::PressButtonAware.new(binary).pressed_button?(button)
+    raise "not press button(#{button}) yet" if not ProconBypassMan::PressButtonAware.new(binary).pressing_button?(button)
 
     button_obj = ProconBypassMan::Procon::Button.new(button)
     value = binary[button_obj.byte_position].unpack("H*").first.to_i(16) - (2**button_obj.bit_position)
