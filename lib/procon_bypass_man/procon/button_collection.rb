@@ -33,5 +33,8 @@ class ProconBypassMan::Procon::ButtonCollection
     end
     acc
   }.freeze
+
   BUTTONS = ProconBypassMan::Procon::ButtonCollection::BUTTONS_MAP.keys.freeze
+
+  LEFT_ANALOG_STICK = { byte_position: 6..8 }
 end

@@ -4,10 +4,8 @@ class ProconBypassMan::Procon::AnalogStick
 
   def initialize(binary: )
     @neutral_position = ProconBypassMan::ButtonsSettingConfiguration.instance.neutral_position
-
-    byte6 = binary[6].unpack("H*").first.to_i(16).to_s(2).rjust(8, "0")
-    byte7 = binary[7].unpack("H*").first.to_i(16).to_s(2).rjust(8, "0")
-    byte8 = binary[8].unpack("H*").first.to_i(16).to_s(2).rjust(8, "0")
+    bytes = binary[ProconBypassMan::Procon::ButtonCollection::LEFT_ANALOG_STICK.fetch(:byte_position)]
+    byte6, byte7, byte8 = bytes.each_char.map { |x| x.unpack("H*").first.to_i(16).to_s(2).rjust(8, "0") }
 
     self.bin_x = "#{byte7[4..7]}#{byte6}"
     self.bin_y = "#{byte8}#{byte7[0..3]}"
