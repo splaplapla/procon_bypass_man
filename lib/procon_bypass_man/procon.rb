@@ -46,7 +46,7 @@ class ProconBypassMan::Procon
 
     if ongoing_macro.finished?
       current_layer.macros.each do |macro_name, options|
-        if options[:if_pressed].all? { |b| user_operation.pressed_button?(b) }
+        if user_operation.pressing_all_buttons?(options[:if_pressed])
           @@status[:ongoing_macro] = MacroRegistry.load(macro_name)
         end
       end
@@ -63,7 +63,7 @@ class ProconBypassMan::Procon
           next
         end
 
-        if options[:if_pressed] && options[:if_pressed].all? { |b| user_operation.pressed_button?(b) }
+        if options[:if_pressed] && user_operation.pressing_all_buttons?(options[:if_pressed])
           FlipCache.fetch(key: button, expires_in: options[:flip_interval]) do
             status[button] = !status[button]
           end
@@ -102,8 +102,8 @@ class ProconBypassMan::Procon
       user_operation.unpress_button(button)
     end
 
-    current_layer.left_analog_stick_caps.each do |button, options|
-      if button.nil? || button.all? { |b| user_operation.pressed_button?(b) }
+    current_layer.left_analog_stick_caps.each do |buttons, options|
+      if buttons.nil? || user_operation.pressing_all_buttons?(buttons)
         options[:force_neutral]&.each do |force_neutral_button|
           user_operation.unpress_button(force_neutral_button)
         end
@@ -119,7 +119,7 @@ class ProconBypassMan::Procon
       end
 
       # 押している時だけ連打
-      if options[:if_pressed] && options[:if_pressed].all? { |b| user_operation.pressed_button?(b) }
+      if options[:if_pressed] && user_operation.pressing_all_buttons?(options[:if_pressed])
         if !status[button]
           user_operation.unpress_button(button)
         end
