@@ -43,6 +43,7 @@ class ProconBypassMan::Domains::ProcessingProconBinary < ProconBypassMan::Domain
     self
   end
 
+  # @param [Symbol] button
   def write_as_press_button(button)
     raise "already pressing button(#{button})" if ProconBypassMan::PressButtonAware.new(binary).pressing_button?(button)
 
@@ -51,6 +52,7 @@ class ProconBypassMan::Domains::ProcessingProconBinary < ProconBypassMan::Domain
     binary[button_obj.byte_position] = ["%02X" % value.to_s].pack("H*")
   end
 
+  # @param [Symbol] button
   def write_as_unpress_button(button)
     raise "not press button(#{button}) yet" if not ProconBypassMan::PressButtonAware.new(binary).pressing_button?(button)
 
@@ -59,14 +61,20 @@ class ProconBypassMan::Domains::ProcessingProconBinary < ProconBypassMan::Domain
     binary[button_obj.byte_position] = ["%02X" % value.to_s].pack("H*")
   end
 
+  # @param [Symbol] button
   def write_as_press_button_only(button)
     set_no_action!
     write_as_press_button(button)
   end
 
-  # @param [Integer]
+  # @param [Integer] cap
   def write_as_apply_left_analog_stick_cap(cap: )
     analog_stick_cap = ProconBypassMan::Procon::AnalogStickCap.new(binary)
     binary[6..8] = analog_stick_cap.capped_position(cap_hypotenuse: cap).to_binary
+  end
+
+  # @return [ProconBypassMan::ProconReader]
+  def to_procon_reader
+    ProconBypassMan::ProconReader.new(binary: binary)
   end
 end
