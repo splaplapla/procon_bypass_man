@@ -551,7 +551,6 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
   describe 'validations' do
     context '同じレイヤーで同じボタンへの設定をしているとき' do
       it do
-        # TODO validationとして捕捉したい
         expect {
         ProconBypassMan.buttons_setting_configure do
           prefix_keys_for_changing_layer [:zr]
@@ -560,9 +559,11 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
             flip :zr, if_pressed: [:x]
           end
         end
-        }.to raise_error(RuntimeError, "zrへの設定をすでに割り当て済みです")
-        # expect(ProconBypassMan::ButtonsSettingConfiguration.instance.valid?).to eq(false)
-        # expect(ProconBypassMan::ButtonsSettingConfiguration.instance.errors).to eq(:layers=>["upで同じボタンへの設定はできません。"])
+        }.not_to raise_error
+        expect(ProconBypassMan::ButtonsSettingConfiguration::Validator.new(
+          ProconBypassMan::ButtonsSettingConfiguration.instance
+        ).valid?).to eq(true)
+        expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].flips).to eq(:zr=>{:if_pressed=>[:x]})
       end
     end
     context '同じレイヤーで1つのボタンへのflipとremapを設定をしているとき' do
