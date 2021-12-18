@@ -10,7 +10,6 @@ module ProconBypassMan
         self.remaps = {}
         self.left_analog_stick_caps = {}
         self.disables = []
-        instance_eval(&block) if block_given?
       end
 
       # @param [Symbol] button
