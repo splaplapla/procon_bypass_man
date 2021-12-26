@@ -20,8 +20,11 @@ class ProconBypassMan::Procon
   end
   reset!
 
+  # @param [string] binary
   def initialize(binary)
-    self.user_operation = ProconBypassMan::Procon::UserOperation.new(binary.dup)
+    self.user_operation = ProconBypassMan::Procon::UserOperation.new(
+      binary.dup
+    )
   end
 
   def status; @@status[:buttons]; end
@@ -43,7 +46,7 @@ class ProconBypassMan::Procon
 
     if ongoing_macro.finished?
       current_layer.macros.each do |macro_name, options|
-        if options[:if_pressed].all? { |b| user_operation.pressed_button?(b) }
+        if user_operation.pressing_all_buttons?(options[:if_pressed])
           @@status[:ongoing_macro] = MacroRegistry.load(macro_name)
         end
       end
@@ -60,7 +63,7 @@ class ProconBypassMan::Procon
           next
         end
 
-        if options[:if_pressed] && options[:if_pressed].all? { |b| user_operation.pressed_button?(b) }
+        if options[:if_pressed] && user_operation.pressing_all_buttons?(options[:if_pressed])
           FlipCache.fetch(key: button, expires_in: options[:flip_interval]) do
             status[button] = !status[button]
           end
@@ -75,7 +78,7 @@ class ProconBypassMan::Procon
         @@status[:ongoing_mode] = ProconBypassMan::Procon::ModeRegistry.load(current_layer.mode)
       end
       if(binary = ongoing_mode.next_binary)
-        self.user_operation.merge(target_binary: binary)
+        self.user_operation.merge([binary].pack("H*"))
       end
       return
     end
@@ -83,24 +86,24 @@ class ProconBypassMan::Procon
     status
   end
 
-  # @return [String<binary>]
+  # @return [ProconBypassMan::Domains::ProcessingProconBinary]
   def to_binary
     if ongoing_mode.name != :manual
-      return user_operation.binary
+      return user_operation.binary.raw
     end
 
     if ongoing_macro.ongoing?
-      step = ongoing_macro.next_step or return(user_operation.binary)
+      step = ongoing_macro.next_step or return(user_operation.binary.raw)
       user_operation.press_button_only(step)
-      return user_operation.binary
+      return user_operation.binary.raw
     end
 
     current_layer.disables.each do |button|
       user_operation.unpress_button(button)
     end
 
-    current_layer.left_analog_stick_caps.each do |button, options|
-      if button.nil? || button.all? { |b| user_operation.pressed_button?(b) }
+    current_layer.left_analog_stick_caps.each do |buttons, options|
+      if buttons.nil? || user_operation.pressing_all_buttons?(buttons)
         options[:force_neutral]&.each do |force_neutral_button|
           user_operation.unpress_button(force_neutral_button)
         end
@@ -116,7 +119,7 @@ class ProconBypassMan::Procon
       end
 
       # 押している時だけ連打
-      if options[:if_pressed] && options[:if_pressed].all? { |b| user_operation.pressed_button?(b) }
+      if options[:if_pressed] && user_operation.pressing_all_buttons?(options[:if_pressed])
         if !status[button]
           user_operation.unpress_button(button)
         end
@@ -128,16 +131,15 @@ class ProconBypassMan::Procon
     end
 
     current_layer.remaps.each do |from_button, to_buttons|
-      if user_operation.pressed_button?(from_button)
+      if user_operation.pressing_button?(from_button)
         user_operation.unpress_button(from_button)
-        # TODO 2重でpressしないようにしたい
         to_buttons[:to].each do |to_button|
           user_operation.press_button(to_button)
         end
       end
     end
 
-    user_operation.binary
+    user_operation.binary.raw
   end
 
   private

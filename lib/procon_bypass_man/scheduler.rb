@@ -70,13 +70,6 @@ module ProconBypassMan
     def self.register_schedules
       register(
         schedule: Schedule.new(
-          klass: ProconBypassMan::FetchAndRunRemotePbmActionJob,
-          args: [],
-          interval: 3,
-        )
-      )
-      register(
-        schedule: Schedule.new(
           klass: ProconBypassMan::SyncDeviceStatsJob,
           args: [->{ ProconBypassMan::DeviceStatus.current }],
           interval: 60,

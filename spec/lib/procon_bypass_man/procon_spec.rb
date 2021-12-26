@@ -302,7 +302,8 @@ describe ProconBypassMan::Procon do
           procon = ProconBypassMan::Procon.new(binary)
           expect(procon.current_layer_key).to eq(:up)
           expect(procon.current_layer.mode).to eq(:manual)
-          ProconBypassMan::Procon::LayerChanger.new(binary: binary).tap do |layer_changer|
+          b = ProconBypassMan::Domains::ProcessingProconBinary.new(binary: binary)
+          ProconBypassMan::Procon::LayerChanger.new(binary: b).tap do |layer_changer|
             expect(layer_changer.change_layer?).to eq(true)
             expect(layer_changer.next_layer_key).to eq(:right)
           end

@@ -4,6 +4,16 @@ describe ProconBypassMan::RunRemotePbmActionDispatchCommand do
   describe '.execute' do
     subject { described_class.execute(action: action, uuid: "a", job_args: {}) }
 
+    describe 'error handler' do
+      context 'when unknown action' do
+        let(:action) { :unkown }
+
+        it 'thorw error' do
+          expect { subject }.to raise_error(RuntimeError)
+        end
+      end
+    end
+
     context ProconBypassMan::RemotePbmAction::ACTION_CHANGE_PBM_VERSION do
       let(:action) { ProconBypassMan::RemotePbmAction::ACTION_CHANGE_PBM_VERSION }
 

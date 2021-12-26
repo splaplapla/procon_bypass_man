@@ -10,7 +10,6 @@ module ProconBypassMan
         self.remaps = {}
         self.left_analog_stick_caps = {}
         self.disables = []
-        instance_eval(&block) if block_given?
       end
 
       # @param [Symbol] button
@@ -50,11 +49,8 @@ module ProconBypassMan
           end
           hash[:flip_interval] = interval
         end
-        if self.flips[button]
-          raise "#{button}への設定をすでに割り当て済みです"
-        else
-          self.flips[button] = hash
-        end
+
+        self.flips[button] = hash
       end
 
       def macro(name, if_pressed: )

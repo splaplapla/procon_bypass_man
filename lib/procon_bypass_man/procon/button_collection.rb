@@ -1,13 +1,4 @@
 class ProconBypassMan::Procon::ButtonCollection
-  class Button
-    attr_accessor :byte_position, :bit_position
-    def initialize(key)
-      b = BUTTONS_MAP[key] or raise("undefined button")
-      self.byte_position = b[:byte_position]
-      self.bit_position = b[:bit_position]
-    end
-  end
-
   # https://github.com/dekuNukem/Nintendo_Switch_Reverse_Engineering/blob/ac8093c84194b3232acb675ac1accce9bcb456a3/bluetooth_hid_notes.md
   #0) Input report ID
   #1) Timer. Increments very fast. Can be used to estimate excess Bluetooth latency.
@@ -42,9 +33,8 @@ class ProconBypassMan::Procon::ButtonCollection
     end
     acc
   }.freeze
+
   BUTTONS = ProconBypassMan::Procon::ButtonCollection::BUTTONS_MAP.keys.freeze
 
-  def self.load(button_key)
-    Button.new(button_key)
-  end
+  LEFT_ANALOG_STICK = { byte_position: 6..8 }
 end

@@ -4,6 +4,9 @@ require "json"
 require "net/http"
 require "fileutils"
 require "securerandom"
+require 'em/pure_ruby'
+require "action_cable_client"
+require "ext/em_pure_ruby"
 
 require_relative "procon_bypass_man/version"
 require_relative "procon_bypass_man/remote_pbm_action"
@@ -21,6 +24,7 @@ require_relative "procon_bypass_man/support/server_pool"
 require_relative "procon_bypass_man/background"
 require_relative "procon_bypass_man/commands"
 require_relative "procon_bypass_man/bypass"
+require_relative "procon_bypass_man/domains"
 require_relative "procon_bypass_man/device_connector"
 require_relative "procon_bypass_man/device_status"
 require_relative "procon_bypass_man/runner"
@@ -28,12 +32,14 @@ require_relative "procon_bypass_man/processor"
 require_relative "procon_bypass_man/configuration"
 require_relative "procon_bypass_man/buttons_setting_configuration"
 require_relative "procon_bypass_man/procon"
-require_relative "procon_bypass_man/procon_reader"
-require_relative "procon_bypass_man/procon/analog_stick"
+require_relative "procon_bypass_man/procon/button"
+require_relative "procon_bypass_man/procon/value_objects/analog_stick"
+require_relative "procon_bypass_man/procon/value_objects/procon_reader"
 require_relative "procon_bypass_man/procon/analog_stick_cap"
-require_relative "procon_bypass_man/value_objects/remote_pbm_action_object"
+require_relative "procon_bypass_man/remote_pbm_action/value_objects/remote_pbm_action_object"
 require_relative "procon_bypass_man/scheduler"
-require_relative "procon_bypass_man/plugin"
+require_relative "procon_bypass_man/plugins"
+require_relative "procon_bypass_man/websocket/pbm_job_client"
 
 STDOUT.sync = true
 Thread.abort_on_exception = true
@@ -51,9 +57,9 @@ module ProconBypassMan
   def self.run(setting_path: nil)
     ProconBypassMan::Scheduler.start!
     ProconBypassMan::Background::JobRunner.start!
+    ProconBypassMan::Websocket::PbmJobClient.start!
 
-    ProconBypassMan.logger.info "PBMを起動しています"
-    puts "PBMを起動しています"
+    ProconBypassMan::PrintMessageCommand.execute(text: "PBMを起動しています")
     ProconBypassMan::ButtonsSettingConfiguration::Loader.load(setting_path: setting_path)
     initialize_pbm
     gadget, procon = ProconBypassMan::ConnectDeviceCommand.execute!

@@ -1,6 +1,7 @@
 class ProconBypassMan::Procon::LayerChanger
+  # @param [ProconBypassMan::Domains::ProcessingProconBinary] binary
   def initialize(binary: )
-    @procon_reader = ProconBypassMan::ProconReader.new(binary: binary).freeze
+    @procon_reader = binary.to_procon_reader
   end
 
   # @return [Symbol]
@@ -35,6 +36,6 @@ class ProconBypassMan::Procon::LayerChanger
 
   # @return [Boolean]
   def pressed?(button: )
-    @procon_reader.pressed.include?(button)
+    @procon_reader.pressing.include?(button)
   end
 end

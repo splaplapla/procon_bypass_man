@@ -34,6 +34,14 @@ Switch <-- (PBM): ZR連打
 ## Plugins
 * https://github.com/splaplapla/procon_bypass_man-splatoon2
 
+## 関連ソフトウェア
+* サーバソフトウェア(WIP)
+  * https://github.com/splaplapla/procon_bypass_man_cloud
+  * このサーバからOS自体の再起動、設定ファイルの変更、PBMのバージョンアップができます
+  * 自分でホストティングしてください
+* pbmenv
+  * バージョンマネージャー
+
 ## FAQ
 * どうやって動かすの?
     * このツールはRaspberry Pi4をUSBガジェットモードで起動して有線でプロコンとSwitchに接続して使います

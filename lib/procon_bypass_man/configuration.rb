@@ -111,6 +111,33 @@ class ProconBypassMan::Configuration
     @server_pool ||= ProconBypassMan::ServerPool.new(servers: api_servers)
   end
 
+  # @return [String, NilClass]
+  def current_server
+    server_pool.server
+  end
+
+  # @return [String, NilClass]
+  def current_ws_server
+    if (uri = URI.parse(server_pool.server))
+      if uri.port == 443
+        return "ws://#{uri.host}"
+      else
+        return "ws://#{uri.host}:#{uri.port}"
+      end
+    end
+  rescue URI::InvalidURIError
+    nil
+  end
+
+  # @return [String, NilClass]
+  def current_ws_server_url
+    return unless current_ws_server
+    "#{current_ws_server}/websocket/"
+  end
+
+  # @return [Boolean]
+  def enable_ws?; !!current_server; end
+
   # @return [Array<String>]
   def api_servers
     if !!ENV["API_SERVER"]
