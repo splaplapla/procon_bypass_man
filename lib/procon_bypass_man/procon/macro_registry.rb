@@ -28,11 +28,11 @@ class ProconBypassMan::Procon::MacroRegistry
     if plugins[klass.name]
       raise "#{klass.name} macro is already registered"
     end
-    plugins[klass.name] = klass.steps
+    plugins[klass.name] = ->{ klass.steps }
   end
 
   def self.load(name)
-    steps = PRESETS[name] || plugins[name] || raise("unknown macro")
+    steps = PRESETS[name] || plugins[name].call || raise("unknown macro")
     Macro.new(name: name, steps: steps.dup)
   end
 

@@ -44,6 +44,15 @@ require_relative "procon_bypass_man/websocket/pbm_job_client"
 STDOUT.sync = true
 Thread.abort_on_exception = true
 
+# pluginの定数を握りつぶす
+class Module
+  def const_missing(id)
+    raise(NameError, "uninitialized constant #{id}") unless self.name =~ /^ProconBypassMan::Plugin/
+    eval "module #{self.name}::#{id}; end", Object::TOPLEVEL_BINDING
+    eval "#{self.name}::#{id}"
+  end
+end
+
 module ProconBypassMan
   extend ProconBypassMan::Configuration::ClassMethods
 

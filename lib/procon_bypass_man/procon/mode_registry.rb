@@ -26,11 +26,11 @@ class ProconBypassMan::Procon::ModeRegistry
     if plugins[klass.name.to_sym]
       raise "#{klass.name.to_sym} mode is already registered"
     end
-    plugins[klass.name.to_sym] = klass.binaries
+    plugins[klass.name.to_sym] = ->{ klass.binaries }
   end
 
   def self.load(name)
-    b = PRESETS[name] || plugins[name] || raise("unknown mode")
+    b = PRESETS[name] || plugins[name].call || raise("unknown mode")
     Mode.new(name: name, binaries: b.dup)
   end
 

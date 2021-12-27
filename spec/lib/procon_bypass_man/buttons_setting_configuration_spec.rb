@@ -304,6 +304,23 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
         end
       end
 
+      context '未定義の定数をinstance_evalで読み込むとき' do
+        it do
+          c = <<~EOH
+            fast_fujinken = ProconBypassMan::Plugin::SmashBrothers::Macro::FastFujinken
+            install_macro_plugin fast_fujinken
+
+            prefix_keys_for_changing_layer [:a]
+            layer :up do
+              flip :b, if_pressed: :b
+              macro fast_fujinken, if_pressed: [:a, :y]
+            end
+          EOH
+
+          ProconBypassMan::ButtonsSettingConfiguration.new.instance_eval(c)
+        end
+      end
+
       context '2回loadするとき' do
         class ::AMacroPlugin
           def self.name; :the_macro; end
@@ -397,7 +414,8 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
             macro :the_macro, if_pressed: [:a, :y]
           end
         end
-        expect(ProconBypassMan::Procon::MacroRegistry.plugins).to eq(the_macro: [:a, :b])
+        expect(ProconBypassMan::Procon::MacroRegistry.plugins.keys).to eq([:the_macro])
+        expect(ProconBypassMan::Procon::MacroRegistry.plugins[:the_macro].call).to eq([:a, :b])
         expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].macros).to eq(
           {:the_macro=>{:if_pressed=>[:a, :y]}}
         )
@@ -413,7 +431,8 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
             macro AMacroPlugin, if_pressed: [:a, :y]
           end
         end
-        expect(ProconBypassMan::Procon::MacroRegistry.plugins).to eq(the_macro: [:a, :b])
+        expect(ProconBypassMan::Procon::MacroRegistry.plugins.keys).to eq([:the_macro])
+        expect(ProconBypassMan::Procon::MacroRegistry.plugins[:the_macro].call).to eq([:a, :b])
         expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].macros).to eq(
           {:the_macro=>{:if_pressed=>[:a, :y]}}
         )
@@ -429,7 +448,8 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
           install_mode_plugin(AModePlugin)
           layer :up, mode: AModePlugin.name
         end
-        expect(ProconBypassMan::Procon::ModeRegistry.plugins).to eq(foo: ['a'])
+        expect(ProconBypassMan::Procon::ModeRegistry.plugins.keys).to eq([:foo])
+        expect(ProconBypassMan::Procon::ModeRegistry.plugins[:foo].call).to eq(['a'])
       end
     end
 

@@ -33,7 +33,8 @@ describe ProconBypassMan::Procon::ModeRegistry do
         end
       end
       ::ProconBypassMan::Procon::ModeRegistry.install_plugin(HogeMode)
-      expect(ProconBypassMan::Procon::ModeRegistry.plugins).to eq(hoge: [:a])
+      expect(ProconBypassMan::Procon::ModeRegistry.plugins.keys).to eq([:hoge])
+      expect(ProconBypassMan::Procon::ModeRegistry.plugins[:hoge].call).to eq([:a])
       expect(ProconBypassMan::Procon::ModeRegistry.load(:hoge)).to be_a(ProconBypassMan::Procon::ModeRegistry::Mode)
     end
   end
