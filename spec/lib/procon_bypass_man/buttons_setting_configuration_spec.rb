@@ -287,6 +287,23 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
         end
       end
 
+      context '2回instance_evalで読み込むとき' do
+        it do
+          c = <<~EOH
+            fast_return = ProconBypassMan::Plugin::Splatoon2::Macro::FastReturn
+            install_macro_plugin fast_return
+
+            prefix_keys_for_changing_layer [:a]
+            layer :up do
+              flip :b, if_pressed: :b
+            end
+          EOH
+
+          ProconBypassMan::ButtonsSettingConfiguration.new.instance_eval(c)
+          expect { ProconBypassMan::ButtonsSettingConfiguration.new.instance_eval(c) }.not_to raise_error
+        end
+      end
+
       context '2回loadするとき' do
         class ::AMacroPlugin
           def self.name; :the_macro; end

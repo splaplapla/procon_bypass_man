@@ -20,6 +20,10 @@ module ProconBypassMan
       @@context[@@current_context_key] ||= new
     end
 
+    def self.instance=(val)
+      @@context[@@current_context_key] = val
+    end
+
     def self.switch_new_context(key)
       @@context[key] = new
       previous_key = @@current_context_key
@@ -35,6 +39,7 @@ module ProconBypassMan
 
     def initialize
       reset!
+      self.class.instance = self
     end
 
     module ManualMode
