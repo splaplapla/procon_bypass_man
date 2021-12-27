@@ -47,11 +47,13 @@ Thread.abort_on_exception = true
 # pluginの定数を握りつぶす
 class Module
   def const_missing(id)
-    super unless self.name =~ /^ProconBypassMan::Plugin/
-
-    parent_const = Object.const_get("#{self.name}")
-    parent_const.const_set(id, Module.new)
-    Object.const_get("#{self.name}::#{id}")
+    if self.name =~ /^ProconBypassMan::Plugin/
+      parent_const = Object.const_get("#{self.name}")
+      parent_const.const_set(id, Module.new)
+      Object.const_get("#{self.name}::#{id}")
+    else
+      super
+    end
   end
 end
 
