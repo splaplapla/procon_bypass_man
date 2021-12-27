@@ -2,6 +2,8 @@ module ProconBypassMan
   class ButtonsSettingConfiguration
     class Validator
       def initialize(config)
+        @macro_plugins = config.macro_plugins
+        @mode_plugins = config.mode_plugins
         @layers = config.layers
         @prefix_keys = config.prefix_keys
       end
@@ -14,6 +16,8 @@ module ProconBypassMan
         validate_config_of_button_lonely
         validate_verify_button_existence
         validate_flip_and_remap_are_hate_each_other
+        validate_verify_mode_plugins
+        validate_verify_macro_plugins
 
         @errors.empty?
       end
@@ -83,6 +87,38 @@ module ProconBypassMan
           value.remaps.keys.map(&:to_sym).each { |b| remap_buttons << b }
           if(duplicated_buttons = flip_buttons & remap_buttons).length > 0
             @errors[:layers] << "レイヤー#{layer_key}で、連打とリマップの定義が重複しているボタン#{duplicated_buttons.join(", ")}があります"
+          end
+        end
+      end
+
+      def validate_verify_mode_plugins
+        @mode_plugins.each do |key, macro|
+          begin
+            Module.const_get(key.to_s)
+          rescue NameError
+            next
+          end
+
+          if(const = Module.const_get(key.to_s))
+            if not const.respond_to?(:binaries)
+              @errors[:mode] << "モード #{key}を読み込めませんでした。"
+            end
+          end
+        end
+      end
+
+      def validate_verify_macro_plugins
+        @macro_plugins.each do |key, macro|
+          begin
+            Module.const_get(key.to_s)
+          rescue NameError
+            next
+          end
+
+          if(const = Module.const_get(key))
+            if not const.respond_to?(:steps)
+              @errors[:macro] << "マクロ #{key}を読み込めませんでした。"
+            end
           end
         end
       end

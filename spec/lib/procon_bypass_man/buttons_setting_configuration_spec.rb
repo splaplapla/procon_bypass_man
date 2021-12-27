@@ -586,16 +586,64 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
   end
 
   describe 'validations' do
+    context '未定義のmacro定数をinstance_evalで読み込むとき' do
+      it do
+        c = <<~EOH
+            fast_fujinken = ProconBypassMan::Plugin::SmashBrothers::Macro::FastFujinken
+            fast_return = ProconBypassMan::Plugin::Splatoon2::Macro::FastReturn
+
+            install_macro_plugin fast_fujinken
+            install_macro_plugin fast_return
+
+            prefix_keys_for_changing_layer [:a]
+            layer :up do
+              flip :b, if_pressed: :b
+              macro fast_fujinken, if_pressed: [:a, :y]
+            end
+        EOH
+
+        ProconBypassMan::ButtonsSettingConfiguration.new.instance_eval(c)
+        validator = ProconBypassMan::ButtonsSettingConfiguration::Validator.new(
+          ProconBypassMan::ButtonsSettingConfiguration.instance
+        )
+        expect(validator.valid?).to eq(false)
+        expect(validator.errors).to eq(:macro=>["マクロ ProconBypassMan::Plugin::SmashBrothers::Macro::FastFujinkenを読み込めませんでした。"])
+      end
+    end
+
+    context '未定義のmode定数をinstance_evalで読み込むとき' do
+      it do
+        c = <<~EOH
+            eternal_jump = ProconBypassMan::Plugin::SmashBrothers::Mode::EternalJump
+            guruguru = ProconBypassMan::Plugin::Splatoon2::Mode::Guruguru
+
+            install_mode_plugin eternal_jump
+            install_mode_plugin guruguru
+
+            prefix_keys_for_changing_layer [:a]
+            layer :up, mode: eternal_jump do
+            end
+        EOH
+
+        ProconBypassMan::ButtonsSettingConfiguration.new.instance_eval(c)
+        validator = ProconBypassMan::ButtonsSettingConfiguration::Validator.new(
+          ProconBypassMan::ButtonsSettingConfiguration.instance
+        )
+        expect(validator.valid?).to eq(false)
+        expect(validator.errors).to eq(:mode=>["モード ProconBypassMan::Plugin::SmashBrothers::Mode::EternalJumpを読み込めませんでした。"])
+      end
+    end
+
     context '同じレイヤーで同じボタンへの設定をしているとき' do
       it do
         expect {
-          ProconBypassMan.buttons_setting_configure do
-            prefix_keys_for_changing_layer [:zr]
-            layer :up do
-              flip :zr, if_pressed: [:y]
-              flip :zr, if_pressed: [:x]
-            end
+        ProconBypassMan.buttons_setting_configure do
+          prefix_keys_for_changing_layer [:zr]
+          layer :up do
+            flip :zr, if_pressed: [:y]
+            flip :zr, if_pressed: [:x]
           end
+        end
         }.not_to raise_error
         expect(ProconBypassMan::ButtonsSettingConfiguration::Validator.new(
           ProconBypassMan::ButtonsSettingConfiguration.instance
@@ -603,6 +651,7 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
         expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].flips).to eq(:zr=>{:if_pressed=>[:x]})
       end
     end
+
     context '同じレイヤーで1つのボタンへのflipとremapを設定をしているとき' do
       it do
         ProconBypassMan.buttons_setting_configure do
@@ -622,6 +671,7 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
         expect(validator.errors).to eq({:layers=>["レイヤーupで、連打とリマップの定義が重複しているボタンzrがあります"]})
       end
     end
+
     context 'modeを設定しているのにブロックを渡しているとき' do
       it do
         class AModePlugin
