@@ -92,7 +92,7 @@ module ProconBypassMan
       end
 
       def validate_verify_mode_plugins
-        @mode_plugins.each do |key, macro|
+        @mode_plugins.each do |key, mode|
           begin
             Module.const_get(key.to_s)
           rescue NameError
@@ -100,7 +100,7 @@ module ProconBypassMan
           end
 
           if(const = Module.const_get(key.to_s))
-            if not const.respond_to?(:binaries)
+            if not const.respond_to?(:binaries) && mode.call
               @errors[:mode] << "モード #{key}を読み込めませんでした。"
             end
           end
@@ -116,7 +116,7 @@ module ProconBypassMan
           end
 
           if(const = Module.const_get(key))
-            if not const.respond_to?(:steps)
+            if not const.respond_to?(:steps) && macro.call
               @errors[:macro] << "マクロ #{key}を読み込めませんでした。"
             end
           end

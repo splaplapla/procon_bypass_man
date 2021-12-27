@@ -48,8 +48,10 @@ Thread.abort_on_exception = true
 class Module
   def const_missing(id)
     raise(NameError, "uninitialized constant #{id}") unless self.name =~ /^ProconBypassMan::Plugin/
-    eval "module #{self.name}::#{id}; end", Object::TOPLEVEL_BINDING
-    eval "#{self.name}::#{id}"
+
+    parent_const = Object.const_get("#{self.name}")
+    parent_const.const_set(id, Module.new)
+    Object.const_get("#{self.name}::#{id}")
   end
 end
 
