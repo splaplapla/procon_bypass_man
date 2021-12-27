@@ -15,18 +15,21 @@ module ProconBypassMan
       :neutral_position
 
     def self.instance
-      @@current_context_key ||= :main
       @@context ||= {}
-      @@context[@@current_context_key] ||= new
+      @@context[current_context_key] ||= new
+    end
+
+    def self.current_context_key
+      @@current_context_key ||= :main
     end
 
     def self.instance=(val)
-      @@context[@@current_context_key] = val
+      @@context[current_context_key] = val
     end
 
     def self.switch_new_context(key)
       @@context[key] = new
-      previous_key = @@current_context_key
+      previous_key = current_context_key
       if block_given?
         @@current_context_key = key
         value = yield(@@context[key])
