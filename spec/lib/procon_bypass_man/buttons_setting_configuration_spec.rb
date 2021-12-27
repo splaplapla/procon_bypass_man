@@ -589,13 +589,13 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
     context '同じレイヤーで同じボタンへの設定をしているとき' do
       it do
         expect {
-        ProconBypassMan.buttons_setting_configure do
-          prefix_keys_for_changing_layer [:zr]
-          layer :up do
-            flip :zr, if_pressed: [:y]
-            flip :zr, if_pressed: [:x]
+          ProconBypassMan.buttons_setting_configure do
+            prefix_keys_for_changing_layer [:zr]
+            layer :up do
+              flip :zr, if_pressed: [:y]
+              flip :zr, if_pressed: [:x]
+            end
           end
-        end
         }.not_to raise_error
         expect(ProconBypassMan::ButtonsSettingConfiguration::Validator.new(
           ProconBypassMan::ButtonsSettingConfiguration.instance
