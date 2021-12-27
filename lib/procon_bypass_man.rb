@@ -47,7 +47,7 @@ Thread.abort_on_exception = true
 # pluginの定数を握りつぶす
 class Module
   def const_missing(id)
-    raise(NameError, "uninitialized constant #{id}") unless self.name =~ /^ProconBypassMan::Plugin/
+    super unless self.name =~ /^ProconBypassMan::Plugin/
 
     parent_const = Object.const_get("#{self.name}")
     parent_const.const_set(id, Module.new)
