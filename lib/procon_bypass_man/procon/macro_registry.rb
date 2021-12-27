@@ -26,7 +26,7 @@ class ProconBypassMan::Procon::MacroRegistry
 
   def self.install_plugin(klass)
     if plugins[klass.name]
-      raise "すでに登録済みです"
+      raise "#{klass.name} macro is already registered"
     end
     plugins[klass.name] = klass.steps
   end

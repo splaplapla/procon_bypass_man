@@ -24,7 +24,7 @@ class ProconBypassMan::Procon::ModeRegistry
 
   def self.install_plugin(klass)
     if plugins[klass.name.to_sym]
-      raise "すでに登録済みです"
+      raise "#{klass.name.to_sym} mode is already registered"
     end
     plugins[klass.name.to_sym] = klass.binaries
   end
