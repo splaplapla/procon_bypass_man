@@ -4,15 +4,6 @@ class ProconBypassMan::Domains::ProcessingProconBinary < ProconBypassMan::Domain
 
   ALL_ZERO_BIT = ["0"].pack("H*").freeze
 
-  # @return [String]
-  def raw
-    binary
-  end
-
-  def unpack
-    binary.unpack("H*")
-  end
-
   def set_no_action!
     binary[3] = ALL_ZERO_BIT
     binary[4] = ALL_ZERO_BIT
@@ -71,10 +62,5 @@ class ProconBypassMan::Domains::ProcessingProconBinary < ProconBypassMan::Domain
   def write_as_apply_left_analog_stick_cap(cap: )
     analog_stick_cap = ProconBypassMan::Procon::AnalogStickCap.new(binary)
     binary[6..8] = analog_stick_cap.capped_position(cap_hypotenuse: cap).to_binary
-  end
-
-  # @return [ProconBypassMan::ProconReader]
-  def to_procon_reader
-    ProconBypassMan::ProconReader.new(binary: binary)
   end
 end
