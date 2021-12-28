@@ -414,8 +414,8 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
             macro :the_macro, if_pressed: [:a, :y]
           end
         end
-        expect(ProconBypassMan::Procon::MacroRegistry.plugins.keys).to eq([:the_macro])
-        expect(ProconBypassMan::Procon::MacroRegistry.plugins[:the_macro].call).to eq([:a, :b])
+        expect(ProconBypassMan::Procon::MacroRegistry.plugins.keys).to eq([:AMacroPlugin])
+        expect(ProconBypassMan::Procon::MacroRegistry.plugins[:AMacroPlugin].call).to eq([:a, :b])
         expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].macros).to eq(
           {:the_macro=>{:if_pressed=>[:a, :y]}}
         )
@@ -431,10 +431,10 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
             macro AMacroPlugin, if_pressed: [:a, :y]
           end
         end
-        expect(ProconBypassMan::Procon::MacroRegistry.plugins.keys).to eq([:the_macro])
-        expect(ProconBypassMan::Procon::MacroRegistry.plugins[:the_macro].call).to eq([:a, :b])
+        expect(ProconBypassMan::Procon::MacroRegistry.plugins.keys).to eq([:AMacroPlugin])
+        expect(ProconBypassMan::Procon::MacroRegistry.plugins[:AMacroPlugin].call).to eq([:a, :b])
         expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].macros).to eq(
-          {:the_macro=>{:if_pressed=>[:a, :y]}}
+          {:AMacroPlugin=>{:if_pressed=>[:a, :y]}}
         )
       end
     end
@@ -446,10 +446,10 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
         end
         ProconBypassMan.buttons_setting_configure do
           install_mode_plugin(AModePlugin)
-          layer :up, mode: AModePlugin.name
+          layer :up, mode: AModePlugin
         end
-        expect(ProconBypassMan::Procon::ModeRegistry.plugins.keys).to eq([:foo])
-        expect(ProconBypassMan::Procon::ModeRegistry.plugins[:foo].call).to eq(['a'])
+        expect(ProconBypassMan::Procon::ModeRegistry.plugins.keys).to eq([:AModePlugin])
+        expect(ProconBypassMan::Procon::ModeRegistry.plugins[:AModePlugin].call).to eq(['a'])
       end
     end
 
@@ -505,10 +505,10 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
             flip :l, if_pressed: true
             flip :r
           end
-          layer :down, mode: :manual do
+          layer :down, mode: AModePlugin do
             flip :r, if_pressed: [:zr, :zl]
           end
-          layer :right, mode: AModePlugin.name
+          layer :right, mode: AModePlugin
           layer :left
         end
         expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].flip_buttons[:l]).to eq(if_pressed: [:l])
@@ -517,9 +517,9 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
         expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].mode).to eq(:manual)
         expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:down].flip_buttons.keys).to eq([:r])
         expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:down].flip_buttons[:r]).to eq(if_pressed: [:zr, :zl])
-        expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:down].mode).to eq(:manual)
+        expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:down].mode).to eq(:AModePlugin)
         expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:right].flip_buttons.keys).to eq([])
-        expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:right].mode).to eq(:foo)
+        expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:right].mode).to eq(:AModePlugin)
         expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:left].flip_buttons.keys).to eq([])
         expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:left].mode).to eq(:manual)
       end

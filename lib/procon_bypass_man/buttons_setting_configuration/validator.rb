@@ -115,7 +115,7 @@ module ProconBypassMan
             next
           end
 
-          if(const = Module.const_get(key))
+          if(const = Module.const_get(key.to_s))
             if not const.respond_to?(:steps) && macro.call
               @errors[:macro] << "マクロ #{key}を読み込めませんでした。"
             end

@@ -47,19 +47,26 @@ module ProconBypassMan
 
     module ManualMode
       def self.name
-        'manual'
+        :manual
       end
     end
     def layer(direction, mode: ManualMode, &block)
-      mode_name = case mode
-                  when String
-                    mode.to_sym
-                  when Symbol
-                    mode
-                  else
-                    mode.name.to_sym
-                  end
-      unless ([ManualMode.name.to_sym] + ProconBypassMan::Procon::ModeRegistry.plugins.keys).include?(mode_name)
+      if ProconBypassMan::ButtonsSettingConfiguration::ManualMode == mode
+        mode_name = mode.name
+      else
+        mode_name = case mode
+                    when ProconBypassMan::ButtonsSettingConfiguration::ManualMode
+                      mode.name
+                    when String
+                      mode.to_sym
+                    when Symbol
+                      mode
+                    else
+                      mode.to_s.to_sym
+                    end
+      end
+
+      unless ([ManualMode.name] + ProconBypassMan::Procon::ModeRegistry.plugins.keys).include?(mode_name)
         raise("#{mode_name} mode is unknown")
       end
 

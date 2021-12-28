@@ -12,7 +12,7 @@ describe ProconBypassMan::Plugin::Splatoon2 do
   end
 
   it do
-    expect(ProconBypassMan::Plugin::Splatoon2::Macro::FastReturn.name).to eq(:fast_return)
+    expect(ProconBypassMan::Plugin::Splatoon2::Macro::FastReturn.name).to eq('ProconBypassMan::Plugin::Splatoon2::Macro::FastReturn')
     expect(ProconBypassMan::Plugin::Splatoon2::Macro::FastReturn.steps).to eq([:x, :down, :a, :a])
   end
 end

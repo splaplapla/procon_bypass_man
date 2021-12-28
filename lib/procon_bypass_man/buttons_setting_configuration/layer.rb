@@ -54,11 +54,7 @@ module ProconBypassMan
       end
 
       def macro(name, if_pressed: )
-        if name.respond_to?(:name)
-          macro_name = name.name.to_sym
-        else
-          macro_name = name
-        end
+        macro_name = name.to_s.to_sym
         self.macros[macro_name] = { if_pressed: if_pressed }
       end
 

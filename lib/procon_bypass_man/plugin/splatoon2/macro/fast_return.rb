@@ -3,7 +3,7 @@ module ProconBypassMan
     module Splatoon2
       module Macro
         module FastReturn
-          def self.name
+          def self.display_name
             :fast_return
           end
 

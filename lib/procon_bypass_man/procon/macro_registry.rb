@@ -25,10 +25,10 @@ class ProconBypassMan::Procon::MacroRegistry
   }
 
   def self.install_plugin(klass)
-    if plugins[klass.name]
-      raise "#{klass.name} macro is already registered"
+    if plugins[klass.to_s.to_sym]
+      raise "#{klass} macro is already registered"
     end
-    plugins[klass.name] = ->{ klass.steps }
+    plugins[klass.to_s.to_sym] = ->{ klass.steps }
   end
 
   def self.load(name)
