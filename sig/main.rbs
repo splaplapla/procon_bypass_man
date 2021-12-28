@@ -166,7 +166,7 @@ end
 
 class ProconBypassMan::Configuration
   module ClassMethods
-    def root: () -> untyped
+    def root: () -> string
 
     def logger: () -> untyped
 
@@ -508,7 +508,7 @@ module ProconBypassMan
     def self.from_boot: () -> Integer
 
     # @param [String] uptime_cmd_result
-    def initialize: (uptime_cmd_result: String uptime_cmd_result) -> void
+    def initialize: (uptime_cmd_result: String) -> void
 
     # @return [Integer]
     def from_boot: () -> Integer
@@ -518,3 +518,5 @@ end
 module ProconBypassMan
   VERSION: ::String
 end
+
+

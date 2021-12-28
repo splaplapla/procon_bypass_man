@@ -1,6 +1,8 @@
 class ProconBypassMan::OnMemoryCache
   class CacheValue
-    attr_accessor :expired_at, :value
+    # @param [Time]
+    attr_accessor :expired_at
+    attr_accessor :value
 
     def initialize(expired_at: , value: )
       self.expired_at = expired_at

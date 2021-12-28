@@ -1,0 +1,16 @@
+class ProconBypassMan::OnMemoryCache
+  class CacheValue
+    # @param [Time]
+    attr_accessor expired_at: Time
+
+    attr_accessor value: untyped
+
+    def initialize: (expired_at: Time, value: untyped) -> void
+  end
+
+  def initialize: () -> void
+
+  # @param [Integer] expires_in 秒数
+  # @param [String] key
+  def fetch: (key: string, expires_in: Time) { () -> untyped } -> untyped
+end
