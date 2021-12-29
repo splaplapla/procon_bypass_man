@@ -28,9 +28,7 @@
 
 target :lib do
   check 'lib/procon_bypass_man/timer.rb'
-  check 'lib/procon_bypass_man/uptime.rb'
   check 'lib/procon_bypass_man/configuration.rb'
-  check 'lib/procon_bypass_man/support/on_memory_cache'
   check 'lib/procon_bypass_man/processor'
   check 'lib/procon_bypass_man/procon/macro_registry'
   check 'lib/procon_bypass_man/procon/mode_registry'
@@ -38,8 +36,13 @@ target :lib do
   check 'lib/procon_bypass_man/domains'
   check 'lib/procon_bypass_man/support/report_http_client'
   check 'lib/procon_bypass_man/support/http_client'
-  check 'lib/procon_bypass_man/support/report_http_client'
   check 'lib/procon_bypass_man/support/send_device_stats_http_client'
+  check 'lib/procon_bypass_man/support/on_memory_cache'
+  check 'lib/procon_bypass_man/support/server_pool'
+  check 'lib/procon_bypass_man/support/uptime.rb'
+  check 'lib/procon_bypass_man/support/safe_timeout'
+  check 'lib/procon_bypass_man/support/update_remote_pbm_action_status_http_client'
+  check 'lib/procon_bypass_man/support/compress_array'
 
   signature 'sig'
 

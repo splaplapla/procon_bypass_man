@@ -54,3 +54,8 @@ module ProconBypassMan
     end
   end
 end
+
+
+if $0 == __FILE__
+  ProconBypassMan::CompressArray.new([''])
+end

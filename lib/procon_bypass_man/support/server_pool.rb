@@ -40,3 +40,7 @@ module ProconBypassMan
     end
   end
 end
+
+if $0 == __FILE__
+  ProconBypassMan::ServerPool.new(servers: ['http://example.com'])
+end
