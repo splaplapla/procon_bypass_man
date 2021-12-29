@@ -11,6 +11,7 @@ gem "pry"
 gem "timecop"
 gem "rubocop", require: false
 gem "steep", require: false
+gem 'typeprof', require: false
 gem 'rbs', require: false
 gem "sinatra", require: false
 gem "webrick", require: false

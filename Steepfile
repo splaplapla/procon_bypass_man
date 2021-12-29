@@ -36,10 +36,15 @@ target :lib do
   check 'lib/procon_bypass_man/procon/mode_registry'
   check 'lib/procon_bypass_man/domains/*'
   check 'lib/procon_bypass_man/domains'
+  check 'lib/procon_bypass_man/support/report_http_client'
+  check 'lib/procon_bypass_man/support/http_client'
+  check 'lib/procon_bypass_man/support/report_http_client'
+  check 'lib/procon_bypass_man/support/send_device_stats_http_client'
 
   signature 'sig'
 
   library 'time'
   library 'logger'
   library 'monitor'
+  library 'uri'
 end

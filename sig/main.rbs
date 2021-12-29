@@ -582,3 +582,46 @@ class ProconBypassMan::Domains::ProcessingProconBinary < ProconBypassMan::Domain
   # @param [Integer] cap
   def write_as_apply_left_analog_stick_cap: (cap: Integer cap) -> void
 end
+
+module ProconBypassMan
+  class HttpClient
+    @server_pool: untyped
+    @uri: ::URI
+    @retry_on_connection_error: false
+
+    def initialize: (path: String, server_pool: untyped, ?retry_on_connection_error: false) -> void
+    def get: -> nil
+    def post: (request_body: untyped) -> nil
+    def put: (request_body: untyped) -> nil
+
+    private
+    def process_response: (untyped response) -> untyped
+    def handle_request: { -> bot } -> nil
+
+    class HttpRequest
+      class Get
+        def self.request!: (uri: ::URI) -> untyped
+      end
+
+      class Post
+        def self.request!: (uri: ::URI, ?request_body: Hash[untyped, untyped]) -> untyped
+      end
+
+      class Put
+        def self.request!: (uri: ::URI, ?request_body: {hostname: String}) -> untyped
+      end
+    end
+  end
+end
+
+module ProconBypassMan
+  class SendDeviceStatsHttpClient
+    def post: (status: ::Symbol, pbm_session_id: String) -> untyped
+  end
+end
+
+module ProconBypassMan
+  class ReportHttpClient
+    def post: (body: Hash[untyped, untyped] | String, event_type: ::Symbol) -> untyped
+  end
+end

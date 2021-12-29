@@ -100,6 +100,8 @@ GEM
       unicode-display_width (>= 1.1.1, < 3)
     tilt (2.0.10)
     timecop (0.9.4)
+    typeprof (0.20.4)
+      rbs (>= 1.6.2)
     tzinfo (2.0.4)
       concurrent-ruby (~> 1.0)
     unicode-display_width (2.1.0)
@@ -131,6 +133,7 @@ DEPENDENCIES
   sinatra
   steep
   timecop
+  typeprof
   webrick
 
 BUNDLED WITH
