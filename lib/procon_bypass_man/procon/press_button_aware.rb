@@ -9,7 +9,7 @@ class ProconBypassMan::PressButtonAware
   # @return [Boolean]
   def pressing_button?(button)
     button_obj = ProconBypassMan::Procon::Button.new(button)
-    byte = @binary[button_obj.byte_position].unpack("H*").first.to_i(16).to_s(2).reverse
+    byte = @binary[button_obj.byte_position].unpack("C").first.to_s(2).reverse
     byte[button_obj.bit_position] == BIT_ON
   end
 end
