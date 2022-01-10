@@ -123,6 +123,22 @@ module ProconBypassMan
       def flip_buttons
         flips
       end
+
+      # @return [String]
+      def to_json
+        to_hash.to_json
+      end
+
+      # @return [Hash]
+      def to_hash
+        { mode: mode,
+          flips: flips,
+          macros: macros,
+          remaps: remaps,
+          disables: disables,
+          left_analog_stick_caps: left_analog_stick_caps,
+        }
+      end
     end
   end
 end
