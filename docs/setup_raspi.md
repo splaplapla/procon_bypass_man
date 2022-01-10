@@ -1,3 +1,5 @@
+https://github.com/splaplapla/procon_bypass_man/blob/master/docs/setup_raspi_by_mitamae.md に半自動化した手順があります
+
 # Raspberry Pi4のセットアップ手順
 * SDカードにRaspberry Pi OS (32-bit)を焼く
 * SDカードをRaspberry Pi4本体に挿して起動する
