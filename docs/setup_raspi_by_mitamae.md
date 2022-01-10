@@ -1,3 +1,5 @@
+セットアップ手順を半自動化にしました
+
 # Raspberry Pi4のセットアップ手順 With mitamae
 * SDカードにRaspberry Pi OS lite (32-bit)を焼く
     * sshをできる状態で焼いておく
