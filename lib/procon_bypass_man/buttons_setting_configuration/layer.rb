@@ -125,7 +125,7 @@ module ProconBypassMan
       end
 
       # @return [String]
-      def to_json
+      def to_json(*)
         to_hash.to_json
       end
 
