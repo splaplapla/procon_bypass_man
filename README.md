@@ -28,7 +28,7 @@ Switch <-- (PBM): ZR連打
 ## Usage
 * USBガジェットモードで起動するRaspberry Pi4を用意する
   * https://github.com/splaplapla/procon_bypass_man/blob/master/docs/setup_raspi.md
-* Raspberry Pi4 で sudo pbmenv install latest && cd /usr/share/pbm/current && sudo ruby app.rb
+* Raspberry Pi4 で sudo [pbmenv](https://github.com/splaplapla/pbmenv) install latest && cd /usr/share/pbm/current && sudo ruby app.rb
   * 動いたのを確認したらserviceとして登録にするなどしてください
     * [serviceとして登録する方法](https://github.com/splaplapla/procon_bypass_man/tree/master/project_template#systemd%E3%82%92%E4%BD%BF%E3%81%A3%E3%81%A6%E3%82%B5%E3%83%BC%E3%83%93%E3%82%B9%E3%81%AB%E7%99%BB%E9%8C%B2%E3%81%99%E3%82%8B%E6%96%B9%E6%B3%95)
 
