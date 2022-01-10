@@ -102,12 +102,12 @@ class ProconBypassMan::Procon
       user_operation.unpress_button(button)
     end
 
-    current_layer.left_analog_stick_caps.each do |buttons, options|
-      if buttons.nil? || user_operation.pressing_all_buttons?(buttons)
-        options[:force_neutral]&.each do |force_neutral_button|
+    current_layer.left_analog_stick_caps.each do |config|
+      if config[:if_pressed].nil? || user_operation.pressing_all_buttons?(config[:if_pressed])
+        config[:force_neutral]&.each do |force_neutral_button|
           user_operation.unpress_button(force_neutral_button)
         end
-        user_operation.apply_left_analog_stick_cap(cap: options[:cap])
+        user_operation.apply_left_analog_stick_cap(cap: config[:cap])
       end
     end
 

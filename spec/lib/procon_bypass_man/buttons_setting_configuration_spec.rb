@@ -41,9 +41,9 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
           end
           it do
             ProconBypassMan::ButtonsSettingConfiguration::Loader.load(setting_path: setting.path)
-            expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].left_analog_stick_caps[[:a]]).to eq(
-              {:cap=>1000, :force_neutral=> [:a] }
-            )
+            expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].left_analog_stick_caps).to eq([
+              {:cap=>1000, :force_neutral=> [:a], if_pressed: [:a] }
+            ])
           end
         end
         context 'provide array' do
@@ -59,10 +59,9 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
           end
           it do
             ProconBypassMan::ButtonsSettingConfiguration::Loader.load(setting_path: setting.path)
-            expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].left_analog_stick_caps.keys).to eq([[:a]])
-            expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].left_analog_stick_caps[[:a]]).to eq(
-              {:cap=>1000}
-            )
+            expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].left_analog_stick_caps).to eq([
+              {:cap=>1000, if_pressed: [:a], }
+            ])
           end
         end
         context 'provide a button' do
@@ -78,7 +77,7 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
           end
           it do
             ProconBypassMan::ButtonsSettingConfiguration::Loader.load(setting_path: setting.path)
-            expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].left_analog_stick_caps.keys).to eq([[:a]])
+            expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].left_analog_stick_caps).to eq([{:cap=>1000, :if_pressed=>[:a]}])
           end
         end
         context 'provide a nil' do
@@ -94,7 +93,7 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
           end
           it do
             ProconBypassMan::ButtonsSettingConfiguration::Loader.load(setting_path: setting.path)
-            expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].left_analog_stick_caps.keys).to eq([nil])
+            expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].left_analog_stick_caps).to eq([{:cap=>1000}])
           end
         end
         context 'do not provide' do
@@ -110,7 +109,9 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
           end
           it do
             ProconBypassMan::ButtonsSettingConfiguration::Loader.load(setting_path: setting.path)
-            expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].left_analog_stick_caps.keys).to eq([nil])
+            expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].left_analog_stick_caps).to eq([
+              cap: 1000
+            ])
           end
         end
       end

@@ -8,7 +8,7 @@ module ProconBypassMan
         self.flips = {}
         self.macros = {}
         self.remaps = {}
-        self.left_analog_stick_caps = {}
+        self.left_analog_stick_caps = []
         self.disables = []
       end
 
@@ -84,6 +84,10 @@ module ProconBypassMan
           raise "not support value"
         end
 
+        if if_pressed
+          hash[:if_pressed] = if_pressed
+        end
+
         case force_neutral
         when TrueClass
           raise "ボタンを渡してください"
@@ -97,7 +101,7 @@ module ProconBypassMan
           raise "not support value"
         end
 
-        left_analog_stick_caps[if_pressed] = hash
+        left_analog_stick_caps << hash
       end
 
       def disable(button)
