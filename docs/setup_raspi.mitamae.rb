@@ -4,10 +4,6 @@ package 'rbenv' do
   action :install
 end
 
-package 'ruby-build' do
-  action :install
-end
-
 package 'vim' do
   action :install
 end
@@ -48,7 +44,11 @@ end
 # ruby
 execute "Install ruby" do
   not_if "rbenv versions | grep 3.0.1"
-  command "rbenv install 3.0.1"
+  command <<~EOH
+    mkdir -p "$(rbenv root)"/plugins
+    git clone https://github.com/rbenv/ruby-build.git "$(rbenv root)"/plugins/ruby-build
+    rbenv install 3.0.1"
+  EOH
 end
 
 run_command 'sudo systemctl disable triggerhappy.socket'
