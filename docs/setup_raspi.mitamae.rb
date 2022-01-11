@@ -47,7 +47,7 @@ execute "Install ruby" do
   command <<~EOH
     mkdir -p "$(rbenv root)"/plugins
     git clone https://github.com/rbenv/ruby-build.git "$(rbenv root)"/plugins/ruby-build
-    rbenv install 3.0.1"
+    rbenv install 3.0.1
   EOH
 end
 
