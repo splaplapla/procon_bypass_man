@@ -43,6 +43,7 @@ end
 
 # ruby
 execute "Install ruby" do
+  user "pi"
   not_if "rbenv versions | grep 3.0.1"
   command <<~EOH
     mkdir -p "$(rbenv root)"/plugins
