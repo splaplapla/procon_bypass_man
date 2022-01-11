@@ -46,7 +46,7 @@ execute "Install ruby" do
   not_if "rbenv versions | grep 3.0.1"
   command <<~EOH
     mkdir -p "$(rbenv root)"/plugins
-    git clone https://github.com/rbenv/ruby-build.git "$(rbenv root)"/plugins/ruby-build
+    git clone https://github.com/rbenv/ruby-build.git --depth 1 "$(rbenv root)"/plugins/ruby-build
     rbenv install 3.0.1
   EOH
 end
