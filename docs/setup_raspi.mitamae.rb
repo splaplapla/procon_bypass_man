@@ -1,6 +1,6 @@
 run_command "apt-get update"
 
-package 'ruby' do
+package 'rbenv' do
   action :install
 end
 
@@ -39,14 +39,6 @@ execute "Initialize PBM" do
     wget https://gist.githubusercontent.com/jiikko/3f9fb3194c0cc7685e31fbfcb5b5f9ff/raw/23ddee29d94350be80b79d290ac3c8ce8400bd88/add_procon_gadget.sh -O /usr/share/pbm/shared/add_procon_gadget.sh
     chmod +x /usr/share/pbm/shared/add_procon_gadget.sh
  SHELL
-end
-
-# rbenv
-execute "Install rbenv" do
-  not_if "which rbenv"
-  command <<~EOH
-    git clone https://github.com/rbenv/ruby-build.git /home/pi/.rbenv/plugins/ruby-build
-  EOH
 end
 
 # ruby
