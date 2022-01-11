@@ -45,7 +45,7 @@ end
 execute "Install rbenv" do
   not_if "which rbenv"
   command <<~EOH
-    git clone https://github.com/rbenv/ruby-build.git "$(rbenv root)"/plugins/ruby-build
+    git clone https://github.com/rbenv/ruby-build.git /home/pi/.rbenv/plugins/ruby-build
   EOH
 end
 
