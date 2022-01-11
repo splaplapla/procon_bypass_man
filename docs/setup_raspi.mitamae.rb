@@ -1,6 +1,6 @@
 run_command "apt-get update"
 
-package 'ruby' do
+package 'rbenv' do
   action :install
 end
 
@@ -41,16 +41,15 @@ execute "Initialize PBM" do
  SHELL
 end
 
-# rbenv
-execute "Install rbenv" do
-  not_if "which rbenv"
-  command "git clone https://github.com/rbenv/ruby-build.git "$(rbenv root)"/plugins/ruby-build"
-end
-
 # ruby
 execute "Install ruby" do
+  user "pi"
   not_if "rbenv versions | grep 3.0.1"
-  command "rbenv install 3.0.1"
+  command <<~EOH
+    mkdir -p "$(rbenv root)"/plugins
+    git clone https://github.com/rbenv/ruby-build.git --depth 1 "$(rbenv root)"/plugins/ruby-build
+    rbenv install 3.0.1
+  EOH
 end
 
 run_command 'sudo systemctl disable triggerhappy.socket'
