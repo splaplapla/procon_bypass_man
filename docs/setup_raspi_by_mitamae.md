@@ -15,7 +15,7 @@
 * sudo gem i pbmenv
 * sudo pbmenv install latest
 
-## テスト方法
+## 上記手順の動作確認方法
 * 使えそうなイメージ
   * navikey/raspbian-bullseye
   * balenalib/raspberry-pi
