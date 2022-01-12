@@ -21,7 +21,7 @@
       <td>No</td>
     </tr>
     <tr>
-      <td><code>prefix_keys_for_changing_layer</code></td>
+      <td>prefix_keys_for_changing_layer</td>
       <td>ボタンの配列</td>
       <td>なし</td>
       <td>Yes</td>
@@ -31,5 +31,35 @@
       <td>direction, mode</td>
       <td>なし</td>
       <td>Yes</td>
+    </tr>
+</table>
+
+## レイヤーレベル
+
+<table>
+  <tr>
+    <th>名前</th>
+    <th>引数</th>
+    <th>必須</th>
+  </tr>
+    <tr>
+      <td>flip</td>
+      <td>対象のボタン, if_pressed, force_neutral</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>macro</td>
+      <td>プラグインのクラス, if_pressed</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>open_macro</td>
+      <td>対象のボタン, if_pressed</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>remap</td>
+      <td>対象のボタン, to</td>
+      <td>No</td>
     </tr>
 </table>
