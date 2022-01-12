@@ -30,9 +30,10 @@ Switch <-- (PBM): ZR連打
   * https://github.com/splaplapla/procon_bypass_man/blob/master/docs/setup_raspi.md
 * Raspberry Pi4 でprocon_bypass_manを実行するための準備
   * rubyのインストール
+    * sudo apt-get install rbenv
     * git clone https://github.com/rbenv/ruby-build.git "$(rbenv root)"/plugins/ruby-build
     * rbenv install 3.0.1
-  * gem install pbmenv
+  * sudo gem install pbmenv
   * sudo [pbmenv](https://github.com/splaplapla/pbmenv) install latest
 * Raspberry Pi4 でprocon_bypass_manを実行する
   * cd /usr/share/pbm/current
