@@ -28,7 +28,10 @@ class ProconBypassMan::Procon::MacroRegistry
     if plugins[klass.to_s.to_sym]
       raise "#{klass} macro is already registered"
     end
-    plugins[klass.to_s.to_sym] = ->{ steps || klass.steps }
+
+    plugins[klass.to_s.to_sym] = ->{
+      ProconBypassMan::Procon::ButtonCollection.normalize(steps || klass.steps)
+    }
   end
 
   def self.load(name)

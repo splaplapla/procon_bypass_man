@@ -444,7 +444,7 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
         ProconBypassMan.buttons_setting_configure do
           layer :up do
             open_macro "SaiHuu", steps: [:x, :y], if_pressed: [:x]
-            open_macro "SpecialCommand", steps: [:up, :down], if_pressed: [:y]
+            open_macro "SpecialCommand", steps: [:up, :down, :g], if_pressed: [:y]
           end
         end
         expect(ProconBypassMan::Procon::MacroRegistry.plugins[:SaiHuu].call).to eq([:x, :y])
