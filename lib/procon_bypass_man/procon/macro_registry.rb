@@ -24,11 +24,11 @@ class ProconBypassMan::Procon::MacroRegistry
     null: [],
   }
 
-  def self.install_plugin(klass)
+  def self.install_plugin(klass, steps: nil)
     if plugins[klass.to_s.to_sym]
       raise "#{klass} macro is already registered"
     end
-    plugins[klass.to_s.to_sym] = ->{ klass.steps }
+    plugins[klass.to_s.to_sym] = ->{ steps || klass.steps }
   end
 
   def self.load(name)

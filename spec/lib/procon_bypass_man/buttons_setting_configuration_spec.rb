@@ -439,6 +439,21 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
         )
       end
     end
+    context 'open macro' do
+      it do
+        ProconBypassMan.buttons_setting_configure do
+          layer :up do
+            open_macro "SaiHuu", steps: [:x, :y], if_pressed: [:x]
+            open_macro "SpecialCommand", steps: [:up, :down], if_pressed: [:y]
+          end
+        end
+        expect(ProconBypassMan::Procon::MacroRegistry.plugins[:SaiHuu].call).to eq([:x, :y])
+        expect(ProconBypassMan::Procon::MacroRegistry.plugins[:SpecialCommand].call).to eq([:up, :down])
+        expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].macros).to eq(
+          {"SaiHuu"=>{:if_pressed=>[:x]}, "SpecialCommand"=>{:if_pressed=>[:y]}}
+        )
+      end
+    end
     context 'with install mode plugin' do
       it do
         class AModePlugin

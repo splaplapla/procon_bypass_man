@@ -53,8 +53,18 @@ module ProconBypassMan
         self.flips[button] = hash
       end
 
+      # @param [String, Class] プラグインのclass
       def macro(name, if_pressed: )
         macro_name = name.to_s.to_sym
+        self.macros[macro_name] = { if_pressed: if_pressed }
+      end
+
+      # 設定ファイルに直接マクロを打ち込める
+      # @param [String, Class] macroの識別子
+      # @paramh[Array<Symbol>] macroの本体. ボタンの配列
+      def open_macro(name, steps: , if_pressed: )
+        macro_name = name || "OpenMacro-#{steps.join}".to_sym
+        ProconBypassMan::Procon::MacroRegistry.install_plugin(macro_name, steps: steps)
         self.macros[macro_name] = { if_pressed: if_pressed }
       end
 
