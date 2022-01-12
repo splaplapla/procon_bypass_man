@@ -1,4 +1,4 @@
-# 設定ファイルのドキュメント
+# 設定ファイルの仕様
 ## トップレベル
 
 <table>
@@ -10,13 +10,13 @@
   </tr>
     <tr>
       <td>install_macro_plugin</td>
-      <td>なし</td>
+      <td>プラグインの名前</td>
       <td>なし</td>
       <td>No</td>
     </tr>
     <tr>
       <td>install_mode_plugin</td>
-      <td>なし</td>
+      <td>プラグインの名前</td>
       <td>なし</td>
       <td>No</td>
     </tr>
@@ -28,7 +28,7 @@
     </tr>
     <tr>
       <td>layer</td>
-      <td>direction, mode</td>
+      <td>direction(up, down, left, right), mode</td>
       <td>なし</td>
       <td>Yes</td>
     </tr>
