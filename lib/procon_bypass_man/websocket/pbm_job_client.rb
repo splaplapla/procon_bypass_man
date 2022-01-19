@@ -44,6 +44,8 @@ module ProconBypassMan
           }
           client.errored { |msg|  puts :errored; puts msg }
           client.pinged { |msg|
+            client.perform('pong', { device_id: ProconBypassMan.device_id, message: 'hello from amc' })
+
             ProconBypassMan.cache.fetch key: 'ws_pinged', expires_in: 10 do
               ProconBypassMan.logger.info(msg)
             end
