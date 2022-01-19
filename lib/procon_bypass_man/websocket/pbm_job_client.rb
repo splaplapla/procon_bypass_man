@@ -32,7 +32,7 @@ module ProconBypassMan
           }
 
           client.received do |data|
-            validate_and_run(data: data)
+            dispatch(data: data)
           rescue => e
             ProconBypassMan::SendErrorCommand.execute(error: e)
           end
@@ -44,8 +44,6 @@ module ProconBypassMan
           }
           client.errored { |msg|  puts :errored; puts msg }
           client.pinged { |msg|
-            client.perform('pong', { device_id: ProconBypassMan.device_id, message: 'hello from amc' })
-
             ProconBypassMan.cache.fetch key: 'ws_pinged', expires_in: 10 do
               ProconBypassMan.logger.info(msg)
             end
@@ -75,6 +73,15 @@ module ProconBypassMan
           uuid: pbm_job_object.uuid,
           job_args: pbm_job_object.job_args
         )
+      end
+
+      def self.dispatch(data: data)
+        pbm_job_hash = data.dig("message")
+        if pbm_job_hash[:action] == "ping"
+          client.perform('pong', { device_id: ProconBypassMan.device_id, message: 'hello from pbm' })
+        else
+          validate_and_run(data: data)
+        end
       end
     end
   end
