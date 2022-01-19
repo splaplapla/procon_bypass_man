@@ -34,7 +34,7 @@ module ProconBypassMan
           client.received do |data|
             ProconBypassMan.logger.info(data)
 
-            dispatch(data: data)
+            dispatch(data: data, client: client)
           rescue => e
             ProconBypassMan::SendErrorCommand.execute(error: e)
           end
@@ -54,7 +54,7 @@ module ProconBypassMan
       end
 
       # @param [Hash] data
-      def self.dispatch(data: )
+      def self.dispatch(data: , client: )
         pbm_job_hash = data.dig("message")
         if pbm_job_hash['action'] == "ping"
           client.perform('pong', { device_id: ProconBypassMan.device_id, message: 'hello from pbm' })
