@@ -32,7 +32,7 @@ module ProconBypassMan
           }
 
           client.received do |data|
-            ProconBypassMan.logger.debug { data }
+            puts data
 
             dispatch(data: data)
           rescue => e
