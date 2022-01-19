@@ -75,7 +75,7 @@ module ProconBypassMan
         )
       end
 
-      def self.dispatch(data: data)
+      def self.dispatch(data: )
         pbm_job_hash = data.dig("message")
         if pbm_job_hash[:action] == "ping"
           client.perform('pong', { device_id: ProconBypassMan.device_id, message: 'hello from pbm' })
