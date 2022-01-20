@@ -107,6 +107,6 @@ sudo kill -USR2 `cat ./pbm_pid`
 
 The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
 
-
 ## Links
 * https://discord.gg/bEcRNKf4ep
+  * 質問などご意見をdiscordでも受け付けています
