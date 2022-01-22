@@ -1,6 +1,4 @@
 # 左アナログスティック感度調整の設定方法
-<iframe width="560" height="315" src="https://www.youtube.com/embed/AIaKRBZEkCY" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-
 * procon_bypass_man: 0.1.9以上が必要です
 * PBMには、左アナログスティックの入力の最大値を書き換える機能があります。それをsetting.ymlに書く方法を説明します
 * これを使うと、特定のボタンを押している間は、スティックを完全に倒している状態で、スプラトゥーンでいうところの `スニーキング` で移動ができるようになります
