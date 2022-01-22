@@ -58,4 +58,16 @@ describe ProconBypassMan::Configuration do
       end
     end
   end
+
+  describe '#enable_reporting_pressed_buttons' do
+    let(:config) { described_class.new }
+    it 'default false' do
+      expect(config.enable_reporting_pressed_buttons).to eq(false)
+    end
+
+    it do
+      config.enable_reporting_pressed_buttons = true
+      expect(config.enable_reporting_pressed_buttons).to eq(true)
+    end
+  end
 end

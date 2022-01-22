@@ -64,6 +64,8 @@ Switch <-- (PBM): ZR連打
     * マクロは特定のキーを順番に入れていく機能。キーの入力が終わったらマクロは終了する
 * レイヤーとは？
     * 自作キーボードみたいな感じでレイヤー毎に設定内容を記述して切り替えれる
+* レイヤーを切り替える方法は？
+    * 設定ファイルに記述している `prefix_keys_for_changing_layer`の後ろにあるキーを同時押しながら、十字キーのどれかを押すことで任意のレイヤーに切り替わります
 * このツールでできることは？
     * キーリマップ, 連射, マクロ, 特定の同じ操作の繰り返し(mode)
         * リマップは1つのキーを別のキーに割り当てます
@@ -72,6 +74,10 @@ Switch <-- (PBM): ZR連打
     * 操作するdeviceファイルの所有者がrootだから
 * 市販されているサードパーティ製連射機との違いは？
     * サードパーティ製のコントローラーは、設定方法や形状が特殊で買い換えるたびに学習・設定コストが発生します。本ツールを使えば、設定内容はテキストで管理することができ、使い慣れたプロコンで同等のことができます。
+* sshなしで運用は可能ですか？
+    * 後述するWEBアプリケーションを使えば、sshを使わずに運用が可能です
+        * https://github.com/splaplapla/procon_bypass_man_cloud
+    * 機能開発中ですが、使ってくれる人を探しているのでdiscordからお問合せください
 
 ## TODO
 * レコーディング機能(プロコンの入力をマクロとして登録ができる)
@@ -100,6 +106,6 @@ sudo kill -USR2 `cat ./pbm_pid`
 
 The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
 
-
 ## Links
 * https://discord.gg/bEcRNKf4ep
+  * 質問などご意見をdiscordでも受け付けています
