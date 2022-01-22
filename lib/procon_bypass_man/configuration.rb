@@ -41,7 +41,7 @@ class ProconBypassMan::Configuration
   end
 
   attr_accessor :enable_critical_error_logging
-  attr_writer :verbose_bypass_log, :raw_setting
+  attr_writer :verbose_bypass_log, :raw_setting, :enable_reporting_pressed_buttons
 
   def root=(path)
     @root = path
@@ -153,5 +153,9 @@ class ProconBypassMan::Configuration
 
   def raw_setting
     @raw_setting ||= {}
+  end
+
+  def enable_reporting_pressed_buttons
+    @enable_reporting_pressed_buttons ||= false
   end
 end
