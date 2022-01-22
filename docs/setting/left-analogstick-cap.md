@@ -1,5 +1,5 @@
 # 左アナログスティック感度調整の設定方法
-<iframe width="560" height="315" src="https://www.youtube.com/embed/AIaKRBZEkCY" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+https://user-images.githubusercontent.com/1664497/150636857-f3d40900-2713-41b8-856a-279c200d9ae7.mp4
 
 * procon_bypass_man: 0.1.9以上が必要です
 * PBMには、左アナログスティックの入力の最大値を書き換える機能があります。それをsetting.ymlに書く方法を説明します
