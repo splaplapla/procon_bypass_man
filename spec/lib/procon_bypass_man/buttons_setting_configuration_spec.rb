@@ -41,9 +41,9 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
           end
           it do
             ProconBypassMan::ButtonsSettingConfiguration::Loader.load(setting_path: setting.path)
-            expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].left_analog_stick_caps[[:a]]).to eq(
-              {:cap=>1000, :force_neutral=> [:a] }
-            )
+            expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].left_analog_stick_caps).to eq([
+              {:cap=>1000, :force_neutral=> [:a], if_pressed: [:a] }
+            ])
           end
         end
         context 'provide array' do
@@ -59,10 +59,9 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
           end
           it do
             ProconBypassMan::ButtonsSettingConfiguration::Loader.load(setting_path: setting.path)
-            expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].left_analog_stick_caps.keys).to eq([[:a]])
-            expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].left_analog_stick_caps[[:a]]).to eq(
-              {:cap=>1000}
-            )
+            expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].left_analog_stick_caps).to eq([
+              {:cap=>1000, if_pressed: [:a], }
+            ])
           end
         end
         context 'provide a button' do
@@ -78,7 +77,7 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
           end
           it do
             ProconBypassMan::ButtonsSettingConfiguration::Loader.load(setting_path: setting.path)
-            expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].left_analog_stick_caps.keys).to eq([[:a]])
+            expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].left_analog_stick_caps).to eq([{:cap=>1000, :if_pressed=>[:a]}])
           end
         end
         context 'provide a nil' do
@@ -94,7 +93,7 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
           end
           it do
             ProconBypassMan::ButtonsSettingConfiguration::Loader.load(setting_path: setting.path)
-            expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].left_analog_stick_caps.keys).to eq([nil])
+            expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].left_analog_stick_caps).to eq([{:cap=>1000}])
           end
         end
         context 'do not provide' do
@@ -110,7 +109,9 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
           end
           it do
             ProconBypassMan::ButtonsSettingConfiguration::Loader.load(setting_path: setting.path)
-            expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].left_analog_stick_caps.keys).to eq([nil])
+            expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].left_analog_stick_caps).to eq([
+              cap: 1000
+            ])
           end
         end
       end
@@ -287,6 +288,40 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
         end
       end
 
+      context '2回instance_evalで読み込むとき' do
+        it do
+          c = <<~EOH
+            fast_return = ProconBypassMan::Plugin::Splatoon2::Macro::FastReturn
+            install_macro_plugin fast_return
+
+            prefix_keys_for_changing_layer [:a]
+            layer :up do
+              flip :b, if_pressed: :b
+            end
+          EOH
+
+          ProconBypassMan::ButtonsSettingConfiguration.new.instance_eval(c)
+          expect { ProconBypassMan::ButtonsSettingConfiguration.new.instance_eval(c) }.not_to raise_error
+        end
+      end
+
+      context '未定義の定数をinstance_evalで読み込むとき' do
+        it do
+          c = <<~EOH
+            fast_fujinken = ProconBypassMan::Plugin::SmashBrothers::Macro::FastFujinken
+            install_macro_plugin fast_fujinken
+
+            prefix_keys_for_changing_layer [:a]
+            layer :up do
+              flip :b, if_pressed: :b
+              macro fast_fujinken, if_pressed: [:a, :y]
+            end
+          EOH
+
+          ProconBypassMan::ButtonsSettingConfiguration.new.instance_eval(c)
+        end
+      end
+
       context '2回loadするとき' do
         class ::AMacroPlugin
           def self.name; :the_macro; end
@@ -380,7 +415,8 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
             macro :the_macro, if_pressed: [:a, :y]
           end
         end
-        expect(ProconBypassMan::Procon::MacroRegistry.plugins).to eq(the_macro: [:a, :b])
+        expect(ProconBypassMan::Procon::MacroRegistry.plugins.keys).to eq([:AMacroPlugin])
+        expect(ProconBypassMan::Procon::MacroRegistry.plugins[:AMacroPlugin].call).to eq([:a, :b])
         expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].macros).to eq(
           {:the_macro=>{:if_pressed=>[:a, :y]}}
         )
@@ -396,9 +432,25 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
             macro AMacroPlugin, if_pressed: [:a, :y]
           end
         end
-        expect(ProconBypassMan::Procon::MacroRegistry.plugins).to eq(the_macro: [:a, :b])
+        expect(ProconBypassMan::Procon::MacroRegistry.plugins.keys).to eq([:AMacroPlugin])
+        expect(ProconBypassMan::Procon::MacroRegistry.plugins[:AMacroPlugin].call).to eq([:a, :b])
         expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].macros).to eq(
-          {:the_macro=>{:if_pressed=>[:a, :y]}}
+          {:AMacroPlugin=>{:if_pressed=>[:a, :y]}}
+        )
+      end
+    end
+    context 'open macro' do
+      it do
+        ProconBypassMan.buttons_setting_configure do
+          layer :up do
+            open_macro "SaiHuu", steps: [:x, :y], if_pressed: [:x]
+            open_macro "SpecialCommand", steps: [:up, :down, :g], if_pressed: [:y]
+          end
+        end
+        expect(ProconBypassMan::Procon::MacroRegistry.plugins[:SaiHuu].call).to eq([:x, :y])
+        expect(ProconBypassMan::Procon::MacroRegistry.plugins[:SpecialCommand].call).to eq([:up, :down])
+        expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].macros).to eq(
+          {"SaiHuu"=>{:if_pressed=>[:x]}, "SpecialCommand"=>{:if_pressed=>[:y]}}
         )
       end
     end
@@ -410,9 +462,10 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
         end
         ProconBypassMan.buttons_setting_configure do
           install_mode_plugin(AModePlugin)
-          layer :up, mode: AModePlugin.name
+          layer :up, mode: AModePlugin
         end
-        expect(ProconBypassMan::Procon::ModeRegistry.plugins).to eq(foo: ['a'])
+        expect(ProconBypassMan::Procon::ModeRegistry.plugins.keys).to eq([:AModePlugin])
+        expect(ProconBypassMan::Procon::ModeRegistry.plugins[:AModePlugin].call).to eq(['a'])
       end
     end
 
@@ -468,10 +521,10 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
             flip :l, if_pressed: true
             flip :r
           end
-          layer :down, mode: :manual do
+          layer :down, mode: AModePlugin do
             flip :r, if_pressed: [:zr, :zl]
           end
-          layer :right, mode: AModePlugin.name
+          layer :right, mode: AModePlugin
           layer :left
         end
         expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].flip_buttons[:l]).to eq(if_pressed: [:l])
@@ -480,9 +533,9 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
         expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].mode).to eq(:manual)
         expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:down].flip_buttons.keys).to eq([:r])
         expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:down].flip_buttons[:r]).to eq(if_pressed: [:zr, :zl])
-        expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:down].mode).to eq(:manual)
+        expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:down].mode).to eq(:AModePlugin)
         expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:right].flip_buttons.keys).to eq([])
-        expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:right].mode).to eq(:foo)
+        expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:right].mode).to eq(:AModePlugin)
         expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:left].flip_buttons.keys).to eq([])
         expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:left].mode).to eq(:manual)
       end
@@ -549,6 +602,54 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
   end
 
   describe 'validations' do
+    context '未定義のmacro定数をinstance_evalで読み込むとき' do
+      it do
+        c = <<~EOH
+            fast_fujinken = ProconBypassMan::Plugin::SmashBrothers::Macro::FastFujinken
+            fast_return = ProconBypassMan::Plugin::Splatoon2::Macro::FastReturn
+
+            install_macro_plugin fast_fujinken
+            install_macro_plugin fast_return
+
+            prefix_keys_for_changing_layer [:a]
+            layer :up do
+              flip :b, if_pressed: :b
+              macro fast_fujinken, if_pressed: [:a, :y]
+            end
+        EOH
+
+        ProconBypassMan::ButtonsSettingConfiguration.new.instance_eval(c)
+        validator = ProconBypassMan::ButtonsSettingConfiguration::Validator.new(
+          ProconBypassMan::ButtonsSettingConfiguration.instance
+        )
+        expect(validator.valid?).to eq(false)
+        expect(validator.errors).to eq(:macro=>["マクロ ProconBypassMan::Plugin::SmashBrothers::Macro::FastFujinkenを読み込めませんでした。"])
+      end
+    end
+
+    context '未定義のmode定数をinstance_evalで読み込むとき' do
+      it do
+        c = <<~EOH
+            eternal_jump = ProconBypassMan::Plugin::SmashBrothers::Mode::EternalJump
+            guruguru = ProconBypassMan::Plugin::Splatoon2::Mode::Guruguru
+
+            install_mode_plugin eternal_jump
+            install_mode_plugin guruguru
+
+            prefix_keys_for_changing_layer [:a]
+            layer :up, mode: eternal_jump do
+            end
+        EOH
+
+        ProconBypassMan::ButtonsSettingConfiguration.new.instance_eval(c)
+        validator = ProconBypassMan::ButtonsSettingConfiguration::Validator.new(
+          ProconBypassMan::ButtonsSettingConfiguration.instance
+        )
+        expect(validator.valid?).to eq(false)
+        expect(validator.errors).to eq(:mode=>["モード ProconBypassMan::Plugin::SmashBrothers::Mode::EternalJumpを読み込めませんでした。"])
+      end
+    end
+
     context '同じレイヤーで同じボタンへの設定をしているとき' do
       it do
         expect {
@@ -566,6 +667,7 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
         expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].flips).to eq(:zr=>{:if_pressed=>[:x]})
       end
     end
+
     context '同じレイヤーで1つのボタンへのflipとremapを設定をしているとき' do
       it do
         ProconBypassMan.buttons_setting_configure do
@@ -585,6 +687,7 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
         expect(validator.errors).to eq({:layers=>["レイヤーupで、連打とリマップの定義が重複しているボタンzrがあります"]})
       end
     end
+
     context 'modeを設定しているのにブロックを渡しているとき' do
       it do
         class AModePlugin

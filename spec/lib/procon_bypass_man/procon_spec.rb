@@ -104,7 +104,7 @@ describe ProconBypassMan::Procon do
           flip :down, if_pressed: :down
           macro :fast_return, if_pressed: [:y, :b, :down]
         end
-        layer :right, mode: G.name
+        layer :right, mode: G
       end
       %w(
         306791c080c4c877734558740aed017b03b20f84fff8fff8ffee01a203990f9cfffffffcffed01c1038c0fb8ff04000100000000000000000000000000000000
@@ -123,7 +123,7 @@ describe ProconBypassMan::Procon do
       ProconBypassMan.buttons_setting_configure do
         install_mode_plugin(plugin)
         prefix_keys_for_changing_layer [:zr]
-        layer :up, mode: plugin.name
+        layer :up, mode: plugin
       end
       procon = ProconBypassMan::Procon.new(binary)
       procon.apply!
@@ -150,7 +150,7 @@ describe ProconBypassMan::Procon do
         layer :up do
           flip :down, if_pressed: :down
         end
-        layer :right, mode: plugin.name
+        layer :right, mode: plugin
       end
       %w[
         30da81808000c2a77244f875099af35dfe0d0b7f00fefd250006f4cefee50b600021fe3e0071f4e9fe090c59002dfe4100000000000000000000000000000000
@@ -181,7 +181,7 @@ describe ProconBypassMan::Procon do
           install_macro_plugin FastReturn
           prefix_keys_for_changing_layer [:zr]
           layer :up do
-            macro :fast_return, if_pressed: [:y, :b]
+            macro FastReturn, if_pressed: [:y, :b]
           end
         end
       end
@@ -286,7 +286,7 @@ describe ProconBypassMan::Procon do
           flip :a
           flip :zl, if_pressed: [:y, :b]
         end
-        layer :right, mode: :foo
+        layer :right, mode: AModePlugin
         layer :left do
         end
         layer :down do
@@ -310,7 +310,7 @@ describe ProconBypassMan::Procon do
           procon.apply! # change layer
 
           expect(procon.current_layer_key).to eq(:right)
-          expect(procon.current_layer.mode).to eq(:foo)
+          expect(procon.current_layer.mode).to eq(:AModePlugin)
           expect(procon.pressed_a?).to eq(false)
           expect(procon.pressed_b?).to eq(false)
           expect(procon.pressed_y?).to eq(false)

@@ -32,7 +32,9 @@ module ProconBypassMan
           }
 
           client.received do |data|
-            validate_and_run(data: data)
+            ProconBypassMan.logger.info(data)
+
+            dispatch(data: data, client: client)
           rescue => e
             ProconBypassMan::SendErrorCommand.execute(error: e)
           end
@@ -51,11 +53,20 @@ module ProconBypassMan
         end
       end
 
+      # @param [Hash] data
+      def self.dispatch(data: , client: )
+        pbm_job_hash = data.dig("message")
+        if pbm_job_hash['action'] == "ping"
+          client.perform('pong', { device_id: ProconBypassMan.device_id, message: 'hello from pbm' })
+        else
+          validate_and_run(data: data)
+        end
+      end
+
       # @raise [ProconBypassMan::RemotePbmActionObject::ValidationError]
       # @param [Hash] data
       # @return [Void]
       def self.validate_and_run(data: )
-        ProconBypassMan.logger.debug { data }
         pbm_job_hash = data.dig("message")
         begin
           pbm_job_object = ProconBypassMan::RemotePbmActionObject.new(action: pbm_job_hash["action"],

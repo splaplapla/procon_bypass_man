@@ -100,3 +100,7 @@ module ProconBypassMan
     end
   end
 end
+
+if $0 == __FILE__
+  ProconBypassMan::HttpClient.new(path: '/', server_pool: nil, retry_on_connection_error: false).get(response_body: '')
+end

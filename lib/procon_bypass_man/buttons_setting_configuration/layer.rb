@@ -8,7 +8,7 @@ module ProconBypassMan
         self.flips = {}
         self.macros = {}
         self.remaps = {}
-        self.left_analog_stick_caps = {}
+        self.left_analog_stick_caps = []
         self.disables = []
       end
 
@@ -53,12 +53,18 @@ module ProconBypassMan
         self.flips[button] = hash
       end
 
+      # @param [String, Class] プラグインのclass
       def macro(name, if_pressed: )
-        if name.respond_to?(:name)
-          macro_name = name.name.to_sym
-        else
-          macro_name = name
-        end
+        macro_name = name.to_s.to_sym
+        self.macros[macro_name] = { if_pressed: if_pressed }
+      end
+
+      # 設定ファイルに直接マクロを打ち込める
+      # @param [String, Class] macroの識別子
+      # @paramh[Array<Symbol>] macroの本体. ボタンの配列
+      def open_macro(name, steps: , if_pressed: )
+        macro_name = name || "OpenMacro-#{steps.join}".to_sym
+        ProconBypassMan::Procon::MacroRegistry.install_plugin(macro_name, steps: steps)
         self.macros[macro_name] = { if_pressed: if_pressed }
       end
 
@@ -88,6 +94,10 @@ module ProconBypassMan
           raise "not support value"
         end
 
+        if if_pressed
+          hash[:if_pressed] = if_pressed
+        end
+
         case force_neutral
         when TrueClass
           raise "ボタンを渡してください"
@@ -101,7 +111,7 @@ module ProconBypassMan
           raise "not support value"
         end
 
-        left_analog_stick_caps[if_pressed] = hash
+        left_analog_stick_caps << hash
       end
 
       def disable(button)
@@ -122,6 +132,22 @@ module ProconBypassMan
       # @return [Array]
       def flip_buttons
         flips
+      end
+
+      # @return [String]
+      def to_json(*)
+        to_hash.to_json
+      end
+
+      # @return [Hash]
+      def to_hash
+        { mode: mode,
+          flips: flips,
+          macros: macros,
+          remaps: remaps,
+          disables: disables,
+          left_analog_stick_caps: left_analog_stick_caps,
+        }
       end
     end
   end

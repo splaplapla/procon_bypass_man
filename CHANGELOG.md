@@ -1,3 +1,8 @@
+## [0.1.17] - 2022-01
+- procon_bypass_man_cloudに組み込むために、内部のデータ構造を変更しました
+- 設定ファイルにmacroを直接打ち込めるようになりました
+  - ex) `open_macro :special_command, steps: [:x, :y, :up], if_pressed: [:y]`
+
 ## [0.1.16.1] - 2022-01-22
 - 初期状態ではinternal api(pbm-web)の通信を無効にしました
 

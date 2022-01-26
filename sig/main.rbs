@@ -34,7 +34,13 @@ module ProconBypassMan
 
   def self.root=: (untyped path) -> untyped
 
+  def self.pid: () -> Integer
+
   def self.digest_path: () -> ::String
+
+  def self.session_id: () -> ::String
+
+  def self.device_id: () -> ::String
 end
 
 class ProconBypassMan::Bypass
@@ -166,44 +172,44 @@ end
 
 class ProconBypassMan::Configuration
   module ClassMethods
-    def root: () -> untyped
+    def root: () -> String
 
-    def logger: () -> untyped
+    def logger: () -> Logger
 
     def error_logger: () -> untyped
 
-    def pid_path: () -> untyped
+    def pid_path: () -> String
 
-    def digest_path: () -> untyped
+    def digest_path: () -> String
 
-    def cache: () -> untyped
+    def cache: () -> ProconBypassMan::OnMemoryCache
 
-    def config: () -> untyped
+    def config: () -> ProconBypassMan::Configuration
   end
 
   attr_reader api_server: untyped
   attr_reader api_servers: untyped
 
-  attr_accessor enable_critical_error_logging: untyped
+  attr_accessor enable_critical_error_logging: bool
 
-  def root=: (untyped path) -> untyped
+  def root=: (String path) -> ProconBypassMan::Configuration
 
-  def root: () -> untyped
+  def root: () -> String
 
   def api_server=: (untyped api_server) -> untyped
 
-  def logger=: (untyped logger) -> untyped
+  def logger=: (Logger logger) -> ProconBypassMan::Configuration
 
-  def logger: () -> untyped
+  def logger: () -> Logger
 
-  def error_logger: () -> untyped
+  def error_logger: () -> Logger
 
-  def digest_path: () -> ::String
+  def digest_path: () -> String
 
   # @return [String] pbm-webの接続先
-  def current_server: () -> ::String
+  def current_server: () -> String
 
-  def current_ws_server: () -> (::String | nil)
+  def current_ws_server: () -> (String | nil)
 
   def current_ws_server_url: () -> ::String
 
@@ -216,6 +222,10 @@ class ProconBypassMan::Configuration
   def internal_servers: () -> ::Array[string | nil]
 
   def internal_api_servers: () -> ::Array[untyped]
+
+  def raw_setting: () -> untyped
+
+  def verbose_bypass_log: () -> bool
 end
 
 
@@ -387,41 +397,41 @@ end
 
 class ProconBypassMan::Procon::MacroRegistry
   class Macro
-    attr_accessor name: untyped
+    attr_accessor name: Symbol
 
     attr_accessor steps: untyped
 
-    def initialize: (name: untyped name, steps: untyped steps) -> untyped
+    def initialize: (name: untyped Symbol, steps: Symbol) -> void
 
-    def next_step: () -> untyped
+    def next_step: () -> Symbol
 
-    def finished?: () -> untyped
+    def finished?: () -> bool
 
-    def ongoing?: () -> untyped
+    def ongoing?: () -> bool
   end
 
-  PRESETS: ::Hash[untyped, untyped]
+  PRESETS: ::Hash[Symbol, Array[Symbol]]
 
   def self.install_plugin: (untyped klass) -> untyped
 
-  def self.load: (untyped name) -> untyped
+  def self.load: (Symbol name) -> untyped
 
-  def self.reset!: () -> untyped
+  def self.reset!: () -> void
 
-  def self.plugins: () -> untyped
+  def self.plugins: () -> ::Hash[Symbol, Array[Symbol]]
 end
 
 class ProconBypassMan::Procon::ModeRegistry
   class Mode
-    attr_accessor name: untyped
+    attr_accessor name: Symbol
 
-    attr_accessor binaries: untyped
+    attr_accessor binaries: Array[String]
 
-    attr_accessor source_binaries: untyped
+    attr_accessor source_binaries: Array[String]
 
-    def initialize: (name: untyped name, binaries: untyped binaries) -> untyped
+    def initialize: (name: Symbol, binaries: Array[String]) -> void
 
-    def next_binary: () -> untyped
+    def next_binary: () -> String
   end
 
   PRESETS: ::Hash[untyped, untyped]
@@ -433,32 +443,22 @@ class ProconBypassMan::Procon::ModeRegistry
   def self.reset!: () -> untyped
 
   def self.plugins: () -> untyped
-end
-
-module ProconBypassMan::Procon::PressedButtonHelper
-  module Static
-    def pressed_button?: (untyped button) -> untyped
-  end
 end
 
 class ProconBypassMan::Procon
   class UserOperation
     include LayerChangeable
 
-    include PressedButtonHelper::Static
-
     attr_reader binary: untyped
 
     def initialize: (untyped binary) -> untyped
-
-    ZERO_BIT: untyped
 
     ASCII_ENCODING: ::String
 
     # @depilicate
     def binary=: (untyped binary) -> untyped
 
-    def set_no_action!: () -> untyped
+    def set_no_action!: () -> void
 
     def unpress_button: (untyped button) -> untyped
 
@@ -496,7 +496,7 @@ module ProconBypassMan
     end
 
     # 5秒後がタイムアウト
-    def initialize: (?timeout: untyped timeout) -> untyped
+    def initialize: (?timeout: untyped timeout) -> void
 
     def throw_if_timeout!: () -> untyped
   end
@@ -508,7 +508,7 @@ module ProconBypassMan
     def self.from_boot: () -> Integer
 
     # @param [String] uptime_cmd_result
-    def initialize: (uptime_cmd_result: String uptime_cmd_result) -> void
+    def initialize: (uptime_cmd_result: String) -> void
 
     # @return [Integer]
     def from_boot: () -> Integer
@@ -517,4 +517,175 @@ end
 
 module ProconBypassMan
   VERSION: ::String
+end
+
+module ProconBypassMan
+  module Domains
+    module Binary
+    end
+  end
+end
+
+class ProconBypassMan::Domains::Binary::Base
+  # @param [String] binary
+  def initialize: (binary: untyped binary) -> void
+
+  # @return [String] バイナリ
+  def binary: () -> untyped
+
+  # @return [String]
+  def raw: () -> ::String
+
+  def unpack: () -> Array[::String]
+
+  # @return [ProconBypassMan::ProconReader]
+  def to_procon_reader: () -> untyped
+end
+
+module ProconBypassMan::Domains::HasImmutableBinary
+  def binary: () -> untyped
+end
+
+module ProconBypassMan::Domains::HasMutableBinary
+  def binary: () -> untyped
+end
+
+class ProconBypassMan::Domains::InboundProconBinary < ProconBypassMan::Domains::Binary::Base
+  include ProconBypassMan::Domains::HasImmutableBinary
+
+  # @return [Boolean]
+  def user_operation_data?: () -> bool
+end
+
+# バイナリの書き換えのみをする
+class ProconBypassMan::Domains::ProcessingProconBinary < ProconBypassMan::Domains::Binary::Base
+  include ProconBypassMan::Domains::HasMutableBinary
+
+  ALL_ZERO_BIT: ::String
+
+  def set_no_action!: () -> untyped
+
+  # @param [ProconBypassMan::Domains::ProcessingProconBinary]
+  # @return [ProconBypassMan::Domains::ProcessingProconBinary]
+  # アナログスティックは上書きし、ボタンだけマージする
+  def write_as_merge!: (untyped target_binary) -> ProconBypassMan::Domains::ProcessingProconBinary
+
+  # @param [Symbol] button
+  def write_as_press_button: (Symbol button) -> void
+
+  # @param [Symbol] button
+  def write_as_unpress_button: (Symbol  button) -> void
+
+  # @param [Symbol] button
+  def write_as_press_button_only: (Symbol button) -> void
+
+  # @param [Integer] cap
+  def write_as_apply_left_analog_stick_cap: (cap: Integer cap) -> void
+end
+
+module ProconBypassMan
+  class HttpClient
+    @server_pool: untyped
+    @uri: ::URI
+    @retry_on_connection_error: false
+
+    def initialize: (path: String, server_pool: untyped, ?retry_on_connection_error: false) -> void
+    def get: -> nil
+    def post: (request_body: untyped) -> nil
+    def put: (request_body: untyped) -> nil
+
+    private
+    def process_response: (untyped response) -> untyped
+    def handle_request: { -> bot } -> nil
+
+    class HttpRequest
+      class Get
+        def self.request!: (uri: ::URI) -> untyped
+      end
+
+      class Post
+        def self.request!: (uri: ::URI, ?request_body: Hash[untyped, untyped]) -> untyped
+      end
+
+      class Put
+        def self.request!: (uri: ::URI, ?request_body: {hostname: String}) -> untyped
+      end
+    end
+  end
+end
+
+module ProconBypassMan
+  class SendDeviceStatsHttpClient
+    def post: (status: ::Symbol, pbm_session_id: String) -> untyped
+  end
+end
+
+module ProconBypassMan
+  class ReportHttpClient
+    def post: (body: Hash[untyped, untyped] | String, event_type: ::Symbol) -> untyped
+  end
+end
+
+module ProconBypassMan
+  class UpdateRemotePbmActionStatusHttpClient
+    def post: (to_status: ::Symbol) -> untyped
+  end
+end
+
+module ProconBypassMan
+  class ServerPool
+    @servers: Array[String]
+    @index: Integer?
+
+    def initialize: (servers: Array[String]) -> void
+    def pick: -> String?
+    def server: -> String?
+    def next!: -> nil
+
+    private
+    def reset: -> Integer
+    def inc_index: -> Integer
+  end
+end
+
+module ProconBypassMan
+  class CompressArray
+    @array: [String]
+
+    def initialize: ([String] array) -> void
+    def compress: -> Array[String?]
+
+    class CompressibleValue
+      @prev: String?
+      @current: String
+
+      def initialize: (String? prev, String current) -> void
+      def compress?: -> bool
+      def to_s_with_mark: -> String?
+    end
+  end
+end
+
+module ProconBypassMan
+  module Callbacks
+    def run_callbacks: (untyped kind) -> untyped
+    def get_callbacks: (untyped kind) -> untyped
+    def set_callbacks: (untyped name, untyped callbacks) -> untyped
+
+    class CallbacksChain
+      @block: nil
+
+      attr_accessor filter: untyped
+      attr_accessor chain_method: untyped
+      def initialize: (filter: untyped, chain_method: untyped, block: nil) -> void
+    end
+
+    module M
+    end
+
+    module ClassMethods
+      def define_callbacks: (untyped name) -> untyped
+      def set_callback: (untyped kind, untyped filter, untyped chain_method) -> CallbacksChain
+    end
+  end
 end

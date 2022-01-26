@@ -24,15 +24,18 @@ class ProconBypassMan::Procon::MacroRegistry
     null: [],
   }
 
-  def self.install_plugin(klass)
-    if plugins[klass.name]
-      raise "すでに登録済みです"
+  def self.install_plugin(klass, steps: nil)
+    if plugins[klass.to_s.to_sym]
+      raise "#{klass} macro is already registered"
     end
-    plugins[klass.name] = klass.steps
+
+    plugins[klass.to_s.to_sym] = ->{
+      ProconBypassMan::Procon::ButtonCollection.normalize(steps || klass.steps)
+    }
   end
 
   def self.load(name)
-    steps = PRESETS[name] || plugins[name] || raise("unknown macro")
+    steps = PRESETS[name] || plugins[name].call || raise("unknown macro")
     Macro.new(name: name, steps: steps.dup)
   end
 

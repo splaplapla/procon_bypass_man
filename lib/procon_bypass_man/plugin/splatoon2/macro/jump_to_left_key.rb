@@ -3,7 +3,7 @@ module ProconBypassMan
     module Splatoon2
       module Macro
         module JumpToLeftKey
-          def self.name
+          def self.display_name
             :jump_to_left_key
           end
 

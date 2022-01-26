@@ -23,14 +23,14 @@ class ProconBypassMan::Procon::ModeRegistry
   }
 
   def self.install_plugin(klass)
-    if plugins[klass.name.to_sym]
-      raise "すでに登録済みです"
+    if plugins[klass.to_s.to_sym]
+      raise "#{klass} mode is already registered"
     end
-    plugins[klass.name.to_sym] = klass.binaries
+    plugins[klass.to_s.to_sym] = ->{ klass.binaries }
   end
 
   def self.load(name)
-    b = PRESETS[name] || plugins[name] || raise("unknown mode")
+    b = PRESETS[name] || plugins[name]&.call || raise("#{name} is unknown mode")
     Mode.new(name: name, binaries: b.dup)
   end
 

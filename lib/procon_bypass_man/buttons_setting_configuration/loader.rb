@@ -3,6 +3,7 @@ module ProconBypassMan
     module Loader
       require 'digest/md5'
 
+      # @return [ProconBypassMan::ButtonsSettingConfiguration]
       def self.load(setting_path: )
         ProconBypassMan::ButtonsSettingConfiguration.switch_new_context(:validation) do |new_instance|
           yaml = YAML.load_file(setting_path) or raise "読み込みに失敗しました"

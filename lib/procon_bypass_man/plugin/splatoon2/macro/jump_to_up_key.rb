@@ -3,7 +3,7 @@ module ProconBypassMan
     module Splatoon2
       module Macro
         module JumpToUpKey
-          def self.name
+          def self.display_name
             :jump_to_up_key
           end
 
