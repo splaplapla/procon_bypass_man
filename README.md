@@ -101,6 +101,7 @@ sudo kill -USR2 `cat ./pbm_pid`
 * project_template/web.rb, project_template/app.rb, lib/procon_bypass_man/version.rb のバージョンをあげる
 * CHANGELOG.md に日付を書く
 * be rake release
+* githubのreleaseを作成する
 
 ## License
 
