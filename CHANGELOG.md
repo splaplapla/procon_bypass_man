@@ -1,6 +1,6 @@
 ## [0.1.18] - 2022-0
 
-## [0.1.17] - 2022-01
+## [0.1.17] - 2022-01-26
 - procon_bypass_man_cloudに組み込むために、内部のデータ構造を変更しました
 - 設定ファイルにmacroを直接打ち込めるようになりました
   - ex) `open_macro :special_command, steps: [:x, :y, :up], if_pressed: [:y]`
