@@ -268,6 +268,24 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
           )
         end
       end
+      context '設定内容に未定義定数があるとき' do
+        let(:setting_content) do
+          <<~EOH
+          version: 1.0
+          setting: |-
+            UnkownConst
+            layer :up do
+              flip :zr, if_pressed: :zr
+          EOH
+        end
+        it do
+          expect {
+            ProconBypassMan::ButtonsSettingConfiguration::Loader.load(setting_path: setting.path)
+          }.to raise_error(
+            ProconBypassMan::CouldNotLoadConfigError
+          )
+        end
+      end
       context '設定内容が不正のとき' do
         let(:setting_content) do
           <<~EOH
