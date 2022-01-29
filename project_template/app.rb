@@ -12,7 +12,8 @@ ProconBypassMan.configure do |config|
   config.root = File.expand_path(__dir__)
   config.logger = Logger.new("#{ProconBypassMan.root}/app.log", 5, 1024 * 1024 * 10)
   config.logger.level = :debug
-  # config.api_servers = ['https://...']
+  # webからProconBypassManを操作できるwebサービス
+  # config.api_servers = ['https://pbm-cloud.herokuapp.com']
   config.enable_critical_error_logging = true
 end
 
