@@ -1,4 +1,6 @@
 # ProconBypassMan
+<img src="https://user-images.githubusercontent.com/1664497/151661582-3a1e8ce9-6c38-4754-8075-7a4453b3109a.jpg" width="500px">
+
 [![Ruby](https://github.com/splaplapla/procon_bypass_man/actions/workflows/ruby.yml/badge.svg?branch=master)](https://github.com/splaplapla/procon_bypass_man/actions/workflows/ruby.yml)
 
 * Switchに繋いだプロコンを連射機にしたり、キーのリマップをしたり、マクロを実行できるツールです
