@@ -47,12 +47,15 @@ Switch <-- (PBM): ZR連打
 * https://github.com/splaplapla/procon_bypass_man-splatoon2
 
 ## 関連ソフトウェア
-* サーバソフトウェア(WIP)
+* procon_bypass_man_cloud
+  * webアプリケーション
   * https://github.com/splaplapla/procon_bypass_man_cloud
-  * このサーバからOS自体の再起動、設定ファイルの変更、PBMのバージョンアップができます
-  * 自分でホストティングしてください
+  * このwebアプリからOS自体の再起動、設定ファイルのバックアップ・変更、PBMのバージョンアップができます
+  * ご自身でホストティングもできますが、 私がホスティングをしている https://pbm-cloud.herokuapp.com を使うことができます
+      * [使い方](https://pbm-cloud.herokuapp.com/faq)
 * pbmenv
-  * バージョンマネージャー
+  * procon_bypass_manのバージョンマネージャー
+  * https://github.com/splaplapla/pbmenv
 
 ## FAQ
 * どうやって動かすの?
