@@ -1,4 +1,50 @@
 class ProconBypassMan::Procon::Macro
+  class NestedStep
+    def initialize(value)
+      @hash = value
+      unless @hash[:end_at]
+        @hash[:end_at] = Time.now + @hash[:continue_for]
+      end
+    end
+
+    def over_end_at?
+      @hash[:end_at] <= Time.now
+    end
+
+    def next_step
+      incr_step_index!
+
+      if step = current_step
+        return step
+      else
+        reset_step_index!
+        return current_step
+      end
+    end
+
+    private
+
+    def current_step
+      @hash[:steps][step_index]
+    end
+
+    def step_index
+      @hash[:step_index]
+    end
+
+    def incr_step_index!
+      if step_index
+        @hash[:step_index] += 1
+      else
+        @hash[:step_index] = 0
+      end
+    end
+
+    def reset_step_index!
+      @hash[:step_index] = 0
+    end
+  end
+
   attr_accessor :name, :steps
 
   def initialize(name: , steps: )
@@ -13,29 +59,12 @@ class ProconBypassMan::Procon::Macro
     end
 
     if step.is_a?(Hash)
-      nested_step = step
-      unless nested_step.key?(:end_at)
-        nested_step[:end_at] = Time.now + nested_step[:continue_for]
-      end
-
-      if nested_step[:end_at] <= Time.now
-        steps.shift
+      nested_step = NestedStep.new(step)
+      if nested_step.over_end_at?
+        steps.shift # NestedStepを破棄する
         return steps.shift
       end
-
-      steps = nested_step[:steps]
-      if nested_step.key?(:step_index)
-        nested_step[:step_index] += 1
-      else
-        nested_step[:step_index] = 0
-      end
-
-      if step = nested_step[:steps][nested_step[:step_index]]
-        return step
-      else
-        nested_step[:step_index] = 0
-        return nested_step[:steps][nested_step[:step_index]]
-      end
+      return nested_step.next_step
     end
   end
 
