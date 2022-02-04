@@ -165,56 +165,58 @@ describe ProconBypassMan::Procon do
   end
 
   context 'with macro' do
-    context 'y, bを押しているとき' do
-      let(:data) { "30778105800099277344e86b0a7909f4f5a8f4b500c5ff8dff6c09cdf5b8f49a00c5ff92ff6a0979f5eef46500d5ff9bff000000000000000000000000000000" }
-      before do
-        module FastReturn
-          def self.name
-            :fast_return
-          end
+    context 'v1' do
+      context 'y, bを押しているとき' do
+        let(:data) { "30778105800099277344e86b0a7909f4f5a8f4b500c5ff8dff6c09cdf5b8f49a00c5ff92ff6a0979f5eef46500d5ff9bff000000000000000000000000000000" }
+        before do
+          module FastReturn
+            def self.name
+              :fast_return
+            end
 
-          def self.steps
-            [:down, :a, :a, :x, :down, :a, :a].freeze
+            def self.steps
+              [:down, :a, :a, :x, :down, :a, :a].freeze
+            end
+          end
+          ProconBypassMan.buttons_setting_configure do
+            install_macro_plugin FastReturn
+            prefix_keys_for_changing_layer [:zr]
+            layer :up do
+              macro FastReturn, if_pressed: [:y, :b]
+            end
           end
         end
-        ProconBypassMan.buttons_setting_configure do
-          install_macro_plugin FastReturn
-          prefix_keys_for_changing_layer [:zr]
-          layer :up do
-            macro FastReturn, if_pressed: [:y, :b]
-          end
+        it "[:down, :a, :a, :x, :down, :a, :a]の順番で押していく" do
+          procon = ProconBypassMan::Procon.new(binary)
+          expect(procon.pressed_y?).to eq(true)
+          expect(procon.pressed_b?).to eq(true)
+          procon.apply!
+          procon = ProconBypassMan::Procon.new(procon.to_binary)
+          expect(procon.pressed_down?).to eq(true)
+
+          procon = ProconBypassMan::Procon.new(procon.to_binary)
+          expect(procon.pressed_down?).to eq(false)
+          expect(procon.pressed_a?).to eq(true)
+
+          procon = ProconBypassMan::Procon.new(procon.to_binary)
+          expect(procon.pressed_down?).to eq(false)
+          expect(procon.pressed_a?).to eq(true)
+
+          procon = ProconBypassMan::Procon.new(procon.to_binary)
+          expect(procon.pressed_down?).to eq(false)
+          expect(procon.pressed_a?).to eq(false)
+          expect(procon.pressed_x?).to eq(true)
+
+          procon = ProconBypassMan::Procon.new(procon.to_binary)
+          expect(procon.pressed_a?).to eq(false)
+          expect(procon.pressed_x?).to eq(false)
+          expect(procon.pressed_down?).to eq(true)
+
+          procon = ProconBypassMan::Procon.new(procon.to_binary)
+          expect(procon.pressed_x?).to eq(false)
+          expect(procon.pressed_down?).to eq(false)
+          expect(procon.pressed_a?).to eq(true)
         end
-      end
-      it "[:down, :a, :a, :x, :down, :a, :a]の順番で押していく" do
-        procon = ProconBypassMan::Procon.new(binary)
-        expect(procon.pressed_y?).to eq(true)
-        expect(procon.pressed_b?).to eq(true)
-        procon.apply!
-        procon = ProconBypassMan::Procon.new(procon.to_binary)
-        expect(procon.pressed_down?).to eq(true)
-
-        procon = ProconBypassMan::Procon.new(procon.to_binary)
-        expect(procon.pressed_down?).to eq(false)
-        expect(procon.pressed_a?).to eq(true)
-
-        procon = ProconBypassMan::Procon.new(procon.to_binary)
-        expect(procon.pressed_down?).to eq(false)
-        expect(procon.pressed_a?).to eq(true)
-
-        procon = ProconBypassMan::Procon.new(procon.to_binary)
-        expect(procon.pressed_down?).to eq(false)
-        expect(procon.pressed_a?).to eq(false)
-        expect(procon.pressed_x?).to eq(true)
-
-        procon = ProconBypassMan::Procon.new(procon.to_binary)
-        expect(procon.pressed_a?).to eq(false)
-        expect(procon.pressed_x?).to eq(false)
-        expect(procon.pressed_down?).to eq(true)
-
-        procon = ProconBypassMan::Procon.new(procon.to_binary)
-        expect(procon.pressed_x?).to eq(false)
-        expect(procon.pressed_down?).to eq(false)
-        expect(procon.pressed_a?).to eq(true)
       end
     end
   end

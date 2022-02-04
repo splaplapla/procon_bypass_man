@@ -62,7 +62,7 @@ class ProconBypassMan::Procon::Macro
       nested_step = NestedStep.new(step)
       if nested_step.over_end_at?
         steps.shift # NestedStepを破棄する
-        return steps.shift
+        return next_step
       end
       return nested_step.next_step
     end
