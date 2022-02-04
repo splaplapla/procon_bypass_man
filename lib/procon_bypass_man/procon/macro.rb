@@ -3,7 +3,7 @@ class ProconBypassMan::Procon::Macro
     def initialize(value)
       @hash = value
       unless @hash[:end_at]
-        @hash[:end_at] = Time.now + @hash[:continue_for]
+        @hash[:end_at] = (Time.now + @hash[:continue_for]).round
       end
     end
 

@@ -42,11 +42,11 @@ class ProconBypassMan::Procon::MacroBuilder
     end
 
     # 時間
-    if(match = step.match(%r!\Atoggle_(\w+)_for_(\d+)sec\z!)) && (button_candidate = match[1]) && is_button(button_candidate)
+    if(match = step.match(%r!\Atoggle_(\w+)_for_([\d_]+)sec\z!)) && (button_candidate = match[1]) && is_button(button_candidate)
       button = button_candidate
       sec =  match[2]
       return [
-        { continue_for: sec.to_i,
+        { continue_for: to_num(sec),
           steps: [button.to_sym, :none]
         }
       ]
@@ -56,5 +56,13 @@ class ProconBypassMan::Procon::MacroBuilder
   # @return [Boolean]
   def is_button(step)
     !!ProconBypassMan::Procon::ButtonCollection::BUTTONS_MAP[step.to_sym]
+  end
+
+  def to_num(value)
+    if value.include?("_")
+      value.sub("_", ".").to_f
+    else
+      value.to_i
+    end
   end
 end
