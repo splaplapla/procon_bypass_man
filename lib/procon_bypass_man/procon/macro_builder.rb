@@ -26,7 +26,13 @@ class ProconBypassMan::Procon::MacroBuilder
   end
 
   def v2_format?(step: )
-    if(match = step.match(%r!\Atoggle_(.+)\z!)) && (button_candidate = match[1]) && is_button(button_candidate)
+    # トグル
+    if(match = step.match(%r!\Atoggle_(\w+)\z!)) && (button_candidate = match[1]) && is_button(button_candidate)
+      return [button_candidate, :none]
+    end
+
+    # 時間
+    if(match = step.match(%r!\Atoggle_(\w+)_for_(\d+)sec\z!)) && (button_candidate = match[1]) && is_button(button_candidate)
       return [button_candidate, :none]
     end
   end

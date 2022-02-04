@@ -20,8 +20,16 @@ describe ProconBypassMan::Procon::MacroBuilder do
     end
 
     context 'v2 format' do
-      it do
-        expect(described_class.new([:toggle_r]).build).to eq([:r, :none])
+      describe 'toggle' do
+        it do
+          expect(described_class.new([:toggle_r]).build).to eq([:r, :none])
+        end
+        it do
+          expect(described_class.new([:toggle_r, :toggle_b]).build).to eq([:r, :none, :b, :none])
+        end
+        it do
+          expect(described_class.new([:a, :toggle_r, :sl, :toggle_b, :b]).build).to eq([:a, :r, :none, :sl, :b, :none, :b])
+        end
       end
     end
   end
