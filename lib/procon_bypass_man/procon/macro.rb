@@ -14,6 +14,15 @@ class ProconBypassMan::Procon::Macro
 
     if step.is_a?(Hash)
       nested_step = step
+      unless nested_step.key?(:end_at)
+        nested_step[:end_at] = Time.now + nested_step[:continue_for]
+      end
+
+      if nested_step[:end_at] <= Time.now
+        steps.shift
+        return steps.shift
+      end
+
       steps = nested_step[:steps]
       if nested_step.key?(:step_index)
         nested_step[:step_index] += 1
