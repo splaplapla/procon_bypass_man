@@ -2,7 +2,7 @@ require "spec_helper"
 
 describe ProconBypassMan::Procon::MacroBuilder do
   describe '#build' do
-    context 'v1 format' do
+    describe 'v1 format' do
       context '存在するボタン' do
         let(:buttons) { [:y, :x, :b, :a, :sl, :sr, :r, :zr, :minus, :plus, :thumbr, :thumbl, :home, :cap, :down, :up, :right, :left, :l, :zl] }
         it 'そのまま返すこと' do
@@ -25,7 +25,7 @@ describe ProconBypassMan::Procon::MacroBuilder do
       end
     end
 
-    context 'v2 format' do
+    describe 'v2 format' do
       describe 'toggle' do
         it do
           expect(described_class.new([:toggle_r]).build).to eq([:r, :none])
