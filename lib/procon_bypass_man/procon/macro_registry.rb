@@ -30,7 +30,7 @@ class ProconBypassMan::Procon::MacroRegistry
     end
 
     plugins[klass.to_s.to_sym] = ->{
-      ProconBypassMan::Procon::ButtonCollection.normalize(steps || klass.steps)
+      ProconBypassMan::Procon::MacroBuilder.new(steps || klass.steps).build
     }
   end
 
