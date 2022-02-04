@@ -18,5 +18,11 @@ describe ProconBypassMan::Procon::MacroBuilder do
         end
       end
     end
+
+    context 'v2 format' do
+      it do
+        expect(described_class.new([:toggle_r]).build).to eq([:r, :none])
+      end
+    end
   end
 end
