@@ -1,25 +1,4 @@
 class ProconBypassMan::Procon::MacroRegistry
-  class Macro
-    attr_accessor :name, :steps
-
-    def initialize(name: , steps: )
-      self.name = name
-      self.steps = steps
-    end
-
-    def next_step
-      steps.shift
-    end
-
-    def finished?
-      steps.empty?
-    end
-
-    def ongoing?
-      !finished?
-    end
-  end
-
   PRESETS = {
     null: [],
   }
@@ -36,7 +15,7 @@ class ProconBypassMan::Procon::MacroRegistry
 
   def self.load(name)
     steps = PRESETS[name] || plugins[name].call || raise("unknown macro")
-    Macro.new(name: name, steps: steps.dup)
+    ProconBypassMan::Procon::Macro.new(name: name, steps: steps.dup)
   end
 
   def self.reset!

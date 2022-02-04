@@ -37,7 +37,7 @@ class ProconBypassMan::Procon::MacroBuilder
       button = button_candidate
       sec =  match[2]
       return [
-        { continue_for: sec,
+        { continue_for: sec.to_i,
           steps: [button.to_sym, :none]
         }
       ]
