@@ -7,14 +7,14 @@ class ProconBypassMan::Procon::MacroBuilder
   def build
     steps = @steps.map { |step|
       if v1_format?(step: step)
-        step
-      elsif value = v2_format?(step: step)
+        step.to_sym
+      elsif value = build_if_v2_format?(step: step)
         value
       else
         nil
       end
     }
-    steps.compact.flatten.map(&:to_sym)
+    steps.compact.flatten
   end
 
   private
@@ -25,15 +25,22 @@ class ProconBypassMan::Procon::MacroBuilder
     end
   end
 
-  def v2_format?(step: )
+  def build_if_v2_format?(step: )
     # トグル
     if(match = step.match(%r!\Atoggle_(\w+)\z!)) && (button_candidate = match[1]) && is_button(button_candidate)
-      return [button_candidate, :none]
+      button = button_candidate
+      return [button.to_sym, :none]
     end
 
     # 時間
     if(match = step.match(%r!\Atoggle_(\w+)_for_(\d+)sec\z!)) && (button_candidate = match[1]) && is_button(button_candidate)
-      return [button_candidate, :none]
+      button = button_candidate
+      sec =  match[2]
+      return [
+        { continue_for: sec,
+          steps: [button.to_sym, :none]
+        }
+      ]
     end
   end
 

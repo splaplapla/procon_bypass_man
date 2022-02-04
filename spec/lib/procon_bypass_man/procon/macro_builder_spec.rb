@@ -31,6 +31,26 @@ describe ProconBypassMan::Procon::MacroBuilder do
           expect(described_class.new([:a, :toggle_r, :sl, :toggle_b, :b]).build).to eq([:a, :r, :none, :sl, :b, :none, :b])
         end
       end
+
+      describe 'toggle_x_for_2sec' do
+        it do
+          expect(described_class.new([:toggle_r_for_2sec]).build).to eq(
+            [{ continue_for: 2,
+              steps: [:r, :none]
+            }]
+          )
+        end
+        it do
+          expect(described_class.new([:toggle_r, :toggle_r_for_3sec]).build).to eq(
+            [ :r,
+              :none,
+              { continue_for: 3,
+                steps: [:r, :none],
+              }
+            ]
+          )
+        end
+      end
     end
   end
 end
