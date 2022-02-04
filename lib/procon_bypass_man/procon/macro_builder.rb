@@ -11,9 +11,7 @@ class ProconBypassMan::Procon::MacroBuilder
   # @return [Arary<Symbol>]
   def build
     steps = @steps.map { |step|
-      if is_reserved?(step: step)
-        step.to_sym
-      elsif v1_format?(step: step)
+      if is_reserved?(step: step) || v1_format?(step: step)
         step.to_sym
       elsif value = build_if_v2_format?(step: step)
         value
