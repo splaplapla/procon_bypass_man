@@ -41,13 +41,24 @@ class ProconBypassMan::Procon::MacroBuilder
       return [button.to_sym, :none]
     end
 
-    # 時間
+    # トグル + 時間
     if(match = step.match(%r!\Atoggle_(\w+)_for_([\d_]+)sec\z!)) && (button_candidate = match[1]) && is_button(button_candidate)
       button = button_candidate
       sec =  match[2]
       return [
         { continue_for: to_num(sec),
           steps: [button.to_sym, :none]
+        }
+      ]
+    end
+
+    # 押しっぱなし + 時間
+    if(match = step.match(%r!\Apressing_(\w+)_for_([\d_]+)sec\z!)) && (button_candidate = match[1]) && is_button(button_candidate)
+      button = button_candidate
+      sec =  match[2]
+      return [
+        { continue_for: to_num(sec),
+          steps: [button.to_sym]
         }
       ]
     end

@@ -69,6 +69,22 @@ describe ProconBypassMan::Procon::MacroBuilder do
           )
         end
       end
+
+      describe 'pressing_x_for_2sec' do
+        it do
+          expect(described_class.new([:pressing_x_for_2sec]).build).to eq(
+            [{ continue_for: 2, steps: [:x] }]
+          )
+        end
+      end
+
+      describe 'pressing_x_for_0_2sec' do
+        it do
+          expect(described_class.new([:pressing_x_for_0_2sec]).build).to eq(
+            [{ continue_for: 0.2, steps: [:x] }]
+          )
+        end
+      end
     end
   end
 end
