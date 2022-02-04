@@ -24,3 +24,5 @@ Lint/EmptyBlock:
     Enabled: false
 Lint/ReturnInVoidContext:
     Enabled: false
+Lint/AssignmentInCondition:
+    Enabled: false

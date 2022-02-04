@@ -7,6 +7,7 @@ require "securerandom"
 require 'em/pure_ruby'
 require "action_cable_client"
 require "ext/em_pure_ruby"
+require "ext/module"
 
 require_relative "procon_bypass_man/version"
 require_relative "procon_bypass_man/remote_pbm_action"
@@ -43,19 +44,6 @@ require_relative "procon_bypass_man/websocket/pbm_job_client"
 
 STDOUT.sync = true
 Thread.abort_on_exception = true
-
-# pluginの定数を握りつぶす
-class Module
-  def const_missing(id)
-    if self.name =~ /^ProconBypassMan::Plugin/
-      parent_const = Object.const_get("#{self.name}")
-      parent_const.const_set(id, Module.new)
-      Object.const_get("#{self.name}::#{id}")
-    else
-      super
-    end
-  end
-end
 
 module ProconBypassMan
   extend ProconBypassMan::Configuration::ClassMethods
