@@ -1,4 +1,9 @@
 class ProconBypassMan::Procon::MacroBuilder
+  RESERVED_WORD_NONE = :none
+  RESERVED_WORDS = {
+    RESERVED_WORD_NONE => true,
+  }
+
   def initialize(steps)
     @steps = steps.map(&:to_s)
   end
@@ -6,7 +11,9 @@ class ProconBypassMan::Procon::MacroBuilder
   # @return [Arary<Symbol>]
   def build
     steps = @steps.map { |step|
-      if v1_format?(step: step)
+      if is_reserved?(step: step)
+        step.to_sym
+      elsif v1_format?(step: step)
         step.to_sym
       elsif value = build_if_v2_format?(step: step)
         value
@@ -18,6 +25,10 @@ class ProconBypassMan::Procon::MacroBuilder
   end
 
   private
+
+  def is_reserved?(step: )
+    RESERVED_WORDS[step.to_sym]
+  end
 
   def v1_format?(step: )
     if is_button(step)

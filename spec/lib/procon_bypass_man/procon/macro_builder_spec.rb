@@ -17,6 +17,12 @@ describe ProconBypassMan::Procon::MacroBuilder do
           expect(described_class.new(buttons + not_exists_buttons).build).to eq(buttons)
         end
       end
+
+      context '予約語' do
+        it 'そのまま返すこと' do
+          expect(described_class.new([:none]).build).to eq([:none])
+        end
+      end
     end
 
     context 'v2 format' do
