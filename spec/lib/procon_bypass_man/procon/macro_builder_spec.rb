@@ -73,7 +73,7 @@ describe ProconBypassMan::Procon::MacroBuilder do
       describe 'pressing_x_for_2sec' do
         it do
           expect(described_class.new([:pressing_x_for_2sec]).build).to eq(
-            [{ continue_for: 2, steps: [:x] }]
+            [{ continue_for: 2, steps: [:x, :x] }]
           )
         end
       end
@@ -81,7 +81,59 @@ describe ProconBypassMan::Procon::MacroBuilder do
       describe 'pressing_x_for_0_2sec' do
         it do
           expect(described_class.new([:pressing_x_for_0_2sec]).build).to eq(
-            [{ continue_for: 0.2, steps: [:x] }]
+            [{ continue_for: 0.2, steps: [:x, :x] }]
+          )
+        end
+      end
+
+      describe 'pressing_x_for_0_2sec' do
+        it do
+          expect(described_class.new([:pressing_x_for_0_2sec]).build).to eq(
+            [{ continue_for: 0.2, steps: [:x, :x] }]
+          )
+        end
+      end
+
+      describe 'pressing_x_and_toggle_zr_for_0_2sec' do
+        it do
+          expect(described_class.new([:pressing_x_and_toggle_zr_for_0_2sec]).build).to eq(
+            [{ continue_for: 0.2, steps: [
+              [:x, :zr],
+              [:x, :none],
+            ] }]
+          )
+        end
+      end
+
+      describe 'pressing_x_and_toggle_zr_for_0_2sec' do
+        it do
+          expect(described_class.new([:pressing_x_and_toggle_zr_for_0_2sec]).build).to eq(
+            [{ continue_for: 0.2, steps: [
+              [:x, :zr],
+              [:x, :none],
+            ] }]
+          )
+        end
+      end
+
+      describe 'toggle_x_and_toggle_zr_for_0_2sec' do
+        it do
+          expect(described_class.new([:toggle_x_and_toggle_zr_for_0_2sec]).build).to eq(
+            [{ continue_for: 0.2, steps: [
+              [:x, :zr],
+              [:none, :none],
+            ] }]
+          )
+        end
+      end
+
+      describe 'pressing_x_and_pressing_zr_for_0_2sec' do
+        it do
+          expect(described_class.new([:pressing_x_and_pressing_zr_for_0_2sec]).build).to eq(
+            [{ continue_for: 0.2, steps: [
+              [:x, :zr],
+              [:x, :zr],
+            ] }]
           )
         end
       end
