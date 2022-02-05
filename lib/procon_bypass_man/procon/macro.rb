@@ -8,12 +8,17 @@ class ProconBypassMan::Procon::Macro
     end
 
     def over_end_at?
-      @hash[:end_at] < Time.now
+      (@hash[:end_at] < Time.now).tap do |result|
+        if result
+          ProconBypassMan.logger.info { "[Macro] over nested step is #{@hash}" }
+        end
+      end
     end
 
     def next_step
       incr_step_index!
 
+      debug_incr_called_count!
       if step = current_step
         return step
       else
@@ -43,6 +48,11 @@ class ProconBypassMan::Procon::Macro
     def reset_step_index!
       @hash[:step_index] = 0
     end
+
+    def debug_incr_called_count!
+      @hash[:debug_called_count] ||= 0
+      @hash[:debug_called_count] += 1
+    end
   end
 
   attr_accessor :name, :steps
@@ -63,8 +73,9 @@ class ProconBypassMan::Procon::Macro
       if nested_step.over_end_at?
         steps.shift # NestedStepを破棄する
         return next_step
+      else
+        return nested_step.next_step
       end
-      return nested_step.next_step
     end
   end
 

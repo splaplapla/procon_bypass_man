@@ -96,6 +96,7 @@ class ProconBypassMan::Procon
 
     if ongoing_macro.ongoing?
       step = ongoing_macro.next_step or return(user_operation.binary.raw)
+      ProconBypassMan.logger.info { "[Macro] macro's step is #{step}" }
       user_operation.press_button_only(step)
       return user_operation.binary.raw
     end
