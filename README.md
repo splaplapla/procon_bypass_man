@@ -6,6 +6,7 @@
 * Switchに繋いだプロコンを連射機にしたり、キーのリマップをしたり、マクロを実行できるツールです
     * 設定ファイルはrubyスクリプトで記述します
 * 特定のタイトルに特化した振る舞いにしたい時は各プラグインを使ってください
+* ドキュメントは [getting_started.md](docs/getting_started.md) にまとめています
 
 ![image](https://user-images.githubusercontent.com/1664497/123414210-942f6980-d5ee-11eb-8192-955bd9e37e0b.png)
 
