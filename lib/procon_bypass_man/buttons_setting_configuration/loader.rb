@@ -15,7 +15,9 @@ module ProconBypassMan
             raise ProconBypassMan::CouldNotLoadConfigError, validator.errors
           end
         rescue SyntaxError
-          raise ProconBypassMan::CouldNotLoadConfigError, "Rubyのシンタックスエラーです"
+          raise ProconBypassMan::CouldNotLoadConfigError, "Rubyスクリプトのシンタックスエラーです"
+        rescue NoMethodError
+          raise ProconBypassMan::CouldNotLoadConfigError, "Rubyスクリプトに未定義の定数・変数があります"
         rescue Psych::SyntaxError
           raise ProconBypassMan::CouldNotLoadConfigError, "yamlのシンタックスエラーです"
         end

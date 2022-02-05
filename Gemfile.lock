@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    procon_bypass_man (0.1.17)
+    procon_bypass_man (0.1.18)
       action_cable_client
       pbmenv
       sorted_set
@@ -121,6 +121,7 @@ PLATFORMS
   arm64-darwin-20
   arm64-darwin-21
   armv7l-linux
+  ruby
   x86_64-linux
 
 DEPENDENCIES

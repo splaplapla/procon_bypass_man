@@ -1,7 +1,9 @@
 class ProconBypassMan::Procon
   require "procon_bypass_man/procon/consts"
   require "procon_bypass_man/procon/mode_registry"
+  require "procon_bypass_man/procon/macro"
   require "procon_bypass_man/procon/macro_registry"
+  require "procon_bypass_man/procon/macro_builder"
   require "procon_bypass_man/procon/layer_changer"
   require "procon_bypass_man/procon/button_collection"
   require "procon_bypass_man/procon/user_operation"

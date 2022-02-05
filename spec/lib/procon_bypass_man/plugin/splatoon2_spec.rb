@@ -15,4 +15,16 @@ describe ProconBypassMan::Plugin::Splatoon2 do
     expect(ProconBypassMan::Plugin::Splatoon2::Macro::FastReturn.name).to eq('ProconBypassMan::Plugin::Splatoon2::Macro::FastReturn')
     expect(ProconBypassMan::Plugin::Splatoon2::Macro::FastReturn.steps).to eq([:x, :down, :a, :a])
   end
+
+  describe 'sokuwari' do
+    it do
+      expect(ProconBypassMan::Plugin::Splatoon2::Macro::SokuwariForSplashBomb.name).to eq('ProconBypassMan::Plugin::Splatoon2::Macro::SokuwariForSplashBomb')
+      expect(ProconBypassMan::Plugin::Splatoon2::Macro::SokuwariForSplashBomb.steps).to eq([
+        :toggle_r_for_0_2sec,
+        :toggle_thumbr_for_0_14sec,
+        :toggle_thumbr_and_toggle_zr_for_0_34sec,
+        :toggle_r_for_1sec,
+      ])
+    end
+  end
 end

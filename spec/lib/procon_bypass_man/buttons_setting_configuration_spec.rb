@@ -268,6 +268,24 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
           )
         end
       end
+      context '設定内容に未定義定数があるとき' do
+        let(:setting_content) do
+          <<~EOH
+          version: 1.0
+          setting: |-
+            UnkownConst
+            layer :up do
+              flip :zr, if_pressed: :zr
+          EOH
+        end
+        it do
+          expect {
+            ProconBypassMan::ButtonsSettingConfiguration::Loader.load(setting_path: setting.path)
+          }.to raise_error(
+            ProconBypassMan::CouldNotLoadConfigError
+          )
+        end
+      end
       context '設定内容が不正のとき' do
         let(:setting_content) do
           <<~EOH
@@ -440,18 +458,33 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
       end
     end
     context 'open macro' do
-      it do
-        ProconBypassMan.buttons_setting_configure do
-          layer :up do
-            open_macro "SaiHuu", steps: [:x, :y], if_pressed: [:x]
-            open_macro "SpecialCommand", steps: [:up, :down, :g], if_pressed: [:y]
+      context 'macro v1' do
+        it do
+          ProconBypassMan.buttons_setting_configure do
+            layer :up do
+              open_macro "SaiHuu", steps: [:x, :y], if_pressed: [:x]
+              open_macro "SpecialCommand", steps: [:up, :down, :g], if_pressed: [:y]
+            end
           end
+          expect(ProconBypassMan::Procon::MacroRegistry.plugins[:SaiHuu].call).to eq([:x, :y])
+          expect(ProconBypassMan::Procon::MacroRegistry.plugins[:SpecialCommand].call).to eq([:up, :down])
+          expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].macros).to eq(
+            {"SaiHuu"=>{:if_pressed=>[:x]}, "SpecialCommand"=>{:if_pressed=>[:y]}}
+          )
         end
-        expect(ProconBypassMan::Procon::MacroRegistry.plugins[:SaiHuu].call).to eq([:x, :y])
-        expect(ProconBypassMan::Procon::MacroRegistry.plugins[:SpecialCommand].call).to eq([:up, :down])
-        expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].macros).to eq(
-          {"SaiHuu"=>{:if_pressed=>[:x]}, "SpecialCommand"=>{:if_pressed=>[:y]}}
-        )
+      end
+      context 'macro v2' do
+        it do
+          ProconBypassMan.buttons_setting_configure do
+            layer :up do
+              open_macro :sokuwari, steps: [:toggle_r, :toggle_thumbr_for_2sec, :toggle_zr_for_1sec, :toggle_r], if_pressed: [:zr, :down]
+            end
+          end
+          expect(ProconBypassMan::Procon::MacroRegistry.plugins[:sokuwari].call).to eq([:r, :none, {:continue_for=>2, :steps=>[:thumbr, :none]}, {:continue_for=>1, :steps=>[:zr, :none]}, :r, :none])
+          expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].macros).to eq(
+            { :sokuwari => {:if_pressed=>[:zr, :down]} }
+          )
+        end
       end
     end
     context 'with install mode plugin' do

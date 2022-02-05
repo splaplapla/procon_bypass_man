@@ -40,7 +40,7 @@ class ProconBypassMan::BypassCommand
         monitor1.shutdown
         puts "10秒経過したのでThread1を終了します"
         break
-      rescue Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError => e
+      rescue Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError, Errno::ESHUTDOWN => e
         ProconBypassMan::SendErrorCommand.execute(error: "Switchとの切断されました.終了処理を開始します. #{e.full_message}")
         Process.kill "TERM", Process.ppid
       rescue Errno::ETIMEDOUT => e
@@ -62,7 +62,7 @@ class ProconBypassMan::BypassCommand
       rescue EOFError => e
         ProconBypassMan::SendErrorCommand.execute(error: "Proconが切断されました。終了処理を開始します. #{e.full_message}")
         Process.kill "TERM", Process.ppid
-      rescue Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError => e
+      rescue Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError, Errno::ESHUTDOWN => e
         ProconBypassMan::SendErrorCommand.execute(error: "Proconが切断されました。終了処理を開始します2. #{e.full_message}")
         Process.kill "TERM", Process.ppid
       end
