@@ -226,11 +226,16 @@ describe ProconBypassMan::Procon do
           ProconBypassMan.buttons_setting_configure do
             prefix_keys_for_changing_layer [:zr]
             layer :up do
-              open_macro nil, steps: [:pressing_thumbr_and_toggle_zr_for_2sec, :a], if_pressed: [:y, :b]
+              open_macro :multi, steps: [:pressing_thumbr_and_toggle_zr_for_2sec, :a], if_pressed: [:y, :b]
+              open_macro :single, steps: [:pressing_thumbr_for_2sec], if_pressed: [:x]
             end
           end
         end
         it do
+          expect(ProconBypassMan::Procon::MacroRegistry.plugins[:multi].call).to eq(
+            [{:continue_for=>2, :steps=>[[:thumbr, :zr], [:thumbr, :none]]}, :a]
+          )
+
           procon = ProconBypassMan::Procon.new(binary)
           expect(procon.pressed_y?).to eq(true)
           expect(procon.pressed_b?).to eq(true)
