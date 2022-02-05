@@ -226,7 +226,7 @@ describe ProconBypassMan::Procon do
           ProconBypassMan.buttons_setting_configure do
             prefix_keys_for_changing_layer [:zr]
             layer :up do
-              open_macro nil, steps: [:pressing_x_and_pressing_zr_for_0_2sec, :a], if_pressed: [:y, :b]
+              open_macro nil, steps: [:pressing_x_and_pressing_zr_for_2sec, :a], if_pressed: [:y, :b]
             end
           end
         end

@@ -121,6 +121,7 @@ PLATFORMS
   arm64-darwin-20
   arm64-darwin-21
   armv7l-linux
+  ruby
   x86_64-linux
 
 DEPENDENCIES
