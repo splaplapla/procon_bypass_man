@@ -37,7 +37,7 @@ class ProconBypassMan::Procon::UserOperation
   def press_button_only(button)
     if button.is_a?(Array)
       binary.set_no_action!
-      button.each do |b|
+      button.uniq.each do |b|
         unless ProconBypassMan::Procon::MacroBuilder::RESERVED_WORD_NONE == b
           binary.write_as_press_button(b)
         end
