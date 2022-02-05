@@ -9,7 +9,7 @@ gem "rake"
 gem "rspec"
 gem "pry"
 gem "timecop"
-gem "rubocop", require: false
+gem "rubocop", "1.23.0", require: false
 gem "steep", require: false
 gem 'typeprof', require: false
 gem 'rbs', require: false
