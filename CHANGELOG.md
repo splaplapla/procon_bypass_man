@@ -1,6 +1,8 @@
 ## [0.1.18] - 2022-0
 - macroでできることが増えました
   - 1ステップで複数のボタン入力と継続時間を指定ができるようになりました
+- スプラトゥーン2用のバブル即割マクロ(SokuwariForSplashBomb)が使えるようになりました
+  - https://github.com/splaplapla/procon_bypass_man-splatoon2
 
 ## [0.1.17] - 2022-01-26
 - procon_bypass_man_cloudに組み込むために、内部のデータ構造を変更しました
