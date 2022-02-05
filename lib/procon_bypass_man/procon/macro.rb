@@ -8,7 +8,7 @@ class ProconBypassMan::Procon::Macro
     end
 
     def over_end_at?
-      @hash[:end_at] <= Time.now
+      @hash[:end_at] < Time.now
     end
 
     def next_step
