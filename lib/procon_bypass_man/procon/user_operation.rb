@@ -33,8 +33,18 @@ class ProconBypassMan::Procon::UserOperation
     binary.write_as_press_button(button)
   end
 
-  # @param [Symbol] button
+  # @param [Symbol, Array<Symbol>] button
   def press_button_only(button)
+    if button.is_a?(Array)
+      binary.set_no_action!
+      button.each do |b|
+        unless ProconBypassMan::Procon::MacroBuilder::RESERVED_WORD_NONE == b
+          binary.write_as_press_button(b)
+        end
+      end
+      return
+    end
+
     if ProconBypassMan::Procon::MacroBuilder::RESERVED_WORD_NONE == button
       binary.set_no_action!
     else

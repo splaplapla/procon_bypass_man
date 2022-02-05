@@ -1,4 +1,50 @@
 class ProconBypassMan::Procon::MacroBuilder
+  class SubjectMerger
+    def self.merge(subjects)
+      if subjects.size == 1
+        return subjects.first.to_steps
+      end
+
+      base = subjects.first
+      remain = subjects[1..-1]
+      remain.map { |x| base.to_steps.zip(x.to_steps) }.first
+    end
+  end
+
+  class Subject
+    def initialize(value)
+      @button =
+        if match = value.match(/_(\w+)\z/)
+          match[1]
+        else
+          :unknown
+        end
+      @type =
+        if value.start_with?("toggle_")
+          :toggle
+        else
+          :pressing
+        end
+    end
+
+    def toggle?
+      @type == :toggle
+    end
+
+    def pressing?
+      not toggle?
+    end
+
+    def to_steps
+      case @type
+      when :toggle
+        [@button.to_sym, :none]
+      when :pressing
+        [@button.to_sym, @button.to_sym]
+      end
+    end
+  end
+
   RESERVED_WORD_NONE = :none
   RESERVED_WORDS = {
     RESERVED_WORD_NONE => true,
@@ -35,30 +81,18 @@ class ProconBypassMan::Procon::MacroBuilder
   end
 
   def build_if_v2_format?(step: )
-    # トグル
+    # 時間指定なし
     if(match = step.match(%r!\Atoggle_(\w+)\z!)) && (button_candidate = match[1]) && is_button(button_candidate)
       button = button_candidate
       return [button.to_sym, :none]
     end
 
-    # トグル + 時間
-    if(match = step.match(%r!\Atoggle_(\w+)_for_([\d_]+)sec\z!)) && (button_candidate = match[1]) && is_button(button_candidate)
-      button = button_candidate
-      sec =  match[2]
+    # 時間指定あり
+    if(subjects = step.scan(%r!pressing_[^_]+|toggle_[^_]+!)) && (match = step.match(%r!_for_([\d_]+)sec\z!))
+      sec = match[1]
       return [
         { continue_for: to_num(sec),
-          steps: [button.to_sym, :none]
-        }
-      ]
-    end
-
-    # 押しっぱなし + 時間
-    if(match = step.match(%r!\Apressing_(\w+)_for_([\d_]+)sec\z!)) && (button_candidate = match[1]) && is_button(button_candidate)
-      button = button_candidate
-      sec =  match[2]
-      return [
-        { continue_for: to_num(sec),
-          steps: [button.to_sym]
+          steps: SubjectMerger.merge(subjects.map { |x| Subject.new(x) }),
         }
       ]
     end

@@ -127,6 +127,25 @@ describe ProconBypassMan::Procon::Macro do
             end
           end
         end
+
+        context 'nested_step(multi buttons)のとき' do
+          let(:nested_step) {
+            { continue_for: 3, steps: [[:r, :b], [:none, :b]], }
+          }
+          it do
+            macro = described_class.new(name: nil, steps: [nested_step])
+            Timecop.freeze '2021-11-11 00:00:00' do
+              expect(macro.next_step).to eq([:r, :b])
+              expect(macro.next_step).to eq([:none, :b])
+              expect(macro.next_step).to eq([:r, :b])
+              expect(macro.next_step).to eq([:none, :b])
+            end
+
+            Timecop.freeze '2021-11-11 00:00:05' do
+              expect(macro.next_step).to eq(nil)
+            end
+          end
+        end
       end
     end
   end

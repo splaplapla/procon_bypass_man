@@ -219,6 +219,29 @@ describe ProconBypassMan::Procon do
         end
       end
     end
+    context 'v2' do
+      context 'y, bを押しているとき' do
+        let(:data) { "30778105800099277344e86b0a7909f4f5a8f4b500c5ff8dff6c09cdf5b8f49a00c5ff92ff6a0979f5eef46500d5ff9bff000000000000000000000000000000" }
+        before do
+          ProconBypassMan.buttons_setting_configure do
+            prefix_keys_for_changing_layer [:zr]
+            layer :up do
+              open_macro nil, steps: [:pressing_x_and_pressing_zr_for_0_2sec, :a], if_pressed: [:y, :b]
+            end
+          end
+        end
+        it do
+          procon = ProconBypassMan::Procon.new(binary)
+          expect(procon.pressed_y?).to eq(true)
+          expect(procon.pressed_b?).to eq(true)
+          procon.apply!
+
+          procon = ProconBypassMan::Procon.new(procon.to_binary)
+          expect(procon.pressed_x?).to eq(true)
+          expect(procon.pressed_zr?).to eq(true)
+        end
+      end
+    end
   end
 
   context 'with remap' do
