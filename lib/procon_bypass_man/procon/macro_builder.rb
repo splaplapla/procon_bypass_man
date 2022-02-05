@@ -88,11 +88,21 @@ class ProconBypassMan::Procon::MacroBuilder
     end
 
     # 時間指定あり
-    if(subjects = step.scan(%r!pressing_[^_]+|toggle_[^_]+!)) && (match = step.match(%r!_for_([\d_]+)sec\z!))
+    if %r!^(pressing_|toggle_)! =~ step && (subjects = step.scan(%r!pressing_[^_]+|toggle_[^_]+!)) && (match = step.match(%r!_for_([\d_]+)sec\z!))
       sec = match[1]
       return [
         { continue_for: to_num(sec),
           steps: SubjectMerger.merge(subjects.map { |x| Subject.new(x) }),
+        }
+      ]
+    end
+
+    # no-op command
+    if(match = step.match(%r!wait_for_([\d_]+)sec\z!))
+      sec = match[1]
+      return [
+        { continue_for: to_num(sec),
+          steps: [:none],
         }
       ]
     end
