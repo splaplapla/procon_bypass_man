@@ -10,7 +10,7 @@ class ProconBypassMan::Procon::Macro
     def over_end_at?
       (@hash[:end_at] < Time.now).tap do |result|
         if result
-          ProconBypassMan.logger.info { "[Macro] over nested step is #{@hash}" }
+          ProconBypassMan.logger.debug { "[Macro] nested step is finished(#{@hash})" }
         end
       end
     end
