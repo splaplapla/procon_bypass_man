@@ -1,4 +1,6 @@
 # スプラトゥーン2: バブル即割(スプラッシュボム)マクロの設定方法
+https://user-images.githubusercontent.com/1664497/152633205-ab44896b-9fa4-402c-b9aa-667e00676032.mp4
+
 * procon_bypass_man: 0.1.18以上が必要です
 * このマクロは、バブルの1個目のみを即割します
 
