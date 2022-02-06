@@ -39,7 +39,7 @@ Switch <-- (PBM): ZR連打
     * sudo apt-get install rbenv
     * git clone https://github.com/rbenv/ruby-build.git "$(rbenv root)"/plugins/ruby-build
     * rbenv install 3.0.1
-  * sudo gem install pbmenv
+  * gem install pbmenv
   * sudo [pbmenv](https://github.com/splaplapla/pbmenv) install latest
 * Raspberry Pi4 でprocon_bypass_manを実行する
   * cd /usr/share/pbm/current
