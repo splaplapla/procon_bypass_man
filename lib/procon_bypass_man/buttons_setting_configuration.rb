@@ -10,8 +10,6 @@ module ProconBypassMan
       :setting_path,
       :mode_plugins,
       :macro_plugins,
-      :context,
-      :current_context_key,
       :neutral_position
 
     def self.instance
@@ -27,22 +25,22 @@ module ProconBypassMan
       @@context[current_context_key] = val
     end
 
-    def self.switch_new_context(key)
-      @@context[key] = new
+    def self.switch_new_context(new_context_key)
+      @@context[new_context_key] = new
       previous_key = current_context_key
       if block_given?
-        @@current_context_key = key
-        value = yield(@@context[key])
-        @@current_context_key = previous_key
+        @@current_context_key = new_context_key
+        value = yield(@@context[new_context_key])
         return value
       else
-        @@current_context_key = key
+        @@current_context_key = new_context_key
       end
+    ensure
+      @@current_context_key = previous_key
     end
 
     def initialize
       reset!
-      self.class.instance = self
     end
 
     module ManualMode

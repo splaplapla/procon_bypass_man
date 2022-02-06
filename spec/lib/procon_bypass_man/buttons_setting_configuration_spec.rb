@@ -318,8 +318,14 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
             end
           EOH
 
-          ProconBypassMan::ButtonsSettingConfiguration.new.instance_eval(c)
-          expect { ProconBypassMan::ButtonsSettingConfiguration.new.instance_eval(c) }.not_to raise_error
+          instance = ProconBypassMan::ButtonsSettingConfiguration.new
+          ProconBypassMan::ButtonsSettingConfiguration.instance = instance
+          instance.instance_eval(c)
+          expect {
+            instance = ProconBypassMan::ButtonsSettingConfiguration.new
+            ProconBypassMan::ButtonsSettingConfiguration.instance = instance
+            instance.instance_eval(c)
+          }.not_to raise_error
         end
       end
 
@@ -635,6 +641,34 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
   end
 
   describe 'validations' do
+    context 'シンタックスエラーが起きるとき' do
+      before do
+        setting_content = <<~EOH
+          version: 1.0
+          setting: |-
+            prefix_keys_for_changing_layer [:zr, :r, :zl, :l]
+            set_neutral_position 1000, 1000
+        EOH
+        setting = Setting.new(setting_content).to_file
+        ProconBypassMan::ButtonsSettingConfiguration::Loader.load(setting_path: setting.path)
+        expect(ProconBypassMan::ButtonsSettingConfiguration.instance.prefix_keys).to eq([:zr, :r, :zl, :l])
+      end
+      it '変更は反映されないこと' do
+        setting_content = <<~EOH
+          version: 1.0
+          setting: |-
+            prefix_keys_for_changing_layer [:zr, :r, :zl, :l]
+            set_neutral_position 1000,, 1000
+        EOH
+        setting = Setting.new(setting_content).to_file
+        begin
+          ProconBypassMan::ButtonsSettingConfiguration::Loader.load(setting_path: setting.path)
+        rescue ProconBypassMan::CouldNotLoadConfigError
+          expect(ProconBypassMan::ButtonsSettingConfiguration.instance.prefix_keys).to eq([:zr, :r, :zl, :l])
+        end
+      end
+    end
+
     context '未定義のmacro定数をinstance_evalで読み込むとき' do
       it do
         c = <<~EOH
@@ -651,7 +685,9 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
             end
         EOH
 
-        ProconBypassMan::ButtonsSettingConfiguration.new.instance_eval(c)
+        instance = ProconBypassMan::ButtonsSettingConfiguration.new
+        ProconBypassMan::ButtonsSettingConfiguration.instance = instance
+        instance.instance_eval(c)
         validator = ProconBypassMan::ButtonsSettingConfiguration::Validator.new(
           ProconBypassMan::ButtonsSettingConfiguration.instance
         )
@@ -674,7 +710,9 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
             end
         EOH
 
-        ProconBypassMan::ButtonsSettingConfiguration.new.instance_eval(c)
+        instance = ProconBypassMan::ButtonsSettingConfiguration.new
+        ProconBypassMan::ButtonsSettingConfiguration.instance = instance
+        ProconBypassMan::ButtonsSettingConfiguration.instance.instance_eval(c)
         validator = ProconBypassMan::ButtonsSettingConfiguration::Validator.new(
           ProconBypassMan::ButtonsSettingConfiguration.instance
         )

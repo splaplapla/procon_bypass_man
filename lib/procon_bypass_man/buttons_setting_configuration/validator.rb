@@ -100,7 +100,7 @@ module ProconBypassMan
           end
 
           if(const = Module.const_get(key.to_s))
-            if not const.respond_to?(:binaries) && mode.call
+            if not (const.respond_to?(:binaries) && mode.call)
               @errors[:mode] << "モード #{key}を読み込めませんでした。"
             end
           end
@@ -116,7 +116,7 @@ module ProconBypassMan
           end
 
           if(const = Module.const_get(key.to_s))
-            if not const.respond_to?(:steps) && macro.call
+            if not (const.respond_to?(:steps) && macro.call)
               @errors[:macro] << "マクロ #{key}を読み込めませんでした。"
             end
           end
