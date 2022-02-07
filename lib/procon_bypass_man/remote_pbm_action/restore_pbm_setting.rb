@@ -6,9 +6,9 @@ module ProconBypassMan
         require "pbmenv"
         ProconBypassMan.logger.info "execute RestorePbmSettingAction!"
         setting = args.dig("setting") or raise(ProconBypassMan::RemotePbmAction::NeedPbmVersionError, "settingが必要です, #{args.inspect}")
-        File.write(
-          ProconBypassMan::ButtonsSettingConfiguration.instance.setting_path,
-          setting.to_yaml,
+        ProconBypassMan::YamlWriter.execute(
+          path: ProconBypassMan::ButtonsSettingConfiguration.instance.setting_path,
+          content: setting,
         )
         ProconBypassMan.hot_reload!
       end
