@@ -30,6 +30,10 @@ RSpec.configure do |config|
     allow(ProconBypassMan::HttpClient::HttpRequest::Post).to receive(:new)
     allow(ProconBypassMan.config).to receive(:internal_server_pool) { ProconBypassMan::ServerPool.new(servers: []) }
     allow(ProconBypassMan.config).to receive(:server_pool) { ProconBypassMan::ServerPool.new(servers: []) }
+    allow(ProconBypassMan.config).to receive(:enable_remote_macro?) { false }
+    allow_any_instance_of(Net::HTTP).to receive(:get) { double(:x).as_null_object }
+    allow_any_instance_of(Net::HTTP).to receive(:put) { double(:x).as_null_object }
+    allow_any_instance_of(Net::HTTP).to receive(:post) { double(:x).as_null_object }
   end
 
   # rspec-expectations config goes here. You can use an alternate
