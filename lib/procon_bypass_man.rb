@@ -51,6 +51,7 @@ module ProconBypassMan
 
   class CouldNotLoadConfigError < StandardError; end
   class NotFoundProconError < StandardError; end
+  class GracefulShutdown < StandardError; end
   class ConnectionError < StandardError; end
   class FirstConnectionError < ConnectionError; end
   class EternalConnectionError < ConnectionError; end
@@ -90,6 +91,10 @@ module ProconBypassMan
       ProconBypassMan::SendErrorCommand.execute(error: "接続を確立できませんでした。やりなおします。")
       retry
     end
+  rescue ProconBypassMan::GracefulShutdown
+    FileUtils.rm_rf(ProconBypassMan.pid_path)
+    FileUtils.rm_rf(ProconBypassMan.digest_path)
+    exit 1
   end
 
   def self.configure(&block)
