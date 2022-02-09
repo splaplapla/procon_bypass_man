@@ -57,7 +57,7 @@ class ProconBypassMan::Runner
         ProconBypassMan::PrintMessageCommand.execute(text: "処理を終了します")
         @gadget&.close
         @procon&.close
-        raise ProconBypassMan::GracefulShutdown
+        break
       end
     end
   end
