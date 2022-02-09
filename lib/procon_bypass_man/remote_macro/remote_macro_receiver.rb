@@ -15,12 +15,10 @@ module ProconBypassMan::RemoteMacroReceiver
 
   def run
     while 1
-      client = UNIXSocket.new(ProconBypassMan.config.remote_macro_sock)
-      if data = client.read(65536)
-        client.close
-        item = Marshal.load(data)
-      end
+      data = ProconBypassMan::QueueOverProcess.pop
+      # ここでmacroのqueueにpushする
     end
+    ProconBypassMan::QueueOverProcess.pop
   rescue Errno::ENOENT, Errno::ECONNRESET, Errno::ECONNREFUSED => e
     ProconBypassMan.logger.debug(e)
   end

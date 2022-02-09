@@ -59,7 +59,7 @@ module ProconBypassMan
         if pbm_job_hash['action'] == "ping"
           client.perform('pong', { device_id: ProconBypassMan.device_id, message: 'hello from pbm' })
         elsif pbm_job_hash['action'] == "remote_macro"
-          validate_and_to_sock(data: data)
+          validate_and_send_macro_queue(data: data)
         else
           validate_and_run(data: data)
         end
@@ -89,7 +89,7 @@ module ProconBypassMan
         )
       end
 
-      def self.validate_and_to_sock(data: )
+      def self.validate_and_send_macro_queue(data: )
         pbm_job_hash = data.dig("message")
         begin
           remote_macro_object = ProconBypassMan::RemoteMacroObject.new(action: pbm_job_hash["action"],
@@ -101,7 +101,7 @@ module ProconBypassMan
         end
 
         # TODO extract class
-        ProconBypassMan.config.remote_macro_sock_server.sock.write("hei\n")
+        ProconBypassMan::QueueOverProcess
       end
     end
   end

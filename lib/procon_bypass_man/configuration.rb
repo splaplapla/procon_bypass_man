@@ -160,15 +160,4 @@ class ProconBypassMan::Configuration
   def enable_reporting_pressed_buttons
     @enable_reporting_pressed_buttons ||= false
   end
-
-  def remote_macro_sock
-    "/tmp/procon_bypass_man_remote_macro.sock"
-  end
-
-  # @return [UNIXServer, nil]
-  def remote_macro_sock_server
-    if enable_ws?
-      @remote_macro_sock_server ||= UNIXServer.new(remote_macro_sock)
-    end
-  end
 end

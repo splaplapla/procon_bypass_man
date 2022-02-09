@@ -28,7 +28,6 @@ class ProconBypassMan::Runner
       $will_terminate_token = false
       # NOTE メインプロセスではThreadをいくつか起動しているので念のためパフォーマンスを優先するためにforkしていく
       main_loop_pid = Kernel.fork {
-        ProconBypassMan.config.remote_macro_sock_server&.close
         ProconBypassMan::RemoteMacroReceiver.start!
         ProconBypassMan::BypassCommand.new(gadget: @gadget, procon: @procon).execute
       }
