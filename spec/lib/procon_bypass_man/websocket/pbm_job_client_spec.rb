@@ -15,7 +15,8 @@ describe ProconBypassMan::Websocket::PbmJobClient do
 
       it do
         expect(ProconBypassMan::RunRemotePbmActionDispatchCommand).not_to receive(:execute)
-        expect { subject }.to raise_error(ProconBypassMan::RemotePbmActionObject::NonSupportAction)
+        expect(ProconBypassMan::SendErrorCommand).to receive(:execute).with(error: ProconBypassMan::RemotePbmActionObject::NonSupportAction)
+        subject
       end
     end
 

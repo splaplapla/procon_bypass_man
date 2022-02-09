@@ -58,6 +58,8 @@ module ProconBypassMan
         pbm_job_hash = data.dig("message")
         if pbm_job_hash['action'] == "ping"
           client.perform('pong', { device_id: ProconBypassMan.device_id, message: 'hello from pbm' })
+        elsif pbm_job_hash['action'] == "remote_macro"
+          validate_and_to_sock(data: data)
         else
           validate_and_run(data: data)
         end
@@ -76,7 +78,8 @@ module ProconBypassMan
                                                                       job_args: pbm_job_hash["args"])
           pbm_job_object.validate!
         rescue ProconBypassMan::RemotePbmActionObject::ValidationError => e
-          raise
+          ProconBypassMan::SendErrorCommand.execute(error: e)
+          return
         end
 
         ProconBypassMan::RunRemotePbmActionDispatchCommand.execute(
@@ -84,6 +87,21 @@ module ProconBypassMan
           uuid: pbm_job_object.uuid,
           job_args: pbm_job_object.job_args
         )
+      end
+
+      def self.validate_and_to_sock(data: )
+        pbm_job_hash = data.dig("message")
+        begin
+          remote_macro_object = ProconBypassMan::RemoteMacroObject.new(action: pbm_job_hash["action"],
+                                                                       args: pbm_job_hash["args"])
+          remote_macro_object.validate!
+        rescue ProconBypassMan::RemoteMacroObject::ValidationError => e
+          ProconBypassMan::SendErrorCommand.execute(error: e)
+          return
+        end
+
+        # TODO extract class
+        ProconBypassMan.config.remote_macro_sock_server.sock.write("hei\n")
       end
     end
   end

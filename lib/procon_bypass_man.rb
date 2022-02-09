@@ -11,6 +11,7 @@ require "ext/module"
 
 require_relative "procon_bypass_man/version"
 require_relative "procon_bypass_man/remote_pbm_action"
+require_relative "procon_bypass_man/remote_macro"
 require_relative "procon_bypass_man/support/signal_handler"
 require_relative "procon_bypass_man/support/callbacks"
 require_relative "procon_bypass_man/support/yaml_writer"
@@ -38,7 +39,6 @@ require_relative "procon_bypass_man/procon/button"
 require_relative "procon_bypass_man/procon/value_objects/analog_stick"
 require_relative "procon_bypass_man/procon/value_objects/procon_reader"
 require_relative "procon_bypass_man/procon/analog_stick_cap"
-require_relative "procon_bypass_man/remote_pbm_action/value_objects/remote_pbm_action_object"
 require_relative "procon_bypass_man/scheduler"
 require_relative "procon_bypass_man/plugins"
 require_relative "procon_bypass_man/websocket/pbm_job_client"
@@ -60,6 +60,8 @@ module ProconBypassMan
     ProconBypassMan::Scheduler.start!
     ProconBypassMan::Background::JobRunner.start!
     ProconBypassMan::Websocket::PbmJobClient.start!
+    FileUtils.rm(ProconBypassMan.config.remote_macro_sock) if File.exist?(ProconBypassMan.config.remote_macro_sock)
+    ProconBypassMan.config.remote_macro_sock_server
 
     ProconBypassMan::PrintMessageCommand.execute(text: "PBMを起動しています")
     ProconBypassMan::ButtonsSettingConfiguration::Loader.load(setting_path: setting_path)
@@ -71,12 +73,14 @@ module ProconBypassMan
     ProconBypassMan::DeviceStatus.change_to_setting_syntax_error_and_shutdown!
     FileUtils.rm_rf(ProconBypassMan.pid_path)
     FileUtils.rm_rf(ProconBypassMan.digest_path)
+    FileUtils.rm_rf(ProconBypassMan.config.remote_macro_sock)
     exit 1
   rescue ProconBypassMan::NotFoundProconError
     ProconBypassMan::SendErrorCommand.execute(error: "プロコンが見つかりませんでした。終了します。")
     ProconBypassMan::DeviceStatus.change_to_procon_not_found_error!
     FileUtils.rm_rf(ProconBypassMan.pid_path)
     FileUtils.rm_rf(ProconBypassMan.digest_path)
+    FileUtils.rm_rf(ProconBypassMan.config.remote_macro_sock)
     exit 1
   rescue ProconBypassMan::ConnectionError
     begin
@@ -85,6 +89,7 @@ module ProconBypassMan
       ProconBypassMan::SendErrorCommand.execute(error: "接続の見込みがないのでsleepしまくります")
       ProconBypassMan::DeviceStatus.change_to_connected_but_sleeping!
       FileUtils.rm_rf(ProconBypassMan.pid_path)
+      FileUtils.rm_rf(ProconBypassMan.config.remote_macro_sock)
       eternal_sleep
     rescue ProconBypassMan::FirstConnectionError
       ProconBypassMan::SendErrorCommand.execute(error: "接続を確立できませんでした。やりなおします。")
