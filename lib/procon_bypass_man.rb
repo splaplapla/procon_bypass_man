@@ -51,7 +51,6 @@ module ProconBypassMan
 
   class CouldNotLoadConfigError < StandardError; end
   class NotFoundProconError < StandardError; end
-  class GracefulShutdown < StandardError; end
   class ConnectionError < StandardError; end
   class FirstConnectionError < ConnectionError; end
   class EternalConnectionError < ConnectionError; end
@@ -66,7 +65,9 @@ module ProconBypassMan
     ProconBypassMan::ButtonsSettingConfiguration::Loader.load(setting_path: setting_path)
     initialize_pbm
     gadget, procon = ProconBypassMan::ConnectDeviceCommand.execute!
-    Runner.new(gadget: gadget, procon: procon).run
+    Runner.new(gadget: gadget, procon: procon).run # ここでblockingする
+    FileUtils.rm_rf(ProconBypassMan.pid_path)
+    FileUtils.rm_rf(ProconBypassMan.digest_path)
   rescue ProconBypassMan::CouldNotLoadConfigError
     ProconBypassMan::SendErrorCommand.execute(error: "設定ファイルが不正です。設定ファイルの読み込みに失敗しました")
     ProconBypassMan::DeviceStatus.change_to_setting_syntax_error_and_shutdown!
@@ -91,10 +92,6 @@ module ProconBypassMan
       ProconBypassMan::SendErrorCommand.execute(error: "接続を確立できませんでした。やりなおします。")
       retry
     end
-  rescue ProconBypassMan::GracefulShutdown
-    FileUtils.rm_rf(ProconBypassMan.pid_path)
-    FileUtils.rm_rf(ProconBypassMan.digest_path)
-    exit 1
   end
 
   def self.configure(&block)
