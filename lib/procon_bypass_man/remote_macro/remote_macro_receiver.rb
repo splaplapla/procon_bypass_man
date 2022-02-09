@@ -1,7 +1,7 @@
-module ProconBypassMan::RemoteMacroReceiver
+class ProconBypassMan::RemoteMacroReceiver
   # forkしたプロセスで動かすクラス。sock経由で命令を受け取ってmacoのキューに積んでいく
   def self.start!
-    return unless ProconBypassMan.config.enable_ws?
+    return unless ProconBypassMan.config.enable_remote_macro?
     instance = new
 
     Thread.start do
