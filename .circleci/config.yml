@@ -54,7 +54,7 @@ jobs:
     steps:
       - bundle_install:
           ruby-version: << parameters.ruby-version >>
-      - run: bundle exec rubocop
+      - run: bundle exec rubocop -P
   type_check:
     parameters:
       ruby-version:
