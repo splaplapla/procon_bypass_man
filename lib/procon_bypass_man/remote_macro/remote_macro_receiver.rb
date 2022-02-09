@@ -14,7 +14,7 @@ class ProconBypassMan::RemoteMacroReceiver
   end
 
   def run
-    while 1
+    while true
       data = ProconBypassMan::QueueOverProcess.pop
       # ここでmacroのqueueにpushする
     end
