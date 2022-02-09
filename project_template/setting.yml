@@ -9,7 +9,6 @@ setting: |-
   prefix_keys_for_changing_layer [:zr, :zl, :l]
 
   layer :up, mode: :manual do
-    # flip :zr, if_pressed: :zr, force_neutral: :zl
     flip :zr, if_pressed: :zr, force_neutral: :zl
     flip :zl, if_pressed: [:y, :b, :zl]
     flip :a, if_pressed: [:a]
@@ -22,11 +21,8 @@ setting: |-
   end
   layer :right, mode: ProconBypassMan::Plugin::Splatoon2::Mode::Guruguru
   layer :left do
-  # flip :zr, if_pressed: :zr, force_neutral: :zl
     remap :l, to: :zr
   end
   layer :down do
-    # flip :zl
-    # flip :zr, if_pressed: :zr, force_neutral: :zl, flip_interval: "1F"
     remap :l, to: :zr
   end
