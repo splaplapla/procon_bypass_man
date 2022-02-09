@@ -15,34 +15,108 @@ executors:
       BUNDLE_JOBS: 4
     working_directory: ~/app
 
-jobs:
-  rspec:
+commands: &commands
+  bundle_install:
     parameters:
-      version:
+      ruby-version:
+        type: string
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - gem-cache-v1-<< parameters.ruby-version >>-{{ arch }}-{{ .Branch }}-{{ checksum "Gemfile.lock" }}
+            - gem-cache-v1-<< parameters.ruby-version >>-{{ arch }}-{{ .Branch }}
+            - gem-cache-v1
+      - run: gem i bundler && bundle install --path vendor/bundle --jobs 100 && bundle clean
+      - save_cache:
+          key: gem-cache-v1-<< parameters.ruby-version >>-{{ arch }}-{{ .Branch }}-{{ checksum "Gemfile.lock" }}
+          paths:
+            - vendor/bundle
+
+jobs:
+  bundle_install:
+    parameters:
+      ruby-version:
         type: string
     executor:
       name: ruby
-      tag: << parameters.version >>
+      tag: << parameters.ruby-version >>
     steps:
-      - checkout
-      - run: ruby --version
-      - run: bundle --version
-      - run: gem --version
-      - run: gem install bundler
-      - run: bundle install --jobs 4
-      - run: bundle exec rubocop
-      - run: bundle exec rspec
+      - bundle_install:
+          ruby-version: << parameters.ruby-version >>
+  lint:
+    parameters:
+      ruby-version:
+        type: string
+    executor:
+      name: ruby
+      tag: << parameters.ruby-version >>
+    steps:
+      - bundle_install:
+          ruby-version: << parameters.ruby-version >>
+      - run: bundle exec rubocop -P
+  type_check:
+    parameters:
+      ruby-version:
+        type: string
+    executor:
+      name: ruby
+      tag: << parameters.ruby-version >>
+    steps:
+      - bundle_install:
+          ruby-version: << parameters.ruby-version >>
       - run: bundle exec steep check
+  rspec:
+    parameters:
+      ruby-version:
+        type: string
+    executor:
+      name: ruby
+      tag: << parameters.ruby-version >>
+    steps:
+      - bundle_install:
+          ruby-version: << parameters.ruby-version >>
+      - run: bundle exec rspec
 
 build_jobs: &build_jobs
-  - rspec:
+  - bundle_install:
       matrix:
         parameters:
-          version:
+          ruby-version:
             - "2.7"
             - "3.0.1"
             - "3.0.2"
             - "3.1.0"
+  - lint:
+      matrix:
+        parameters:
+          ruby-version:
+            - "2.7"
+            - "3.0.1"
+            - "3.0.2"
+            - "3.1.0"
+      requires:
+        - bundle_install
+  - type_check:
+      matrix:
+        parameters:
+          ruby-version:
+            - "2.7"
+            # - "3.0.1" # たまにSEGVするので
+            - "3.0.2"
+            - "3.1.0"
+      requires:
+        - bundle_install
+  - rspec:
+      matrix:
+        parameters:
+          ruby-version:
+            - "2.7"
+            - "3.0.1"
+            - "3.0.2"
+            - "3.1.0"
+      requires:
+        - bundle_install
 workflows:
   version: 2
   build:
