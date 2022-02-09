@@ -1,17 +1,20 @@
 require "spec_helper"
 
 describe ProconBypassMan::QueueOverProcess do
+  before(:each) do
+    allow(ProconBypassMan.config).to receive(:enable_remote_macro?) { true }
+  end
+
   describe '.start!' do
     subject { described_class.start! }
-    it do
-      expect { subject }.not_to raise_error
+    context 'when not enable' do
+      it do
+        allow(ProconBypassMan.config).to receive(:enable_remote_macro?) { false }
+        expect(subject).to be_nil
+      end
     end
 
-    context 'when enable ws' do
-      before do
-        allow(ProconBypassMan.config).to receive(:enable_ws?) { true }
-      end
-
+    context 'when enable' do
       it do
         expect { subject }.not_to raise_error
       end
@@ -25,8 +28,6 @@ describe ProconBypassMan::QueueOverProcess do
 
   describe 'pop, push' do
     before do
-      allow(ProconBypassMan.config).to receive(:enable_ws?) { true }
-      described_class.start!
       described_class.drb.clear
     end
 

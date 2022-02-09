@@ -140,6 +140,11 @@ class ProconBypassMan::Configuration
     !!current_server
   end
 
+  # @return [Boolean]
+  def enable_remote_macro?
+    enable_ws?
+  end
+
   # @return [Array<String>]
   def api_servers
     if !!ENV["API_SERVER"]

@@ -1,14 +1,16 @@
 class ProconBypassMan::QueueOverProcess
-  def self.start!
-    return unless ProconBypassMan.config.enable_ws?
+  attr_reader :drb
 
+  def self.start!
+    return unless ProconBypassMan.config.enable_remote_macro?
     require 'drb/drb'
 
-    # portをランダムにする
+    FileUtils.rm_rf(url) if File.exists?(url)
     begin
       DRb.start_service(url, Queue.new, safe_level: 1)
-    rescue Errno::EADDRINUSE # Address already in use
-      # TODO どうする
+    rescue Errno::EADDRINUSE => e
+      ProconBypassMan.logger.error e
+      raise
     end
 
     Thread.new do
@@ -17,12 +19,6 @@ class ProconBypassMan::QueueOverProcess
       ProconBypassMan::SendErrorCommand.execute(error: e)
       retry
     end
-  end
-
-  attr_reader :drb
-
-  def initialize
-    @drb = DRbObject.new_with_uri(self.class.url)
   end
 
   def self.push(value)
@@ -38,6 +34,10 @@ class ProconBypassMan::QueueOverProcess
   end
 
   def self.url
-    "druby://localhost:8787"
+    "drbunix:/tmp/procon_bypass_man_queue"
+  end
+
+  def initialize
+    @drb = DRbObject.new_with_uri(self.class.url)
   end
 end
