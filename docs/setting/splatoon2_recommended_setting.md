@@ -23,7 +23,7 @@ install_macro_plugin ProconBypassMan::Plugin::Splatoon2::Macro::JumpToUpKey
 install_macro_plugin ProconBypassMan::Plugin::Splatoon2::Macro::JumpToRightKey
 install_macro_plugin ProconBypassMan::Plugin::Splatoon2::Macro::JumpToLeftKey
 
-layer :up, mode: :manual do
+layer :up do
   macro ProconBypassMan::Plugin::Splatoon2::Macro::FastReturn, if_pressed: [:y, :b, :down]
   macro ProconBypassMan::Plugin::Splatoon2::Macro::JumpToUpKey, if_pressed: [:y, :b, :up]
   macro ProconBypassMan::Plugin::Splatoon2::Macro::JumpToRightKey, if_pressed: [:y, :b, :right]
@@ -58,7 +58,7 @@ version: 1.0
 setting: |-
   prefix_keys_for_changing_layer [:zr, :zl, :l]
 
-  layer :up, mode: :manual do
+  layer :up do
     flip :zr, if_pressed: :zr, force_neutral: :zl
     flip :a, if_pressed: [:a]
     flip :down, if_pressed: :down
