@@ -5,17 +5,15 @@ module ProconBypassMan
     class MustBeNotNilError < ValidationError; end
     class NonSupportAction < ValidationError; end
 
-    attr_accessor :action, :status, :uuid, :created_at, :job_args
+    attr_accessor :action, :uuid, :steps
 
     # @param [String] action
-    # @param [String] status
-    # @param [String] #uuid
-    # @param [Time] created_at
-    # @return [Hash] job_args
-    def initialize(action: , uuid:, job_args: )
+    # @param [String] uuid
+    # @param [Array] steps
+    def initialize(action: , uuid:, steps: )
       @action = action
       @uuid = uuid
-      @job_args = job_args
+      @steps = steps
       freeze
     end
 
@@ -23,6 +21,11 @@ module ProconBypassMan
     # @raise [NonSupportAction]
     # @return [void]
     def validate!
+      self.action or raise MustBeNotNilError, "actionは値が必須です"
+      self.uuid or raise MustBeNotNilError, "uuidは値が必須です"
+      unless self.steps.is_a?(Array)
+        raise ValidationError, "stepsは配列です"
+      end
     end
   end
 end

@@ -11,7 +11,7 @@ module ProconBypassMan
     # @param [String] status
     # @param [String] #uuid
     # @param [Time] created_at
-    # @return [Hash] job_args
+    # @param [Hash] job_args
     def initialize(action: , status:, uuid:, created_at:, job_args: )
       self.action = action
       self.status = status

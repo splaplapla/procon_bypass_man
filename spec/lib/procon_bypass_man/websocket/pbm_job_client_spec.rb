@@ -7,16 +7,61 @@ describe ProconBypassMan::Websocket::PbmJobClient do
   xdescribe '.start!' do
   end
 
+  describe '.validate_and_run_remote_macro' do
+    subject { described_class.validate_and_run_remote_macro(data: data) }
+
+    context 'valid' do
+      let(:data) { { "message" => {"action"=>"a", "uuid"=>"c", "steps"=>[] } } }
+
+      it do
+        expect(ProconBypassMan::RemoteMacroSender).to receive(:execute)
+        subject
+      end
+    end
+
+    context 'invalid' do
+      context 'stepsがnil' do
+        let(:data) { { "message" => {"action"=>"remote_action",  "uuid"=>"20f27b6a-f727-4f8e-819b-bb60035d2ebc" } } }
+
+        it do
+          expect(ProconBypassMan::SendErrorCommand).to receive(:execute).with(error: ProconBypassMan::RemoteMacroObject::ValidationError)
+          subject
+        end
+      end
+
+      context 'uuidがnil' do
+        let(:data) { { "message" => {"action"=>"remote_action",  "uuid"=>nil, 'steps'=>[] } } }
+
+        it do
+          expect(ProconBypassMan::SendErrorCommand).to receive(:execute).with(error: ProconBypassMan::RemoteMacroObject::MustBeNotNilError)
+          subject
+        end
+      end
+    end
+  end
+
   describe '.validate_and_run_remote_pbm_action' do
     subject { described_class.validate_and_run_remote_pbm_action(data: data) }
 
-    context 'validation errorが起きるとき' do
-      let(:data) { { "message" => {"action"=>"unknown", "status"=>"queued", "uuid"=>"20f27b6a-f727-4f8e-819b-bb60035d2ebc", "created_at"=>"2021-11-25T00:40:21.705+09:00"} } }
+    context 'invalid' do
+      context '知らないaction' do
+        let(:data) { { "message" => {"action"=>"unknown", "status"=>"queued", "uuid"=>"20f27b6a-f727-4f8e-819b-bb60035d2ebc", "created_at"=>"2021-11-25T00:40:21.705+09:00"} } }
 
-      it do
-        expect(ProconBypassMan::RunRemotePbmActionDispatchCommand).not_to receive(:execute)
-        expect(ProconBypassMan::SendErrorCommand).to receive(:execute).with(error: ProconBypassMan::RemotePbmActionObject::NonSupportAction)
-        subject
+        it do
+          expect(ProconBypassMan::RunRemotePbmActionDispatchCommand).not_to receive(:execute)
+          expect(ProconBypassMan::SendErrorCommand).to receive(:execute).with(error: ProconBypassMan::RemotePbmActionObject::NonSupportAction)
+          subject
+        end
+      end
+
+      context 'uuidがnil' do
+        let(:data) { { "message" => {"action"=>"unknown", "status"=>"queued", "uuid"=>nil, "created_at"=>"2021-11-25T00:40:21.705+09:00"} } }
+
+        it do
+          expect(ProconBypassMan::RunRemotePbmActionDispatchCommand).not_to receive(:execute)
+          expect(ProconBypassMan::SendErrorCommand).to receive(:execute).with(error: ProconBypassMan::RemotePbmActionObject::MustBeNotNilError)
+          subject
+        end
       end
     end
 

@@ -60,7 +60,7 @@ module ProconBypassMan
         when "ping"
           client.perform('pong', { device_id: ProconBypassMan.device_id, message: 'hello from pbm' })
         when "remote_macro"
-          validate_and_send_macro_queue(data: data)
+          validate_and_run_remote_macro(data: data)
         when ProconBypassMan::RemotePbmAction::ACTIONS
           validate_and_run_remote_pbm_action(data: data)
         else
@@ -92,19 +92,22 @@ module ProconBypassMan
         )
       end
 
-      def self.validate_and_send_macro_queue(data: )
+      def self.validate_and_run_remote_macro(data: )
         pbm_job_hash = data.dig("message")
         begin
           remote_macro_object = ProconBypassMan::RemoteMacroObject.new(action: pbm_job_hash["action"],
-                                                                       args: pbm_job_hash["args"])
+                                                                       uuid: pbm_job_hash["uuid"],
+                                                                       steps: pbm_job_hash["steps"])
           remote_macro_object.validate!
         rescue ProconBypassMan::RemoteMacroObject::ValidationError => e
           ProconBypassMan::SendErrorCommand.execute(error: e)
           return
         end
 
-        # TODO extract class
-        ProconBypassMan::QueueOverProcess
+        ProconBypassMan::RemoteMacroSender.execute(
+          uuid: remote_macro_object.uuid,
+          steps: remote_macro_object.steps,
+        )
       end
     end
   end
