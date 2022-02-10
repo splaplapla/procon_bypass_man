@@ -56,19 +56,22 @@ module ProconBypassMan
       # @param [Hash] data
       def self.dispatch(data: , client: )
         pbm_job_hash = data.dig("message")
-        if pbm_job_hash['action'] == "ping"
+        case pbm_job_hash['action']
+        when "ping"
           client.perform('pong', { device_id: ProconBypassMan.device_id, message: 'hello from pbm' })
-        elsif pbm_job_hash['action'] == "remote_macro"
+        when "remote_macro"
           validate_and_send_macro_queue(data: data)
+        when ProconBypassMan::RemotePbmAction::ACTIONS
+          validate_and_run_remote_pbm_action(data: data)
         else
-          validate_and_run(data: data)
+          ProconBypassMan.logger.error "unknown action"
         end
       end
 
       # @raise [ProconBypassMan::RemotePbmActionObject::ValidationError]
       # @param [Hash] data
       # @return [Void]
-      def self.validate_and_run(data: )
+      def self.validate_and_run_remote_pbm_action(data: )
         pbm_job_hash = data.dig("message")
         begin
           pbm_job_object = ProconBypassMan::RemotePbmActionObject.new(action: pbm_job_hash["action"],
