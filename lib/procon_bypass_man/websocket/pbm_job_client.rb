@@ -61,7 +61,7 @@ module ProconBypassMan
           client.perform('pong', { device_id: ProconBypassMan.device_id, message: 'hello from pbm' })
         when "remote_macro"
           validate_and_run_remote_macro(data: data)
-        when ProconBypassMan::RemotePbmAction::ACTIONS
+        when *ProconBypassMan::RemotePbmAction::ACTIONS
           validate_and_run_remote_pbm_action(data: data)
         else
           ProconBypassMan.logger.error "unknown action"

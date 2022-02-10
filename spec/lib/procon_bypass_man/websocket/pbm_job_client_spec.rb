@@ -7,6 +7,27 @@ describe ProconBypassMan::Websocket::PbmJobClient do
   xdescribe '.start!' do
   end
 
+  describe '.dispatch' do
+    subject { described_class.dispatch(data: data, client: nil) }
+
+    context 'when restore_pbm_setting action' do
+      let(:data) { { "message" => {"action"=>"restore_pbm_setting", "status"=>"queued", "uuid"=>"a", "created_at"=>"2021-11-25T00:40:21.705+09:00"} } }
+      it do
+        expect(described_class).to receive(:validate_and_run_remote_pbm_action)
+        subject
+      end
+    end
+
+    context 'when not found action' do
+      let(:data) { { "message" => {"action"=>"not_found", "status"=>"queued", "uuid"=>"a", "created_at"=>"2021-11-25T00:40:21.705+09:00"} } }
+      it do
+        expect(described_class).not_to receive(:validate_and_run_remote_pbm_action)
+        expect(described_class).not_to receive(:validate_and_run_remote_macro)
+        subject
+      end
+    end
+  end
+
   describe '.validate_and_run_remote_macro' do
     subject { described_class.validate_and_run_remote_macro(data: data) }
 
