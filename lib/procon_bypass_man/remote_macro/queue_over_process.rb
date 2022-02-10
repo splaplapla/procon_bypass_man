@@ -5,7 +5,7 @@ class ProconBypassMan::QueueOverProcess
     return unless ProconBypassMan.config.enable_remote_macro?
     require 'drb/drb'
 
-    FileUtils.rm_rf(url) if File.exists?(url)
+    FileUtils.rm_rf(url) if File.exist?(url)
     begin
       DRb.start_service(url, Queue.new, safe_level: 1)
     rescue Errno::EADDRINUSE => e
