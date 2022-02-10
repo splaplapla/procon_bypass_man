@@ -43,8 +43,9 @@ class ProconBypassMan::Runner
         begin
           ProconBypassMan::ButtonsSettingConfiguration::Loader.reload_setting
           ProconBypassMan::SendReloadConfigEventCommand.execute
-        rescue ProconBypassMan::CouldNotLoadConfigError
+        rescue ProconBypassMan::CouldNotLoadConfigError => error
           ProconBypassMan::SendErrorCommand.execute(error: "設定ファイルが不正です。再読み込みができませんでした")
+          ProconBypassMan::ReportErrorReloadConfigJob.perform_async(error.message)
         end
         ProconBypassMan::PrintMessageCommand.execute(text: "バイパス処理を再開します")
       rescue Interrupt

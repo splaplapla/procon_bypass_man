@@ -32,6 +32,16 @@ module ProconBypassMan
         @errors ||= Hash.new {|h,k| h[k] = [] }
       end
 
+      # @return [Array<String>]
+      def errors_to_s
+        errors.map { |_x, message|
+          value = <<~EOH
+            #{message.map { |m| "layer #{m}" }.join("\n")}
+          EOH
+          value.chomp
+        }.join("\n")
+      end
+
       private
 
       def validate_config_of_button_lonely

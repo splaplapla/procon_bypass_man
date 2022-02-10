@@ -12,7 +12,7 @@ module ProconBypassMan
           if validator.valid?
             next
           else
-            raise ProconBypassMan::CouldNotLoadConfigError, validator.errors
+            raise ProconBypassMan::CouldNotLoadConfigError, validator.errors_to_s
           end
         rescue SyntaxError
           raise ProconBypassMan::CouldNotLoadConfigError, "Rubyスクリプトのシンタックスエラーです"

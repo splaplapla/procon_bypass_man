@@ -139,6 +139,29 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
           ).not_to be_nil
         end
       end
+      context '複数レイヤーで存在しないボタンを書いているとき' do
+        let(:setting_content) do
+          <<~EOH
+          version: 1.0
+          setting: |-
+            prefix_keys_for_changing_layer [:zr, :r, :zl, :l]
+            layer :up do
+              flip :n, if_pressed: :zr
+              flip :p, if_pressed: :zr
+            end
+            layer :down do
+              flip :n, if_pressed: :zr
+            end
+          EOH
+        end
+        it do
+          begin
+            ProconBypassMan::ButtonsSettingConfiguration::Loader.load(setting_path: setting.path)
+          rescue ProconBypassMan::CouldNotLoadConfigError => e
+            expect(e.message).to eq("layer upで存在しないボタンn, pがあります\nlayer downで存在しないボタンnがあります")
+          end
+        end
+      end
       context '存在しないボタンを書いているとき1-1(対象のボタン)' do
         let(:setting_content) do
           <<~EOH
@@ -154,7 +177,7 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
           begin
             ProconBypassMan::ButtonsSettingConfiguration::Loader.load(setting_path: setting.path)
           rescue ProconBypassMan::CouldNotLoadConfigError => e
-            expect(e.message).to include "upで存在しないボタンnがあります"
+            expect(e.message).to eq("layer upで存在しないボタンnがあります")
           end
         end
       end
