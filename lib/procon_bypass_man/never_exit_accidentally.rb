@@ -4,6 +4,7 @@ module ProconBypassMan
       if ProconBypassMan.never_exit_accidentally
         eternal_sleep
       else
+        yield if block_given?
         exit(status)
       end
     end
