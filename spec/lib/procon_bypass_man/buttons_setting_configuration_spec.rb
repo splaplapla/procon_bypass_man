@@ -684,31 +684,60 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
       end
 
       context '初回は成功する' do
-        before do
-          setting_content = <<~EOH
-          version: 1.0
-          setting: |-
-            prefix_keys_for_changing_layer [:zr, :r, :zl, :l]
-            set_neutral_position 1000, 1000
+        let(:setting_content) {
+          <<~EOH
+            version: 1.0
+            setting: |-
+              prefix_keys_for_changing_layer [:zr, :r, :zl, :l]
+              set_neutral_position 1000, 1000
           EOH
+        }
+        let(:error_setting_content) {
+          <<~EOH
+            version: 1.0
+            setting: |-
+              prefix_keys_for_changing_layer [:zr, :r, :zl, :l]
+              set_neutral_position 1000,, 1000
+          EOH
+        }
+        before do
           setting = Setting.new(setting_content).to_file
           ProconBypassMan::ButtonsSettingConfiguration::Loader.load(setting_path: setting.path)
           expect(ProconBypassMan::ButtonsSettingConfiguration.instance.prefix_keys).to eq([:zr, :r, :zl, :l])
           expect(ProconBypassMan::ButtonsSettingConfiguration.instance.setting_path).to eq(setting.path)
         end
-        it '変更は反映されないこと' do
-          setting_content = <<~EOH
-          version: 1.0
-          setting: |-
-            prefix_keys_for_changing_layer [:zr, :r, :zl, :l]
-            set_neutral_position 1000,, 1000
-          EOH
-          setting = Setting.new(setting_content).to_file
-          begin
-            ProconBypassMan::ButtonsSettingConfiguration::Loader.load(setting_path: setting.path)
-          rescue ProconBypassMan::CouldNotLoadConfigError
-            expect(ProconBypassMan::ButtonsSettingConfiguration.instance.prefix_keys).to eq([:zr, :r, :zl, :l])
-            expect(ProconBypassMan::ButtonsSettingConfiguration.instance.setting_path).to eq(setting.path)
+        context 'fallback_pathがある' do
+          before { File.write(ProconBypassMan.fallback_setting_path, setting_content) }
+          it 'next_setting_contentの内容はファイルに保存されないこと' do
+            setting = Setting.new(error_setting_content).to_file
+            expect { ProconBypassMan::ButtonsSettingConfiguration::Loader.load(setting_path: setting.path) }.to raise_error ProconBypassMan::CouldNotLoadConfigError
+            expect(File.read(setting.path)).to eq(setting_content)
+            expect(File.exist?(ProconBypassMan.fallback_setting_path)).to eq(false)
+          end
+          it '変更はオブジェクトには反映されないこと' do
+            setting = Setting.new(error_setting_content).to_file
+            begin
+              ProconBypassMan::ButtonsSettingConfiguration::Loader.load(setting_path: setting.path)
+            rescue ProconBypassMan::CouldNotLoadConfigError
+              expect(ProconBypassMan::ButtonsSettingConfiguration.instance.prefix_keys).to eq([:zr, :r, :zl, :l])
+              expect(ProconBypassMan::ButtonsSettingConfiguration.instance.setting_path).to eq(setting.path)
+            end
+          end
+        end
+        context 'fallback_pathがない' do
+          it 'next_setting_contentの内容はファイルに保存されること' do
+            setting = Setting.new(error_setting_content).to_file
+            expect { ProconBypassMan::ButtonsSettingConfiguration::Loader.load(setting_path: setting.path) }.to raise_error ProconBypassMan::CouldNotLoadConfigError
+            expect(File.read(setting.path)).to eq(error_setting_content)
+          end
+          it '変更はオブジェクトには反映されないこと' do
+            setting = Setting.new(error_setting_content).to_file
+            begin
+              ProconBypassMan::ButtonsSettingConfiguration::Loader.load(setting_path: setting.path)
+            rescue ProconBypassMan::CouldNotLoadConfigError
+              expect(ProconBypassMan::ButtonsSettingConfiguration.instance.prefix_keys).to eq([:zr, :r, :zl, :l])
+              expect(ProconBypassMan::ButtonsSettingConfiguration.instance.setting_path).to eq(setting.path)
+            end
           end
         end
       end

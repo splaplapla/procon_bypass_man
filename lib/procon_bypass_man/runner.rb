@@ -43,21 +43,9 @@ class ProconBypassMan::Runner
         begin
           ProconBypassMan::ButtonsSettingConfiguration::Loader.reload_setting
           ProconBypassMan::SendReloadConfigEventCommand.execute
-
-          if File.exist?(ProconBypassMan.fallback_setting_path)
-            FileUtils.rm_rf(ProconBypassMan.fallback_setting_path)
-          end
         rescue ProconBypassMan::CouldNotLoadConfigError => error
           ProconBypassMan::SendErrorCommand.execute(error: "設定ファイルが不正です。再読み込みができませんでした")
           ProconBypassMan::ReportErrorReloadConfigJob.perform_async(error.message)
-
-          if File.exist?(ProconBypassMan.fallback_setting_path)
-            FileUtils.copy(
-              ProconBypassMan.fallback_setting_path,
-              ProconBypassMan::ButtonsSettingConfiguration.instance.setting_path,
-            )
-            FileUtils.rm_rf(ProconBypassMan.fallback_setting_path)
-          end
         end
         ProconBypassMan::PrintMessageCommand.execute(text: "バイパス処理を再開します")
       rescue Interrupt

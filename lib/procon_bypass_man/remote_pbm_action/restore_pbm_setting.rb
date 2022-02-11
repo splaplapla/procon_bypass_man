@@ -7,7 +7,7 @@ module ProconBypassMan
         ProconBypassMan.logger.info "execute RestorePbmSettingAction!"
         setting = args.dig("setting") or raise(ProconBypassMan::RemotePbmAction::NeedPbmVersionError, "settingが必要です, #{args.inspect}")
 
-        # 退避して復元に失敗したら戻せるようにする
+        # 復元に失敗したら戻せるように退避する
         FileUtils.copy(
           ProconBypassMan::ButtonsSettingConfiguration.instance.setting_path,
           ProconBypassMan.fallback_setting_path,
