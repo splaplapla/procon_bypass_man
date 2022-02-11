@@ -64,8 +64,8 @@ module ProconBypassMan
     ProconBypassMan::Websocket::PbmJobClient.start!
 
     ProconBypassMan::PrintMessageCommand.execute(text: "PBMを起動しています")
-    ProconBypassMan::ButtonsSettingConfiguration::Loader.load(setting_path: setting_path)
     initialize_pbm
+    ProconBypassMan::ButtonsSettingConfiguration::Loader.load(setting_path: setting_path)
     gadget, procon = ProconBypassMan::ConnectDeviceCommand.execute!
     Runner.new(gadget: gadget, procon: procon).run # ここでblockingする
     FileUtils.rm_rf(ProconBypassMan.pid_path)
