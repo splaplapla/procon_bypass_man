@@ -27,6 +27,7 @@ require_relative "procon_bypass_man/background"
 require_relative "procon_bypass_man/commands"
 require_relative "procon_bypass_man/bypass"
 require_relative "procon_bypass_man/domains"
+require_relative "procon_bypass_man/never_exit_accidentally"
 require_relative "procon_bypass_man/device_connector"
 require_relative "procon_bypass_man/device_status"
 require_relative "procon_bypass_man/runner"
@@ -48,6 +49,7 @@ Thread.abort_on_exception = true
 
 module ProconBypassMan
   extend ProconBypassMan::Configuration::ClassMethods
+  extend ProconBypassMan::NeverExitAccidentally
 
   class CouldNotLoadConfigError < StandardError; end
   class NotFoundProconError < StandardError; end
@@ -73,13 +75,13 @@ module ProconBypassMan
     ProconBypassMan::DeviceStatus.change_to_setting_syntax_error_and_shutdown!
     FileUtils.rm_rf(ProconBypassMan.pid_path)
     FileUtils.rm_rf(ProconBypassMan.digest_path)
-    exit 1
+    ProconBypassMan.exit_if_allow(1)
   rescue ProconBypassMan::NotFoundProconError
-    ProconBypassMan::SendErrorCommand.execute(error: "プロコンが見つかりませんでした。終了します。")
+    ProconBypassMan::SendErrorCommand.execute(error: "プロコンが見つかりませんでした。")
     ProconBypassMan::DeviceStatus.change_to_procon_not_found_error!
     FileUtils.rm_rf(ProconBypassMan.pid_path)
     FileUtils.rm_rf(ProconBypassMan.digest_path)
-    exit 1
+    ProconBypassMan.exit_if_allow(1)
   rescue ProconBypassMan::ConnectionError
     begin
       raise

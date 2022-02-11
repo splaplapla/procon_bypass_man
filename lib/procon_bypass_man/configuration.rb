@@ -38,6 +38,11 @@ class ProconBypassMan::Configuration
     def device_id
       ENV["DEBUG_DEVICE_ID"] || ProconBypassMan::WriteDeviceIdCommand.execute
     end
+
+    # @return [Boolean]
+    def never_exit_accidentally
+      config.never_exit_accidentally
+    end
   end
 
   attr_accessor :enable_critical_error_logging
@@ -159,6 +164,7 @@ class ProconBypassMan::Configuration
     @enable_reporting_pressed_buttons ||= false
   end
 
+  # @return [Boolean]
   def never_exit_accidentally
     @never_exit_accidentally || false
   end
