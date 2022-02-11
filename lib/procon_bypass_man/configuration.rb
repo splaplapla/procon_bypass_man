@@ -43,6 +43,10 @@ class ProconBypassMan::Configuration
     def never_exit_accidentally
       config.never_exit_accidentally
     end
+
+    def fallback_setting_path
+      "/tmp/procon_bypass_man_fallback_setting.yaml"
+    end
   end
 
   attr_accessor :enable_critical_error_logging
