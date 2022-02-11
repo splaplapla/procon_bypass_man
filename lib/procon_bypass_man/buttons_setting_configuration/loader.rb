@@ -5,6 +5,8 @@ module ProconBypassMan
 
       # @return [ProconBypassMan::ButtonsSettingConfiguration]
       def self.load(setting_path: )
+        ProconBypassMan::ButtonsSettingConfiguration.instance.setting_path = setting_path
+
         ProconBypassMan::ButtonsSettingConfiguration.switch_new_context(:validation) do |new_instance|
           yaml = YAML.load_file(setting_path) or raise "読み込みに失敗しました"
           new_instance.instance_eval(yaml["setting"])
@@ -22,7 +24,6 @@ module ProconBypassMan
           raise ProconBypassMan::CouldNotLoadConfigError, "yamlのシンタックスエラーです"
         end
 
-        ProconBypassMan::ButtonsSettingConfiguration.instance.setting_path = setting_path
         ProconBypassMan::ButtonsSettingConfiguration.instance.reset!
         ProconBypassMan.reset!
 
