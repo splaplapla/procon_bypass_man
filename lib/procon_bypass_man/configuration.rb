@@ -41,7 +41,7 @@ class ProconBypassMan::Configuration
   end
 
   attr_accessor :enable_critical_error_logging
-  attr_writer :verbose_bypass_log, :raw_setting, :enable_reporting_pressed_buttons, :never_exit
+  attr_writer :verbose_bypass_log, :raw_setting, :enable_reporting_pressed_buttons, :never_exit_accidentally
 
   def root=(path)
     @root = path
@@ -159,7 +159,7 @@ class ProconBypassMan::Configuration
     @enable_reporting_pressed_buttons ||= false
   end
 
-  def never_exit
-    @never_exit || false
+  def never_exit_accidentally
+    @never_exit_accidentally || false
   end
 end
