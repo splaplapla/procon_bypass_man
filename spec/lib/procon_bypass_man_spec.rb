@@ -47,6 +47,8 @@ describe ProconBypassMan do
       :raw_setting=,
       :enable_reporting_pressed_buttons,
       :enable_reporting_pressed_buttons=,
+      :never_exit,
+      :never_exit=,
     ].each do |me|
       it "has config.#{me} method" do
         expect(described_class.config.respond_to?(me)).to eq(true)

@@ -15,6 +15,8 @@ ProconBypassMan.configure do |config|
   # webからProconBypassManを操作できるwebサービス
   # config.api_servers = ['https://pbm-cloud.herokuapp.com']
   config.enable_critical_error_logging = true
+  # pbm-cloudで使う場合はnever_exitにtrueをセットしてください. trueがセットされている場合、一度起動するとデバイスとの接続が切れてもプロセスが停止しなくなります
+  config.never_exit = true
 end
 
 ProconBypassMan.run(setting_path: "/usr/share/pbm/current/setting.yml")
