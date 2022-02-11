@@ -74,6 +74,7 @@ module ProconBypassMan
   rescue ProconBypassMan::CouldNotLoadConfigError
     ProconBypassMan::SendErrorCommand.execute(error: "設定ファイルが不正です。設定ファイルの読み込みに失敗しました")
     ProconBypassMan::DeviceStatus.change_to_setting_syntax_error_and_shutdown!
+    # TODO シグナルトラップをしていないのでUSR2を送ったときにプロセスが停止している. 明示的にハンドリングするべき.
     ProconBypassMan.exit_if_allow(1) do
       FileUtils.rm_rf(ProconBypassMan.pid_path)
       FileUtils.rm_rf(ProconBypassMan.digest_path)
@@ -81,6 +82,7 @@ module ProconBypassMan
   rescue ProconBypassMan::NotFoundProconError
     ProconBypassMan::SendErrorCommand.execute(error: "プロコンが見つかりませんでした。")
     ProconBypassMan::DeviceStatus.change_to_procon_not_found_error!
+    # TODO シグナルトラップをしていないのでUSR2を送ったときにプロセスが停止している. 明示的にハンドリングするべき.
     ProconBypassMan.exit_if_allow(1) do
       FileUtils.rm_rf(ProconBypassMan.pid_path)
       FileUtils.rm_rf(ProconBypassMan.digest_path)
