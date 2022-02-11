@@ -17,10 +17,13 @@ module ProconBypassMan
             raise ProconBypassMan::CouldNotLoadConfigError, validator.errors_to_s
           end
         rescue SyntaxError
+          fallback_setting_if_has_backup(current_setting_path: setting_path)
           raise ProconBypassMan::CouldNotLoadConfigError, "Rubyスクリプトのシンタックスエラーです"
         rescue NoMethodError
+          fallback_setting_if_has_backup(current_setting_path: setting_path)
           raise ProconBypassMan::CouldNotLoadConfigError, "Rubyスクリプトに未定義の定数・変数があります"
         rescue Psych::SyntaxError
+          fallback_setting_if_has_backup(current_setting_path: setting_path)
           raise ProconBypassMan::CouldNotLoadConfigError, "yamlのシンタックスエラーです"
         end
 
@@ -39,11 +42,26 @@ module ProconBypassMan
 
         File.write(ProconBypassMan.digest_path, Digest::MD5.hexdigest(yaml["setting"]))
 
+        if File.exist?(ProconBypassMan.fallback_setting_path)
+          FileUtils.rm_rf(ProconBypassMan.fallback_setting_path)
+        end
+
         ProconBypassMan::ButtonsSettingConfiguration.instance
       end
 
       def self.reload_setting
         self.load(setting_path: ProconBypassMan::ButtonsSettingConfiguration.instance.setting_path)
+      end
+
+      def self.fallback_setting_if_has_backup(current_setting_path: )
+        return unless File.exist?(ProconBypassMan.fallback_setting_path)
+        return if current_setting_path.nil?
+
+        FileUtils.copy(
+          ProconBypassMan.fallback_setting_path,
+          current_setting_path,
+        )
+        FileUtils.rm_rf(ProconBypassMan.fallback_setting_path)
       end
     end
   end
