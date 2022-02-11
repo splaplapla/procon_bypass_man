@@ -38,10 +38,15 @@ class ProconBypassMan::Configuration
     def device_id
       ENV["DEBUG_DEVICE_ID"] || ProconBypassMan::WriteDeviceIdCommand.execute
     end
+
+    # @return [Boolean]
+    def never_exit_accidentally
+      config.never_exit_accidentally
+    end
   end
 
   attr_accessor :enable_critical_error_logging
-  attr_writer :verbose_bypass_log, :raw_setting, :enable_reporting_pressed_buttons
+  attr_writer :verbose_bypass_log, :raw_setting, :enable_reporting_pressed_buttons, :never_exit_accidentally
 
   def root=(path)
     @root = path
@@ -157,5 +162,10 @@ class ProconBypassMan::Configuration
 
   def enable_reporting_pressed_buttons
     @enable_reporting_pressed_buttons ||= false
+  end
+
+  # @return [Boolean]
+  def never_exit_accidentally
+    @never_exit_accidentally || false
   end
 end

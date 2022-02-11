@@ -27,7 +27,7 @@ class ProconBypassMan::Runner
     loop do
       $will_terminate_token = false
       # NOTE メインプロセスではThreadをいくつか起動しているので念のためパフォーマンスを優先するためにforkしていく
-      main_loop_pid = Kernel.fork { ProconBypassMan::BypassCommand.new(gadget: @gadget, procon: @procon).execute }
+      child_pid = Kernel.fork { ProconBypassMan::BypassCommand.new(gadget: @gadget, procon: @procon).execute }
 
       begin
         # TODO 小プロセスが消滅した時に、メインプロセスは生き続けてしまい、何もできなくなる問題がある
@@ -37,7 +37,7 @@ class ProconBypassMan::Runner
         end
       rescue InterruptForRestart
         $will_terminate_token = true
-        Process.kill("TERM", main_loop_pid)
+        Process.kill("TERM", child_pid)
         Process.wait
         ProconBypassMan::PrintMessageCommand.execute(text: "Reloading config file")
         begin
@@ -50,13 +50,12 @@ class ProconBypassMan::Runner
         ProconBypassMan::PrintMessageCommand.execute(text: "バイパス処理を再開します")
       rescue Interrupt
         $will_terminate_token = true
-        Process.kill("TERM", main_loop_pid)
+        Process.kill("TERM", child_pid)
         Process.wait
+        ProconBypassMan::PrintMessageCommand.execute(text: "処理を終了します")
         @gadget&.close
         @procon&.close
-        FileUtils.rm_rf(ProconBypassMan.pid_path)
-        FileUtils.rm_rf(ProconBypassMan.digest_path)
-        exit 1
+        break
       end
     end
   end

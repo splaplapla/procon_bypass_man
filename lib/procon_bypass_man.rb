@@ -27,6 +27,7 @@ require_relative "procon_bypass_man/background"
 require_relative "procon_bypass_man/commands"
 require_relative "procon_bypass_man/bypass"
 require_relative "procon_bypass_man/domains"
+require_relative "procon_bypass_man/never_exit_accidentally"
 require_relative "procon_bypass_man/device_connector"
 require_relative "procon_bypass_man/device_status"
 require_relative "procon_bypass_man/runner"
@@ -48,6 +49,7 @@ Thread.abort_on_exception = true
 
 module ProconBypassMan
   extend ProconBypassMan::Configuration::ClassMethods
+  extend ProconBypassMan::NeverExitAccidentally
 
   class CouldNotLoadConfigError < StandardError; end
   class NotFoundProconError < StandardError; end
@@ -62,22 +64,26 @@ module ProconBypassMan
     ProconBypassMan::Websocket::PbmJobClient.start!
 
     ProconBypassMan::PrintMessageCommand.execute(text: "PBMを起動しています")
-    ProconBypassMan::ButtonsSettingConfiguration::Loader.load(setting_path: setting_path)
     initialize_pbm
+    ProconBypassMan::ButtonsSettingConfiguration::Loader.load(setting_path: setting_path)
     gadget, procon = ProconBypassMan::ConnectDeviceCommand.execute!
-    Runner.new(gadget: gadget, procon: procon).run
+    Runner.new(gadget: gadget, procon: procon).run # ここでblockingする
+    FileUtils.rm_rf(ProconBypassMan.pid_path)
+    FileUtils.rm_rf(ProconBypassMan.digest_path)
   rescue ProconBypassMan::CouldNotLoadConfigError
     ProconBypassMan::SendErrorCommand.execute(error: "設定ファイルが不正です。設定ファイルの読み込みに失敗しました")
     ProconBypassMan::DeviceStatus.change_to_setting_syntax_error_and_shutdown!
-    FileUtils.rm_rf(ProconBypassMan.pid_path)
-    FileUtils.rm_rf(ProconBypassMan.digest_path)
-    exit 1
+    ProconBypassMan.exit_if_allow(1) do
+      FileUtils.rm_rf(ProconBypassMan.pid_path)
+      FileUtils.rm_rf(ProconBypassMan.digest_path)
+    end
   rescue ProconBypassMan::NotFoundProconError
-    ProconBypassMan::SendErrorCommand.execute(error: "プロコンが見つかりませんでした。終了します。")
+    ProconBypassMan::SendErrorCommand.execute(error: "プロコンが見つかりませんでした。")
     ProconBypassMan::DeviceStatus.change_to_procon_not_found_error!
-    FileUtils.rm_rf(ProconBypassMan.pid_path)
-    FileUtils.rm_rf(ProconBypassMan.digest_path)
-    exit 1
+    ProconBypassMan.exit_if_allow(1) do
+      FileUtils.rm_rf(ProconBypassMan.pid_path)
+      FileUtils.rm_rf(ProconBypassMan.digest_path)
+    end
   rescue ProconBypassMan::ConnectionError
     begin
       raise

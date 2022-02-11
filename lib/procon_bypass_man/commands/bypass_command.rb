@@ -80,7 +80,7 @@ class ProconBypassMan::BypassCommand
       [t1, t2].each(&:join)
       @gadget&.close
       @procon&.close
-      exit 1
+      exit 1 # child processなのでexitしていい
     end
   end
 end
