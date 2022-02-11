@@ -665,29 +665,51 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
 
   describe 'validations' do
     context 'シンタックスエラーが起きるとき' do
-      before do
-        setting_content = <<~EOH
-          version: 1.0
-          setting: |-
-            prefix_keys_for_changing_layer [:zr, :r, :zl, :l]
-            set_neutral_position 1000, 1000
-        EOH
-        setting = Setting.new(setting_content).to_file
-        ProconBypassMan::ButtonsSettingConfiguration::Loader.load(setting_path: setting.path)
-        expect(ProconBypassMan::ButtonsSettingConfiguration.instance.prefix_keys).to eq([:zr, :r, :zl, :l])
-      end
-      it '変更は反映されないこと' do
-        setting_content = <<~EOH
+      context '初回で失敗する' do
+        it 'setting.pathは保存すること' do
+          setting_content = <<~EOH
           version: 1.0
           setting: |-
             prefix_keys_for_changing_layer [:zr, :r, :zl, :l]
             set_neutral_position 1000,, 1000
-        EOH
-        setting = Setting.new(setting_content).to_file
-        begin
+          EOH
+          ProconBypassMan::ButtonsSettingConfiguration.instance.setting_path = nil
+          setting = Setting.new(setting_content).to_file
+          begin
+            ProconBypassMan::ButtonsSettingConfiguration::Loader.load(setting_path: setting.path)
+          rescue ProconBypassMan::CouldNotLoadConfigError
+            expect(ProconBypassMan::ButtonsSettingConfiguration.instance.setting_path).to eq(setting.path)
+          end
+        end
+      end
+
+      context '初回は成功する' do
+        before do
+          setting_content = <<~EOH
+          version: 1.0
+          setting: |-
+            prefix_keys_for_changing_layer [:zr, :r, :zl, :l]
+            set_neutral_position 1000, 1000
+          EOH
+          setting = Setting.new(setting_content).to_file
           ProconBypassMan::ButtonsSettingConfiguration::Loader.load(setting_path: setting.path)
-        rescue ProconBypassMan::CouldNotLoadConfigError
           expect(ProconBypassMan::ButtonsSettingConfiguration.instance.prefix_keys).to eq([:zr, :r, :zl, :l])
+          expect(ProconBypassMan::ButtonsSettingConfiguration.instance.setting_path).to eq(setting.path)
+        end
+        it '変更は反映されないこと' do
+          setting_content = <<~EOH
+          version: 1.0
+          setting: |-
+            prefix_keys_for_changing_layer [:zr, :r, :zl, :l]
+            set_neutral_position 1000,, 1000
+          EOH
+          setting = Setting.new(setting_content).to_file
+          begin
+            ProconBypassMan::ButtonsSettingConfiguration::Loader.load(setting_path: setting.path)
+          rescue ProconBypassMan::CouldNotLoadConfigError
+            expect(ProconBypassMan::ButtonsSettingConfiguration.instance.prefix_keys).to eq([:zr, :r, :zl, :l])
+            expect(ProconBypassMan::ButtonsSettingConfiguration.instance.setting_path).to eq(setting.path)
+          end
         end
       end
     end

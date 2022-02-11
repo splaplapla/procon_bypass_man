@@ -101,6 +101,8 @@ module ProconBypassMan
     def reset!
       @prefix_keys_for_changing_layer = []
       self.mode_plugins = {}
+      # プロセスを一度起動するとsetting_pathは変わらない、という想定なので適当に扱う. resetでは初期化しない
+      # self.setting_path = nil
       self.macro_plugins = {}
       self.layers = {
         up: Layer.new,
