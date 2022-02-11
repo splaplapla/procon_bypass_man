@@ -59,7 +59,7 @@ module ProconBypassMan
         case pbm_job_hash['action']
         when "ping"
           client.perform('pong', { device_id: ProconBypassMan.device_id, message: 'hello from pbm' })
-        when "remote_macro"
+        when ProconBypassMan::RemoteMacro::ACTION_KEY
           validate_and_run_remote_macro(data: data)
         when *ProconBypassMan::RemotePbmAction::ACTIONS
           validate_and_run_remote_pbm_action(data: data)
