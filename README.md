@@ -7,6 +7,7 @@
     * 設定ファイルはrubyスクリプトで記述します
 * 特定のタイトルに特化した振る舞いにしたい時は各プラグインを使ってください
 * ドキュメントは [getting_started.md](docs/getting_started.md) にまとめています
+* https://pbm-cloud.herokuapp.com を使うと、webのみに完結して運用が可能です
 
 ![image](https://user-images.githubusercontent.com/1664497/123414210-942f6980-d5ee-11eb-8192-955bd9e37e0b.png)
 
@@ -49,17 +50,6 @@ Switch <-- (PBM): ZR連打
 
 ## Plugins
 * https://github.com/splaplapla/procon_bypass_man-splatoon2
-
-## 関連ソフトウェア
-* procon_bypass_man_cloud
-  * webアプリケーション
-  * https://github.com/splaplapla/procon_bypass_man_cloud
-  * このwebアプリからOS自体の再起動、設定ファイルのバックアップ・変更、PBMのバージョンアップができます
-  * ご自身でホストティングもできますが、 私がホスティングをしている https://pbm-cloud.herokuapp.com を使うことができます
-      * [使い方](https://pbm-cloud.herokuapp.com/faq)
-* pbmenv
-  * procon_bypass_manのバージョンマネージャー
-  * https://github.com/splaplapla/pbmenv
 
 ## FAQ
 * どうやって動かすの?
