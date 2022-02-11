@@ -185,10 +185,13 @@ class ProconBypassMan::Configuration
     def cache: () -> ProconBypassMan::OnMemoryCache
 
     def config: () -> ProconBypassMan::Configuration
+
+    def never_exit_accidentally: () -> bool
   end
 
   attr_reader api_server: untyped
   attr_reader api_servers: untyped
+  attr_writer never_exit_accidentally: bool
 
   attr_accessor enable_critical_error_logging: bool
 
@@ -226,6 +229,8 @@ class ProconBypassMan::Configuration
   def raw_setting: () -> untyped
 
   def verbose_bypass_log: () -> bool
+
+  def never_exit_accidentally: () -> bool
 end
 
 
