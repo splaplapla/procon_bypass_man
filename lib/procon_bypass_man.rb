@@ -65,8 +65,8 @@ module ProconBypassMan
     ProconBypassMan::QueueOverProcess.start!
 
     ProconBypassMan::PrintMessageCommand.execute(text: "PBMを起動しています")
-    ProconBypassMan::ButtonsSettingConfiguration::Loader.load(setting_path: setting_path)
     initialize_pbm
+    ProconBypassMan::ButtonsSettingConfiguration::Loader.load(setting_path: setting_path)
     gadget, procon = ProconBypassMan::ConnectDeviceCommand.execute!
     Runner.new(gadget: gadget, procon: procon).run # ここでblockingする
     FileUtils.rm_rf(ProconBypassMan.pid_path)
@@ -74,15 +74,17 @@ module ProconBypassMan
   rescue ProconBypassMan::CouldNotLoadConfigError
     ProconBypassMan::SendErrorCommand.execute(error: "設定ファイルが不正です。設定ファイルの読み込みに失敗しました")
     ProconBypassMan::DeviceStatus.change_to_setting_syntax_error_and_shutdown!
-    FileUtils.rm_rf(ProconBypassMan.pid_path)
-    FileUtils.rm_rf(ProconBypassMan.digest_path)
-    ProconBypassMan.exit_if_allow(1)
+    ProconBypassMan.exit_if_allow(1) do
+      FileUtils.rm_rf(ProconBypassMan.pid_path)
+      FileUtils.rm_rf(ProconBypassMan.digest_path)
+    end
   rescue ProconBypassMan::NotFoundProconError
     ProconBypassMan::SendErrorCommand.execute(error: "プロコンが見つかりませんでした。")
     ProconBypassMan::DeviceStatus.change_to_procon_not_found_error!
-    FileUtils.rm_rf(ProconBypassMan.pid_path)
-    FileUtils.rm_rf(ProconBypassMan.digest_path)
-    ProconBypassMan.exit_if_allow(1)
+    ProconBypassMan.exit_if_allow(1) do
+      FileUtils.rm_rf(ProconBypassMan.pid_path)
+      FileUtils.rm_rf(ProconBypassMan.digest_path)
+    end
   rescue ProconBypassMan::ConnectionError
     begin
       raise
