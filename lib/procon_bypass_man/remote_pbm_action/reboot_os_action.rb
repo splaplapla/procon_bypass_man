@@ -10,7 +10,7 @@ module ProconBypassMan
       private
 
       def before_action_callback
-        ProconBypassMan::ReportStartRebootJob.perform_async
+        ProconBypassMan::ReportStartRebootJob.perform
         be_processed
       end
 

@@ -11,7 +11,7 @@ describe ProconBypassMan::RemotePbmAction::RebootOsAction do
       end
 
       it do
-        expect(ProconBypassMan::ReportStartRebootJob).to receive(:perform_async)
+        expect(ProconBypassMan::ReportStartRebootJob).to receive(:perform)
         expect(action).to receive(:be_processed)
         expect(action).not_to receive(:be_in_progress)
         expect(action).not_to receive(:be_failed)
