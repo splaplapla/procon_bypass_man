@@ -4,11 +4,10 @@
     * [procon_bypass_manで解決したいこと](#procon_bypass_manで解決したいこと)
     * [procon_bypass_manでできること](#procon_bypass_manでできること)
 * [セットアップ](#セットアップ)
-  * ラズベリーパイのセットアップ
-  * procon_bypass_manのインストール
-      * pbmenvを使う方法
-      * pbmenvを使わない方法
-  * とりあえず動かす方法
+  * [ラズベリーパイのセットアップ](#ラズベリーパイのセットアップ)
+  * [procon_bypass_manのインストール](#procon_bypass_manのインストール)
+      * [pbmenvを使う方法](#pbmenvを使う方法)
+      * [pbmenvを使わない方法](#pbmenvを使わない方法)
 * [普段使いをするためのセットアップ](#普段使いをするためのセットアップ)
 * レイヤー
 * モード
@@ -18,6 +17,7 @@
   * layer
 * プラグインの書き方
 * 設定ファイルの書き方がわからない、エラーが起きるとき
+* procon_bypass_manのアップグレード方法
 * procon_bypass_man_cloudについて
 
 ## はじめに
@@ -29,6 +29,7 @@
 このツールを使うことで、使い慣れたコントローラーを使ってボタン連射ができます。また、設定内容はテキストで管理しているため一目瞭然です。
 
 ### procon_bypass_manでできること
+
 * 設定内容を即時に入れ替え（レイヤー管理)
 * 連射
   * 連射中は特定のキーの入力を無視したり、複数のキーをトリガーに連射することもできます
@@ -41,7 +42,34 @@
 * ボタンリマップ
 
 ## セットアップ
+### ラズベリーパイのセットアップ
+
 * 後で書きます
+
+### procon_bypass_manのインストール
+
+pbmenvを使うと https://pbm-cloud.herokuapp.com と連携ができるのでおすすめですが、pbmenvを使わなくてもprocon_bypass_manをインストールすることは可能です。
+
+#### pbmenvを使う方法
+
+https://github.com/splaplapla/pbmenv  
+pbmenvはprocon_bypass_manのバージョンマネジャーです。procon_bypass_manはバージョンアップによって起動スクリプトに変更が入ることがあって、バージョンアップするときはpbmenvを使うとエラーが起きることなくインストールができるようになります。また、pbm-cloudと連携してすべての機能を使うには、pbmenvの利用が必須になります。
+
+```
+gem install pbmenv
+sudo pbmenv install latest
+cd /usr/share/pbm/current
+sudo /home/pi/.rbenv/versions/3.0.1/bin/ruby app.rb
+```
+
+#### pbmenvを使わない方法
+
+https://github.com/jiikko/procon_bypass_man_sample にある app.rb と setting.yml を Raspberry Pi にダウンロードし、ruby 3.0.1 をインストールすれば起動することができます。
+
+```
+rbenv install 3.0.1
+sudo /home/pi/.rbenv/versions/3.0.1/bin/ruby app.rb
+```
 
 ## 普段使いをするためのセットアップ
 
