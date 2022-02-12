@@ -30,6 +30,7 @@ RSpec.configure do |config|
     allow(ProconBypassMan::HttpClient::HttpRequest::Post).to receive(:new)
     allow(ProconBypassMan.config).to receive(:internal_server_pool) { ProconBypassMan::ServerPool.new(servers: []) }
     allow(ProconBypassMan.config).to receive(:server_pool) { ProconBypassMan::ServerPool.new(servers: []) }
+    allow(ProconBypassMan::ConnectDeviceCommand).to receive(:has_required_files?) { true }
   end
 
   # rspec-expectations config goes here. You can use an alternate
