@@ -36,9 +36,9 @@ class ProconBypassMan::BypassCommand
         bypass.send_gadget_to_procon!
         sleep(0.005)
       rescue ProconBypassMan::SafeTimeout::Timeout
-        ProconBypassMan.logger.info "10秒経過したのでThread1を終了します"
+        # 安定してきたし、初見だと異常ログに見えるっぽいログには出さない
+        # ProconBypassMan.logger.info "10秒経過したのでThread1を終了します"
         monitor1.shutdown
-        puts "10秒経過したのでThread1を終了します"
         break
       rescue Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError, Errno::ESHUTDOWN => e
         ProconBypassMan::SendErrorCommand.execute(error: "Switchとの切断されました.終了処理を開始します. #{e.full_message}")
