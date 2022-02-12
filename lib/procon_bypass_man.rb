@@ -72,7 +72,7 @@ module ProconBypassMan
     FileUtils.rm_rf(ProconBypassMan.pid_path)
     FileUtils.rm_rf(ProconBypassMan.digest_path)
   rescue ProconBypassMan::NotFoundRequiredFilesError
-    ProconBypassMan::SendErrorCommand.execute(error: "/sys/kernel/config/usb_gadget/procon ディレクトリがありません。")
+    ProconBypassMan::SendErrorCommand.execute(error: "/sys/kernel/config/usb_gadget/proconディレクトリがありませんでした。処理を終了します。")
     FileUtils.rm_rf(ProconBypassMan.pid_path)
     FileUtils.rm_rf(ProconBypassMan.digest_path)
     exit 1 # 前提条件を満たしていないので絶対に落とす
