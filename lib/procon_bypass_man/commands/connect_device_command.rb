@@ -1,7 +1,7 @@
 class ProconBypassMan::ConnectDeviceCommand
   # @return [void]
   def self.execute!
-    unless Dir.exist?("/sys/kernel/config/usb_gadget/procon")
+    unless has_required_files?
       raise ProconBypassMan::NotFoundRequiredFilesError, "there is not /sys/kernel/config/usb_gadget/procon"
     end
 
@@ -16,5 +16,9 @@ class ProconBypassMan::ConnectDeviceCommand
     gadget&.close
     procon&.close
     raise ::ProconBypassMan::EternalConnectionError
+  end
+
+  def self.has_required_files?
+    Dir.exist?("/sys/kernel/config/usb_gadget/procon")
   end
 end
