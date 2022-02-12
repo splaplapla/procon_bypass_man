@@ -263,10 +263,6 @@ class ProconBypassMan::DeviceConnector
     @procon
   end
 
-  def to_bin(string)
-    string.unpack "H*"
-  end
-
   def init_devices
     if @initialized_devices
       return
