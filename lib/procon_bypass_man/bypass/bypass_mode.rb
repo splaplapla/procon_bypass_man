@@ -7,7 +7,7 @@ class ProconBypassMan::BypassMode
 
   attr_accessor :mode, :gadget_to_procon_interval
 
-  def self.default
+  def self.default_value
     new(
       mode: TYPE_NORMAL,
       gadget_to_procon_interval: DEFAULT_GADGET_TO_PROCON_INTERVAL,
