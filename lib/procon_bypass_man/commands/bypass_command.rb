@@ -41,11 +41,11 @@ class ProconBypassMan::BypassCommand
         sleep(@send_interval)
       rescue ProconBypassMan::SafeTimeout::Timeout
         case ProconBypassMan.config.bypass_mode.mode
-        when ProconBypassMan::BypassMode::AGGRESSIVE
+        when ProconBypassMan::BypassMode::TYPE_AGGRESSIVE
           ProconBypassMan.logger.info "10秒経過したのでThread1を終了します"
           monitor1.shutdown
           break
-        when ProconBypassMan::BypassMode::NORMAL
+        when ProconBypassMan::BypassMode::TYPE_NORMAL
           ProconBypassMan.logger.info "10秒経過したのでsend_intervalを長くします"
           @send_interval = ProconBypassMan.config.bypass_mode.gadget_to_procon_interval
         else
