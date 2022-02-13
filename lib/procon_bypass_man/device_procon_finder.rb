@@ -26,11 +26,7 @@ class ProconBypassMan::DeviceProconFinder
 
   # @return [String]
   def shell_output
-    file = Tempfile.new
-    file.write(get_list_shell)
-    `bash #{file.path}` # bash依存なshellなので
-  ensure
-    file&.close
+    `bash -c '#{get_list_shell}'`
   end
 
   def get_list_shell
