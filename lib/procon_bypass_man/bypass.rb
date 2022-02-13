@@ -5,6 +5,7 @@ class ProconBypassMan::Bypass
 
   class BypassValue < Struct.new(:binary, :sent)
     def to_text
+      return unless binary
       "#{binary.unpack.first} #{'x' unless sent}"
     end
   end
@@ -31,16 +32,16 @@ class ProconBypassMan::Bypass
         self.bypass_value.binary = ProconBypassMan::Domains::InboundProconBinary.new(binary: input)
       rescue IO::EAGAINWaitReadable
         monitor.record(:eagain_wait_readable_on_read)
-        sleep(0.001)
-        retry
       end
 
-      begin
-        self.procon.write_nonblock(input)
-        self.bypass_value.sent = true
-      rescue IO::EAGAINWaitReadable
-        monitor.record(:eagain_wait_readable_on_write)
-        break
+      if input
+        begin
+          self.procon.write_nonblock(input)
+          self.bypass_value.sent = true
+        rescue IO::EAGAINWaitReadable
+          monitor.record(:eagain_wait_readable_on_write)
+          break
+        end
       end
     end
 
