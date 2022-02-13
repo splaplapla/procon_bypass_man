@@ -74,7 +74,7 @@ module ProconBypassMan
           args: [->{ ProconBypassMan::DeviceStatus.current }],
           interval: 60,
         )
-      )
+      ) if ProconBypassMan.config.has_api_server?
     end
 
     # @param [Schedule] schedule
