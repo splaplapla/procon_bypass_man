@@ -268,8 +268,12 @@ class ProconBypassMan::DeviceConnector
       return
     end
 
+    if path = ProconBypassMan::DeviceProconFinder.find
+      @procon = File.open(path)
+    else
+      raise(ProconBypassMan::DeviceConnector::NotFoundProconError)
+    end
     @gadget = File.open('/dev/hidg0', "w+b")
-    @procon = ProconBypassMan::DeviceProconFinder.find or raise(ProconBypassMan::DeviceConnector::NotFoundProconError)
 
     system('echo > /sys/kernel/config/usb_gadget/procon/UDC')
     system('ls /sys/class/udc > /sys/kernel/config/usb_gadget/procon/UDC')
