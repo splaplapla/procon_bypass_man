@@ -32,7 +32,7 @@ class ProconBypassMan::BypassCommand
       loop do
         break if $will_terminate_token
         bypass.send_gadget_to_procon!
-        sleep(0.05)
+        sleep(0.5)
       rescue Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError, Errno::ESHUTDOWN => e
         ProconBypassMan::SendErrorCommand.execute(error: "Switchとの切断されました.終了処理を開始します. #{e.full_message}")
         Process.kill "TERM", Process.ppid
