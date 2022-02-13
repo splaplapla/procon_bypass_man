@@ -39,7 +39,7 @@ describe ProconBypassMan::ConnectDeviceCommand do
       end
 
       it do
-        expect { subject }.to raise_error(ProconBypassMan::NotFoundProconError)
+        expect { subject }.to raise_error(ProconBypassMan::ConnectDeviceCommand::NotFoundProconError)
       end
     end
   end

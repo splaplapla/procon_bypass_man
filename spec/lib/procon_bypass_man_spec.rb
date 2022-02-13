@@ -103,7 +103,7 @@ describe ProconBypassMan do
 
       context 'NotFoundProconErrorが起きるとき' do
         before do
-          allow(ProconBypassMan::Runner).to receive(:new) { raise ProconBypassMan::NotFoundProconError }
+          allow(ProconBypassMan::Runner).to receive(:new) { raise ProconBypassMan::DeviceConnector::NotFoundProconError }
         end
 
         it do
