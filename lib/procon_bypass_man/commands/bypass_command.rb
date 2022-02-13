@@ -29,6 +29,7 @@ class ProconBypassMan::BypassCommand
     ProconBypassMan.logger.info "Thread1を起動します"
 
     @send_interval = 0.005
+
     t1 = Thread.new do
       timer = ProconBypassMan::SafeTimeout.new(timeout: Time.now + 10)
       @did_first_step = false
@@ -39,14 +40,14 @@ class ProconBypassMan::BypassCommand
         bypass.send_gadget_to_procon!
         sleep(@send_interval)
       rescue ProconBypassMan::SafeTimeout::Timeout
-        case ProconBypassMan.config.bypass_mode
-        when :aggressive
+        case ProconBypassMan.config.bypass_mode.mode
+        when ProconBypassMan::BypassMode::AGGRESSIVE
           ProconBypassMan.logger.info "10秒経過したのでThread1を終了します"
           monitor1.shutdown
           break
-        when :normal
+        when ProconBypassMan::BypassMode::NORMAL
           ProconBypassMan.logger.info "10秒経過したのでsend_intervalを長くします"
-          @send_interval = 0.5
+          @send_interval = ProconBypassMan.config.bypass_mode.gadget_to_procon_interval
         else
           raise "unknown type"
         end
