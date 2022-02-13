@@ -269,7 +269,8 @@ class ProconBypassMan::DeviceConnector
     end
 
     if path = ProconBypassMan::DeviceProconFinder.find
-      @procon = File.open(path)
+      @procon = File.open(path, "w+b")
+      ProconBypassMan.logger.info "proconのデバイスファイルは#{path}を使います"
     else
       raise(ProconBypassMan::DeviceConnector::NotFoundProconError)
     end
