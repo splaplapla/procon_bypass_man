@@ -31,10 +31,11 @@ class ProconBypassMan::BypassCommand
     @send_interval = 0.005
     t1 = Thread.new do
       timer = ProconBypassMan::SafeTimeout.new(timeout: Time.now + 10)
-      bypass = ProconBypassMan::Bypass.new(gadget: @gadget, procon: @procon, monitor: monitor1)
+      @did_first_step = false
       loop do
+        bypass = ProconBypassMan::Bypass.new(gadget: @gadget, procon: @procon, monitor: monitor1)
         break if $will_terminate_token
-        timer.throw_if_timeout!
+        !@did_first_step && timer.throw_if_timeout!
         bypass.send_gadget_to_procon!
         sleep(@send_interval)
       rescue ProconBypassMan::SafeTimeout::Timeout
@@ -49,6 +50,7 @@ class ProconBypassMan::BypassCommand
         else
           raise "unknown type"
         end
+        @did_first_step = true
       rescue Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError, Errno::ESHUTDOWN => e
         ProconBypassMan::SendErrorCommand.execute(error: "Switchとの切断されました.終了処理を開始します. #{e.full_message}")
         Process.kill "TERM", Process.ppid
