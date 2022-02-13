@@ -28,18 +28,11 @@ class ProconBypassMan::BypassCommand
     monitor2 = ProconBypassMan::IOMonitor.new(label: "procon -> switch")
     ProconBypassMan.logger.info "Thread1を起動します"
     t1 = Thread.new do
-      timer = ProconBypassMan::SafeTimeout.new(timeout: Time.now + 10)
       bypass = ProconBypassMan::Bypass.new(gadget: @gadget, procon: @procon, monitor: monitor1)
       loop do
         break if $will_terminate_token
-        timer.throw_if_timeout!
         bypass.send_gadget_to_procon!
-        sleep(0.005)
-      rescue ProconBypassMan::SafeTimeout::Timeout
-        # 安定してきたし、初見だと異常ログに見えるっぽいログには出さない
-        # ProconBypassMan.logger.info "10秒経過したのでThread1を終了します"
-        monitor1.shutdown
-        break
+        sleep(0.02)
       rescue Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError, Errno::ESHUTDOWN => e
         ProconBypassMan::SendErrorCommand.execute(error: "Switchとの切断されました.終了処理を開始します. #{e.full_message}")
         Process.kill "TERM", Process.ppid
