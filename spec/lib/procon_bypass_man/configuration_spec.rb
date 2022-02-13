@@ -71,7 +71,7 @@ describe ProconBypassMan::Configuration do
     end
   end
 
-  describe 'has_api_server?' do
+  describe '#has_api_server?' do
     let(:config) { described_class.new }
     context 'when has api_server' do
       it do
@@ -82,6 +82,16 @@ describe ProconBypassMan::Configuration do
 
     it 'default false' do
       expect(config.has_api_server?).to eq(false)
+    end
+  end
+
+  describe '#bypass_mode=' do
+    let(:config) { described_class.new }
+
+    it do
+      config.bypass_mode = { mode: :normal, gadget_to_procon_interval: 0.1 }
+      expect(config.bypass_mode.mode).to eq(:normal)
+      expect(config.bypass_mode.gadget_to_procon_interval).to eq(0.1)
     end
   end
 end

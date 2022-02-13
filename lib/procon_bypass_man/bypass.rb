@@ -1,4 +1,5 @@
 require "procon_bypass_man/bypass/usb_hid_logger"
+require "procon_bypass_man/bypass/bypass_mode"
 
 class ProconBypassMan::Bypass
   include ProconBypassMan::Bypass::UsbHidLogger

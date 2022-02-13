@@ -66,15 +66,14 @@ class ProconBypassMan::Configuration
   end
 
   def bypass_mode=(value)
-    value = value.to_sym
-    unless [:normal, :aggressive].include?(value)
-      raise "unknown bypass_mode"
-    end
-    @bypass_mode = value.to_sym
+    @bypass_mode = ProconBypassMan::BypassMode.new(
+      mode: value[:mode],
+      gadget_to_procon_interval: value[:gadget_to_procon_interval],
+    )
   end
 
   def bypass_mode
-    @bypass_mode || :normal
+    @bypass_mode || ProconBypassMan::BypassMode.default_value
   end
 
   def api_servers=(api_servers)
