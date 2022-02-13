@@ -27,12 +27,31 @@ class ProconBypassMan::BypassCommand
     monitor1 = ProconBypassMan::IOMonitor.new(label: "switch -> procon")
     monitor2 = ProconBypassMan::IOMonitor.new(label: "procon -> switch")
     ProconBypassMan.logger.info "Thread1を起動します"
+
+    @send_interval = 0.005
+
     t1 = Thread.new do
-      bypass = ProconBypassMan::Bypass.new(gadget: @gadget, procon: @procon, monitor: monitor1)
+      timer = ProconBypassMan::SafeTimeout.new(timeout: Time.now + 10)
+      @did_first_step = false
       loop do
+        bypass = ProconBypassMan::Bypass.new(gadget: @gadget, procon: @procon, monitor: monitor1)
         break if $will_terminate_token
+        !@did_first_step && timer.throw_if_timeout!
         bypass.send_gadget_to_procon!
-        sleep(0.02)
+        sleep(@send_interval)
+      rescue ProconBypassMan::SafeTimeout::Timeout
+        case ProconBypassMan.config.bypass_mode.mode
+        when ProconBypassMan::BypassMode::TYPE_AGGRESSIVE
+          ProconBypassMan.logger.info "10秒経過したのでThread1を終了します"
+          monitor1.shutdown
+          break
+        when ProconBypassMan::BypassMode::TYPE_NORMAL
+          ProconBypassMan.logger.info "10秒経過したのでsend_intervalを長くします"
+          @send_interval = ProconBypassMan.config.bypass_mode.gadget_to_procon_interval
+        else
+          raise "unknown type"
+        end
+        @did_first_step = true
       rescue Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError, Errno::ESHUTDOWN => e
         ProconBypassMan::SendErrorCommand.execute(error: "Switchとの切断されました.終了処理を開始します. #{e.full_message}")
         Process.kill "TERM", Process.ppid

@@ -65,6 +65,17 @@ class ProconBypassMan::Configuration
     end
   end
 
+  def bypass_mode=(value)
+    @bypass_mode = ProconBypassMan::BypassMode.new(
+      mode: value[:mode],
+      gadget_to_procon_interval: value[:gadget_to_procon_interval],
+    )
+  end
+
+  def bypass_mode
+    @bypass_mode || ProconBypassMan::BypassMode.default_value
+  end
+
   def api_servers=(api_servers)
     @api_servers = api_servers
     return self

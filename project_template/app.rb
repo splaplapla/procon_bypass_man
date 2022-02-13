@@ -17,6 +17,8 @@ ProconBypassMan.configure do |config|
   config.enable_critical_error_logging = true
   # pbm-cloudで使う場合はnever_exitにtrueをセットしてください. trueがセットされている場合、不慮の事故が発生してもプロセスが終了しなくなります
   config.never_exit_accidentally = true
+  # 操作が高頻度で固まるときは、 gadget_to_procon_interval の数値は大きくしてください
+  config.bypass_mode = { mode: :normal, gadget_to_procon_interval: 0.5 }
 end
 
 ProconBypassMan.run(setting_path: "/usr/share/pbm/current/setting.yml")
