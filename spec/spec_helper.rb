@@ -30,6 +30,9 @@ RSpec.configure do |config|
     allow(ProconBypassMan::HttpClient::HttpRequest::Post).to receive(:new)
     allow(ProconBypassMan.config).to receive(:internal_server_pool) { ProconBypassMan::ServerPool.new(servers: []) }
     allow(ProconBypassMan.config).to receive(:server_pool) { ProconBypassMan::ServerPool.new(servers: []) }
+    allow_any_instance_of(Net::HTTP).to receive(:get) { double(:x).as_null_object }
+    allow_any_instance_of(Net::HTTP).to receive(:put) { double(:x).as_null_object }
+    allow_any_instance_of(Net::HTTP).to receive(:post) { double(:x).as_null_object }
     allow(ProconBypassMan::ConnectDeviceCommand).to receive(:has_required_files?) { true }
   end
 

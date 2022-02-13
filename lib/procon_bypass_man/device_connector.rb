@@ -263,46 +263,19 @@ class ProconBypassMan::DeviceConnector
     @procon
   end
 
-  def is_available_device?(path)
-    return false if !File.exist?(path)
-
-    system('echo > /sys/kernel/config/usb_gadget/procon/UDC')
-    system('ls /sys/class/udc > /sys/kernel/config/usb_gadget/procon/UDC')
-    sleep 0.5
-
-    file = File.open(path, "w+")
-    begin
-      file.read_nonblock(64)
-    rescue EOFError
-      file.close
-      return false
-    rescue IO::EAGAINWaitReadable
-      file.close
-      return true
-    end
-  end
-
-  def to_bin(string)
-    string.unpack "H*"
-  end
-
   def init_devices
     if @initialized_devices
       return
     end
 
-    case
-    when is_available_device?(PROCON_PATH)
-      ProconBypassMan.logger.info "proconのデバイスファイルは#{PROCON_PATH}を使います"
-      @procon = File.open(PROCON_PATH, "w+b")
-      @gadget = File.open('/dev/hidg0', "w+b")
-    when is_available_device?(PROCON2_PATH)
-      ProconBypassMan.logger.info "proconのデバイスファイルは#{PROCON2_PATH}を使います"
-      @procon = File.open(PROCON2_PATH, "w+b")
-      @gadget = File.open('/dev/hidg0', "w+b")
+    if path = ProconBypassMan::DeviceProconFinder.find
+      @procon = File.open(path, "w+b")
+      ProconBypassMan.logger.info "proconのデバイスファイルは#{path}を使います"
     else
-      raise NotFoundProconError, "/dev/hidraw0, /dev/hidraw1の両方見つかりませんでした"
+      raise(ProconBypassMan::DeviceConnector::NotFoundProconError)
     end
+    @gadget = File.open('/dev/hidg0', "w+b")
+
     system('echo > /sys/kernel/config/usb_gadget/procon/UDC')
     system('ls /sys/class/udc > /sys/kernel/config/usb_gadget/procon/UDC')
     sleep 0.5

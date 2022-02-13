@@ -29,6 +29,7 @@ require_relative "procon_bypass_man/bypass"
 require_relative "procon_bypass_man/domains"
 require_relative "procon_bypass_man/never_exit_accidentally"
 require_relative "procon_bypass_man/device_connector"
+require_relative "procon_bypass_man/device_procon_finder"
 require_relative "procon_bypass_man/device_status"
 require_relative "procon_bypass_man/runner"
 require_relative "procon_bypass_man/processor"
@@ -52,7 +53,6 @@ module ProconBypassMan
   extend ProconBypassMan::NeverExitAccidentally
 
   class CouldNotLoadConfigError < StandardError; end
-  class NotFoundProconError < StandardError; end
   class ConnectionError < StandardError; end
   class NotFoundRequiredFilesError < StandardError; end
   class FirstConnectionError < ConnectionError; end
@@ -83,7 +83,7 @@ module ProconBypassMan
       FileUtils.rm_rf(ProconBypassMan.pid_path)
       FileUtils.rm_rf(ProconBypassMan.digest_path)
     end
-  rescue ProconBypassMan::NotFoundProconError
+  rescue ProconBypassMan::ConnectDeviceCommand::NotFoundProconError
     ProconBypassMan::SendErrorCommand.execute(error: "プロコンが見つかりませんでした。")
     ProconBypassMan::DeviceStatus.change_to_procon_not_found_error!
     ProconBypassMan.exit_if_allow(1) do
