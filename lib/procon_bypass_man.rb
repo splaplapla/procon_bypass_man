@@ -83,7 +83,7 @@ module ProconBypassMan
       FileUtils.rm_rf(ProconBypassMan.pid_path)
       FileUtils.rm_rf(ProconBypassMan.digest_path)
     end
-  rescue ProconBypassMan::DeviceConnector::NotFoundProconError
+  rescue ProconBypassMan::ConnectDeviceCommand::NotFoundProconError
     ProconBypassMan::SendErrorCommand.execute(error: "プロコンが見つかりませんでした。")
     ProconBypassMan::DeviceStatus.change_to_procon_not_found_error!
     ProconBypassMan.exit_if_allow(1) do
