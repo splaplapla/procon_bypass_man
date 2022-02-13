@@ -163,6 +163,10 @@ class ProconBypassMan::Configuration
     end
   end
 
+  def has_api_server?
+    not api_servers.length.zero?
+  end
+
   def verbose_bypass_log
     @verbose_bypass_log || !!ENV["VERBOSE_BYPASS_LOG"]
   end

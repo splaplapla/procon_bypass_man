@@ -70,4 +70,18 @@ describe ProconBypassMan::Configuration do
       expect(config.enable_reporting_pressed_buttons).to eq(true)
     end
   end
+
+  describe 'has_api_server?' do
+    let(:config) { described_class.new }
+    context 'when has api_server' do
+      it do
+        config.api_servers=("foo")
+        expect(config.has_api_server?).to eq(true)
+      end
+    end
+
+    it 'default false' do
+      expect(config.has_api_server?).to eq(false)
+    end
+  end
 end
