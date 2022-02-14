@@ -69,7 +69,11 @@ class ProconBypassMan::BypassCommand
     t2 = Thread.new do
       bypass = ProconBypassMan::Bypass.new(gadget: @gadget, procon: @procon, monitor: monitor2)
       loop do
-        break if $will_terminate_token
+        if $will_terminate_token
+          bypass.disconnect_procon!
+          break
+        end
+
         bypass.send_procon_to_gadget!
       rescue EOFError => e
         ProconBypassMan::SendErrorCommand.execute(error: "Proconが切断されました。終了処理を開始します. #{e.full_message}")
