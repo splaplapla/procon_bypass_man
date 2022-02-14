@@ -26,8 +26,14 @@ class ProconBypassMan::Bypass
     self.bypass_value = BypassValue.new(nil, sent = false)
 
     run_callbacks(:send_gadget_to_procon) do
+      if $will_terminate_token
+        self.procon.write_nonblock(["01040001404000014040300000000000000000000000000000000000000000000000000000000000000000000000000000"].pack("H*"))
+        self.procon.write_nonblock(["010d0000000000000000300000000000000000000000000000000000000000000000000000000000000000000000000000"].pack("H*"))
+        self.bypass_value.sent = true
+        break
+      end
+
       begin
-        break if $will_terminate_token
         # TODO blocking readにしたいが、接続時のフェーズによって長さが違うので厳しい
         input = self.gadget.read_nonblock(64)
         self.bypass_value.binary = ProconBypassMan::Domains::InboundProconBinary.new(binary: input)
