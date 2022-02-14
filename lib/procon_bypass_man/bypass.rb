@@ -19,6 +19,15 @@ class ProconBypassMan::Bypass
     self.monitor = monitor
   end
 
+  def disconnect_procon!
+    %w(
+      01040001404000014040300000000000000000000000000000000000000000000000000000000000000000000000000000
+      010d0000000000000000300000000000000000000000000000000000000000000000000000000000000000000000000000
+      01020001404000014040300000000000000000000000000000000000000000000000000000000000000000000000000000
+      01070000000000000000300000000000000000000000000000000000000000000000000000000000000000000000000000
+    ).each { |d| self.procon.write_nonblock([d].pack("H*")) }
+  end
+
   # ゆっくりでいい
   def send_gadget_to_procon!
     monitor.record(:start_function)
@@ -26,12 +35,7 @@ class ProconBypassMan::Bypass
     self.bypass_value = BypassValue.new(nil, sent = false)
 
     run_callbacks(:send_gadget_to_procon) do
-      if $will_terminate_token
-        self.procon.write_nonblock(["01040001404000014040300000000000000000000000000000000000000000000000000000000000000000000000000000"].pack("H*"))
-        self.procon.write_nonblock(["010d0000000000000000300000000000000000000000000000000000000000000000000000000000000000000000000000"].pack("H*"))
-        self.bypass_value.sent = true
-        break
-      end
+      break if $will_terminate_token
 
       begin
         # TODO blocking readにしたいが、接続時のフェーズによって長さが違うので厳しい
