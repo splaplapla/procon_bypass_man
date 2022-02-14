@@ -127,6 +127,7 @@ module ProconBypassMan
   def self.initialize_pbm
     ProconBypassMan::WriteDeviceIdCommand.execute
     ProconBypassMan::WriteSessionIdCommand.execute
+    system("renice -n -20 -p #{$$}")
     File.write(pid_path, $$)
     ProconBypassMan::DeviceStatus.change_to_running!
   end
