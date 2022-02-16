@@ -10,6 +10,10 @@ module ProconBypassMan
           def self.steps
             [:x, :down, :a, :a].freeze
           end
+
+          def self.description
+            '試合中にリスポーンにスーパージャンプ'
+          end
         end
       end
     end

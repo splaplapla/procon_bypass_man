@@ -3,6 +3,10 @@ module ProconBypassMan
     module Splatoon2
       module Mode
         module Guruguru
+          def self.description
+            '適当に動きます'
+          end
+
           def self.binaries
             [ "309481408000362d684658750968f71cfe2c0e51000001480053f71ffedf0d4b000a013d00caf6ecfd4c0d480003011c00000000000000000000000000000000",
               "30978140800037dd6748687509fdf6adfded0d6d0081005d00eef68dfdef0d6d00830059001bf791fd140e720090005400000000000000000000000000000000",
