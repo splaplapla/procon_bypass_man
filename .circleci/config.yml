@@ -34,6 +34,19 @@ commands: &commands
             - vendor/bundle
 
 jobs:
+  syntax_check:
+    parameters:
+      ruby-version:
+        type: string
+    executor:
+      name: ruby
+      tag: << parameters.ruby-version >>
+    steps:
+      - checkout
+      - run: ruby -cw project_template/app.rb
+      - run: ruby -cw project_template/web.rb
+      - run: ruby -ryaml -e 'puts YAML.load_file("./project_template/setting.yml")["setting"]' > /tmp/content_of_setting.rb && ruby -cw /tmp/content_of_setting.rb
+
   bundle_install:
     parameters:
       ruby-version:
@@ -79,6 +92,14 @@ jobs:
       - run: bundle exec rspec
 
 build_jobs: &build_jobs
+  - syntax_check:
+      matrix:
+        parameters:
+          ruby-version:
+            - "2.7"
+            - "3.0.1"
+            - "3.0.2"
+            - "3.1.0"
   - bundle_install:
       matrix:
         parameters:
