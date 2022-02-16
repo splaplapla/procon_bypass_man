@@ -80,16 +80,6 @@ describe ProconBypassMan do
         end
       end
 
-      context 'NotFoundRequiredFilesErrorが起きるとき' do
-        before do
-          allow(ProconBypassMan::ConnectDeviceCommand).to receive(:execute!) { raise ProconBypassMan::NotFoundRequiredFilesError }
-        end
-
-        it do
-          expect{ subject }.to raise_error(SystemExit)
-        end
-      end
-
       context 'CouldNotLoadConfigErrorが起きるとき' do
         before do
           allow(ProconBypassMan::Runner).to receive(:new) { raise ProconBypassMan::CouldNotLoadConfigError }
