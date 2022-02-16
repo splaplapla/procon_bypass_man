@@ -63,7 +63,7 @@ class ProconBypassMan::DeviceConnector
           data = from_device(item).read_nonblock(64)
           debug_log_buffer << "read_from(#{item.read_from}): #{data.unpack("H*")}"
         rescue IO::EAGAINWaitReadable
-          debug_log_buffer << "read_from(#{item.read_from}): IO::EAGAINWaitReadable"
+          # debug_log_buffer << "read_from(#{item.read_from}): IO::EAGAINWaitReadable"
           retry
         end
 
