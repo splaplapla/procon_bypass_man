@@ -61,7 +61,7 @@ class ProconBypassMan::DeviceConnector
         begin
           timer.throw_if_timeout!
           data = from_device(item).read_nonblock(64)
-          debug_log_buffer << "read_from(#{item.read_from}): #{data}"
+          debug_log_buffer << "read_from(#{item.read_from}): #{data.unpack("H*")}"
         rescue IO::EAGAINWaitReadable
           debug_log_buffer << "read_from(#{item.read_from}): IO::EAGAINWaitReadable"
           retry
@@ -289,7 +289,7 @@ class ProconBypassMan::DeviceConnector
     end
   rescue Errno::ENXIO => e
     # /dev/hidg0 をopenできないときがある
-    ProconBypassMan::SendErrorCommand.execute(error: "Errno::ENXIO (No such device or address @ rb_sysopen - /dev/hidg0)が起きました。resetします. #{e.full_message}")
+    ProconBypassMan::SendErrorCommand.execute(error: "Errno::ENXIO (No such device or address @ rb_sysopen - /dev/hidg0)が起きました。resetします.\n #{e.full_message}")
     ProconBypassMan::UsbDeviceController.reset
     retry
   end
