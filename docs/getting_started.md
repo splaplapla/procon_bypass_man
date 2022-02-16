@@ -14,7 +14,6 @@
 * マクロ
 * 左スティックの感度調整
 * 設定ファイルの書き方
-  * layer
 * プラグインの書き方
 * 設定ファイルの書き方がわからない、エラーが起きるとき
 * [procon_bypass_manのアップグレード方法](#procon_bypass_manのアップグレード方法)
@@ -106,7 +105,9 @@ pbmenvを使っていない場合は、 https://github.com/splaplapla/procon_byp
 * 後で書きます
 
 ## 設定ファイルの書き方がわからない、エラーが起きるとき
-* 後で書きます
+
+設定部分は、Rubyスクリプトになっているので構文エラーが起きることがあります。  
+discordで質問してみてください。
 
 ## procon_bypass_manのアップグレード方法
 [/docs/upgrade_pbm.md](/docs/upgrade_pbm.md)
