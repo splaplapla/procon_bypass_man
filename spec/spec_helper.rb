@@ -33,6 +33,7 @@ RSpec.configure do |config|
     allow_any_instance_of(Net::HTTP).to receive(:get) { double(:x).as_null_object }
     allow_any_instance_of(Net::HTTP).to receive(:put) { double(:x).as_null_object }
     allow_any_instance_of(Net::HTTP).to receive(:post) { double(:x).as_null_object }
+    allow(ProconBypassMan::UsbDeviceController).to receive(:init)
   end
 
   # rspec-expectations config goes here. You can use an alternate
