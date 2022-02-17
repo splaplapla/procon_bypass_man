@@ -14,10 +14,9 @@
 * マクロ
 * 左スティックの感度調整
 * 設定ファイルの書き方
-  * layer
 * プラグインの書き方
 * 設定ファイルの書き方がわからない、エラーが起きるとき
-* procon_bypass_manのアップグレード方法
+* [procon_bypass_manのアップグレード方法](#procon_bypass_manのアップグレード方法)
 * procon_bypass_man_cloudについて
 
 ## はじめに
@@ -86,3 +85,32 @@ sudo systemctl enable pbm.service
 pbmenvを使っていない場合は、 https://github.com/splaplapla/procon_bypass_man/blob/master/project_template/systemd_units/pbm.service をダウンロードして、 `systemctl link` をしてください。
 
 ゲームをやめたくなったらSwitchはそのままスリープに入って問題ないです。このときにRaspberry Piも一緒に電源が切れてしまいますが故障することはありません。
+
+## レイヤー
+* 後で書きます
+
+## モード
+* 後で書きます
+
+## マクロ
+* 後で書きます
+
+## 左スティックの感度調整
+* 後で書きます
+
+## 設定ファイルの書き方
+* 後で書きます
+
+## プラグインの書き方
+* 後で書きます
+
+## 設定ファイルの書き方がわからない、エラーが起きるとき
+
+設定部分は、Rubyスクリプトになっているので構文エラーが起きることがあります。  
+discordで質問してみてください。
+
+## procon_bypass_manのアップグレード方法
+[/docs/upgrade_pbm.md](/docs/upgrade_pbm.md)
+
+## procon_bypass_man_cloudについて
+* 後で書きます

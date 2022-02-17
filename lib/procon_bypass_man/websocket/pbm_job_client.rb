@@ -27,6 +27,7 @@ module ProconBypassMan
             ProconBypassMan.logger.info('successfully connected in ProconBypassMan::Websocket::PbmJobClient')
           }
           client.subscribed { |msg|
+            ProconBypassMan.logger.info('websocket client subscribed')
             puts({ event: :subscribed, msg: msg })
             ProconBypassMan::SyncDeviceStatsJob.perform(ProconBypassMan::DeviceStatus.current)
           }
@@ -40,11 +41,17 @@ module ProconBypassMan
           end
 
           client.disconnected {
+            ProconBypassMan.logger.info('websocket client disconnected!!')
             puts :disconnected
             client.reconnect!
             sleep 2
           }
-          client.errored { |msg|  puts :errored; puts msg }
+          client.errored { |msg|
+            ProconBypassMan.logger.info('websocket client errored!!')
+            puts :errored
+            client.reconnect!
+            sleep 2
+          }
           client.pinged { |msg|
             ProconBypassMan.cache.fetch key: 'ws_pinged', expires_in: 10 do
               ProconBypassMan.logger.info(msg)
