@@ -10,7 +10,7 @@ module ProconBypassMan
           loop do
             run
           rescue => e
-            ProconBypassMan.logger.info("websocket client: #{e.full_message}")
+            ProconBypassMan.logger.error("websocket client: #{e.full_message}")
             retry
           end
         end
@@ -34,6 +34,7 @@ module ProconBypassMan
           }
 
           client.received do |data|
+            ProconBypassMan.logger.info('websocket client: received!!')
             ProconBypassMan.logger.info(data)
 
             dispatch(data: data, client: client)
@@ -48,7 +49,7 @@ module ProconBypassMan
             sleep 2
           }
           client.errored { |msg|
-            ProconBypassMan.logger.info('websocket client: errored!!')
+            ProconBypassMan.logger.error("websocket client: errored!!, #{msg}")
             puts :errored
             client.reconnect!
             sleep 2
