@@ -41,7 +41,7 @@ class ProconBypassMan::PrintBootMessageCommand
       use_pbmenv: #{@table[:use_pbmenv]}
       session_id: #{ProconBypassMan.session_id}
       device_id: #{ProconBypassMan.device_id}
-      bypass_mode: #{ProconBypassMan.config.bypass_mode.to_s}
+      bypass_mode: #{ProconBypassMan.config.bypass_mode}
       ----
       EOF
     end
