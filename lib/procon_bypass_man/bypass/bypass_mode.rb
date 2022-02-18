@@ -20,6 +20,10 @@ class ProconBypassMan::BypassMode
   end
 
   def to_s
-    "#{mode}(#{gadget_to_procon_interval})"
+    if mode == TYPE_NORMAL
+      "#{mode}(#{gadget_to_procon_interval})"
+    else
+      mode.to_s
+    end
   end
 end
