@@ -14,11 +14,12 @@ ProconBypassMan.configure do |config|
   config.logger.level = :debug
 
   # バイパスするログを全部app.logに流すか
-  # config.verbose_bypass_log = true
+  config.verbose_bypass_log = false
 
   # webからProconBypassManを操作できるwebサービス
   # config.api_servers = ['https://pbm-cloud.herokuapp.com']
 
+  # エラーが起きたらerror.logに書き込みます
   config.enable_critical_error_logging = true
 
   # pbm-cloudで使う場合はnever_exitにtrueをセットしてください. trueがセットされている場合、不慮の事故が発生してもプロセスが終了しなくなります
