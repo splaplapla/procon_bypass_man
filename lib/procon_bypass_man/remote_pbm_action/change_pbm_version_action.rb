@@ -6,6 +6,7 @@ module ProconBypassMan
         require "pbmenv"
         ProconBypassMan.logger.info "execute ChangePbmVersionAction!"
         pbm_version = args["pbm_version"] or raise(ProconBypassMan::RemotePbmAction::NeedPbmVersionError, "pbm_versionが必要です, #{args.inspect}")
+        Pbmenv.uninstall(pbm_version) # 途中でシャットダウンしてしまった、とか状態が途中の状態かもしれないので一旦消す
         Pbmenv.install(pbm_version)
         Pbmenv.use(pbm_version)
         `reboot` # symlinkの参照先が変わるのでrebootする必要がある
