@@ -28,7 +28,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   # Uncomment to register a new dependency of your gem
-  spec.add_dependency "pbmenv"
+  spec.add_dependency "pbmenv", ">= 0.1.9" # Pbmenv.installでのenable_pbm_cloudに依存している
   spec.add_dependency "action_cable_client"
   spec.add_dependency "sorted_set"
 
