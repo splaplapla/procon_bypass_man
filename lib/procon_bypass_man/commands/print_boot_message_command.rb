@@ -4,6 +4,7 @@ class ProconBypassMan::PrintBootMessageCommand
       @table = {}
       @table[:ruby_version] = RUBY_VERSION
       @table[:pbm_version] = ProconBypassMan::VERSION
+      @table[:pbmenv_version] = Pbmenv::VERSION
       @table[:pid] = $$
       @table[:root_path] = ProconBypassMan.root
       @table[:pid_path] = ProconBypassMan.pid_path
@@ -33,6 +34,7 @@ class ProconBypassMan::PrintBootMessageCommand
       ----
       RUBY_VERSION: #{@table[:ruby_version]}
       ProconBypassMan::VERSION: #{@table[:pbm_version]}
+      Pbmenv::VERSION: #{@table[:pbmenv_version]}
       pid: #{@table[:pid]}
       root: #{@table[:root_path]}
       pid_path: #{@table[:pid_path]}
