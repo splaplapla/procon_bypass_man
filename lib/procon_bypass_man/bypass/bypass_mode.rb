@@ -18,4 +18,8 @@ class ProconBypassMan::BypassMode
     @mode = mode.to_sym
     @gadget_to_procon_interval = gadget_to_procon_interval
   end
+
+  def to_s
+    "#{mode}(#{gadget_to_procon_interval})"
+  end
 end
