@@ -17,7 +17,7 @@
 * プラグインの書き方
 * [設定ファイルの書き方がわからない、エラーが起きるとき](#設定ファイルの書き方がわからない、エラーが起きるとき)
 * [procon_bypass_manのアップグレード方法](#procon_bypass_manのアップグレード方法)
-* procon_bypass_man_cloudについて
+* [procon_bypass_man_cloudについて](#procon_bypass_man_cloudについて)
 
 ## はじめに
 ### procon_bypass_manで解決したいこと
@@ -113,4 +113,9 @@ discordで質問してみてください。
 [procon_bypass_manのアップグレード方法](/docs/upgrade_pbm.md)
 
 ## procon_bypass_man_cloudについて
-* 後で書きます
+https://pbm-cloud.herokuapp.com/  
+procon_bypass_man_cloudの運用をWEBで完結できるようになる無料のWEBサービスです。  
+  
+procon_bypass_man_cloudとの接続が完了後、Raspberry Piを起動時にprocon_bypass_man_cloudが自動で立ち上がるように設定すれば、Raspberry Piへのログインが不要で設定ファイルの変更やprocon_bypass_man_cloudのアップグレードができます。  
+セットアップ方法などでわからないことがあればdiscordで質問してみてください。  
+セットアップ方法は https://pbm-cloud.herokuapp.com/faq に書いています。
