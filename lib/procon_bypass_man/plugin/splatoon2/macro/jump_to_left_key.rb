@@ -10,6 +10,10 @@ module ProconBypassMan
           def self.steps
             [:x, :left, :a, :a].freeze
           end
+
+          def self.description
+            '試合中に左キーに割り当てられている味方へのスーパージャンプ'
+          end
         end
       end
     end

@@ -8,6 +8,7 @@ require 'em/pure_ruby'
 require "action_cable_client"
 require "ext/em_pure_ruby"
 require "ext/module"
+require "resolv-replace"
 
 require_relative "procon_bypass_man/version"
 require_relative "procon_bypass_man/remote_pbm_action"
@@ -32,6 +33,7 @@ require_relative "procon_bypass_man/never_exit_accidentally"
 require_relative "procon_bypass_man/device_connector"
 require_relative "procon_bypass_man/device_procon_finder"
 require_relative "procon_bypass_man/device_status"
+require_relative "procon_bypass_man/usb_device_controller"
 require_relative "procon_bypass_man/runner"
 require_relative "procon_bypass_man/processor"
 require_relative "procon_bypass_man/configuration"
@@ -54,7 +56,6 @@ module ProconBypassMan
 
   class CouldNotLoadConfigError < StandardError; end
   class ConnectionError < StandardError; end
-  class NotFoundRequiredFilesError < StandardError; end
   class FirstConnectionError < ConnectionError; end
   class EternalConnectionError < ConnectionError; end
 
@@ -72,11 +73,6 @@ module ProconBypassMan
     Runner.new(gadget: gadget, procon: procon).run # ここでblockingする
     FileUtils.rm_rf(ProconBypassMan.pid_path)
     FileUtils.rm_rf(ProconBypassMan.digest_path)
-  rescue ProconBypassMan::NotFoundRequiredFilesError
-    ProconBypassMan::SendErrorCommand.execute(error: "/sys/kernel/config/usb_gadget/proconディレクトリがありませんでした。処理を終了します。")
-    FileUtils.rm_rf(ProconBypassMan.pid_path)
-    FileUtils.rm_rf(ProconBypassMan.digest_path)
-    exit 1 # 前提条件を満たしていないので絶対に落とす
   rescue ProconBypassMan::CouldNotLoadConfigError
     ProconBypassMan::SendErrorCommand.execute(error: "設定ファイルが不正です。設定ファイルの読み込みに失敗しました")
     ProconBypassMan::DeviceStatus.change_to_setting_syntax_error_and_shutdown!
@@ -130,6 +126,7 @@ module ProconBypassMan
   def self.initialize_pbm
     ProconBypassMan::WriteDeviceIdCommand.execute
     ProconBypassMan::WriteSessionIdCommand.execute
+    system("renice -n -20 -p #{$$}")
     File.write(pid_path, $$)
     ProconBypassMan::DeviceStatus.change_to_running!
   end

@@ -15,6 +15,10 @@ module ProconBypassMan
               :toggle_r_for_1sec,
             ].freeze
           end
+
+          def self.description
+            'バブル即割'
+          end
         end
       end
     end

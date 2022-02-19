@@ -12,11 +12,21 @@ ProconBypassMan.configure do |config|
   config.root = File.expand_path(__dir__)
   config.logger = Logger.new("#{ProconBypassMan.root}/app.log", 5, 1024 * 1024 * 10)
   config.logger.level = :debug
+
+  # バイパスするログを全部app.logに流すか
+  config.verbose_bypass_log = false
+
   # webからProconBypassManを操作できるwebサービス
   # config.api_servers = ['https://pbm-cloud.herokuapp.com']
+
+  # エラーが起きたらerror.logに書き込みます
   config.enable_critical_error_logging = true
+
   # pbm-cloudで使う場合はnever_exitにtrueをセットしてください. trueがセットされている場合、不慮の事故が発生してもプロセスが終了しなくなります
   config.never_exit_accidentally = true
+
+  # 操作が高頻度で固まるときは、 gadget_to_procon_interval の数値は大きくしてください
+  config.bypass_mode = { mode: :normal, gadget_to_procon_interval: 5 }
 end
 
 ProconBypassMan.run(setting_path: "/usr/share/pbm/current/setting.yml")

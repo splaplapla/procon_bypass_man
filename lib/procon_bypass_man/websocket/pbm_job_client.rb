@@ -9,7 +9,8 @@ module ProconBypassMan
         Thread.start do
           loop do
             run
-          rescue
+          rescue => e
+            ProconBypassMan.logger.error("websocket client: #{e.full_message}")
             retry
           end
         end
@@ -24,14 +25,16 @@ module ProconBypassMan
           )
 
           client.connected {
-            ProconBypassMan.logger.info('successfully connected in ProconBypassMan::Websocket::PbmJobClient')
+            ProconBypassMan.logger.info('websocket client: successfully connected in ProconBypassMan::Websocket::PbmJobClient')
           }
           client.subscribed { |msg|
+            ProconBypassMan.logger.info('websocket client: subscribed')
             puts({ event: :subscribed, msg: msg })
             ProconBypassMan::SyncDeviceStatsJob.perform(ProconBypassMan::DeviceStatus.current)
           }
 
           client.received do |data|
+            ProconBypassMan.logger.info('websocket client: received!!')
             ProconBypassMan.logger.info(data)
 
             dispatch(data: data, client: client)
@@ -40,13 +43,20 @@ module ProconBypassMan
           end
 
           client.disconnected {
+            ProconBypassMan.logger.info('websocket client: disconnected!!')
             puts :disconnected
             client.reconnect!
             sleep 2
           }
-          client.errored { |msg|  puts :errored; puts msg }
+          client.errored { |msg|
+            ProconBypassMan.logger.error("websocket client: errored!!, #{msg}")
+            puts :errored
+            client.reconnect!
+            sleep 2
+          }
           client.pinged { |msg|
             ProconBypassMan.cache.fetch key: 'ws_pinged', expires_in: 10 do
+              ProconBypassMan.logger.info('websocket client: pinged!!')
               ProconBypassMan.logger.info(msg)
             end
           }
