@@ -99,7 +99,7 @@ build_jobs: &build_jobs
             - "2.7"
             - "3.0.1"
             - "3.0.2"
-            - "3.1.0"
+            - "3.1.1"
   - bundle_install:
       matrix:
         parameters:
@@ -107,7 +107,7 @@ build_jobs: &build_jobs
             - "2.7"
             - "3.0.1"
             - "3.0.2"
-            - "3.1.0"
+            - "3.1.1"
   - lint:
       matrix:
         parameters:
@@ -115,7 +115,7 @@ build_jobs: &build_jobs
             - "2.7"
             - "3.0.1"
             - "3.0.2"
-            - "3.1.0"
+            - "3.1.1"
       requires:
         - bundle_install
   - type_check:
@@ -125,7 +125,7 @@ build_jobs: &build_jobs
             - "2.7"
             # - "3.0.1" # たまにSEGVするので
             - "3.0.2"
-            - "3.1.0"
+            - "3.1.1"
       requires:
         - bundle_install
   - rspec:
@@ -135,7 +135,7 @@ build_jobs: &build_jobs
             - "2.7"
             - "3.0.1"
             - "3.0.2"
-            - "3.1.0"
+            - "3.1.1"
       requires:
         - bundle_install
 workflows:
