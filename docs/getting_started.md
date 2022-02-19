@@ -12,10 +12,10 @@
 * レイヤー
 * モード
 * マクロ
-* 左スティックの感度調整
+* [左スティックの感度調整](#左スティックの感度調整)
 * 設定ファイルの書き方
 * プラグインの書き方
-* 設定ファイルの書き方がわからない、エラーが起きるとき
+* [設定ファイルの書き方がわからない、エラーが起きるとき](#設定ファイルの書き方がわからない、エラーが起きるとき)
 * [procon_bypass_manのアップグレード方法](#procon_bypass_manのアップグレード方法)
 * procon_bypass_man_cloudについて
 
@@ -96,7 +96,7 @@ pbmenvを使っていない場合は、 https://github.com/splaplapla/procon_byp
 * 後で書きます
 
 ## 左スティックの感度調整
-* 後で書きます
+[左スティックの感度調整](/docs/setting/left-analogstick-cap.md)
 
 ## 設定ファイルの書き方
 * 後で書きます
@@ -106,11 +106,11 @@ pbmenvを使っていない場合は、 https://github.com/splaplapla/procon_byp
 
 ## 設定ファイルの書き方がわからない、エラーが起きるとき
 
-設定部分は、Rubyスクリプトになっているので構文エラーが起きることがあります。  
+設定ファイル(setting.yaml)は、内部がRubyスクリプトになっているので構文エラーが起きることがあります。  
 discordで質問してみてください。
 
 ## procon_bypass_manのアップグレード方法
-[/docs/upgrade_pbm.md](/docs/upgrade_pbm.md)
+[procon_bypass_manのアップグレード方法](/docs/upgrade_pbm.md)
 
 ## procon_bypass_man_cloudについて
 * 後で書きます
