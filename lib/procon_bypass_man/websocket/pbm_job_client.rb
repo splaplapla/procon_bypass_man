@@ -7,22 +7,7 @@ module ProconBypassMan
         return unless ProconBypassMan.config.enable_ws?
 
         Thread.start do
-          loop do
-            ws_thread = Thread.start do
-              loop do
-                run
-              rescue => e
-                ProconBypassMan.logger.error("websocket client: #{e.full_message}")
-                retry
-              end
-            end
-
-            if Watchdog.outdated?
-              ws_thread.kill
-            end
-
-            sleep(10)
-          end
+          Forever.run { run }
         end
       end
 
