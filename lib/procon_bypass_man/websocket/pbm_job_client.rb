@@ -8,10 +8,20 @@ module ProconBypassMan
 
         Thread.start do
           loop do
-            run
-          rescue => e
-            ProconBypassMan.logger.error("websocket client: #{e.full_message}")
-            retry
+            ws_thread = Thread.start do
+              loop do
+                run
+              rescue => e
+                ProconBypassMan.logger.error("websocket client: #{e.full_message}")
+                retry
+              end
+            end
+
+            if Watchdog.outdated?
+              ws_thread.kill
+            end
+
+            sleep(10)
           end
         end
       end
@@ -55,6 +65,8 @@ module ProconBypassMan
             sleep 2
           }
           client.pinged { |msg|
+            Watchdog.active!
+
             ProconBypassMan.cache.fetch key: 'ws_pinged', expires_in: 10 do
               ProconBypassMan.logger.info('websocket client: pinged!!')
               ProconBypassMan.logger.info(msg)
