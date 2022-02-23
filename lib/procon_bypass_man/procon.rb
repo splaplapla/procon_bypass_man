@@ -30,8 +30,9 @@ class ProconBypassMan::Procon
     )
 
     reader = ProconBypassMan::Domains::InboundProconBinary.new(binary: binary.dup).to_procon_reader
+    hypotenuse = Math.sqrt((reader.left_analog_stick[:x]**2) + (reader.left_analog_stick[:y]**2)).floor(6)
     @@map.add(
-      { relative: reader.left_analog_stick, abs: reader.left_analog_stick_by_abs }
+      { relative: reader.left_analog_stick, hypotenuse: hypotenuse }
     ) do |result|
       ProconBypassMan.logger.info result
     end

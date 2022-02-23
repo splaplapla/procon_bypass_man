@@ -23,7 +23,8 @@ class ProconBypassMan::TimeScopedMap
 
   # 0.1sec刻みで進行する
   def key
-    t = Time.now.to_i
+    time = Time.now
+    t = [time.to_i, time.usec.to_s[0]].join.to_i
     @duration - (t % @duration)
   end
 
