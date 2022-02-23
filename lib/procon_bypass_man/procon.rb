@@ -19,6 +19,7 @@ class ProconBypassMan::Procon
       ongoing_macro: MacroRegistry.load(:null),
       ongoing_mode: ModeRegistry.load(:manual),
     }
+    @@map = ProconBypassMan::TimeScopedMap.new
   end
   reset!
 
@@ -27,6 +28,13 @@ class ProconBypassMan::Procon
     self.user_operation = ProconBypassMan::Procon::UserOperation.new(
       binary.dup
     )
+
+    reader = ProconBypassMan::Domains::InboundProconBinary.new(binary: binary.dup).to_procon_reader
+    @@map.add(
+      { relative: reader.left_analog_stick, abs: reader.left_analog_stick_by_abs }
+    ) do |result|
+      ProconBypassMan.logger.info result
+    end
   end
 
   def status; @@status[:buttons]; end
