@@ -5,14 +5,21 @@ class ProconBypassMan::TimeScopedMap
   end
 
   def add(value, &block)
+    rotated = false
     current_key = key
     if @map[current_key].nil?
       rotate
-      block.call(result) if block_given? && result[:list]
+      if result[:list]
+        if block_given?
+          block.call(result)
+        end
+        rotated = true
+      end
       @map = { current_key => [] }
     end
 
     @map[current_key] << value
+    rotated
   end
 
   def result

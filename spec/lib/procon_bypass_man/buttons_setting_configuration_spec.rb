@@ -514,6 +514,19 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
             { :sokuwari => {:if_pressed=>[:zr, :down]} }
           )
         end
+        context 'with if_tilted_left_stick' do
+          it do
+            ProconBypassMan.buttons_setting_configure do
+              layer :up do
+                open_macro :dacan, steps: [:r, :zl], if_tilted_left_stick: true, if_pressed: [:zr]
+              end
+            end
+            expect(ProconBypassMan::Procon::MacroRegistry.plugins[:dacan].call).to eq([:r, :zl])
+            expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].macros).to eq(
+              { dacan: { if_pressed: [:zr], if_tilted_left_stick: true } }
+            )
+          end
+        end
       end
     end
     context 'with install mode plugin' do
@@ -659,17 +672,6 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
           end
         end
         expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].flip_buttons[:zr][:flip_interval]).to eq(0.13)
-      end
-    end
-
-    context 'toggle with if_tilted_left_stick' do
-      it do
-        ProconBypassMan.buttons_setting_configure do
-          layer :up do
-            toggle :zr, if_tilted_left_stick: true
-          end
-        end
-        expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].toggles[:zr]).to eq(if_tilted_left_stick: true, if_pressed: nil)
       end
     end
   end

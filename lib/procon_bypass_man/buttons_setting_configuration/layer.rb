@@ -1,12 +1,11 @@
 module ProconBypassMan
   class ButtonsSettingConfiguration
     class Layer
-      attr_accessor :mode, :flips, :toggles, :macros, :remaps, :left_analog_stick_caps, :disables
+      attr_accessor :mode, :flips, :macros, :remaps, :left_analog_stick_caps, :disables
 
       def initialize(mode: :manual)
         self.mode = mode
         self.flips = {}
-        self.toggles = {}
         self.macros = {}
         self.remaps = {}
         self.left_analog_stick_caps = []
@@ -54,24 +53,6 @@ module ProconBypassMan
         self.flips[button] = hash
       end
 
-      # ユースケースが不明なので雑な実装をする
-      def toggle(button, if_tilted_left_stick: , if_pressed: nil)
-        case if_pressed
-        when TrueClass
-          if_pressed = [button]
-        when Symbol, String
-          if_pressed = [if_pressed]
-        when Array
-          # if_pressed = if_pressed
-        when FalseClass, NilClass
-          # no-op
-        else
-          raise "not support class"
-        end
-
-        self.toggles[button] = { if_tilted_left_stick: if_tilted_left_stick, if_pressed: if_pressed }
-      end
-
       # @param [String, Class] プラグインのclass
       def macro(name, if_pressed: )
         macro_name = name.to_s.to_sym
@@ -81,10 +62,10 @@ module ProconBypassMan
       # 設定ファイルに直接マクロを打ち込める
       # @param [String, Class] macroの識別子
       # @paramh[Array<Symbol>] macroの本体. ボタンの配列
-      def open_macro(name, steps: , if_pressed: )
+      def open_macro(name, steps: , if_pressed: , if_tilted_left_stick: nil)
         macro_name = name || "OpenMacro-#{steps.join}".to_sym
         ProconBypassMan::Procon::MacroRegistry.install_plugin(macro_name, steps: steps)
-        self.macros[macro_name] = { if_pressed: if_pressed }
+        self.macros[macro_name] = { if_pressed: if_pressed, if_tilted_left_stick: if_tilted_left_stick }.compact
       end
 
       def remap(button, to: )
