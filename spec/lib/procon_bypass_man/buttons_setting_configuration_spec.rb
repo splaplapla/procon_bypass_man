@@ -669,7 +669,7 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
             toggle :zr, if_tilted_left_stick: true
           end
         end
-        expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].toggles[:zr]).to eq(if_tilted_left_stick: true)
+        expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].toggles[:zr]).to eq(if_tilted_left_stick: true, if_pressed: nil)
       end
     end
   end

@@ -55,8 +55,21 @@ module ProconBypassMan
       end
 
       # ユースケースが不明なので雑な実装をする
-      def toggle(buttons, if_tilted_left_stick: )
-        self.toggles[buttons] = { if_tilted_left_stick: if_tilted_left_stick }
+      def toggle(button, if_tilted_left_stick: , if_pressed: nil)
+        case if_pressed
+        when TrueClass
+          if_pressed = [button]
+        when Symbol, String
+          if_pressed = [if_pressed]
+        when Array
+          # if_pressed = if_pressed
+        when FalseClass, NilClass
+          # no-op
+        else
+          raise "not support class"
+        end
+
+        self.toggles[button] = { if_tilted_left_stick: if_tilted_left_stick, if_pressed: if_pressed }
       end
 
       # @param [String, Class] プラグインのclass

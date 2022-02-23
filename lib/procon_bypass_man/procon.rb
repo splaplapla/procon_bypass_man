@@ -19,7 +19,7 @@ class ProconBypassMan::Procon
       ongoing_macro: MacroRegistry.load(:null),
       ongoing_mode: ModeRegistry.load(:manual),
     }
-    @@map = ProconBypassMan::TimeScopedMap.new
+    @@left_stick_report_map = ProconBypassMan::TimeScopedMap.new
   end
   reset!
 
@@ -28,12 +28,6 @@ class ProconBypassMan::Procon
     self.user_operation = ProconBypassMan::Procon::UserOperation.new(
       binary.dup
     )
-
-    reader = ProconBypassMan::Domains::InboundProconBinary.new(binary: binary.dup).to_procon_reader
-    hypotenuse = Math.sqrt((reader.left_analog_stick[:x]**2) + (reader.left_analog_stick[:y]**2)).floor(6)
-    @@map.add({ relative: reader.left_analog_stick, hypotenuse: hypotenuse }) do |result|
-      ProconBypassMan.logger.info "moving: #{ProconBypassMan::StickPositionsList.new(result[:list]).moving_power}"
-    end
   end
 
   def status; @@status[:buttons]; end
@@ -144,6 +138,18 @@ class ProconBypassMan::Procon
         user_operation.unpress_button(from_button)
         to_buttons[:to].each do |to_button|
           user_operation.press_button(to_button)
+        end
+      end
+    end
+
+    current_layer.toggles.each do |button, options|
+      reader = ProconBypassMan::Domains::InboundProconBinary.new(binary: user_operation.binary.raw).to_procon_reader
+      hypotenuse = Math.sqrt((reader.left_analog_stick[:x]**2) + (reader.left_analog_stick[:y]**2)).floor(6)
+
+      @@left_stick_report_map.add({ relative: reader.left_analog_stick, hypotenuse: hypotenuse }) do |result|
+        ProconBypassMan.logger.info "moving: #{ProconBypassMan::StickPositionsList.new(result[:list]).moving_power}"
+        if ProconBypassMan::StickSwingAware.swing?(result) && user_operation.pressing_all_buttons?(options[:if_pressed])
+          user_operation.press_button(button)
         end
       end
     end
