@@ -47,6 +47,8 @@ require_relative "procon_bypass_man/remote_pbm_action/value_objects/remote_pbm_a
 require_relative "procon_bypass_man/scheduler"
 require_relative "procon_bypass_man/plugins"
 require_relative "procon_bypass_man/websocket/pbm_job_client"
+require_relative "procon_bypass_man/websocket/watchdog"
+require_relative "procon_bypass_man/websocket/forever"
 
 STDOUT.sync = true
 Thread.abort_on_exception = true

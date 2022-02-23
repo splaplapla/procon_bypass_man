@@ -7,12 +7,7 @@ module ProconBypassMan
         return unless ProconBypassMan.config.enable_ws?
 
         Thread.start do
-          loop do
-            run
-          rescue => e
-            ProconBypassMan.logger.error("websocket client: #{e.full_message}")
-            retry
-          end
+          Forever.run { run }
         end
       end
 
@@ -55,6 +50,8 @@ module ProconBypassMan
             sleep 2
           }
           client.pinged { |msg|
+            Watchdog.active!
+
             ProconBypassMan.cache.fetch key: 'ws_pinged', expires_in: 10 do
               ProconBypassMan.logger.info('websocket client: pinged!!')
               ProconBypassMan.logger.info(msg)
