@@ -1,6 +1,5 @@
 class ProconBypassMan::TimeScopedMap
   def initialize
-    @duration = 60
     @map = {}
     @result = nil
   end
@@ -25,8 +24,8 @@ class ProconBypassMan::TimeScopedMap
   # 0.1sec刻みで進行する
   def key
     time = Time.now
-    t = [time.to_i, time.usec.to_s[0]].join.to_i
-    @duration - (t % @duration)
+    m1 = time.strftime('%L')[0]
+    [time.to_i, m1].join.to_i
   end
 
   def rotate
