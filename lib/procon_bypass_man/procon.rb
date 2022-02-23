@@ -148,7 +148,7 @@ class ProconBypassMan::Procon
 
       @@left_stick_report_map.add({ relative: reader.left_analog_stick, hypotenuse: hypotenuse }) do |result|
         ProconBypassMan.logger.info "moving: #{ProconBypassMan::StickPositionsList.new(result[:list]).moving_power}"
-        if ProconBypassMan::TiltingStickAware.tilting?(result) && user_operation.pressing_all_buttons?(options[:if_pressed])
+        if ProconBypassMan::TiltingStickAware.tilting?(result[:list].moving_power) && user_operation.pressing_all_buttons?(options[:if_pressed])
           user_operation.press_button(button)
         end
       end
