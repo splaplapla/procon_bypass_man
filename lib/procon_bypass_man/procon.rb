@@ -143,7 +143,7 @@ class ProconBypassMan::Procon
     end
 
     current_layer.toggles.each do |button, options|
-      reader = ProconBypassMan::Domains::InboundProconBinary.new(binary: user_operation.binary.raw).to_procon_reader
+      reader = ProconBypassMan::Domains::InboundProconBinary.new(binary: user_operation.binary.raw.dup).to_procon_reader
       hypotenuse = Math.sqrt((reader.left_analog_stick[:x]**2) + (reader.left_analog_stick[:y]**2)).floor(6)
 
       @@left_stick_report_map.add({ relative: reader.left_analog_stick, hypotenuse: hypotenuse }) do |result|
