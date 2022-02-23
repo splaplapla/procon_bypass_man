@@ -147,8 +147,9 @@ class ProconBypassMan::Procon
       hypotenuse = Math.sqrt((reader.left_analog_stick[:x]**2) + (reader.left_analog_stick[:y]**2)).floor(6)
 
       @@left_stick_report_map.add({ relative: reader.left_analog_stick, hypotenuse: hypotenuse }) do |result|
-        ProconBypassMan.logger.info "moving: #{ProconBypassMan::StickPositionsList.new(result[:list]).moving_power}"
-        if ProconBypassMan::TiltingStickAware.tilting?(result[:list].moving_power) && user_operation.pressing_all_buttons?(options[:if_pressed])
+        moving_power = ProconBypassMan::StickPositionsList.new(result[:list]).moving_power
+        ProconBypassMan.logger.info "moving: #{moving_power}"
+        if ProconBypassMan::TiltingStickAware.tilting?(moving_power) && user_operation.pressing_all_buttons?(options[:if_pressed])
           user_operation.press_button(button)
         end
       end
