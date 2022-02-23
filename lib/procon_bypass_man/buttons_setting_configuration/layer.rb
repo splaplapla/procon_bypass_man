@@ -1,11 +1,12 @@
 module ProconBypassMan
   class ButtonsSettingConfiguration
     class Layer
-      attr_accessor :mode, :flips, :macros, :remaps, :left_analog_stick_caps, :disables
+      attr_accessor :mode, :flips, :toggles, :macros, :remaps, :left_analog_stick_caps, :disables
 
       def initialize(mode: :manual)
         self.mode = mode
         self.flips = {}
+        self.toggles = {}
         self.macros = {}
         self.remaps = {}
         self.left_analog_stick_caps = []
@@ -51,6 +52,11 @@ module ProconBypassMan
         end
 
         self.flips[button] = hash
+      end
+
+      # ユースケースが不明なので雑な実装をする
+      def toggle(buttons, if_tilted_left_stick: )
+        self.toggles[buttons] = { if_tilted_left_stick: if_tilted_left_stick }
       end
 
       # @param [String, Class] プラグインのclass

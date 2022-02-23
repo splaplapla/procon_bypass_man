@@ -661,6 +661,17 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
         expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].flip_buttons[:zr][:flip_interval]).to eq(0.13)
       end
     end
+
+    context 'toggle with if_tilted_left_stick' do
+      it do
+        ProconBypassMan.buttons_setting_configure do
+          layer :up do
+            toggle :zr, if_tilted_left_stick: true
+          end
+        end
+        expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].toggles[:zr]).to eq(if_tilted_left_stick: true)
+      end
+    end
   end
 
   describe 'validations' do
