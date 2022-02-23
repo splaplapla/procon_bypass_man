@@ -34,7 +34,7 @@ class ProconBypassMan::Procon
     @@map.add(
       { relative: reader.left_analog_stick, hypotenuse: hypotenuse }
     ) do |result|
-      ProconBypassMan.logger.info result
+      ProconBypassMan.logger.info ProconBypassMan::StickPositionsList.new(result[:list]).moving_power
     end
   end
 
