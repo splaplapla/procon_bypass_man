@@ -55,6 +55,7 @@ class ProconBypassMan::Procon
 
           rotated = @@left_stick_report_map.add({ relative: reader.left_analog_stick, hypotenuse: hypotenuse })
           if user_operation.pressing_all_buttons?(options[:if_pressed]) && rotated
+            ProconBypassMan.logger.info(rotated)
             @@status[:ongoing_macro] = MacroRegistry.load(macro_name)
           end
           next

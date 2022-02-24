@@ -38,7 +38,7 @@ class ProconBypassMan::Procon::MacroBuilder
     def to_steps
       case @type
       when :toggle
-        [@button.to_sym, :none]
+        [:none, @button.to_sym]
       when :pressing
         [@button.to_sym, @button.to_sym]
       end
@@ -88,13 +88,21 @@ class ProconBypassMan::Procon::MacroBuilder
     end
 
     # 時間指定あり
-    if %r!^(pressing_|toggle_)! =~ step && (subjects = step.scan(%r!pressing_[^_]+|toggle_[^_]+!)) && (match = step.match(%r!_for_([\d_]+)(sec)?\z!))
-      sec = match[1]
-      return [
-        { continue_for: to_num(sec),
-          steps: SubjectMerger.merge(subjects.map { |x| Subject.new(x) }),
-        }
-      ]
+    if %r!^(pressing_|toggle_)! =~ step && (subjects = step.scan(%r!pressing_[^_]+|toggle_[^_]+!))
+      if(match = step.match(%r!_for_([\d_]+)(sec)?\z!))
+         sec = match[1]
+         return [
+           { continue_for: to_num(sec),
+             steps: SubjectMerger.merge(subjects.map { |x| Subject.new(x) }),
+           }
+         ]
+      else
+         return [
+           { continue_for: nil,
+             steps: SubjectMerger.merge(subjects.map { |x| Subject.new(x) }),
+           }
+         ]
+      end
     end
 
     # no-op command
