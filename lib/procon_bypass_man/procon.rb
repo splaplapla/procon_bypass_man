@@ -53,7 +53,8 @@ class ProconBypassMan::Procon
 
     if ongoing_macro.finished?
       current_layer.macros.each do |macro_name, options|
-        if options[:if_tilted_left_stick] && !!rotated_result
+        if options[:if_tilted_left_stick]
+          next unless rotated_result
           moving_power = ProconBypassMan::StickPositionsList.new(rotated_result[:list]).moving_power
           ProconBypassMan.logger.info "moving: #{moving_power}"
           if ProconBypassMan::TiltingStickAware.tilting?(moving_power) && user_operation.pressing_all_buttons?(options[:if_pressed])
