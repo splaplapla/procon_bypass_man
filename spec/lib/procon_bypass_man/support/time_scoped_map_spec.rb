@@ -13,12 +13,12 @@ describe ProconBypassMan::TimeScopedMap do
   it do
     map = ProconBypassMan::TimeScopedMap.new
     Timecop.freeze do
-      expect(map.add 1).to eq(false)
-      expect(map.add 2).to eq(false)
+      expect(map.add 1).to eq(nil)
+      expect(map.add 2).to eq(nil)
     end
 
     Timecop.freeze(Time.now + 1) do
-      expect(map.add 1).to eq(true)
+      expect(map.add 1).to be_a(Hash)
       expect(map.result).to eq({ list: [1, 2] })
     end
   end

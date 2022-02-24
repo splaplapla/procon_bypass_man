@@ -53,9 +53,9 @@ class ProconBypassMan::Procon
           reader = ProconBypassMan::Domains::InboundProconBinary.new(binary: user_operation.binary.raw.dup).to_procon_reader
           hypotenuse = Math.sqrt((reader.left_analog_stick[:x]**2) + (reader.left_analog_stick[:y]**2)).floor(6)
 
-          rotated = @@left_stick_report_map.add({ relative: reader.left_analog_stick, hypotenuse: hypotenuse })
-          if user_operation.pressing_all_buttons?(options[:if_pressed]) && rotated
-            ProconBypassMan.logger.info(rotated)
+          rotated_result = @@left_stick_report_map.add({ relative: reader.left_analog_stick, hypotenuse: hypotenuse })
+          if user_operation.pressing_all_buttons?(options[:if_pressed]) && ProconBypassMan::TiltingStickAware.tilting?(rotated_result[:list])
+            ProconBypassMan.logger.info(rotated_result[:list])
             @@status[:ongoing_macro] = MacroRegistry.load(macro_name)
           end
           next
