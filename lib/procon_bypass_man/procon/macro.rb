@@ -1,4 +1,38 @@
 class ProconBypassMan::Procon::Macro
+  class OnetimeNestedStep
+    def initialize(value)
+      @hash = value
+    end
+
+    def over?
+      current_step.nil?
+    end
+
+    def next_step
+      step = current_step
+      incr_step_index!
+      step
+    end
+
+    private
+
+    def current_step
+      @hash[:steps][step_index]
+    end
+
+    def step_index
+      @hash[:step_index] ||= 0
+    end
+
+    def incr_step_index!
+      if step_index
+        @hash[:step_index] += 1
+      else
+        @hash[:step_index] = 0
+      end
+    end
+  end
+
   class NestedStep
     def initialize(value)
       @hash = value
@@ -69,12 +103,22 @@ class ProconBypassMan::Procon::Macro
     end
 
     if step.is_a?(Hash)
-      nested_step = NestedStep.new(step)
-      if nested_step.over_end_at?
-        steps.shift # NestedStepを破棄する
-        return next_step
+      if step[:continue_for]
+        nested_step = NestedStep.new(step)
+        if nested_step.over_end_at?
+          steps.shift # NestedStepを破棄する
+          return next_step
+        else
+          return nested_step.next_step
+        end
       else
-        return nested_step.next_step
+        nested_step = OnetimeNestedStep.new(step)
+        if nested_step.over?
+          steps.shift # NestedStepを破棄する
+          return next_step
+        else
+          return nested_step.next_step
+        end
       end
     end
   end

@@ -233,17 +233,12 @@ describe ProconBypassMan::Procon do
         end
         it do
           expect(ProconBypassMan::Procon::MacroRegistry.plugins[:multi].call).to eq(
-            [{:continue_for=>2, :steps=>[[:thumbr, :zr], [:thumbr, :none]]}, :a]
+            [{:continue_for=>2, :steps=>[[:thumbr, :none], [:thumbr, :zr]]}, :a]
           )
 
           procon = ProconBypassMan::Procon.new(binary)
           expect(procon.pressed_y?).to eq(true)
           expect(procon.pressed_b?).to eq(true)
-          procon.apply!
-
-          procon = ProconBypassMan::Procon.new(procon.to_binary)
-          expect(procon.pressed_thumbr?).to eq(true)
-          expect(procon.pressed_zr?).to eq(true)
           procon.apply!
 
           procon = ProconBypassMan::Procon.new(procon.to_binary)
@@ -254,6 +249,11 @@ describe ProconBypassMan::Procon do
           procon = ProconBypassMan::Procon.new(procon.to_binary)
           expect(procon.pressed_thumbr?).to eq(true)
           expect(procon.pressed_zr?).to eq(true)
+          procon.apply!
+
+          procon = ProconBypassMan::Procon.new(procon.to_binary)
+          expect(procon.pressed_thumbr?).to eq(true)
+          expect(procon.pressed_zr?).to eq(false)
           procon.apply!
         end
       end

@@ -41,14 +41,14 @@ describe ProconBypassMan::Procon::MacroBuilder do
       describe 'toggle_x_for_2sec' do
         it do
           expect(described_class.new([:toggle_r_for_2sec]).build).to eq(
-            [{ continue_for: 2, steps: [:r, :none] }]
+            [{ continue_for: 2, steps: [:none, :r] }]
           )
         end
         it do
           expect(described_class.new([:toggle_r, :toggle_r_for_3sec]).build).to eq(
             [ :r,
               :none,
-              { continue_for: 3, steps: [:r, :none] }
+              { continue_for: 3, steps: [:none, :r] }
             ]
           )
         end
@@ -57,14 +57,14 @@ describe ProconBypassMan::Procon::MacroBuilder do
       describe 'toggle_x_for_0_2sec' do
         it do
           expect(described_class.new([:toggle_r_for_0_2sec]).build).to eq(
-            [{ continue_for: 0.2, steps: [:r, :none] }]
+            [{ continue_for: 0.2, steps: [:none,:r] }]
           )
         end
         it do
           expect(described_class.new([:toggle_r, :toggle_r_for_0_3sec]).build).to eq(
             [ :r,
               :none,
-              { continue_for: 0.3, steps: [:r, :none] }
+              { continue_for: 0.3, steps: [:none, :r] }
             ]
           )
         end
@@ -98,8 +98,8 @@ describe ProconBypassMan::Procon::MacroBuilder do
         it do
           expect(described_class.new([:pressing_r_and_toggle_zr]).build).to eq(
             [{ continue_for: nil, steps: [
-              [:r, :zr],
               [:r, :none],
+              [:r, :zr],
             ] }]
           )
         end
@@ -109,8 +109,8 @@ describe ProconBypassMan::Procon::MacroBuilder do
         it do
           expect(described_class.new([:pressing_x_and_toggle_zr_for_0_2sec]).build).to eq(
             [{ continue_for: 0.2, steps: [
-              [:x, :zr],
               [:x, :none],
+              [:x, :zr],
             ] }]
           )
         end
@@ -120,8 +120,8 @@ describe ProconBypassMan::Procon::MacroBuilder do
         it do
           expect(described_class.new([:pressing_x_and_toggle_zr_for_0_2sec]).build).to eq(
             [{ continue_for: 0.2, steps: [
-              [:x, :zr],
               [:x, :none],
+              [:x, :zr],
             ] }]
           )
         end
@@ -131,8 +131,8 @@ describe ProconBypassMan::Procon::MacroBuilder do
         it do
           expect(described_class.new([:toggle_x_and_toggle_zr_for_0_2sec]).build).to eq(
             [{ continue_for: 0.2, steps: [
-              [:x, :zr],
               [:none, :none],
+              [:x, :zr],
             ] }]
           )
         end
@@ -153,8 +153,8 @@ describe ProconBypassMan::Procon::MacroBuilder do
         it do
           expect(described_class.new([:pressing_thumbr_and_toggle_zr_for_0_6sec]).build).to eq(
             [{ continue_for: 0.6, steps: [
-              [:thumbr, :zr],
               [:thumbr, :none],
+              [:thumbr, :zr],
             ] }]
           )
         end
@@ -164,8 +164,8 @@ describe ProconBypassMan::Procon::MacroBuilder do
         it do
           expect(described_class.new([:pressing_zr_and_toggle_b_for_0_6sec]).build).to eq(
             [{ continue_for: 0.6, steps: [
-              [:zr, :b],
               [:zr, :none],
+              [:zr, :b],
             ] }]
           )
         end
@@ -175,8 +175,8 @@ describe ProconBypassMan::Procon::MacroBuilder do
         it do
           expect(described_class.new([:pressing_zr_and_toggle_b_for_0_65sec]).build).to eq(
             [{ continue_for: 0.65, steps: [
-              [:zr, :b],
               [:zr, :none],
+              [:zr, :b],
             ] }]
           )
         end
@@ -184,8 +184,8 @@ describe ProconBypassMan::Procon::MacroBuilder do
         it do
           expect(described_class.new([:pressing_zr_and_toggle_b_for_0_65]).build).to eq(
             [{ continue_for: 0.65, steps: [
-              [:zr, :b],
               [:zr, :none],
+              [:zr, :b],
             ] }]
           )
         end
