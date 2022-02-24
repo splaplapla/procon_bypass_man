@@ -57,8 +57,9 @@ class ProconBypassMan::Procon
           moving_power = ProconBypassMan::StickPositionsList.new(rotated_result[:list]).moving_power
           ProconBypassMan.logger.info "moving: #{moving_power}"
           if ProconBypassMan::TiltingStickAware.tilting?(moving_power) && user_operation.pressing_all_buttons?(options[:if_pressed])
+            ProconBypassMan.logger.info "if_tilted_left_stick!!!!!!!!!!!!!"
             @@status[:ongoing_macro] = MacroRegistry.load(macro_name)
-            next
+            break
           end
         end
 

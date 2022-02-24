@@ -14,4 +14,11 @@ describe ProconBypassMan::TiltingStickAware do
       expect(described_class.tilting?(report)).to eq(false)
     end
   end
+
+  context '止まっている' do
+    it do
+      report = {:power=>1.4043980000000005, :max=>{:x=>83, :y=>13}, :min=>{:x=>82, :y=>10}}
+      expect(described_class.tilting?(report)).to eq(false)
+    end
+  end
 end
