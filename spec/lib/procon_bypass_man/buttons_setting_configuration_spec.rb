@@ -525,6 +525,19 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
           it do
             ProconBypassMan.buttons_setting_configure do
               layer :up do
+                open_macro :dacan, steps: [:pressing_r_for_0_3sec, :pressing_r_and_toggle_zl], if_tilted_left_stick: true, if_pressed: [:zr]
+              end
+            end
+            expect(ProconBypassMan::Procon::MacroRegistry.plugins[:dacan].call).to eq(
+              [{:continue_for=>0.3, :steps=>[:r, :r]}, {:continue_for=>nil, :steps=>[[:r, :none], [:r, :zl]]}]
+            )
+            expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].macros).to eq(
+              { dacan: { if_pressed: [:zr], if_tilted_left_stick: true } }
+            )
+          end
+          it do
+            ProconBypassMan.buttons_setting_configure do
+              layer :up do
                 open_macro :dacan, steps: [:pressing_r_and_toggle_zr], if_tilted_left_stick: true, if_pressed: [:zr]
               end
             end
