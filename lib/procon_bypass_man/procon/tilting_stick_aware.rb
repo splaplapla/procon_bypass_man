@@ -1,9 +1,9 @@
 class ProconBypassMan::TiltingStickAware
   def self.tilting?(result)
     return false if !result
-    if (-200..200).include?(result[:min][:x]) && (-200..200).include?(result[:min][:y])
-      return false
-    end
+    # if (-200..200).include?(result[:min][:x]) && (-200..200).include?(result[:min][:y])
+    #  return false
+    # end
 
     result[:power] > 300
   end
