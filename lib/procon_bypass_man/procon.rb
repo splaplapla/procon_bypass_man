@@ -53,6 +53,7 @@ class ProconBypassMan::Procon
 
     if ongoing_macro.finished?
       current_layer.macros.each do |macro_name, options|
+        ProconBypassMan.logger.info "DDDDDDDD: #{options[:if_tilted_left_stick]} && #{rotated_result}"
         if options[:if_tilted_left_stick] && rotated_result
           moving_power = ProconBypassMan::StickPositionsList.new(rotated_result[:list]).moving_power
           ProconBypassMan.logger.info "moving: #{moving_power}"
