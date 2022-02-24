@@ -5,6 +5,6 @@ class ProconBypassMan::TiltingStickAware
       return false
     end
 
-    result[:power] > 500
+    result[:power] > 300
   end
 end
