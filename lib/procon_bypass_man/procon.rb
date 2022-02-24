@@ -47,18 +47,19 @@ class ProconBypassMan::Procon
       return
     end
 
+    reader = ProconBypassMan::Domains::InboundProconBinary.new(binary: user_operation.binary.raw.dup).to_procon_reader
+    hypotenuse = Math.sqrt((reader.left_analog_stick[:x]**2) + (reader.left_analog_stick[:y]**2)).floor(6)
+    rotated_result = @@left_stick_report_map.add({ relative: reader.left_analog_stick, hypotenuse: hypotenuse })
+
     if ongoing_macro.finished?
       current_layer.macros.each do |macro_name, options|
-        if options[:if_tilted_left_stick]
-          reader = ProconBypassMan::Domains::InboundProconBinary.new(binary: user_operation.binary.raw.dup).to_procon_reader
-          hypotenuse = Math.sqrt((reader.left_analog_stick[:x]**2) + (reader.left_analog_stick[:y]**2)).floor(6)
-
-          rotated_result = @@left_stick_report_map.add({ relative: reader.left_analog_stick, hypotenuse: hypotenuse })
-          if user_operation.pressing_all_buttons?(options[:if_pressed]) && rotated_result && ProconBypassMan::TiltingStickAware.tilting?(rotated_result[:list])
-            ProconBypassMan.logger.info(rotated_result[:list])
+        if options[:if_tilted_left_stick] && rotated_result
+          moving_power = ProconBypassMan::StickPositionsList.new(rotated_result[:list]).moving_power
+          ProconBypassMan.logger.info "moving: #{moving_power}"
+          if ProconBypassMan::TiltingStickAware.tilting?(moving_power) && user_operation.pressing_all_buttons?(options[:if_pressed])
             @@status[:ongoing_macro] = MacroRegistry.load(macro_name)
+            next
           end
-          next
         end
 
         if user_operation.pressing_all_buttons?(options[:if_pressed])
