@@ -16,7 +16,7 @@ class ProconBypassMan::AnalogStickTiltingPowerScaler
         return false
       end
 
-      moving_power > 300
+      moving_power > 500
     end
   end
 

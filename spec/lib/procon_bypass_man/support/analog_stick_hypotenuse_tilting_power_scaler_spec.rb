@@ -12,7 +12,7 @@ describe ProconBypassMan::AnalogStickTiltingPowerScaler do
       end
 
       context 'スティックを傾けるとき' do
-        let(:power) { 500 }
+        let(:power) { 600 }
         let(:current_position_x) { 1000 }
         let(:current_position_y) { 1000 }
 
