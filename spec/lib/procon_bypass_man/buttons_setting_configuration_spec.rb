@@ -531,6 +531,33 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
       end
     end
 
+    context 'with disable_macro' do
+      it do
+        ProconBypassMan.buttons_setting_configure do
+          layer :up do
+            disable_macro :all
+          end
+        end
+        expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].disable_macros).to eq([
+          {:name=>:all, :if_pressed=>[true]},
+        ])
+      end
+      it do
+        ProconBypassMan.buttons_setting_configure do
+          layer :up do
+            disable_macro :all, if_pressed: [:b, :y]
+            disable_macro :all, if_pressed: :zr
+            disable_macro :sokuwari, if_pressed: :x
+          end
+        end
+        expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].disable_macros).to eq([
+          {:name=>:all, :if_pressed=>[:b, :y]},
+          {:name=>:all, :if_pressed=>[:zr]},
+          {:if_pressed=>[:x], :name=>:sokuwari},
+        ])
+      end
+    end
+
     context 'with if_pressed' do
       it do
         ProconBypassMan.buttons_setting_configure do
