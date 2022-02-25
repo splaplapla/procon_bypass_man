@@ -5,9 +5,9 @@ class ProconBypassMan::AnalogStickHypotenuseSummarizer
     end
 
     def moving_power
-      max = @list.max {|a, b| a[:hypotenuse] <=> b[:hypotenuse] }
-      min = @list.min {|a, b| a[:hypotenuse] <=> b[:hypotenuse] }
-      moving_power = (max[:hypotenuse] - min[:hypotenuse]).abs
+      max = @list.max
+      min = @list.min
+      moving_power = (max - min).abs
     end
   end
 
@@ -15,7 +15,8 @@ class ProconBypassMan::AnalogStickHypotenuseSummarizer
     @map = {}
   end
 
-  def add(value, &block)
+  # @return [NilClass, SummarizableChunk] ローテトしたらvalueを返す
+  def add(value)
     rotated = nil
     current_key = key
     if @map[current_key].nil?
