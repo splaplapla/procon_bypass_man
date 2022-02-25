@@ -1,10 +1,11 @@
 class ProconBypassMan::TiltingStickAware
-  def self.tilting?(result)
-    return false if !result
-    # if (-200..200).include?(result[:min][:x]) && (-200..200).include?(result[:min][:y])
-    #  return false
-    # end
+  def self.tilting?(moving_power, current_position_x: , current_position_y: )
+    return false if !moving_power
+    # スティックがニュートラルな時
+    if (-200..200).include?(current_position_x) && (-200..200).include?(current_position_y)
+      return false
+    end
 
-    result[:power] > 300
+    moving_power > 300
   end
 end

@@ -19,7 +19,7 @@ class ProconBypassMan::Procon
       ongoing_macro: MacroRegistry.load(:null),
       ongoing_mode: ModeRegistry.load(:manual),
     }
-    @@left_stick_report_map = ProconBypassMan::TimeScopedMap.new
+    @@left_stick_hypotenuse_summarizer = ProconBypassMan::AnalogStickHypotenuseSummarizer.new
   end
   reset!
 
@@ -47,17 +47,15 @@ class ProconBypassMan::Procon
       return
     end
 
-    reader = ProconBypassMan::Domains::InboundProconBinary.new(binary: user_operation.binary.raw.dup).to_procon_reader
-    hypotenuse = Math.sqrt((reader.left_analog_stick[:x]**2) + (reader.left_analog_stick[:y]**2)).floor(6)
-    rotated_result = @@left_stick_report_map.add({ relative: reader.left_analog_stick, hypotenuse: hypotenuse })
+    analog_stick = ProconBypassMan::Procon::AnalogStick.new(binary: user_operation.binary.raw)
+    summarizable_chunk = @@left_stick_hypotenuse_summarizer.add({ hypotenuse: analog_stick.relative_hypotenuse })
 
     if ongoing_macro.finished?
       current_layer.macros.each do |macro_name, options|
         if options[:if_tilted_left_stick]
-          next unless rotated_result
-          moving_power = ProconBypassMan::StickPositionsList.new(rotated_result[:list]).moving_power
-          ProconBypassMan.logger.info "moving_power: #{moving_power}"
-          if ProconBypassMan::TiltingStickAware.tilting?(moving_power) && user_operation.pressing_all_buttons?(options[:if_pressed])
+          next unless summarizable_chunk
+          ProconBypassMan.logger.info "moving_power: #{summarizable_chunk.moving_power}, current_position_x,y: [#{analog_stick.relative_x}, #{analog_stick.relative_y}]"
+          if ProconBypassMan::TiltingStickAware.tilting?(summarizable_chunk.moving_power, current_position_x: analog_stick.relative_x, current_position_y: analog_stick.relative_y) && user_operation.pressing_all_buttons?(options[:if_pressed])
             @@status[:ongoing_macro] = MacroRegistry.load(macro_name)
             break
           end
