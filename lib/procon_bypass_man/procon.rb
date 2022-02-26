@@ -77,6 +77,7 @@ class ProconBypassMan::Procon
 
         if user_operation.pressing_all_buttons?(options[:if_pressed])
           @@status[:ongoing_macro] = MacroRegistry.load(macro_name)
+          break
         end
       end
     end
