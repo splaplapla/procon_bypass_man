@@ -70,7 +70,7 @@ module ProconBypassMan
       end
 
       def disable_macro(name, if_pressed: nil)
-        hash = { name: name, if_pressed: [] }
+        hash = { name: name.to_s.to_sym, if_pressed: [] }
         case if_pressed
         when TrueClass, FalseClass
           return # booleanはよくわからないのでreturn

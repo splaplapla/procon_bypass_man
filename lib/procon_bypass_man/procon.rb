@@ -46,9 +46,21 @@ class ProconBypassMan::Procon
       return
     end
 
-    if ongoing_macro.finished?
+    enable_all_macro = true
+    enable_macro_map = Hash.new {|h,k| h[k] = true }
+    current_layer.disable_macros.each do |disable_macro|
+      if (disable_macro[:if_pressed] == [true] || user_operation.pressing_all_buttons?(disable_macro[:if_pressed]))
+        if disable_macro[:name] == :all
+          enable_all_macro = false
+        else
+          enable_macro_map[disable_macro[:name]] = false
+        end
+      end
+    end
+
+    if ongoing_macro.finished? && enable_all_macro
       current_layer.macros.each do |macro_name, options|
-        if user_operation.pressing_all_buttons?(options[:if_pressed])
+        if user_operation.pressing_all_buttons?(options[:if_pressed]) && enable_macro_map[macro_name]
           @@status[:ongoing_macro] = MacroRegistry.load(macro_name)
         end
       end
