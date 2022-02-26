@@ -485,6 +485,22 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
           {:AMacroPlugin=>{:if_pressed=>[:a, :y]}}
         )
       end
+      it do
+        class AMacroPlugin
+          def self.steps; [:a, :b]; end
+        end
+        ProconBypassMan.buttons_setting_configure do
+          install_macro_plugin(AMacroPlugin)
+          layer :up do
+            macro AMacroPlugin, if_pressed: [:a, :y], if_tilted_left_stick: true
+          end
+        end
+        expect(ProconBypassMan::Procon::MacroRegistry.plugins.keys).to eq([:AMacroPlugin])
+        expect(ProconBypassMan::Procon::MacroRegistry.plugins[:AMacroPlugin].call).to eq([:a, :b])
+        expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].macros).to eq(
+          {:AMacroPlugin=>{:if_pressed=>[:a, :y], if_tilted_left_stick: true }}
+        )
+      end
     end
     context 'open macro' do
       context 'macro v1' do

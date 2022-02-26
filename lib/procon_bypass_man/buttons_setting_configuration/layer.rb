@@ -55,9 +55,9 @@ module ProconBypassMan
       end
 
       # @param [String, Class] プラグインのclass
-      def macro(name, if_pressed: )
+      def macro(name, if_pressed: , if_tilted_left_stick: nil)
         macro_name = name.to_s.to_sym
-        self.macros[macro_name] = { if_pressed: if_pressed }
+        self.macros[macro_name] = { if_pressed: if_pressed, if_tilted_left_stick: if_tilted_left_stick }.compact
       end
 
       # 設定ファイルに直接マクロを打ち込める
