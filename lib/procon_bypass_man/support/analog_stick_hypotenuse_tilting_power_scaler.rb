@@ -1,4 +1,6 @@
 class ProconBypassMan::AnalogStickTiltingPowerScaler
+  DEFAULT_THRESHOLD = 500
+
   class PowerChunk
     def initialize(list)
       @list = list
@@ -10,13 +12,13 @@ class ProconBypassMan::AnalogStickTiltingPowerScaler
       moving_power = (max - min).abs
     end
 
-    def tilting?(current_position_x: , current_position_y: )
+    def tilting?(threshold: DEFAULT_THRESHOLD, current_position_x: , current_position_y: )
       # スティックがニュートラルな時
       if (-200..200).include?(current_position_x) && (-200..200).include?(current_position_y)
         return false
       end
 
-      moving_power > 500
+      moving_power >= threshold
     end
   end
 

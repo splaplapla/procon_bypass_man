@@ -66,8 +66,9 @@ class ProconBypassMan::Procon
       current_layer.macros.each do |macro_name, options|
         next unless enable_macro_map[macro_name]
 
-        if options[:if_tilted_left_stick]
-          if dumped_tilting_power&.tilting?(current_position_x: analog_stick.relative_x, current_position_y: analog_stick.relative_y) && user_operation.pressing_all_buttons?(options[:if_pressed])
+        if(if_tilted_left_stick_value = options[:if_tilted_left_stick])
+          threshold = (if_tilted_left_stick_value.is_a?(Hash) && if_tilted_left_stick_value[:threshold]) || ProconBypassMan::AnalogStickTiltingPowerScaler::DEFAULT_THRESHOLD
+          if dumped_tilting_power&.tilting?(threshold: threshold, current_position_x: analog_stick.relative_x, current_position_y: analog_stick.relative_y) && user_operation.pressing_all_buttons?(options[:if_pressed])
             @@status[:ongoing_macro] = MacroRegistry.load(macro_name)
             break
           end
