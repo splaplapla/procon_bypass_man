@@ -1,12 +1,13 @@
 module ProconBypassMan
   class ButtonsSettingConfiguration
     class Layer
-      attr_accessor :mode, :flips, :macros, :remaps, :left_analog_stick_caps, :disables
+      attr_accessor :mode, :flips, :macros, :disable_macros, :remaps, :left_analog_stick_caps, :disables
 
       def initialize(mode: :manual)
         self.mode = mode
         self.flips = {}
         self.macros = {}
+        self.disable_macros = []
         self.remaps = {}
         self.left_analog_stick_caps = []
         self.disables = []
@@ -66,6 +67,24 @@ module ProconBypassMan
         macro_name = name || "OpenMacro-#{steps.join}".to_sym
         ProconBypassMan::Procon::MacroRegistry.install_plugin(macro_name, steps: steps)
         self.macros[macro_name] = { if_pressed: if_pressed }
+      end
+
+      def disable_macro(name, if_pressed: nil)
+        hash = { name: name.to_s.to_sym, if_pressed: [] }
+        case if_pressed
+        when TrueClass, FalseClass
+          return # booleanはよくわからないのでreturn
+        when Symbol, String
+          hash[:if_pressed] = [if_pressed]
+        when Array
+          hash[:if_pressed] = if_pressed
+        when NilClass # 常に対象のmacroをdisableにする
+          hash[:if_pressed] = [true]
+        else
+          raise "not support value"
+        end
+
+        disable_macros << hash
       end
 
       def remap(button, to: )
