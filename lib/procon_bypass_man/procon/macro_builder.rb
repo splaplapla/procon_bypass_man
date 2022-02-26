@@ -38,7 +38,7 @@ class ProconBypassMan::Procon::MacroBuilder
     def to_steps
       case @type
       when :toggle
-        [:none, @button.to_sym]
+        [@button.to_sym, :none]
       when :pressing
         [@button.to_sym, @button.to_sym]
       end

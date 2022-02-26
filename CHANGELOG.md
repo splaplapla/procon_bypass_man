@@ -1,5 +1,12 @@
 ## [0.1.21] - 2022-2-
-* 数十時間起動しっぱなしだとpbm-cloudとのwebsocketの接続が切断される問題を修正しました
+- 数十時間起動しっぱなしだとpbm-cloudとのwebsocketの接続が切断される問題を修正しました
+- 誤発動を防ぐために、マクロを無効にする設定ができるようになりました
+  - すべてのマクロを無効にする
+    - disable_macro :all
+    - disable_macro :all, if_pressed: [:a]
+  - 特定のマクロを無効にする
+    - disable_macro TheMacro
+    - disable_macro TheMacro, if_pressed: [:a]
 
 ## [0.1.20.2] - 2022-2-18
 - 起動時にreniceするようにしました

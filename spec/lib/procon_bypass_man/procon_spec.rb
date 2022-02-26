@@ -233,17 +233,13 @@ describe ProconBypassMan::Procon do
         end
         it do
           expect(ProconBypassMan::Procon::MacroRegistry.plugins[:multi].call).to eq(
-            [{:continue_for=>2, :steps=>[[:thumbr, :none], [:thumbr, :zr]]}, :a]
+            [{:continue_for=>2, :steps=>[[:thumbr, :zr], [:thumbr, :none]]}, :a]
           )
 
           procon = ProconBypassMan::Procon.new(binary)
           expect(procon.pressed_y?).to eq(true)
           expect(procon.pressed_b?).to eq(true)
-          procon.apply!
-
-          procon = ProconBypassMan::Procon.new(procon.to_binary)
-          expect(procon.pressed_thumbr?).to eq(true)
-          expect(procon.pressed_zr?).to eq(false)
+          expect(procon.pressed_thumbr?).to eq(false)
           procon.apply!
 
           procon = ProconBypassMan::Procon.new(procon.to_binary)
@@ -255,6 +251,216 @@ describe ProconBypassMan::Procon do
           expect(procon.pressed_thumbr?).to eq(true)
           expect(procon.pressed_zr?).to eq(false)
           procon.apply!
+
+          procon = ProconBypassMan::Procon.new(procon.to_binary)
+          expect(procon.pressed_thumbr?).to eq(true)
+          expect(procon.pressed_zr?).to eq(true)
+          procon.apply!
+        end
+      end
+    end
+
+    describe 'disable_macro' do
+      context '条件なし' do
+        context 'すべてのマクロを無効にするとき' do
+          context 'y, bを押しているとき' do
+            let(:data) { "30778105800099277344e86b0a7909f4f5a8f4b500c5ff8dff6c09cdf5b8f49a00c5ff92ff6a0979f5eef46500d5ff9bff000000000000000000000000000000" }
+            before do
+              ProconBypassMan.buttons_setting_configure do
+                prefix_keys_for_changing_layer [:zr]
+                layer :up do
+                  disable_macro :all
+                  open_macro :the_macro, steps: [:pressing_thumbr_and_toggle_zr_for_2sec, :a], if_pressed: [:y, :b]
+                end
+              end
+            end
+            it 'マクロが発動しないこと' do
+              procon = ProconBypassMan::Procon.new(binary)
+              expect(procon.pressed_y?).to eq(true)
+              expect(procon.pressed_b?).to eq(true)
+              expect(procon.pressed_thumbr?).to eq(false)
+              procon.apply!
+
+              procon = ProconBypassMan::Procon.new(procon.to_binary)
+              expect(procon.pressed_thumbr?).to eq(false)
+              expect(procon.pressed_zr?).to eq(false)
+            end
+          end
+        end
+
+        context '無効対象のマクロ名を指定するとき' do
+          describe 'Symbol' do
+            context 'y, bを押しているとき' do
+              let(:data) { "30778105800099277344e86b0a7909f4f5a8f4b500c5ff8dff6c09cdf5b8f49a00c5ff92ff6a0979f5eef46500d5ff9bff000000000000000000000000000000" }
+              before do
+                ProconBypassMan.buttons_setting_configure do
+                  prefix_keys_for_changing_layer [:zr]
+                  layer :up do
+                    disable_macro :all
+                    open_macro :the_macro, steps: [:pressing_thumbr_and_toggle_zr_for_2sec, :a], if_pressed: [:y, :b]
+                  end
+                end
+              end
+              it 'マクロが発動しないこと' do
+                procon = ProconBypassMan::Procon.new(binary)
+                expect(procon.pressed_y?).to eq(true)
+                expect(procon.pressed_b?).to eq(true)
+                expect(procon.pressed_thumbr?).to eq(false)
+                procon.apply!
+
+                procon = ProconBypassMan::Procon.new(procon.to_binary)
+                expect(procon.pressed_thumbr?).to eq(false)
+                expect(procon.pressed_zr?).to eq(false)
+              end
+            end
+          end
+          describe 'クラス' do
+            context 'y, bを押しているとき' do
+              let(:data) { "30778105800099277344e86b0a7909f4f5a8f4b500c5ff8dff6c09cdf5b8f49a00c5ff92ff6a0979f5eef46500d5ff9bff000000000000000000000000000000" }
+              module TheMacro
+                def self.steps
+                  [:pressing_thumbr_and_toggle_zr_for_2sec, :a]
+                end
+              end
+              before do
+                ProconBypassMan.buttons_setting_configure do
+                  prefix_keys_for_changing_layer [:zr]
+                  install_macro_plugin TheMacro
+                  layer :up do
+                    disable_macro TheMacro
+                    macro TheMacro, if_pressed: [:y, :b]
+                  end
+                end
+              end
+              it 'マクロが発動しないこと' do
+                procon = ProconBypassMan::Procon.new(binary)
+                expect(procon.pressed_y?).to eq(true)
+                expect(procon.pressed_b?).to eq(true)
+                expect(procon.pressed_thumbr?).to eq(false)
+                procon.apply!
+
+                procon = ProconBypassMan::Procon.new(procon.to_binary)
+                expect(procon.pressed_thumbr?).to eq(false)
+                expect(procon.pressed_zr?).to eq(false)
+              end
+            end
+          end
+        end
+      end
+
+      context '条件付き' do
+        describe 'すべてのマクロを無効' do
+          context '条件に一致するとき' do
+            context 'y, bを押しているとき' do
+              let(:data) { "30778105800099277344e86b0a7909f4f5a8f4b500c5ff8dff6c09cdf5b8f49a00c5ff92ff6a0979f5eef46500d5ff9bff000000000000000000000000000000" }
+              before do
+                ProconBypassMan.buttons_setting_configure do
+                  prefix_keys_for_changing_layer [:zr]
+                  layer :up do
+                    disable_macro :all, if_pressed: [:y, :b]
+                    open_macro :the_macro, steps: [:pressing_thumbr_and_toggle_zr_for_2sec, :a], if_pressed: [:y, :b]
+                  end
+                end
+              end
+              it 'マクロが発動しないこと' do
+                procon = ProconBypassMan::Procon.new(binary)
+                expect(procon.pressed_y?).to eq(true)
+                expect(procon.pressed_b?).to eq(true)
+                expect(procon.pressed_thumbr?).to eq(false)
+                procon.apply!
+
+                procon = ProconBypassMan::Procon.new(procon.to_binary)
+                expect(procon.pressed_thumbr?).to eq(false)
+                expect(procon.pressed_zr?).to eq(false)
+              end
+            end
+          end
+
+          context '条件に一致しないとき' do
+            context 'y, bを押しているとき' do
+              let(:data) { "30778105800099277344e86b0a7909f4f5a8f4b500c5ff8dff6c09cdf5b8f49a00c5ff92ff6a0979f5eef46500d5ff9bff000000000000000000000000000000" }
+              before do
+                ProconBypassMan.buttons_setting_configure do
+                  prefix_keys_for_changing_layer [:zr]
+                  layer :up do
+                    disable_macro :all, if_pressed: [:l, :r]
+                    open_macro :the_macro, steps: [:pressing_thumbr_and_toggle_zr_for_2sec, :a], if_pressed: [:y, :b]
+                  end
+                end
+              end
+              it 'マクロが発動すること' do
+                procon = ProconBypassMan::Procon.new(binary)
+                expect(procon.pressed_y?).to eq(true)
+                expect(procon.pressed_b?).to eq(true)
+                expect(procon.pressed_thumbr?).to eq(false)
+                procon.apply!
+
+                procon = ProconBypassMan::Procon.new(procon.to_binary)
+                expect(procon.pressed_thumbr?).to eq(true)
+                expect(procon.pressed_zr?).to eq(true)
+              end
+            end
+          end
+        end
+
+        context '無効対象のマクロ名を指定するとき' do
+          describe 'Symbol' do
+            context 'y, bを押しているとき' do
+              let(:data) { "30778105800099277344e86b0a7909f4f5a8f4b500c5ff8dff6c09cdf5b8f49a00c5ff92ff6a0979f5eef46500d5ff9bff000000000000000000000000000000" }
+              before do
+                ProconBypassMan.buttons_setting_configure do
+                  prefix_keys_for_changing_layer [:zr]
+                  layer :up do
+                    disable_macro :the_macro, if_pressed: [:y, :b]
+                    open_macro :the_macro, steps: [:pressing_thumbr_and_toggle_zr_for_2sec, :a], if_pressed: [:y, :b]
+                  end
+                end
+              end
+              it '引数に一致するマクロが発動しないこと' do
+                procon = ProconBypassMan::Procon.new(binary)
+                expect(procon.pressed_y?).to eq(true)
+                expect(procon.pressed_b?).to eq(true)
+                expect(procon.pressed_thumbr?).to eq(false)
+                procon.apply!
+
+                procon = ProconBypassMan::Procon.new(procon.to_binary)
+                expect(procon.pressed_thumbr?).to eq(false)
+                expect(procon.pressed_zr?).to eq(false)
+              end
+            end
+          end
+
+          describe 'クラス' do
+            context 'y, bを押しているとき' do
+              let(:data) { "30778105800099277344e86b0a7909f4f5a8f4b500c5ff8dff6c09cdf5b8f49a00c5ff92ff6a0979f5eef46500d5ff9bff000000000000000000000000000000" }
+              module TheMacro
+                def self.steps
+                  [:pressing_thumbr_and_toggle_zr_for_2sec, :a]
+                end
+              end
+              before do
+                ProconBypassMan.buttons_setting_configure do
+                  prefix_keys_for_changing_layer [:zr]
+                  install_macro_plugin TheMacro
+                  layer :up do
+                    disable_macro TheMacro, if_pressed: [:y, :b]
+                    macro TheMacro, if_pressed: [:y, :b]
+                  end
+                end
+              end
+              it '引数に一致するマクロが発動しないこと' do
+                procon = ProconBypassMan::Procon.new(binary)
+                expect(procon.pressed_y?).to eq(true)
+                expect(procon.pressed_b?).to eq(true)
+                expect(procon.pressed_thumbr?).to eq(false)
+                procon.apply!
+
+                procon = ProconBypassMan::Procon.new(procon.to_binary)
+                expect(procon.pressed_thumbr?).to eq(false)
+                expect(procon.pressed_zr?).to eq(false)
+              end
+            end
+          end
         end
       end
     end
