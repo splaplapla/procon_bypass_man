@@ -459,13 +459,13 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
         ProconBypassMan.buttons_setting_configure do
           install_macro_plugin(AMacroPlugin)
           layer :up do
-            macro :the_macro, if_pressed: [:a, :y]
+            macro AMacroPlugin, if_pressed: [:a, :y]
           end
         end
         expect(ProconBypassMan::Procon::MacroRegistry.plugins.keys).to eq([:AMacroPlugin])
         expect(ProconBypassMan::Procon::MacroRegistry.plugins[:AMacroPlugin].call).to eq([:a, :b])
         expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].macros).to eq(
-          {:the_macro=>{:if_pressed=>[:a, :y]}}
+          {:AMacroPlugin=>{:if_pressed=>[:a, :y]}}
         )
       end
       it do
@@ -691,6 +691,26 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
   end
 
   describe 'validations' do
+    describe '設定構文として不正だけど警告だけを出す' do
+      context 'installしていないpluginを使うとき' do
+        context 'macro' do
+          it 'ロードしない' do
+            ProconBypassMan.buttons_setting_configure do
+              layer :up do
+                macro ProconBypassMan::Plugin::Splatoon2::Macro::FastReturn, if_pressed: :a
+              end
+            end
+            expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].macros).to eq({})
+          end
+        end
+
+        xcontext 'mode' do
+          it 'ロードしない' do
+          end
+        end
+      end
+    end
+
     context 'シンタックスエラーが起きるとき' do
       context '初回で失敗する' do
         it 'setting.pathは保存すること' do

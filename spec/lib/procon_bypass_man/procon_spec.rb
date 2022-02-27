@@ -166,14 +166,32 @@ describe ProconBypassMan::Procon do
 
   context 'with macro' do
     context 'v1' do
+      context 'installしていないpluginを使うとき' do
+        let(:data) { "30778105800099277344e86b0a7909f4f5a8f4b500c5ff8dff6c09cdf5b8f49a00c5ff92ff6a0979f5eef46500d5ff9bff000000000000000000000000000000" }
+        module FastReturn
+          def self.steps
+            [:down, :a, :a, :x, :down, :a, :a].freeze
+          end
+        end
+        it '無視される' do
+          ProconBypassMan.buttons_setting_configure do
+            prefix_keys_for_changing_layer [:zr]
+            layer :up do
+              macro FastReturn, if_pressed: [:y, :b]
+            end
+          end
+          procon = ProconBypassMan::Procon.new(binary)
+          expect(procon.pressed_y?).to eq(true)
+          expect(procon.pressed_b?).to eq(true)
+          procon = ProconBypassMan::Procon.new(procon.to_binary)
+          expect(procon.pressed_down?).to eq(false)
+        end
+      end
+
       context 'y, bを押しているとき' do
         let(:data) { "30778105800099277344e86b0a7909f4f5a8f4b500c5ff8dff6c09cdf5b8f49a00c5ff92ff6a0979f5eef46500d5ff9bff000000000000000000000000000000" }
         before do
           module FastReturn
-            def self.name
-              :fast_return
-            end
-
             def self.steps
               [:down, :a, :a, :x, :down, :a, :a].freeze
             end
