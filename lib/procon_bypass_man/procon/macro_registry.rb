@@ -13,9 +13,14 @@ class ProconBypassMan::Procon::MacroRegistry
     }
   end
 
+  # @return [ProconBypassMan::Procon::Macro]
   def self.load(name)
-    steps = PRESETS[name] || plugins[name].call || raise("unknown macro")
-    ProconBypassMan::Procon::Macro.new(name: name, steps: steps.dup)
+    if(steps = PRESETS[name] || plugins[name]&.call)
+      return ProconBypassMan::Procon::Macro.new(name: name, steps: steps.dup)
+    else
+      warn "installされていないマクロ(#{name})を使うことはできません"
+      return self.load(:null)
+    end
   end
 
   def self.reset!

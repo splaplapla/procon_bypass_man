@@ -57,7 +57,11 @@ module ProconBypassMan
       # @param [String, Class] プラグインのclass
       def macro(name, if_pressed: )
         macro_name = name.to_s.to_sym
-        self.macros[macro_name] = { if_pressed: if_pressed }
+        if ProconBypassMan::ButtonsSettingConfiguration.instance.macro_plugins[macro_name]
+          self.macros[macro_name] = { if_pressed: if_pressed }
+        else
+          warn "#{macro_name}マクロがinstallされていません"
+        end
       end
 
       # 設定ファイルに直接マクロを打ち込める
