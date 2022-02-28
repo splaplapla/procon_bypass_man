@@ -65,7 +65,7 @@ module ProconBypassMan
       end
 
       unless ([ManualMode.name] + ProconBypassMan::Procon::ModeRegistry.plugins.keys).include?(mode_name)
-        raise("#{mode_name} mode is unknown")
+        warn "#{mode_name}モードがinstallされていません"
       end
 
       layer = Layer.new(mode: mode_name)
