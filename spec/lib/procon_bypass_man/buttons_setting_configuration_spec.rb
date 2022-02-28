@@ -529,6 +529,18 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
         expect(ProconBypassMan::Procon::ModeRegistry.plugins.keys).to eq([:AModePlugin])
         expect(ProconBypassMan::Procon::ModeRegistry.plugins[:AModePlugin].call).to eq(['a'])
       end
+      context 'installしていないpluginを使うとき' do
+        it '無視する' do
+          class AModePlugin
+            def self.name; :foo; end
+            def self.binaries; ['a']; end
+          end
+          ProconBypassMan.buttons_setting_configure do
+            layer :up, mode: AModePlugin
+          end
+          expect(ProconBypassMan::Procon::ModeRegistry.plugins.keys).to eq([])
+        end
+      end
     end
 
     context 'with disable_macro' do
