@@ -81,22 +81,6 @@ class ProconBypassMan::Procon::MacroBuilder
   end
 
   def build_if_v2_format?(step: )
-    # 時間指定なし
-    if(match = step.match(%r!\Atoggle_(\w+)\z!)) && (button_candidate = match[1]) && is_button(button_candidate)
-      button = button_candidate
-      return [button.to_sym, :none]
-    end
-
-    # 時間指定あり
-    if %r!^(pressing_|toggle_)! =~ step && (subjects = step.scan(%r!pressing_[^_]+|toggle_[^_]+!)) && (match = step.match(%r!_for_([\d_]+)(sec)?\z!))
-      sec = match[1]
-      return [
-        { continue_for: to_num(sec),
-          steps: SubjectMerger.merge(subjects.map { |x| Subject.new(x) }),
-        }
-      ]
-    end
-
     # no-op command
     if(match = step.match(%r!wait_for_([\d_]+)(sec)?\z!))
       sec = match[1]
@@ -105,6 +89,32 @@ class ProconBypassMan::Procon::MacroBuilder
           steps: [:none],
         }
       ]
+    end
+
+    if %r!^(pressing_|toggle_)! =~ step && (subjects = step.scan(%r!pressing_[^_]+|toggle_[^_]+!)) && (match = step.match(%r!_for_([\d_]+)(sec)?\z!))
+      if sec = match[1]
+        return [
+          { continue_for: to_num(sec),
+            steps: SubjectMerger.merge(subjects.map { |x| Subject.new(x) }).select { |x|
+              if x.is_a?(Array)
+                x.select { |y| is_button(y) || RESERVED_WORD_NONE == y }
+              else
+                is_button(x) || RESERVED_WORD_NONE == x
+              end
+            },
+          }
+        ]
+      end
+    end
+
+    if %r!^(pressing_|toggle_)! =~ step && (subjects = step.scan(%r!pressing_[^_]+|toggle_[^_]+!))
+      return SubjectMerger.merge(subjects.map { |x| Subject.new(x) }).select { |x|
+        if x.is_a?(Array)
+          x.select { |y| is_button(y) || RESERVED_WORD_NONE == y }
+        else
+          is_button(x) || RESERVED_WORD_NONE == x
+        end
+      }.flatten
     end
   end
 
