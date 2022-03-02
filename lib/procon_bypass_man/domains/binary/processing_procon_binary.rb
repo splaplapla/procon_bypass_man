@@ -45,7 +45,7 @@ class ProconBypassMan::Domains::ProcessingProconBinary < ProconBypassMan::Domain
 
   # @param [Symbol] button
   def write_as_unpress_button(button)
-    raise "not press button(#{button}) yet" if not ProconBypassMan::PressButtonAware.new(binary).pressing_button?(button)
+    raise "do not press button(#{button}) yet" if not ProconBypassMan::PressButtonAware.new(binary).pressing_button?(button)
 
     button_obj = ProconBypassMan::Procon::Button.new(button)
     value = binary[button_obj.byte_position].unpack("C").first - (2**button_obj.bit_position)

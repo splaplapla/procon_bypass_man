@@ -62,7 +62,7 @@ class ProconBypassMan::Procon::UserOperation
   # @param [Symbol] button
   # @return [Boolean]
   def pressing_button?(button)
-    ProconBypassMan::PressButtonAware.new(@binary.raw).pressing_button?(button)
+    pressing_all_buttons?([button])
   end
 
   # @param [Array<Symbol>] buttons
