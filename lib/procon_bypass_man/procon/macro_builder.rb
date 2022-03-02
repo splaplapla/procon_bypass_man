@@ -85,7 +85,7 @@ class ProconBypassMan::Procon::MacroBuilder
     if(match = step.match(%r!wait_for_([\d_]+)(sec)?\z!))
       sec = match[1]
       return [
-        { continue_for: to_num(sec),
+        { continue_for: to_f(sec),
           steps: [:none],
         }
       ]
@@ -94,7 +94,7 @@ class ProconBypassMan::Procon::MacroBuilder
     if %r!^(pressing_|toggle_)! =~ step && (subjects = step.scan(%r!pressing_[^_]+|toggle_[^_]+!)) && (match = step.match(%r!_for_([\d_]+)(sec)?\z!))
       if sec = match[1]
         return [
-          { continue_for: to_num(sec),
+          { continue_for: to_f(sec),
             steps: SubjectMerger.merge(subjects.map { |x| Subject.new(x) }).select { |x|
               if x.is_a?(Array)
                 x.select { |y| is_button(y) || RESERVED_WORD_NONE == y }
@@ -123,11 +123,11 @@ class ProconBypassMan::Procon::MacroBuilder
     !!ProconBypassMan::Procon::ButtonCollection::BUTTONS_MAP[step.to_sym]
   end
 
-  def to_num(value)
+  def to_f(value)
     if value.include?("_")
       value.sub("_", ".").to_f
     else
-      value.to_i
+      value.to_f
     end
   end
 end
