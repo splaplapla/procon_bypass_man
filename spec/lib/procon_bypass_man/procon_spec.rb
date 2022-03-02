@@ -743,11 +743,6 @@ describe ProconBypassMan::Procon do
           expect(ProconBypassMan::Procon.new(procon.to_binary).pressed_zl?).to eq(false)
         end
       end
-      context 'y, b押している' do
-        it do
-          # TODO
-        end
-      end
       context 'zr押していない' do
         let(:data) { "30f28100800078c77448287509550274ff131029001b0022005a0271ff191028001e00210064027cff1410280020002100000000000000000000000000000000" }
         it do
