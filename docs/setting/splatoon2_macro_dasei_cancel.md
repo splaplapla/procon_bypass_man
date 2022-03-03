@@ -1,12 +1,13 @@
 # スプラトゥーン2: 惰性キャンセル マクロの設定方法
 
+* 本マクロは実験段階で、オプション名などの仕様が変更される可能性が高いです
 * procon_bypass_man: 0.1.21以上が必要です
 
 ## 1. install_macro_pluginでマクロを有効化します
 * `setting.yml` に`install_macro_plugin ProconBypassMan::Plugin::Splatoon2::Macro::DaseiCancel` と書きます
-* これを記述することで、layer内で呼び出せるようになります
+* これを記述することで、layer内でmacroを呼び出せるようになります
 
-```
+```ruby
 install_macro_plugin ProconBypassMan::Plugin::Splatoon2::Macro::DaseiCancel
 ```
 
@@ -14,10 +15,25 @@ install_macro_plugin ProconBypassMan::Plugin::Splatoon2::Macro::DaseiCancel
 * `setting.yml` のlayer内に`macro ProconBypassMan::Plugin::Splatoon2::Macro::DaseiCancel, if_pressed: [:zl]` と書きます
   * `if_pressed` がどのボタンを押したときにこのマクロが発動するかの設定です
       * 惰性キャンセルなのでイカ状態になるためにzlを押します
-  * `if_tilted_left_stick` がスティックを倒した時に発動するオプションです
+  * `if_tilted_left_stick` がスティックを倒した時に発動するオプションで、trueを渡すと有効になります
+      * また、傾けた時の閾値を変更することができて、trueの代わりに `{ threshold: 500 }` と書くことができます
+      * デフォルトが500で、ここの数値を上げると、スティックを倒した判定がより厳しくなります。最大1400くらいです。
+* 連打中に、マクロの発動を無効にしたい場合は `disable_macro` で無効にできます
 
-```
+```ruby
 layer :up do
+  macro ProconBypassMan::Plugin::Splatoon2::Macro::DaseiCancel, if_tilted_left_stick: true, if_pressed: [:zl]
+end
+```
+```ruby
+layer :up do
+  macro ProconBypassMan::Plugin::Splatoon2::Macro::DaseiCancel, if_tilted_left_stick: { threshold: 500 }, if_pressed: [:zl]
+end
+```
+```ruby
+layer :up do
+  disable_macro :all, if_pressed: :a
+  disable_macro :all, if_pressed: :zr
   macro ProconBypassMan::Plugin::Splatoon2::Macro::DaseiCancel, if_tilted_left_stick: true, if_pressed: [:zl]
 end
 ```
@@ -36,6 +52,8 @@ setting: |-
   install_macro_plugin ProconBypassMan::Plugin::Splatoon2::Macro::DaseiCancel
 
   layer :up do
+    disable_macro :all, if_pressed: :a
+    disable_macro :all, if_pressed: :zr
     macro ProconBypassMan::Plugin::Splatoon2::Macro::DaseiCancel, if_tilted_left_stick: true, if_pressed: [:zl]
   end
 ```
