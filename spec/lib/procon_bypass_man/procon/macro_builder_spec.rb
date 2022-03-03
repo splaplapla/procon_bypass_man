@@ -100,6 +100,15 @@ describe ProconBypassMan::Procon::MacroBuilder do
         end
       end
 
+      describe 'pressing_r_and_toggle_zr' do
+        it do
+          expect(described_class.new([:pressing_r_and_toggle_zr]).build).to eq([
+            [:r, :zr],
+            [:r, :none],
+          ])
+        end
+      end
+
       describe 'pressing_x_and_toggle_zr_for_0_2sec' do
         it do
           expect(described_class.new([:pressing_x_and_toggle_zr_for_0_2sec]).build).to eq(

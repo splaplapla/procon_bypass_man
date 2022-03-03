@@ -1,13 +1,51 @@
 class ProconBypassMan::Procon::Macro
-  class NestedStep
+  class BaseNestedStep
     def initialize(value)
       @hash = value
+    end
+
+    private
+
+    def incr_step_index!
+      if step_index
+        @hash[:step_index] += 1
+      else
+        @hash[:step_index] = 0
+      end
+    end
+
+    def current_step
+      @hash[:steps][step_index]
+    end
+  end
+
+  class OnetimeNestedStep < BaseNestedStep
+    def over?
+      current_step.nil?
+    end
+
+    def next_step
+      step = current_step
+      incr_step_index!
+      step
+    end
+
+    private
+
+    def step_index
+      @hash[:step_index] ||= 0
+    end
+  end
+
+  class NestedStep < BaseNestedStep
+    def initialize(value)
+      super
       unless @hash[:end_at]
         @hash[:end_at] = (Time.now + @hash[:continue_for]).round(4)
       end
     end
 
-    def over_end_at?
+    def over?
       (@hash[:end_at] < Time.now).tap do |result|
         if result
           ProconBypassMan.logger.debug { "[Macro] nested step is finished(#{@hash})" }
@@ -17,8 +55,6 @@ class ProconBypassMan::Procon::Macro
 
     def next_step
       incr_step_index!
-
-      debug_incr_called_count!
       if step = current_step
         return step
       else
@@ -29,29 +65,12 @@ class ProconBypassMan::Procon::Macro
 
     private
 
-    def current_step
-      @hash[:steps][step_index]
-    end
-
     def step_index
       @hash[:step_index]
     end
 
-    def incr_step_index!
-      if step_index
-        @hash[:step_index] += 1
-      else
-        @hash[:step_index] = 0
-      end
-    end
-
     def reset_step_index!
       @hash[:step_index] = 0
-    end
-
-    def debug_incr_called_count!
-      @hash[:debug_called_count] ||= 0
-      @hash[:debug_called_count] += 1
     end
   end
 
@@ -69,8 +88,14 @@ class ProconBypassMan::Procon::Macro
     end
 
     if step.is_a?(Hash)
-      nested_step = NestedStep.new(step)
-      if nested_step.over_end_at?
+      nested_step =
+        if step[:continue_for]
+          NestedStep.new(step)
+        else
+          OnetimeNestedStep.new(step)
+        end
+
+      if nested_step.over?
         steps.shift # NestedStepを破棄する
         return next_step
       else

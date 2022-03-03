@@ -1,6 +1,6 @@
 class ProconBypassMan::Procon::AnalogStick
   attr_accessor :neutral_position
-  attr_accessor :bin_x, :bin_y
+  attr_writer :bin_x, :bin_y
 
   def initialize(binary: )
     @neutral_position = ProconBypassMan::ButtonsSettingConfiguration.instance.neutral_position
@@ -13,18 +13,22 @@ class ProconBypassMan::Procon::AnalogStick
   end
 
   def abs_x
-    bin_x.to_i(2)
+    @bin_x.to_i(2)
   end
 
   def abs_y
-    bin_y.to_i(2)
+    @bin_y.to_i(2)
   end
 
   def relative_x
-    bin_x.to_i(2) - neutral_position.x
+    @bin_x.to_i(2) - neutral_position.x
   end
 
   def relative_y
-    bin_y.to_i(2) - neutral_position.y
+    @bin_y.to_i(2) - neutral_position.y
+  end
+
+  def relative_hypotenuse
+    Math.sqrt((relative_x**2) + (relative_y**2)).floor(6)
   end
 end
