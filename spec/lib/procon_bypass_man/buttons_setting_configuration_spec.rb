@@ -545,7 +545,7 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
               end
             end
             expect(ProconBypassMan::Procon::MacroRegistry.plugins[:dacan].call).to eq(
-              [{:continue_for=>0.3, :steps=>[:r, :r]}, {:continue_for=>nil, :steps=>[[:r, :zl], [:r, :none]]}]
+              [{:continue_for=>0.3, :steps=>[:r, :r]}, [:r, :zl], [:r, :none]]
             )
             expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].macros).to eq(
               { dacan: { if_pressed: [:zr], if_tilted_left_stick: true } }
@@ -557,7 +557,7 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
                 open_macro :dacan, steps: [:pressing_r_and_toggle_zr], if_tilted_left_stick: true, if_pressed: [:zr]
               end
             end
-            expect(ProconBypassMan::Procon::MacroRegistry.plugins[:dacan].call).to eq([{:continue_for=>nil, :steps=>[[:r, :zr], [:r, :none]]}])
+            expect(ProconBypassMan::Procon::MacroRegistry.plugins[:dacan].call).to eq([[:r, :zr], [:r, :none]])
             expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].macros).to eq(
               { dacan: { if_pressed: [:zr], if_tilted_left_stick: true } }
             )
@@ -568,7 +568,7 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
                 open_macro :dacan, steps: [:pressing_r_and_toggle_zr], if_tilted_left_stick: { threshold: 600 }, if_pressed: [:zr]
               end
             end
-            expect(ProconBypassMan::Procon::MacroRegistry.plugins[:dacan].call).to eq([{:continue_for=>nil, :steps=>[[:r, :zr], [:r, :none]]}])
+            expect(ProconBypassMan::Procon::MacroRegistry.plugins[:dacan].call).to eq([[:r, :zr], [:r, :none]])
             expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].macros).to eq(
               { dacan: { if_pressed: [:zr], if_tilted_left_stick: { threshold: 600 } } }
             )
@@ -579,7 +579,7 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
                 open_macro :dacan, steps: [:pressing_r_and_toggle_zr], if_tilted_left_stick: true, if_pressed: [:zr]
               end
             end
-            expect(ProconBypassMan::Procon::MacroRegistry.plugins[:dacan].call).to eq([{:continue_for=>nil, :steps=>[[:r, :zr], [:r, :none]]}])
+            expect(ProconBypassMan::Procon::MacroRegistry.plugins[:dacan].call).to eq([[:r, :zr], [:r, :none]])
             expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].macros).to eq(
               { dacan: { if_pressed: [:zr], if_tilted_left_stick: true } }
             )
