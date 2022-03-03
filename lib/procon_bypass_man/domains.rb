@@ -4,6 +4,7 @@ module ProconBypassMan
   end
 end
 
+require_relative "domains/bypass_mode"
 require_relative "domains/binary/base"
 require_relative "domains/binary/has_mutable_binary"
 require_relative "domains/binary/has_immutable_binary"

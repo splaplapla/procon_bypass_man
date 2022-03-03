@@ -39,6 +39,7 @@ class ProconBypassMan::Procon
     ProconBypassMan::ButtonsSettingConfiguration.instance.layers[current_layer_key]
   end
 
+  # 内部ステータスを書き換えるフェーズ
   def apply!
     layer_changer = ProconBypassMan::Procon::LayerChanger.new(binary: user_operation.binary)
     if layer_changer.change_layer?
@@ -117,7 +118,7 @@ class ProconBypassMan::Procon
     status
   end
 
-  # @return [ProconBypassMan::Domains::ProcessingProconBinary]
+  # @return [String]
   def to_binary
     if ongoing_mode.name != :manual
       return user_operation.binary.raw
@@ -171,15 +172,5 @@ class ProconBypassMan::Procon
     end
 
     user_operation.binary.raw
-  end
-
-  private
-
-  def method_missing(name)
-    if name.to_s =~ /\Apressed_[a-z]+\?\z/
-      user_operation.public_send(name)
-    else
-      super
-    end
   end
 end

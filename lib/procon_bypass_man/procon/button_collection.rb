@@ -37,12 +37,4 @@ class ProconBypassMan::Procon::ButtonCollection
   BUTTONS = ProconBypassMan::Procon::ButtonCollection::BUTTONS_MAP.keys.freeze
 
   LEFT_ANALOG_STICK = { byte_position: 6..8 }
-
-  # @param [Array<Symbol>] buttons
-  # @return [Array<Symbol>]
-  def self.normalize(buttons)
-    buttons.select { |x|
-      !!ProconBypassMan::Procon::ButtonCollection::BUTTONS_MAP[x]
-    }
-  end
 end
