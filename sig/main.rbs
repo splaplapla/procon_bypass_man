@@ -531,6 +531,26 @@ module ProconBypassMan
   end
 end
 
+class ProconBypassMan::BypassMode
+  TYPE_NORMAL: ::Symbol
+
+  TYPE_AGGRESSIVE: ::Symbol
+
+  TYPES: ::Array[::Symbol]
+
+  DEFAULT_GADGET_TO_PROCON_INTERVAL: ::Float
+
+  attr_accessor mode: ::Symbol
+
+  attr_accessor gadget_to_procon_interval: ::Float
+
+  def self.default_value: () -> ::ProconBypassMan::BypassMode
+
+  def initialize: (mode: ::Symbol mode, gadget_to_procon_interval: ::Float gadget_to_procon_interval) -> void
+
+  def to_s: () -> ::String
+end
+
 class ProconBypassMan::Domains::Binary::Base
   # @param [String] binary
   def initialize: (binary: untyped binary) -> void

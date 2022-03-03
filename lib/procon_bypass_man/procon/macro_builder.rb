@@ -48,7 +48,7 @@ class ProconBypassMan::Procon::MacroBuilder
 
   # @return [Arary<Symbol>]
   def build
-    steps = @steps.map { |step|
+    steps = @steps.flat_map { |step|
       if is_reserved?(step: step) || v1_format?(step: step)
         step.to_sym
       elsif value = build_if_v2_format?(step: step)
@@ -57,7 +57,8 @@ class ProconBypassMan::Procon::MacroBuilder
         nil
       end
     }
-    steps.compact.flatten
+
+    steps.compact
   end
 
   private
@@ -73,30 +74,39 @@ class ProconBypassMan::Procon::MacroBuilder
   end
 
   def build_if_v2_format?(step: )
-    # 時間指定なし
-    if(match = step.match(%r!\Atoggle_(\w+)\z!)) && (button_candidate = match[1]) && is_button(button_candidate)
-      button = button_candidate
-      return [button.to_sym, :none]
-    end
-
-    # 時間指定あり
-    if %r!^(pressing_|toggle_)! =~ step && (subjects = step.scan(%r!pressing_[^_]+|toggle_[^_]+!)) && (match = step.match(%r!_for_([\d_]+)(sec)?\z!))
-      sec = match[1]
-      return [
-        { continue_for: to_num(sec),
-          steps: SubjectMerger.merge(subjects.map { |x| Subject.new(x) }),
-        }
-      ]
-    end
-
     # no-op command
     if(match = step.match(%r!wait_for_([\d_]+)(sec)?\z!))
       sec = match[1]
       return [
-        { continue_for: to_num(sec),
+        { continue_for: to_f(sec),
           steps: [:none],
         }
       ]
+    end
+
+    if %r!^(pressing_|toggle_)! =~ step && (subjects = step.scan(%r!pressing_[^_]+|toggle_[^_]+!)) && (match = step.match(%r!_for_([\d_]+)(sec)?\z!))
+      if sec = match[1]
+        return {
+          continue_for: to_f(sec),
+          steps: SubjectMerger.merge(subjects.map { |x| Subject.new(x) }).select { |x|
+            if x.is_a?(Array)
+              x.select { |y| is_button(y) || RESERVED_WORD_NONE == y }
+            else
+              is_button(x) || RESERVED_WORD_NONE == x
+            end
+          },
+        }
+      end
+    end
+
+    if %r!^(pressing_|toggle_)! =~ step && (subjects = step.scan(%r!pressing_[^_]+|toggle_[^_]+!))
+      return SubjectMerger.merge(subjects.map { |x| Subject.new(x) }).select { |x|
+        if x.is_a?(Array)
+          x.select { |y| is_button(y) || RESERVED_WORD_NONE == y }
+        else
+          is_button(x) || RESERVED_WORD_NONE == x
+        end
+      }
     end
   end
 
@@ -105,11 +115,11 @@ class ProconBypassMan::Procon::MacroBuilder
     !!ProconBypassMan::Procon::ButtonCollection::BUTTONS_MAP[step.to_sym]
   end
 
-  def to_num(value)
+  def to_f(value)
     if value.include?("_")
       value.sub("_", ".").to_f
     else
-      value.to_i
+      value.to_f
     end
   end
 end

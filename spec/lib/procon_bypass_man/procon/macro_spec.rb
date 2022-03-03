@@ -80,6 +80,24 @@ describe ProconBypassMan::Procon::Macro do
           end
         end
 
+        context 'nested_stepのみ(continue_forがnil)' do
+          let(:nested_step) {
+            { continue_for: nil, steps: [:r, :none], }
+          }
+          it do
+            macro = described_class.new(name: nil, steps: [nested_step])
+            Timecop.freeze '2021-11-11 00:00:00' do
+              expect(macro.next_step).to eq(:r)
+              expect(macro.next_step).to eq(:none)
+              expect(macro.next_step).to eq(nil)
+            end
+
+            Timecop.freeze '2021-11-11 00:00:05' do
+              expect(macro.next_step).to eq(nil)
+            end
+          end
+        end
+
         context 'nested_stepが続くとき' do
           let(:nested_step) {
             { continue_for: 3, steps: [:r, :none], }

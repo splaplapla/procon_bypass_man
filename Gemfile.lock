@@ -3,7 +3,7 @@ PATH
   specs:
     procon_bypass_man (0.1.21)
       action_cable_client
-      pbmenv
+      pbmenv (>= 0.1.9)
       sorted_set
 
 GEM
@@ -36,7 +36,7 @@ GEM
     parallel (1.21.0)
     parser (3.0.3.2)
       ast (~> 2.4.1)
-    pbmenv (0.1.8)
+    pbmenv (0.1.9)
     pry (0.14.1)
       coderay (~> 1.1)
       method_source (~> 1.0)

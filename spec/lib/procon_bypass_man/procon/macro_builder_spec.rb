@@ -26,29 +26,35 @@ describe ProconBypassMan::Procon::MacroBuilder do
     end
 
     describe 'v2 format' do
+      describe 'toggle + 存在しないボタン' do
+        it do
+          expect(described_class.new([:toggle_v]).build).to eq([:none])
+        end
+      end
+
       describe 'toggle' do
         it do
-          expect(described_class.new([:toggle_r]).build).to eq([:r, :none])
+          expect(described_class.new([:toggle_a]).build).to eq([:a, :none])
         end
         it do
-          expect(described_class.new([:toggle_r, :toggle_b]).build).to eq([:r, :none, :b, :none])
+          expect(described_class.new([:toggle_a, :toggle_b]).build).to eq([:a, :none, :b, :none])
         end
         it do
-          expect(described_class.new([:a, :toggle_r, :sl, :toggle_b, :b]).build).to eq([:a, :r, :none, :sl, :b, :none, :b])
+          expect(described_class.new([:a, :toggle_b, :sl, :toggle_b, :b]).build).to eq([:a, :b, :none, :sl, :b, :none, :b])
         end
       end
 
       describe 'toggle_x_for_2sec' do
         it do
-          expect(described_class.new([:toggle_r_for_2sec]).build).to eq(
-            [{ continue_for: 2, steps: [:r, :none] }]
+          expect(described_class.new([:toggle_a_for_2sec]).build).to eq(
+            [{ continue_for: 2, steps: [:a, :none] }]
           )
         end
         it do
-          expect(described_class.new([:toggle_r, :toggle_r_for_3sec]).build).to eq(
-            [ :r,
+          expect(described_class.new([:toggle_b, :toggle_a_for_3sec]).build).to eq(
+            [ :b,
               :none,
-              { continue_for: 3, steps: [:r, :none] }
+              { continue_for: 3, steps: [:a, :none] }
             ]
           )
         end
@@ -91,6 +97,15 @@ describe ProconBypassMan::Procon::MacroBuilder do
           expect(described_class.new([:pressing_x_for_0_2sec]).build).to eq(
             [{ continue_for: 0.2, steps: [:x, :x] }]
           )
+        end
+      end
+
+      describe 'pressing_r_and_toggle_zr' do
+        it do
+          expect(described_class.new([:pressing_r_and_toggle_zr]).build).to eq([
+            [:r, :zr],
+            [:r, :none],
+          ])
         end
       end
 

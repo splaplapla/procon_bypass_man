@@ -19,6 +19,7 @@ class ProconBypassMan::Procon
       ongoing_macro: MacroRegistry.load(:null),
       ongoing_mode: ModeRegistry.load(:manual),
     }
+    @@left_stick_tilting_power_scaler = ProconBypassMan::AnalogStickTiltingPowerScaler.new
   end
   reset!
 
@@ -38,6 +39,7 @@ class ProconBypassMan::Procon
     ProconBypassMan::ButtonsSettingConfiguration.instance.layers[current_layer_key]
   end
 
+  # 内部ステータスを書き換えるフェーズ
   def apply!
     layer_changer = ProconBypassMan::Procon::LayerChanger.new(binary: user_operation.binary)
     if layer_changer.change_layer?
@@ -46,10 +48,38 @@ class ProconBypassMan::Procon
       return
     end
 
-    if ongoing_macro.finished?
+    analog_stick = ProconBypassMan::Procon::AnalogStick.new(binary: user_operation.binary.raw)
+    dumped_tilting_power = @@left_stick_tilting_power_scaler.add_sample(analog_stick.relative_hypotenuse)
+
+    enable_all_macro = true
+    enable_macro_map = Hash.new {|h,k| h[k] = true }
+    current_layer.disable_macros.each do |disable_macro|
+      if (disable_macro[:if_pressed] == [true] || user_operation.pressing_all_buttons?(disable_macro[:if_pressed]))
+        if disable_macro[:name] == :all
+          enable_all_macro = false
+        else
+          enable_macro_map[disable_macro[:name]] = false
+        end
+      end
+    end
+
+    if ongoing_macro.finished? && enable_all_macro
       current_layer.macros.each do |macro_name, options|
+        next unless enable_macro_map[macro_name]
+
+        if(if_tilted_left_stick_value = options[:if_tilted_left_stick])
+          threshold = (if_tilted_left_stick_value.is_a?(Hash) && if_tilted_left_stick_value[:threshold]) || ProconBypassMan::AnalogStickTiltingPowerScaler::DEFAULT_THRESHOLD
+          if dumped_tilting_power&.tilting?(threshold: threshold, current_position_x: analog_stick.relative_x, current_position_y: analog_stick.relative_y) && user_operation.pressing_all_buttons?(options[:if_pressed])
+            @@status[:ongoing_macro] = MacroRegistry.load(macro_name)
+            break
+          end
+
+          next
+        end
+
         if user_operation.pressing_all_buttons?(options[:if_pressed])
           @@status[:ongoing_macro] = MacroRegistry.load(macro_name)
+          break
         end
       end
     end
@@ -88,7 +118,7 @@ class ProconBypassMan::Procon
     status
   end
 
-  # @return [ProconBypassMan::Domains::ProcessingProconBinary]
+  # @return [String]
   def to_binary
     if ongoing_mode.name != :manual
       return user_operation.binary.raw
@@ -142,15 +172,5 @@ class ProconBypassMan::Procon
     end
 
     user_operation.binary.raw
-  end
-
-  private
-
-  def method_missing(name)
-    if name.to_s =~ /\Apressed_[a-z]+\?\z/
-      user_operation.public_send(name)
-    else
-      super
-    end
   end
 end
