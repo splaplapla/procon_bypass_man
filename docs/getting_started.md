@@ -9,7 +9,7 @@
       * [pbmenvを使う方法](#pbmenvを使う方法)
       * [pbmenvを使わない方法](#pbmenvを使わない方法)
 * [普段使いをするためのセットアップ](#普段使いをするためのセットアップ)
-* レイヤー
+* [レイヤー](#レイヤー)
 * モード
 * マクロ
 * [左スティックの感度調整](#左スティックの感度調整)
@@ -87,7 +87,28 @@ pbmenvを使っていない場合は、 https://github.com/splaplapla/procon_byp
 ゲームをやめたくなったらSwitchはそのままスリープに入って問題ないです。このときにRaspberry Piも一緒に電源が切れてしまいますが故障することはありません。
 
 ## レイヤー
-* 後で書きます
+あらかじめレイヤーごとにキーの配置を設定しておき、用途に応じてレイヤーを切り替えることで違うキーが入力できるという機能です。  
+レイヤーは、up, down, left, rightの4つあります。 設定ファイルの書いている `prefix_keys_for_changing_layer` を押しながら、十字キーのup, down, left, rightのどれかを押すと、レイヤーを変更することができます。  
+  
+レイヤー毎の定義方法は、 `layer` ブロックで囲って定義します。  
+以下の例は、upレイヤーとleftレイヤーだけに設定が書かれています。ゲーム進行状況によってレイヤーを切り替えてください。  
+初期レイヤーは、 up です。
+
+```ruby
+layer :up do
+  flip :a, if_pressed: [:a]
+end
+
+layer :right do
+end
+
+layer :left do
+  flip :zr, if_pressed: :zr, force_neutral: :zl
+end
+
+layer :down do
+end
+```
 
 ## モード
 * 後で書きます
