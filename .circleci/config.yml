@@ -34,6 +34,14 @@ commands: &commands
             - vendor/bundle
 
 jobs:
+  check_pbm_version:
+    executor:
+      name: ruby
+      tag: 3.0.1
+    steps:
+      - checkout
+      - run: GEM_VERSION=$(grep -o -E '[0-9.]+' lib/procon_bypass_man/version.rb) && GEM_VERSION_IN_BUNDER=$(grep procon_bypass_man project_template/app.rb | grep -o -E '[0-9.]+') && test "$GEM_VERSION" = "$GEM_VERSION_IN_BUNDER"
+
   syntax_check:
     parameters:
       ruby-version:
@@ -92,6 +100,7 @@ jobs:
       - run: bundle exec rspec
 
 build_jobs: &build_jobs
+  - check_pbm_version
   - syntax_check:
       matrix:
         parameters:
