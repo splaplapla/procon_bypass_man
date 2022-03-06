@@ -1,3 +1,8 @@
+## [0.1.22] - 2022-03-
+* スティックを左右に入れるマクロを実装しました
+  * スプラトゥーン2でのタンサンボムのチャージに使えます
+  * 例: `open_macro :shake, steps: [:shake_left_stick_for_0_1sec], if_pressed: [:b, :r]`
+
 ## [0.1.21] - 2022-03-03
 - install_macro_pluginしていないマクロをlayer内で使うとクラッシュしていた問題を修正しました
 - 数十時間起動しっぱなしだとpbm-cloudとのwebsocketの接続が切断される問題を修正しました
