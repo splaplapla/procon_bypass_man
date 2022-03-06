@@ -28,7 +28,6 @@ class ProconBypassMan::Bypass
         end
       end
 
-
       if ProconBypassMan.config.enable_reporting_pressed_buttons
         ProconBypassMan.cache.fetch key: 'pressed_buttons_reporter', expires_in: 5 do
           ProconBypassMan::ReportPressedButtonsJob.perform_async(

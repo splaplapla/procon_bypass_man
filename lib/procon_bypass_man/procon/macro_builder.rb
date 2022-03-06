@@ -125,7 +125,6 @@ class ProconBypassMan::Procon::MacroBuilder
         }
       ]
     end
-
   end
 
   # @return [Boolean]
