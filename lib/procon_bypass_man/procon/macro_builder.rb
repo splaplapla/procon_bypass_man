@@ -116,6 +116,16 @@ class ProconBypassMan::Procon::MacroBuilder
         end
       }
     end
+
+    if(match = step.match(%r!shake_left_stick_for_([\d_]+)(sec)?\z!))
+      sec = match[1]
+      return [
+        { continue_for: to_f(sec),
+          steps: [:tilt_full_left_stick, :tilt_full_right_stick],
+        }
+      ]
+    end
+
   end
 
   # @return [Boolean]
