@@ -43,6 +43,11 @@ class ProconBypassMan::Domains::ProcessingProconBinary < ProconBypassMan::Domain
     binary[button_obj.byte_position] = ["%02X" % value.to_s].pack("H*")
   end
 
+  # @param [Symbol] stick method
+  def write_as_tilt_left_stick(step)
+    binary[6..8] = ProconBypassMan::Procon::AnalogStickManipulator.new(binary, method: step).to_binary
+  end
+
   # @param [Symbol] button
   def write_as_unpress_button(button)
     raise "do not press button(#{button}) yet" if not ProconBypassMan::PressButtonAware.new(binary).pressing_button?(button)
