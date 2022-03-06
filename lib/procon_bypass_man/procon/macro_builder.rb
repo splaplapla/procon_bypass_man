@@ -121,7 +121,7 @@ class ProconBypassMan::Procon::MacroBuilder
       sec = match[1]
       return [
         { continue_for: to_f(sec),
-          steps: [:tilt_full_left_stick, :tilt_full_right_stick],
+          steps: [:tilt_left_stick_completely_to_left, :tilt_left_stick_completely_to_right],
         }
       ]
     end

@@ -45,7 +45,7 @@ class ProconBypassMan::Procon::UserOperation
       if is_button?(ms)
         binary.write_as_press_button(ms)
       elsif is_stick?(ms)
-        binary.write_as_tilt_stick(ms)
+        binary.write_as_tilt_left_stick(ms)
       else
         warn "知らないmacro stepです"
       end
