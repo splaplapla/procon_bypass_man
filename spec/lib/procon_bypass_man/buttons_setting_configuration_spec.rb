@@ -584,6 +584,17 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
               { dacan: { if_pressed: [:zr], if_tilted_left_stick: true } }
             )
           end
+          it do
+            ProconBypassMan.buttons_setting_configure do
+              layer :up do
+                open_macro :shake_stick, steps: [:shake_left_stick_for_0_65sec], if_pressed: [:zr]
+              end
+            end
+            expect(ProconBypassMan::Procon::MacroRegistry.plugins[:shake_stick].call).to eq([{:continue_for=>0.65, :steps=>[:tilt_full_left_stick, :tilt_full_right_stick]}])
+            expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].macros).to eq(
+              { shake_stick: { if_pressed: [:zr] } }
+            )
+          end
         end
       end
     end
