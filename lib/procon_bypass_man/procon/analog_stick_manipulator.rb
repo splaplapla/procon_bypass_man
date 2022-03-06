@@ -30,10 +30,12 @@ class ProconBypassMan::Procon::AnalogStickManipulator
       case direction
       when 'left'
         self.manipulated_abs_x = 400
-        self.manipulated_abs_y = analog_stick.abs_y
+        # yを引き継ぐとタンサンボムの溜まりが悪くなったので固定値を入れる
+        # self.manipulated_abs_y = analog_stick.abs_y
+        self.manipulated_abs_y = 1808
       when 'right'
         self.manipulated_abs_x = 3400
-        self.manipulated_abs_y = analog_stick.abs_y
+        self.manipulated_abs_y = 1808
       end
     else
       warn "error stick manipulator"
