@@ -35,7 +35,7 @@ class ProconBypassMan::Procon::AnalogStickManipulator
       end
     else
       warn "error stick manipulator"
-      analog_stick = ProconBypassMan::Procon::AnalogStick.new(binary: @binary)
+      analog_stick = ProconBypassMan::Procon::AnalogStick.new(binary: binary)
       @manipulated_x = analog_stick.abs_x
       @manipulated_y = analog_stick.abs_y
     end
