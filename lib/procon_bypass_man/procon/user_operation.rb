@@ -33,14 +33,22 @@ class ProconBypassMan::Procon::UserOperation
     binary.write_as_press_button(button)
   end
 
-  # @param [Symbol, Array<Symbol>] button
-  def press_button_only(button)
-    button = [button] if not button.is_a?(Array)
+  # @param [Symbol, Array<Symbol>] macro_step
+  def press_button_only_or_tilt_sticks(macro_step)
+    macro_step = [macro_step] if not macro_step.is_a?(Array)
+    # スティック操作の時はボタン入力を通す
+    binary.set_no_action! if is_button?(macro_step)
 
-    binary.set_no_action!
-    button.uniq.each do |b|
-      next if ProconBypassMan::Procon::MacroBuilder::RESERVED_WORD_NONE == b
-      binary.write_as_press_button(b)
+    macro_step.uniq.each do |ms|
+      next if ProconBypassMan::Procon::MacroBuilder::RESERVED_WORD_NONE == ms
+
+      if is_button?(ms)
+        binary.write_as_press_button(ms)
+      elsif is_stick?(ms)
+        binary.write_as_tilt_stick(ms)
+      else
+        warn "知らないmacro stepです"
+      end
     end
   end
 
@@ -62,5 +70,19 @@ class ProconBypassMan::Procon::UserOperation
   def pressing_all_buttons?(buttons)
     aware = ProconBypassMan::PressButtonAware.new(@binary.raw)
     buttons.all? { |b| aware.pressing_button?(b) }
+  end
+
+  # @return [Boolean]
+  def is_button?(button)
+    button = [button] if not button.is_a?(Array)
+
+    button.all? do |b|
+      !!ProconBypassMan::Procon::ButtonCollection::BUTTONS_MAP[b.to_sym]
+    end
+  end
+
+  # @return [Boolean]
+  def is_stick?(step)
+    step =~ /\Atilt_/
   end
 end
