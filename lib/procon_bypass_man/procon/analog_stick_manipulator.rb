@@ -18,33 +18,34 @@ class ProconBypassMan::Procon::AnalogStickManipulator
     end
   end
 
-  attr_reader :direction, :power_level
+  attr_accessor :manipulated_abs_x, :manipulated_abs_y
 
   def initialize(binary, method: )
-    if method =~ /tilt_left_stick_(completely)_to_(left|right)/
-      @power_level = $1
-      @direction = $2
+    analog_stick = ProconBypassMan::Procon::AnalogStick.new(binary: binary)
 
-      case @direction
-      when :left
-        @manipulated_abs_x = 400
-        @manipulated_abs_y = 1808
-      when :right
-        @manipulated_abs_x = 3400
-        @manipulated_abs_y = 1808
+    if method =~ /tilt_left_stick_(completely)_to_(left|right)/
+      power_level = $1
+      direction = $2
+
+      case direction
+      when 'left'
+        self.manipulated_abs_x = 400
+        self.manipulated_abs_y = analog_stick.abs_y
+      when 'right'
+        self.manipulated_abs_x = 3400
+        self.manipulated_abs_y = analog_stick.abs_y
       end
     else
       warn "error stick manipulator"
-      analog_stick = ProconBypassMan::Procon::AnalogStick.new(binary: binary)
-      @manipulated_abs_x = analog_stick.abs_x
-      @manipulated_abs_y = analog_stick.abs_y
+      self.manipulated_abs_x = analog_stick.abs_x
+      self.manipulated_abs_y = analog_stick.abs_y
     end
   end
 
   def to_binary
     Position.new(
-      x: @manipulated_abs_x,
-      y: @manipulated_abs_y,
+      x: self.manipulated_abs_x,
+      y: self.manipulated_abs_y,
     ).to_binary
   end
 end

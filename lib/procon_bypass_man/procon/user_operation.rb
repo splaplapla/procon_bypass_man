@@ -83,6 +83,6 @@ class ProconBypassMan::Procon::UserOperation
 
   # @return [Boolean]
   def is_stick?(step)
-    step =~ /\Atilt_/
+    !!(step =~ /\Atilt_/)
   end
 end

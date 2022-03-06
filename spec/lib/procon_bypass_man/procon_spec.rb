@@ -240,6 +240,26 @@ describe ProconBypassMan::Procon do
     context 'v2' do
       context 'y, bを押しているとき' do
         let(:data) { "30778105800099277344e86b0a7909f4f5a8f4b500c5ff8dff6c09cdf5b8f49a00c5ff92ff6a0979f5eef46500d5ff9bff000000000000000000000000000000" }
+        before do
+          ProconBypassMan.buttons_setting_configure do
+            prefix_keys_for_changing_layer [:zr]
+            layer :up do
+              open_macro :shake, steps: [:shake_left_stick_for_0_65sec], if_pressed: [:y, :b]
+            end
+          end
+        end
+        it do
+          expect(ProconBypassMan::Procon::MacroRegistry.plugins[:shake].call).to eq(
+            [{:continue_for=>0.65, :steps=> [:tilt_left_stick_completely_to_left, :tilt_left_stick_completely_to_right]}]
+          )
+          procon = ProconBypassMan::Procon.new(binary)
+          procon.apply!
+          analog_stick = ProconBypassMan::Procon::AnalogStick.new(binary: procon.to_binary)
+          expect(analog_stick.abs_x).to eq(400)
+        end
+      end
+      context 'y, bを押しているとき' do
+        let(:data) { "30778105800099277344e86b0a7909f4f5a8f4b500c5ff8dff6c09cdf5b8f49a00c5ff92ff6a0979f5eef46500d5ff9bff000000000000000000000000000000" }
         context '定義にないボタンを使うとき' do
           before do
             ProconBypassMan.buttons_setting_configure do
