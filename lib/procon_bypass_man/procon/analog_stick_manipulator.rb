@@ -21,7 +21,7 @@ class ProconBypassMan::Procon::AnalogStickManipulator
   attr_reader :direction, :power_level
 
   def initialize(binary, method: )
-    if method =~ /tilt_(full)_(left|right)/
+    if method =~ /tilt_left_stick_(completely)_to_(left|right)/
       @power_level = $1
       @direction = $2
 
