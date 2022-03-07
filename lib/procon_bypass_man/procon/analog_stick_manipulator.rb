@@ -1,23 +1,4 @@
 class ProconBypassMan::Procon::AnalogStickManipulator
-  class Position
-    attr_accessor :x, :y
-
-    def initialize(x:, y:)
-      @x = x.to_i
-      @y = y.to_i
-    end
-
-    def to_binary
-      analog_stick_data = [
-        (@x & "0xff".to_i(16)),
-        ((@y << 4) & "0xf0".to_i(16)) | ((@x >> 8) & "0x0f".to_i(16)),
-        (@y >> 4) & "0xff".to_i(16),
-      ]
-      hex = analog_stick_data.map{ |x| x.to_s(16).rjust(2, "0") }.join
-      [hex].pack("H*")
-    end
-  end
-
   attr_accessor :manipulated_abs_x, :manipulated_abs_y
 
   def initialize(binary, method: )
@@ -44,8 +25,10 @@ class ProconBypassMan::Procon::AnalogStickManipulator
     end
   end
 
+
+  # @return [String]
   def to_binary
-    Position.new(
+    ProconBypassMan::AnalogStickPosition.new(
       x: self.manipulated_abs_x,
       y: self.manipulated_abs_y,
     ).to_binary
