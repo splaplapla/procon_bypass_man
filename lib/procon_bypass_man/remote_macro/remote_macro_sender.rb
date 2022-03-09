@@ -1,5 +1,5 @@
 class ProconBypassMan::RemoteMacroSender
-  def self.execute(uuid: , steps: )
+  def self.execute(action: , uuid: , steps: )
     # ProconBypassMan::QueueOverProcess
   end
 end

@@ -112,6 +112,7 @@ module ProconBypassMan
         end
 
         ProconBypassMan::RemoteMacroSender.execute(
+          action: remote_macro_object.action,
           uuid: remote_macro_object.uuid,
           steps: remote_macro_object.steps,
         )

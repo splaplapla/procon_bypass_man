@@ -43,7 +43,7 @@ describe ProconBypassMan::Websocket::PbmJobClient do
       let(:data) { { "message" => {"action"=>"a", "uuid"=>"c", "steps"=>[] } } }
 
       it do
-        expect(ProconBypassMan::RemoteMacroSender).to receive(:execute)
+        expect(ProconBypassMan::RemoteMacroSender).to receive(:execute).with(action: "a", uuid: "c", steps: [])
         subject
       end
     end
