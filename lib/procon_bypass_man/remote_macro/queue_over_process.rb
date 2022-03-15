@@ -22,14 +22,20 @@ class ProconBypassMan::QueueOverProcess
   end
 
   def self.push(value)
+    return unless ProconBypassMan.config.enable_remote_macro?
+
     drb.push(value)
   end
 
   def self.pop
+    return unless ProconBypassMan.config.enable_remote_macro?
+
     drb.pop
   end
 
   def self.drb
+    return unless ProconBypassMan.config.enable_remote_macro?
+
     @@drb ||= new.drb
   end
 
