@@ -15,19 +15,16 @@ class ProconBypassMan::RemoteMacroReceiver
   end
 
   def self.run
-    while true
-      if(data = ProconBypassMan::QueueOverProcess.pop)
-        receive(data)
-      else
-        shutdown
-        break
-      end
+    while(data = ProconBypassMan::QueueOverProcess.pop)
+      receive(data)
     end
+    shutdown
   rescue Errno::ENOENT, Errno::ECONNRESET, Errno::ECONNREFUSED => e
     ProconBypassMan.logger.debug(e)
   end
 
   def self.receive(data)
+    ProconBypassMan.logger.info "[remote macro][receiver] action: #{dada.action}, uuid: #{data.uuid}, steps: #{data.steps}"
     # ここでmacroのqueueにpushする
   end
 
