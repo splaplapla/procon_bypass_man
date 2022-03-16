@@ -1,30 +1,31 @@
 class ProconBypassMan::QueueOverProcess
   attr_reader :drb
 
+  @@drb_server = nil
+  @@drb_server_thread = nil
+
   def self.start!
     return unless ProconBypassMan.config.enable_remote_macro?
     require 'drb/drb'
 
     FileUtils.rm_rf(file_path) if File.exist?(file_path)
     begin
-      DRb.start_service(url, Queue.new, safe_level: 1)
+      @@drb_server = DRb.start_service(url, Queue.new, safe_level: 1)
     rescue Errno::EADDRINUSE => e
       ProconBypassMan.logger.error e
       raise
     end
 
-    Thread.new do
-      DRb.thread.join
-    rescue => e
-      ProconBypassMan::SendErrorCommand.execute(error: e)
-      sleep(1)
-      retry
-    end
+    @@drb_server_thread =
+      Thread.new do
+        DRb.thread.join
+      end
   end
 
   def self.shutdown
-    if @drb
-      @drb.stop_service
+    if @@drb_server
+      @@drb_server_thread.kill
+      @@drb_server.stop_service
     end
   end
 
