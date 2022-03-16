@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe ProconBypassMan::Websocket::PbmJobClient do
+describe ProconBypassMan::Websocket::Client do
   xdescribe '.run' do
   end
 

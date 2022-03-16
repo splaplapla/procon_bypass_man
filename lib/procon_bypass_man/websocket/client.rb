@@ -1,6 +1,6 @@
 module ProconBypassMan
   module Websocket
-    module PbmJobClient
+    module Client
       CHANNEL = 'PbmJobChannel'
 
       def self.start!
@@ -20,7 +20,7 @@ module ProconBypassMan
           )
 
           client.connected {
-            ProconBypassMan.logger.info('websocket client: successfully connected in ProconBypassMan::Websocket::PbmJobClient')
+            ProconBypassMan.logger.info('websocket client: successfully connected in ProconBypassMan::Websocket::Client')
           }
           client.subscribed { |msg|
             ProconBypassMan.logger.info('websocket client: subscribed')

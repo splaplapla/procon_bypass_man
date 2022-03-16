@@ -49,7 +49,7 @@ require_relative "procon_bypass_man/procon/analog_stick_manipulator"
 require_relative "procon_bypass_man/remote_pbm_action/value_objects/remote_pbm_action_object"
 require_relative "procon_bypass_man/scheduler"
 require_relative "procon_bypass_man/plugins"
-require_relative "procon_bypass_man/websocket/pbm_job_client"
+require_relative "procon_bypass_man/websocket/client"
 require_relative "procon_bypass_man/websocket/watchdog"
 require_relative "procon_bypass_man/websocket/forever"
 
@@ -69,7 +69,7 @@ module ProconBypassMan
   def self.run(setting_path: nil)
     ProconBypassMan::Scheduler.start!
     ProconBypassMan::Background::JobRunner.start!
-    ProconBypassMan::Websocket::PbmJobClient.start!
+    ProconBypassMan::Websocket::Client.start!
     ProconBypassMan::QueueOverProcess.start!
 
     ProconBypassMan::PrintMessageCommand.execute(text: "PBMを起動しています")
