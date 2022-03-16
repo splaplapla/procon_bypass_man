@@ -5,7 +5,7 @@ class ProconBypassMan::QueueOverProcess
     return unless ProconBypassMan.config.enable_remote_macro?
     require 'drb/drb'
 
-    FileUtils.rm_rf(url) if File.exist?(url)
+    FileUtils.rm_rf(file_path) if File.exist?(file_path)
     begin
       DRb.start_service(url, Queue.new, safe_level: 1)
     rescue Errno::EADDRINUSE => e
@@ -17,7 +17,14 @@ class ProconBypassMan::QueueOverProcess
       DRb.thread.join
     rescue => e
       ProconBypassMan::SendErrorCommand.execute(error: e)
+      sleep(1)
       retry
+    end
+  end
+
+  def self.shutdown
+    if @drb
+      @drb.stop_service
     end
   end
 
@@ -39,8 +46,13 @@ class ProconBypassMan::QueueOverProcess
     @@drb ||= new.drb
   end
 
+  PROTOCOL = "drbunix"
   def self.url
-    "drbunix:/tmp/procon_bypass_man_queue"
+    "#{PROTOCOL}:/tmp/procon_bypass_man_queue"
+  end
+
+  def self.file_path
+    url.gsub("#{PROTOCOL}:", "")
   end
 
   def initialize

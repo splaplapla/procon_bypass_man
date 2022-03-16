@@ -5,8 +5,13 @@ describe ProconBypassMan::QueueOverProcess do
     allow(ProconBypassMan.config).to receive(:enable_remote_macro?) { true }
   end
 
+  after do
+    ProconBypassMan::QueueOverProcess.shutdown
+  end
+
   describe '.start!' do
     subject { described_class.start! }
+
     context 'when not enable' do
       it do
         allow(ProconBypassMan.config).to receive(:enable_remote_macro?) { false }
@@ -28,6 +33,7 @@ describe ProconBypassMan::QueueOverProcess do
 
   describe 'pop, push' do
     before do
+      require 'drb/drb'
       described_class.drb.clear
     end
 

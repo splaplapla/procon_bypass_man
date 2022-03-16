@@ -79,6 +79,7 @@ module ProconBypassMan
     Runner.new(gadget: gadget, procon: procon).run # ここでblockingする
     FileUtils.rm_rf(ProconBypassMan.pid_path)
     FileUtils.rm_rf(ProconBypassMan.digest_path)
+    ProconBypassMan::QueueOverProcess.shutdown
   rescue ProconBypassMan::CouldNotLoadConfigError
     ProconBypassMan::SendErrorCommand.execute(error: "設定ファイルが不正です。設定ファイルの読み込みに失敗しました")
     ProconBypassMan::DeviceStatus.change_to_setting_syntax_error_and_shutdown!
@@ -86,6 +87,7 @@ module ProconBypassMan
     ProconBypassMan.exit_if_allow(1) do
       FileUtils.rm_rf(ProconBypassMan.pid_path)
       FileUtils.rm_rf(ProconBypassMan.digest_path)
+      ProconBypassMan::QueueOverProcess.shutdown
     end
   rescue ProconBypassMan::ConnectDeviceCommand::NotFoundProconError
     ProconBypassMan::SendErrorCommand.execute(error: "プロコンが見つかりませんでした。")
@@ -94,6 +96,7 @@ module ProconBypassMan
     ProconBypassMan.exit_if_allow(1) do
       FileUtils.rm_rf(ProconBypassMan.pid_path)
       FileUtils.rm_rf(ProconBypassMan.digest_path)
+      ProconBypassMan::QueueOverProcess.shutdown
     end
   rescue ProconBypassMan::ConnectionError
     begin
