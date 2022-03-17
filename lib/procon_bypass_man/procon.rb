@@ -1,3 +1,5 @@
+require "procon_bypass_man/procon/macro_plugin_map"
+
 class ProconBypassMan::Procon
   require "procon_bypass_man/procon/consts"
   require "procon_bypass_man/procon/mode_registry"
@@ -89,7 +91,7 @@ class ProconBypassMan::Procon
     if ProconBypassMan::RemoteMacro::TaskQueueInProcess.present? && task = ProconBypassMan::RemoteMacro::TaskQueueInProcess.pop
       macro_name = task.name || "RemoteMacro-#{task.steps.join}".to_sym
       ProconBypassMan::Procon::MacroRegistry.install_plugin(macro_name, steps: steps)
-      @@status[:ongoing_macro] = MacroRegistry.load(macro_name)
+      @@status[:ongoing_macro] = MacroRegistry.load(macro_name, type: :remote)
     end
 
     case current_layer.mode

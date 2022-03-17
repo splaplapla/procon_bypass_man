@@ -3,19 +3,21 @@ class ProconBypassMan::Procon::MacroRegistry
     null: [],
   }
 
-  def self.install_plugin(klass, steps: nil)
+  def self.install_plugin(klass, steps: nil, macro_type: :normal)
     if plugins[klass.to_s.to_sym]
       raise "#{klass} macro is already registered"
     end
 
-    plugins[klass.to_s.to_sym] = ->{
-      ProconBypassMan::Procon::MacroBuilder.new(steps || klass.steps).build
-    }
+    plugins.store(
+      [klass.to_s.to_sym, macro_type], ->{
+        ProconBypassMan::Procon::MacroBuilder.new(steps || klass.steps).build
+      }
+    )
   end
 
   # @return [ProconBypassMan::Procon::Macro]
-  def self.load(name)
-    if(steps = PRESETS[name] || plugins[name]&.call)
+  def self.load(name, macro_type: :normal)
+    if(steps = PRESETS[name] || plugins.fetch([name, macro_type], nil)&.call)
       return ProconBypassMan::Procon::Macro.new(name: name, steps: steps.dup)
     else
       warn "installされていないマクロ(#{name})を使うことはできません"
@@ -24,7 +26,7 @@ class ProconBypassMan::Procon::MacroRegistry
   end
 
   def self.reset!
-    ProconBypassMan::ButtonsSettingConfiguration.instance.macro_plugins = {}
+    ProconBypassMan::ButtonsSettingConfiguration.instance.macro_plugins = ProconBypassMan::Procon::MacroPluginMap.new
   end
 
   def self.plugins
