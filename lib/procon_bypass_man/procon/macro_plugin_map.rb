@@ -6,7 +6,7 @@ module ProconBypassMan
         self.fetch([value, :normal], nil)
       end
 
-      def each(select_macro_type: nil, &block)
+      def each
         transform_keys(&:first).each { |x| yield(x[0], x[1]) }
       end
 
