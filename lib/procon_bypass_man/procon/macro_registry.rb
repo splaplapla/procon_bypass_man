@@ -31,5 +31,8 @@ class ProconBypassMan::Procon::MacroRegistry
     ProconBypassMan::ButtonsSettingConfiguration.instance.macro_plugins
   end
 
+  def self.cleanup_remote_macros!
+  end
+
   reset!
 end

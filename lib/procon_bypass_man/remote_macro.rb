@@ -5,10 +5,8 @@ module ProconBypassMan
     require "procon_bypass_man/remote_macro/remote_macro_sender"
     require "procon_bypass_man/remote_macro/queue_over_process"
     require "procon_bypass_man/remote_macro/task"
+    require "procon_bypass_man/remote_macro/task_queue_in_process"
 
     ACTION_KEY = "remote_macro"
-
-    def self.queue
-    end
   end
 end
