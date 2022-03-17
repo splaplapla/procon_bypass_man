@@ -26,7 +26,7 @@ class ProconBypassMan::RemoteMacroReceiver
 
   # @param [ProconBypassMan::RemoteMacro::Task] task
   def self.receive(task)
-    ProconBypassMan.logger.info "[remote macro][receiver] action: #{task.action}, uuid: #{task.uuid}, steps: #{task.steps}"
+    ProconBypassMan.logger.info "[remote macro][receiver] name: #{task.name}, uuid: #{task.uuid}, steps: #{task.steps}"
     ProconBypassMan::RemoteMacro::TaskQueueInProcess.push(task)
     true
   end
