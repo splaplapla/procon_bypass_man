@@ -5,7 +5,8 @@ class ProconBypassMan::Procon::MacroRegistry
 
   def self.install_plugin(klass, steps: nil, macro_type: :normal)
     if plugins.fetch([klass.to_s.to_sym, macro_type], nil)
-      raise "#{klass} macro is already registered"
+      Kernel.warn "#{klass} macro is already registered"
+      return
     end
 
     plugins.store(

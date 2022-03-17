@@ -37,6 +37,14 @@ describe ProconBypassMan::Procon::MacroRegistry do
       end
     end
 
+    context '同じmoduleをinstallするとき' do
+      it do
+        expect(Kernel).to receive(:warn).with("Mod macro is already registered")
+        ProconBypassMan::Procon::MacroRegistry.install_plugin(Mod)
+        ProconBypassMan::Procon::MacroRegistry.install_plugin(Mod)
+      end
+    end
+
     context 'macro_typeを未指定のとき' do
       before do
         ProconBypassMan::Procon::MacroRegistry.install_plugin(Mod)
