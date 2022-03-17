@@ -4,7 +4,7 @@ class ProconBypassMan::Procon::MacroRegistry
   }
 
   def self.install_plugin(klass, steps: nil, macro_type: :normal)
-    if plugins[klass.to_s.to_sym]
+    if plugins.fetch([klass.to_s.to_sym, macro_type], nil)
       raise "#{klass} macro is already registered"
     end
 
@@ -17,7 +17,7 @@ class ProconBypassMan::Procon::MacroRegistry
 
   # @return [ProconBypassMan::Procon::Macro]
   def self.load(name, macro_type: :normal)
-    if(steps = PRESETS[name] || plugins.fetch([name, macro_type], nil)&.call)
+    if(steps = PRESETS[name] || plugins.fetch([name.to_s.to_sym, macro_type], nil)&.call)
       return ProconBypassMan::Procon::Macro.new(name: name, steps: steps.dup)
     else
       warn "installされていないマクロ(#{name})を使うことはできません"
