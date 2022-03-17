@@ -40,10 +40,10 @@ describe ProconBypassMan::Websocket::Client do
     subject { described_class.validate_and_run_remote_macro(data: data) }
 
     context 'valid' do
-      let(:data) { { "message" => {"action"=>"a", "uuid"=>"c", "steps"=>[] } } }
+      let(:data) { { "message" => {"name"=>"a", "uuid"=>"c", "steps"=>[] } } }
 
       it do
-        expect(ProconBypassMan::RemoteMacroSender).to receive(:execute).with(action: "a", uuid: "c", steps: [])
+        expect(ProconBypassMan::RemoteMacroSender).to receive(:execute).with(name: "a", uuid: "c", steps: [])
         subject
       end
     end

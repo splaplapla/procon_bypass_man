@@ -1,6 +1,6 @@
 class ProconBypassMan::RemoteMacroSender
-  def self.execute(action: , uuid: , steps: )
-    ProconBypassMan.logger.info "[remote macro][sender] action: #{action}, uuid: #{uuid}, steps: #{steps}"
-    ProconBypassMan::QueueOverProcess.push(ProconBypassMan::RemoteMacro::Task.new(action, uuid, steps))
+  def self.execute(name: , uuid: , steps: )
+    ProconBypassMan.logger.info "[remote macro][sender] name: #{name}, uuid: #{uuid}, steps: #{steps}"
+    ProconBypassMan::QueueOverProcess.push(ProconBypassMan::RemoteMacro::Task.new(name, uuid, steps))
   end
 end

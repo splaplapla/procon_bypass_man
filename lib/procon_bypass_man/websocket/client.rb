@@ -102,7 +102,7 @@ module ProconBypassMan
       def self.validate_and_run_remote_macro(data: )
         pbm_job_hash = data.dig("message")
         begin
-          remote_macro_object = ProconBypassMan::RemoteMacroObject.new(action: pbm_job_hash["action"],
+          remote_macro_object = ProconBypassMan::RemoteMacroObject.new(name: pbm_job_hash["name"],
                                                                        uuid: pbm_job_hash["uuid"],
                                                                        steps: pbm_job_hash["steps"])
           remote_macro_object.validate!
@@ -112,7 +112,7 @@ module ProconBypassMan
         end
 
         ProconBypassMan::RemoteMacroSender.execute(
-          action: remote_macro_object.action,
+          name: remote_macro_object.name,
           uuid: remote_macro_object.uuid,
           steps: remote_macro_object.steps,
         )
