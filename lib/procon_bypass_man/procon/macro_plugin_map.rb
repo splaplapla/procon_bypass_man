@@ -6,9 +6,8 @@ module ProconBypassMan
         self.fetch([value, :normal], nil)
       end
 
-      def each(&block)
-        transform_keys!(&:first)
-        super
+      def each(select_macro_type: nil, &block)
+        transform_keys(&:first).each { |x| yield(x[0], x[1]) }
       end
 
       alias_method :original_keys, :keys

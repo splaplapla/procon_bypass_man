@@ -5,6 +5,33 @@ describe ProconBypassMan::Procon::MacroRegistry do
     ProconBypassMan::Procon::MacroRegistry.reset!
   end
 
+  describe '.cleanup_remote_macros!' do
+    subject { described_class.cleanup_remote_macros! }
+
+    Mod2 = Module.new do
+      def self.steps
+        [:a]
+      end
+    end
+
+    before do
+      ProconBypassMan::Procon::MacroRegistry.install_plugin(Mod)
+      ProconBypassMan::Procon::MacroRegistry.install_plugin("like open_macro", steps: [:x], macro_type: :remote)
+    end
+
+    it do
+      expect {
+        subject
+      }.to change {
+        ProconBypassMan::Procon::MacroRegistry.plugins.raw_keys
+      }.from(
+        [[:Mod, :normal], [:"like open_macro", :remote]]
+      ).to(
+        [[:Mod, :normal]]
+      )
+    end
+  end
+
   describe '.install_plugin' do
     Mod = Module.new do
       def self.steps

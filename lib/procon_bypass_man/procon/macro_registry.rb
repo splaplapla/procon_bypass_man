@@ -34,6 +34,11 @@ class ProconBypassMan::Procon::MacroRegistry
   end
 
   def self.cleanup_remote_macros!
+    remote_keys = ProconBypassMan::Procon::MacroRegistry.plugins.original_keys.select { |x, y| y == :remote }
+    remote_keys.each do |remote_key|
+      ProconBypassMan::Procon::MacroRegistry.plugins.delete(remote_key)
+    end
+    ProconBypassMan::Procon::MacroRegistry.plugins
   end
 
   reset!
