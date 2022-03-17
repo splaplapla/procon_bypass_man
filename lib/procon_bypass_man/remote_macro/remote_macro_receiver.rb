@@ -23,9 +23,12 @@ class ProconBypassMan::RemoteMacroReceiver
     ProconBypassMan.logger.debug(e)
   end
 
+
+  # @param [ProconBypassMan::RemoteMacro::Task]
   def self.receive(task)
     ProconBypassMan.logger.info "[remote macro][receiver] action: #{task.action}, uuid: #{task.uuid}, steps: #{task.steps}"
-    # ここでmacroのqueueにpushする
+    ProconBypassMan::RemoteMacro::TaskQueueInProcess.push(task)
+    true
   end
 
   def self.shutdown
