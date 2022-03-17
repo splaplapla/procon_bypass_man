@@ -1,6 +1,6 @@
 module ProconBypassMan
   class Procon
-    # macroキーにメタデータを埋め込んでいる. 通常の処理では露出したくないので露出しないためのクラス
+    # macroキーにメタデータを埋め込んでいる. 通常の処理ではメタデータを露出したくないので露出しないためのクラス
     class MacroPluginMap < ::Hash
       def [](value)
         self.fetch([value, :normal], nil)

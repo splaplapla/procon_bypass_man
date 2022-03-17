@@ -20,9 +20,7 @@ describe ProconBypassMan::Procon::MacroRegistry do
     end
 
     it do
-      expect {
-        subject
-      }.to change {
+      expect { subject }.to change {
         ProconBypassMan::Procon::MacroRegistry.plugins.raw_keys
       }.from(
         [[:Mod, :normal], [:"like open_macro", :remote]]
