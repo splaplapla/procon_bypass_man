@@ -90,8 +90,8 @@ class ProconBypassMan::Procon
     ProconBypassMan::Procon::MacroRegistry.cleanup_remote_macros!
     if task = ProconBypassMan::RemoteMacro::TaskQueueInProcess.non_blocking_pop
       macro_name = task.name || "RemoteMacro-#{task.steps.join}".to_sym
-      ProconBypassMan::Procon::MacroRegistry.install_plugin(macro_name, steps: task.steps)
-      @@status[:ongoing_macro] = MacroRegistry.load(macro_name, type: :remote)
+      ProconBypassMan::Procon::MacroRegistry.install_plugin(macro_name, steps: task.steps, macro_type: :remote)
+      @@status[:ongoing_macro] = MacroRegistry.load(macro_name, macro_type: :remote)
     end
 
     case current_layer.mode
