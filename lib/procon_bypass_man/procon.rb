@@ -88,9 +88,9 @@ class ProconBypassMan::Procon
 
     # remote macro
     ProconBypassMan::Procon::MacroRegistry.cleanup_remote_macros!
-    if ProconBypassMan::RemoteMacro::TaskQueueInProcess.present? && task = ProconBypassMan::RemoteMacro::TaskQueueInProcess.pop
+    if task = ProconBypassMan::RemoteMacro::TaskQueueInProcess.non_blocking_pop
       macro_name = task.name || "RemoteMacro-#{task.steps.join}".to_sym
-      ProconBypassMan::Procon::MacroRegistry.install_plugin(macro_name, steps: steps)
+      ProconBypassMan::Procon::MacroRegistry.install_plugin(macro_name, steps: task.steps)
       @@status[:ongoing_macro] = MacroRegistry.load(macro_name, type: :remote)
     end
 
