@@ -13,6 +13,7 @@ require "pbmenv"
 
 require_relative "procon_bypass_man/version"
 require_relative "procon_bypass_man/remote_pbm_action"
+require_relative "procon_bypass_man/remote_macro"
 require_relative "procon_bypass_man/support/signal_handler"
 require_relative "procon_bypass_man/support/callbacks"
 require_relative "procon_bypass_man/support/yaml_writer"
@@ -22,6 +23,7 @@ require_relative "procon_bypass_man/support/uptime"
 require_relative "procon_bypass_man/support/on_memory_cache"
 require_relative "procon_bypass_man/support/http_client"
 require_relative "procon_bypass_man/support/report_http_client"
+require_relative "procon_bypass_man/support/remote_macro_http_client"
 require_relative "procon_bypass_man/support/update_remote_pbm_action_status_http_client"
 require_relative "procon_bypass_man/support/send_device_stats_http_client"
 require_relative "procon_bypass_man/support/server_pool"
@@ -48,7 +50,7 @@ require_relative "procon_bypass_man/procon/analog_stick_manipulator"
 require_relative "procon_bypass_man/remote_pbm_action/value_objects/remote_pbm_action_object"
 require_relative "procon_bypass_man/scheduler"
 require_relative "procon_bypass_man/plugins"
-require_relative "procon_bypass_man/websocket/pbm_job_client"
+require_relative "procon_bypass_man/websocket/client"
 require_relative "procon_bypass_man/websocket/watchdog"
 require_relative "procon_bypass_man/websocket/forever"
 
@@ -68,7 +70,8 @@ module ProconBypassMan
   def self.run(setting_path: nil)
     ProconBypassMan::Scheduler.start!
     ProconBypassMan::Background::JobRunner.start!
-    ProconBypassMan::Websocket::PbmJobClient.start!
+    ProconBypassMan::Websocket::Client.start!
+    ProconBypassMan::QueueOverProcess.start!
 
     ProconBypassMan::PrintMessageCommand.execute(text: "PBMを起動しています")
     initialize_pbm
@@ -77,19 +80,24 @@ module ProconBypassMan
     Runner.new(gadget: gadget, procon: procon).run # ここでblockingする
     FileUtils.rm_rf(ProconBypassMan.pid_path)
     FileUtils.rm_rf(ProconBypassMan.digest_path)
+    ProconBypassMan::QueueOverProcess.shutdown
   rescue ProconBypassMan::CouldNotLoadConfigError
     ProconBypassMan::SendErrorCommand.execute(error: "設定ファイルが不正です。設定ファイルの読み込みに失敗しました")
     ProconBypassMan::DeviceStatus.change_to_setting_syntax_error_and_shutdown!
+    # TODO シグナルトラップをしていないのでUSR2を送ったときにプロセスが停止している. 明示的にハンドリングするべき.
     ProconBypassMan.exit_if_allow(1) do
       FileUtils.rm_rf(ProconBypassMan.pid_path)
       FileUtils.rm_rf(ProconBypassMan.digest_path)
+      ProconBypassMan::QueueOverProcess.shutdown
     end
   rescue ProconBypassMan::ConnectDeviceCommand::NotFoundProconError
     ProconBypassMan::SendErrorCommand.execute(error: "プロコンが見つかりませんでした。")
     ProconBypassMan::DeviceStatus.change_to_procon_not_found_error!
+    # TODO シグナルトラップをしていないのでUSR2を送ったときにプロセスが停止している. 明示的にハンドリングするべき.
     ProconBypassMan.exit_if_allow(1) do
       FileUtils.rm_rf(ProconBypassMan.pid_path)
       FileUtils.rm_rf(ProconBypassMan.digest_path)
+      ProconBypassMan::QueueOverProcess.shutdown
     end
   rescue ProconBypassMan::ConnectionError
     begin

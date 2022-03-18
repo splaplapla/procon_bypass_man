@@ -10,6 +10,8 @@ class ProconBypassMan::Bypass
     set_callback :send_procon_to_gadget, :after, :log_procon_to_gadget
 
     def log_send_gadget_to_procon
+      return unless bypass_value.to_text
+
       if ProconBypassMan.config.verbose_bypass_log
         ProconBypassMan.logger.debug { ">>> #{bypass_value.to_text}" }
       else
@@ -20,6 +22,8 @@ class ProconBypassMan::Bypass
     end
 
     def log_procon_to_gadget
+      return unless bypass_value.to_text
+
       if ProconBypassMan.config.verbose_bypass_log
         ProconBypassMan.logger.debug { "<<< #{bypass_value.to_text}" }
       else

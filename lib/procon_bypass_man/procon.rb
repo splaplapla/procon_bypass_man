@@ -1,3 +1,5 @@
+require "procon_bypass_man/procon/macro_plugin_map"
+
 class ProconBypassMan::Procon
   require "procon_bypass_man/procon/consts"
   require "procon_bypass_man/procon/mode_registry"
@@ -84,6 +86,16 @@ class ProconBypassMan::Procon
       end
     end
 
+    # remote macro
+    if task = ProconBypassMan::RemoteMacro::TaskQueueInProcess.non_blocking_shift
+      ProconBypassMan::Procon::MacroRegistry.cleanup_remote_macros!
+      macro_name = task.name || "RemoteMacro-#{task.steps.join}".to_sym
+      ProconBypassMan::Procon::MacroRegistry.install_plugin(macro_name, steps: task.steps, macro_type: :remote)
+      @@status[:ongoing_macro] = MacroRegistry.load(macro_name, macro_type: :remote) do
+        ProconBypassMan::PostCompletedRemoteMacroJob.perform_async(task.uuid)
+      end
+    end
+
     case current_layer.mode
     when :manual
       @@status[:ongoing_mode] = ModeRegistry.load(:manual)
@@ -124,8 +136,7 @@ class ProconBypassMan::Procon
       return user_operation.binary.raw
     end
 
-    if ongoing_macro.ongoing?
-      step = ongoing_macro.next_step or return(user_operation.binary.raw)
+    if ongoing_macro.ongoing? && (step = ongoing_macro.next_step)
       user_operation.press_button_only_or_tilt_sticks(step)
       return user_operation.binary.raw
     end

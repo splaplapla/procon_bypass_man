@@ -9,6 +9,7 @@ describe ProconBypassMan::Runner do
       ProconBypassMan.config.verbose_bypass_log = false
       procon = StringIO.new(binary)
       gadget = double(:gadget).as_null_object
+      allow(ProconBypassMan::BypassCommand).to receive(:new) { double(:bypass).as_null_object }
       runner_pid = Kernel.fork do
         begin
          described_class.new(gadget: gadget, procon: procon).run

@@ -156,7 +156,14 @@ class ProconBypassMan::Configuration
   end
 
   # @return [Boolean]
-  def enable_ws?; !!current_server; end
+  def enable_ws?
+    !!current_server
+  end
+
+  # @return [Boolean]
+  def enable_remote_macro?
+    enable_ws?
+  end
 
   # @return [Array<String>]
   def api_servers

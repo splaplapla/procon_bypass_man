@@ -27,14 +27,6 @@ class ProconBypassMan::Procon::MacroBuilder
         end
     end
 
-    def toggle?
-      @type == :toggle
-    end
-
-    def pressing?
-      not toggle?
-    end
-
     def to_steps
       case @type
       when :toggle

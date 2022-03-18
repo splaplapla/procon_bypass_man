@@ -27,7 +27,11 @@ class ProconBypassMan::Runner
     loop do
       $will_terminate_token = false
       # NOTE メインプロセスではThreadをいくつか起動しているので念のためパフォーマンスを優先するためにforkしていく
-      child_pid = Kernel.fork { ProconBypassMan::BypassCommand.new(gadget: @gadget, procon: @procon).execute }
+      child_pid = Kernel.fork {
+        DRb.start_service
+        ProconBypassMan::RemoteMacroReceiver.start!
+        ProconBypassMan::BypassCommand.new(gadget: @gadget, procon: @procon).execute
+      }
 
       begin
         # TODO 小プロセスが消滅した時に、メインプロセスは生き続けてしまい、何もできなくなる問題がある

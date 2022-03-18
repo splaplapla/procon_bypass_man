@@ -1,6 +1,6 @@
 module ProconBypassMan
   module Websocket
-    module PbmJobClient
+    module Client
       CHANNEL = 'PbmJobChannel'
 
       def self.start!
@@ -20,7 +20,7 @@ module ProconBypassMan
           )
 
           client.connected {
-            ProconBypassMan.logger.info('websocket client: successfully connected in ProconBypassMan::Websocket::PbmJobClient')
+            ProconBypassMan.logger.info('websocket client: successfully connected in ProconBypassMan::Websocket::Client')
           }
           client.subscribed { |msg|
             ProconBypassMan.logger.info('websocket client: subscribed')
@@ -63,17 +63,22 @@ module ProconBypassMan
       # @param [Hash] data
       def self.dispatch(data: , client: )
         pbm_job_hash = data.dig("message")
-        if pbm_job_hash['action'] == "ping"
+        case pbm_job_hash['action']
+        when "ping"
           client.perform('pong', { device_id: ProconBypassMan.device_id, message: 'hello from pbm' })
+        when ProconBypassMan::RemoteMacro::ACTION_KEY
+          validate_and_run_remote_macro(data: data)
+        when *ProconBypassMan::RemotePbmAction::ACTIONS
+          validate_and_run_remote_pbm_action(data: data)
         else
-          validate_and_run(data: data)
+          ProconBypassMan.logger.error "unknown action"
         end
       end
 
       # @raise [ProconBypassMan::RemotePbmActionObject::ValidationError]
       # @param [Hash] data
       # @return [Void]
-      def self.validate_and_run(data: )
+      def self.validate_and_run_remote_pbm_action(data: )
         pbm_job_hash = data.dig("message")
         begin
           pbm_job_object = ProconBypassMan::RemotePbmActionObject.new(action: pbm_job_hash["action"],
@@ -83,13 +88,33 @@ module ProconBypassMan
                                                                       job_args: pbm_job_hash["args"])
           pbm_job_object.validate!
         rescue ProconBypassMan::RemotePbmActionObject::ValidationError => e
-          raise
+          ProconBypassMan::SendErrorCommand.execute(error: e)
+          return
         end
 
         ProconBypassMan::RunRemotePbmActionDispatchCommand.execute(
           action: pbm_job_object.action,
           uuid: pbm_job_object.uuid,
           job_args: pbm_job_object.job_args
+        )
+      end
+
+      def self.validate_and_run_remote_macro(data: )
+        pbm_job_hash = data.dig("message")
+        begin
+          remote_macro_object = ProconBypassMan::RemoteMacroObject.new(name: pbm_job_hash["name"],
+                                                                       uuid: pbm_job_hash["uuid"],
+                                                                       steps: pbm_job_hash["steps"])
+          remote_macro_object.validate!
+        rescue ProconBypassMan::RemoteMacroObject::ValidationError => e
+          ProconBypassMan::SendErrorCommand.execute(error: e)
+          return
+        end
+
+        ProconBypassMan::RemoteMacroSender.execute(
+          name: remote_macro_object.name,
+          uuid: remote_macro_object.uuid,
+          steps: remote_macro_object.steps,
         )
       end
     end

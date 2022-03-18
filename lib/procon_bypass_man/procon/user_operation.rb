@@ -77,7 +77,7 @@ class ProconBypassMan::Procon::UserOperation
     button = [button] if not button.is_a?(Array)
 
     button.all? do |b|
-      !!ProconBypassMan::Procon::ButtonCollection::BUTTONS_MAP[b.to_sym]
+      !!ProconBypassMan::Procon::ButtonCollection::BUTTONS_MAP[b.to_sym] || b.to_sym == ProconBypassMan::Procon::MacroBuilder::RESERVED_WORD_NONE
     end
   end
 
