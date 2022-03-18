@@ -136,8 +136,7 @@ class ProconBypassMan::Procon
       return user_operation.binary.raw
     end
 
-    if ongoing_macro.ongoing?
-      step = ongoing_macro.next_step or return(user_operation.binary.raw)
+    if ongoing_macro.ongoing? && (step = ongoing_macro.next_step)
       user_operation.press_button_only_or_tilt_sticks(step)
       return user_operation.binary.raw
     end
