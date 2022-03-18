@@ -344,6 +344,7 @@ describe ProconBypassMan::Procon do
           procon.apply!
           expect(procon.to_binary).to be_a(String)
 
+          expect(ProconBypassMan::PostCompletedRemoteMacroJob).to receive(:perform_async).with("uuid-death")
           Timecop.freeze(Time.now + 9) do
             procon = ProconBypassMan::Procon.new(procon.to_binary)
             procon.apply!

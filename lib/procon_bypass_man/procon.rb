@@ -92,7 +92,7 @@ class ProconBypassMan::Procon
       macro_name = task.name || "RemoteMacro-#{task.steps.join}".to_sym
       ProconBypassMan::Procon::MacroRegistry.install_plugin(macro_name, steps: task.steps, macro_type: :remote)
       @@status[:ongoing_macro] = MacroRegistry.load(macro_name, macro_type: :remote) do
-        puts task.uuid
+        ProconBypassMan::PostCompletedRemoteMacroJob.perform_async(task.uuid)
       end
     end
 
