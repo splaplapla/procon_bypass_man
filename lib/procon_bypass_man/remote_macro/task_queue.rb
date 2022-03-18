@@ -5,8 +5,8 @@ module ProconBypassMan
         not empty?
       end
 
-      def non_blocking_pop
-        present? && pop
+      def non_blocking_shift
+        present? && shift
       end
     end
   end

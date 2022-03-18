@@ -3,8 +3,8 @@ require "spec_helper"
 describe ProconBypassMan::RemoteMacro::TaskQueue do
   let(:queue) { described_class.new }
 
-  describe '.non_blocking_pop' do
-    subject { queue.non_blocking_pop }
+  describe '.non_blocking_shift' do
+    subject { queue.non_blocking_shift }
 
     context 'when blank' do
       it do
