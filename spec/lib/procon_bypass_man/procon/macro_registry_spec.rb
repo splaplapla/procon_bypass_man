@@ -5,6 +5,25 @@ describe ProconBypassMan::Procon::MacroRegistry do
     ProconBypassMan::Procon::MacroRegistry.reset!
   end
 
+  describe '.load' do
+    Mod3 = Module.new do
+      def self.steps
+        [:a]
+      end
+    end
+
+    subject { described_class.load(Mod3) { :block } }
+
+
+    before do
+      ProconBypassMan::Procon::MacroRegistry.install_plugin(Mod3)
+    end
+
+    it do
+      expect(subject.after_callback_block.call).to eq(:block)
+    end
+  end
+
   describe '.cleanup_remote_macros!' do
     subject { described_class.cleanup_remote_macros! }
 

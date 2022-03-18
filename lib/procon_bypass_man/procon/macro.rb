@@ -74,11 +74,12 @@ class ProconBypassMan::Procon::Macro
     end
   end
 
-  attr_accessor :name, :steps
+  attr_accessor :name, :steps, :after_callback_block
 
-  def initialize(name: , steps: )
+  def initialize(name: , steps: , &after_callback_block)
     self.name = name
     self.steps = steps
+    self.after_callback_block = after_callback_block
   end
 
   def next_step
@@ -97,6 +98,7 @@ class ProconBypassMan::Procon::Macro
 
       if nested_step.over?
         steps.shift # NestedStepを破棄する
+        self.after_callback_block.call if self.after_callback_block
         return next_step
       else
         return nested_step.next_step

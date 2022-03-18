@@ -343,6 +343,12 @@ describe ProconBypassMan::Procon do
           expect(procon.pressed_thumbr?).to eq(false)
           procon.apply!
           expect(procon.to_binary).to be_a(String)
+
+          Timecop.freeze(Time.now + 9) do
+            procon = ProconBypassMan::Procon.new(procon.to_binary)
+            procon.apply!
+            expect(procon.to_binary).to be_a(String)
+          end
         end
       end
     end
