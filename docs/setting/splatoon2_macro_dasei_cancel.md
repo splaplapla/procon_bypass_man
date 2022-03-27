@@ -44,6 +44,10 @@ end
 * 書き換えたsetting.ymlを、起動中のprocon_bypass_manプロセスへ即時反映するには、procon_bypass_manプロセスを動かしたまま、別のshellから 以下をを実行してください
     * setting.ymlのシンタックスが正しければ、switchとの接続が継続したままsetting.ymlの内容を読み込んでいるはずです
 
+```shell
+sudo kill -USR2 `cat ./pbm_pid`
+```
+
 ## 設定例1
 ```yaml
 version: 1.0

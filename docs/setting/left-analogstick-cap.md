@@ -38,7 +38,7 @@ https://user-images.githubusercontent.com/1664497/150636857-f3d40900-2713-41b8-8
   * setting.ymlのシンタックスが正しければ、switchとの接続が継続したままsetting.ymlの内容を読み込んでいるはずです
 
 ```shell
-sudo kill -USR2 `cat ./pbm_pid` 
+sudo kill -USR2 `cat ./pbm_pid`
 ```
 
 ## まとめ
