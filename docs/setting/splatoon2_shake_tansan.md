@@ -1,5 +1,9 @@
 # スプラトゥーン2: タンサンボムを貯めるマクロの設定方法
 
+
+https://user-images.githubusercontent.com/1664497/160283592-da988e71-9d7e-4bc3-8fdd-f92cf8ae40ef.mp4
+
+
 * procon_bypass_man: 0.1.22以上が必要です
 * 左スティックを高速に左右にシェイクするマクロです
 * タンサンボムを貯めるのに使えます
