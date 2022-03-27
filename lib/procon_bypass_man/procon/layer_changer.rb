@@ -24,7 +24,10 @@ class ProconBypassMan::Procon::LayerChanger
   # @return [Boolean]
   def change_layer?
     if ProconBypassMan::ButtonsSettingConfiguration.instance.prefix_keys.empty?
-      raise "prefix_keysが未設定です"
+      ProconBypassMan.cache.fetch key: 'unknown prefix_keys', expires_in: 60 do
+        warn "prefix_keysが未設定です"
+      end
+      return false
     end
     ProconBypassMan::ButtonsSettingConfiguration.instance.prefix_keys.map { |b| pressed?(button: b) }.all?
   end
