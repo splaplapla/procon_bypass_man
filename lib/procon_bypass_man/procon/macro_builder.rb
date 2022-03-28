@@ -13,15 +13,19 @@ class ProconBypassMan::Procon::MacroBuilder
 
   class Subject
     def initialize(value)
-      @button =
-        if match = value.match(/_(\w+)\z/)
-          match[1]
-        else
-          :unknown
-        end
+      if not /^shake_/ =~ value
+        @button =
+          if match = value.match(/_(\w+)\z/)
+            match[1]
+          else
+            :unknown
+          end
+      end
       @type =
         if value.start_with?("toggle_")
           :toggle
+        elsif value.start_with?("shake_left_stick")
+          :shake_left_stick
         else
           :pressing
         end
@@ -33,6 +37,8 @@ class ProconBypassMan::Procon::MacroBuilder
         [@button.to_sym, :none]
       when :pressing
         [@button.to_sym, @button.to_sym]
+      when :shake_left_stick
+        [:tilt_left_stick_completely_to_left, :tilt_left_stick_completely_to_right]
       end
     end
   end
@@ -84,7 +90,7 @@ class ProconBypassMan::Procon::MacroBuilder
       ]
     end
 
-    if %r!^(pressing_|toggle_)! =~ step && (subjects = step.scan(%r!pressing_[^_]+|toggle_[^_]+!)) && (match = step.match(%r!_for_([\d_]+)(sec)?\z!))
+    if %r!^(pressing_|toggle_|shake_left_stick_)! =~ step && (subjects = step.scan(%r!pressing_[^_]+|shake_left_stick|toggle_[^_]+!)) && (match = step.match(%r!_for_([\d_]+)(sec)?\z!))
       if sec = match[1]
         return {
           continue_for: to_f(sec),
@@ -92,14 +98,14 @@ class ProconBypassMan::Procon::MacroBuilder
             if x.is_a?(Array)
               x.select { |y| is_button(y) || RESERVED_WORD_NONE == y }
             else
-              is_button(x) || RESERVED_WORD_NONE == x
+              is_button(x) || RESERVED_WORD_NONE == x || :tilt_left_stick_completely_to_left == x || :tilt_left_stick_completely_to_right == x
             end
           },
         }
       end
     end
 
-    if %r!^(pressing_|toggle_)! =~ step && (subjects = step.scan(%r!pressing_[^_]+|toggle_[^_]+!))
+    if %r!^(pressing_|toggle_|shake_left_stick_)! =~ step && (subjects = step.scan(%r!pressing_[^_]+|shake_left_stick|toggle_[^_]+!))
       return SubjectMerger.merge(subjects.map { |x| Subject.new(x) }).select { |x|
         if x.is_a?(Array)
           x.select { |y| is_button(y) || RESERVED_WORD_NONE == y }
@@ -107,15 +113,6 @@ class ProconBypassMan::Procon::MacroBuilder
           is_button(x) || RESERVED_WORD_NONE == x
         end
       }
-    end
-
-    if(match = step.match(%r!shake_left_stick_for_([\d_]+)(sec)?\z!))
-      sec = match[1]
-      return [
-        { continue_for: to_f(sec),
-          steps: [:tilt_left_stick_completely_to_left, :tilt_left_stick_completely_to_right],
-        }
-      ]
     end
   end
 
