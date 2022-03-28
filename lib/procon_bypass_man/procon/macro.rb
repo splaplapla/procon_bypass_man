@@ -74,12 +74,13 @@ class ProconBypassMan::Procon::Macro
     end
   end
 
-  attr_accessor :name, :steps, :after_callback_block
+  attr_accessor :name, :steps, :after_callback_block, :force_neutral_buttons
 
-  def initialize(name: , steps: , &after_callback_block)
+  def initialize(name: , steps: , force_neutral_buttons: [], &after_callback_block)
     self.name = name
     self.steps = steps
     self.after_callback_block = after_callback_block
+    self.force_neutral_buttons = force_neutral_buttons # 外部から呼ばれるだけ
   end
 
   def next_step

@@ -17,9 +17,9 @@ class ProconBypassMan::Procon::MacroRegistry
   end
 
   # @return [ProconBypassMan::Procon::Macro]
-  def self.load(name, macro_type: :normal, &after_callback_block)
+  def self.load(name, macro_type: :normal, force_neutral_buttons: [], &after_callback_block)
     if(steps = PRESETS[name] || plugins.fetch([name.to_s.to_sym, macro_type], nil)&.call)
-      return ProconBypassMan::Procon::Macro.new(name: name, steps: steps.dup, &after_callback_block)
+      return ProconBypassMan::Procon::Macro.new(name: name, steps: steps.dup, force_neutral_buttons: force_neutral_buttons, &after_callback_block)
     else
       warn "installされていないマクロ(#{name})を使うことはできません"
       return self.load(:null)

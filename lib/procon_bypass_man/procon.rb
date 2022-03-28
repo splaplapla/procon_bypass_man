@@ -80,7 +80,7 @@ class ProconBypassMan::Procon
         end
 
         if user_operation.pressing_all_buttons?(options[:if_pressed])
-          @@status[:ongoing_macro] = MacroRegistry.load(macro_name)
+          @@status[:ongoing_macro] = MacroRegistry.load(macro_name, force_neutral_buttons: options[:force_neutral])
           break
         end
       end
@@ -137,6 +137,9 @@ class ProconBypassMan::Procon
     end
 
     if ongoing_macro.ongoing? && (step = ongoing_macro.next_step)
+      ongoing_macro.force_neutral_buttons&.each do |force_neutral_button|
+        user_operation.unpress_button(force_neutral_button)
+      end
       user_operation.press_button_only_or_tilt_sticks(step)
       return user_operation.binary.raw
     end
