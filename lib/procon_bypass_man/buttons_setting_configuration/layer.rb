@@ -55,10 +55,21 @@ module ProconBypassMan
       end
 
       # @param [String, Class] プラグインのclass
-      def macro(name, if_pressed: , if_tilted_left_stick: nil)
+      def macro(name, if_pressed: , if_tilted_left_stick: nil, force_neutral: nil)
+        case force_neutral
+        when Array
+          # no-op
+        when String, Symbol
+          force_neutral = [force_neutral]
+        when Integer
+          warn "#macro {name}のforce_neutralで想定外の値です"
+          return
+        when NilClass
+        end
+
         macro_name = name.to_s.to_sym
         if ProconBypassMan::ButtonsSettingConfiguration.instance.macro_plugins[macro_name]
-          self.macros[macro_name] = { if_pressed: if_pressed, if_tilted_left_stick: if_tilted_left_stick }.compact
+          self.macros[macro_name] = { if_pressed: if_pressed, if_tilted_left_stick: if_tilted_left_stick, force_neutral: force_neutral }.compact
         else
           warn "#{macro_name}マクロがinstallされていません"
         end
@@ -68,6 +79,17 @@ module ProconBypassMan
       # @param [String, Class] macroの識別子
       # @paramh[Array<Symbol>] macroの本体. ボタンの配列
       def open_macro(name, steps: , if_pressed: , if_tilted_left_stick: nil, force_neutral: nil)
+        case force_neutral
+        when Array
+          # no-op
+        when String, Symbol
+          force_neutral = [force_neutral]
+        when Integer
+          warn "#macro {name}のforce_neutralで想定外の値です"
+          return
+        when NilClass
+        end
+
         macro_name = name || "OpenMacro-#{steps.join}".to_sym
         ProconBypassMan::Procon::MacroRegistry.install_plugin(macro_name, steps: steps)
         self.macros[macro_name] = { if_pressed: if_pressed, if_tilted_left_stick: if_tilted_left_stick, force_neutral: force_neutral }.compact
