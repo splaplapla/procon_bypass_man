@@ -19,11 +19,11 @@ module ProconBypassMan
         when TrueClass
           if_pressed = [button]
         when Symbol, String
-          if_pressed = [if_pressed]
+          if_pressed = [if_pressed.to_sym]
         when Array
-          # if_pressed = if_pressed
+          if_pressed = if_pressed.map(&:to_sym).uniq
         when FalseClass, NilClass
-          # no-op
+          if_pressed = false
         else
           raise "not support class"
         end
@@ -31,11 +31,12 @@ module ProconBypassMan
         hash = { if_pressed: if_pressed }
         case force_neutral
         when TrueClass
-          raise "ボタンを渡してください"
+          Kernel.warn "#{force_neutral}を受け取りました. エラーです. flipのforce_neutralにはボタンを渡してください."
+          return
         when Symbol, String
-          hash[:force_neutral] = [force_neutral]
+          hash[:force_neutral] = [force_neutral.to_sym]
         when Array
-          hash[:force_neutral] = force_neutral
+          hash[:force_neutral] = force_neutral.map(&:to_sym).uniq
         when FalseClass, NilClass
           # no-op
         else
