@@ -595,6 +595,31 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
               { shake_stick: { if_pressed: [:zr] } }
             )
           end
+          it do
+            ProconBypassMan.buttons_setting_configure do
+              layer :up do
+                open_macro :shake_stick, steps: [:shake_left_stick_and_toggle_b_for_0_1sec], if_pressed: [:b, :r], force_neutral: [:b]
+              end
+            end
+            expect(ProconBypassMan::Procon::MacroRegistry.plugins[:shake_stick].call).to eq([{:continue_for=>0.1, :steps=>[[:tilt_left_stick_completely_to_left, :b], [:tilt_left_stick_completely_to_right, :none]]}])
+            expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].macros).to eq(
+              { shake_stick: { force_neutral: [:b], if_pressed: [:b, :r] } }
+            )
+          end
+          it do
+            ProconBypassMan.buttons_setting_configure do
+              install_macro_plugin(ProconBypassMan::Plugin::Splatoon2::Macro::ChargeTansanBomb)
+              layer :up do
+                macro ProconBypassMan::Plugin::Splatoon2::Macro::ChargeTansanBomb, if_pressed: [:b, :r], force_neutral: [:b]
+              end
+            end
+            expect(
+              ProconBypassMan::Procon::MacroRegistry.plugins[ProconBypassMan::Plugin::Splatoon2::Macro::ChargeTansanBomb.to_s.to_sym].call
+            ).to eq([{:continue_for=>0.1, :steps=>[[:tilt_left_stick_completely_to_left, :b], [:tilt_left_stick_completely_to_right, :none]]}])
+            expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].macros).to eq({
+              :"ProconBypassMan::Plugin::Splatoon2::Macro::ChargeTansanBomb" => {:force_neutral=>[:b], :if_pressed=>[:b, :r]},
+            })
+          end
         end
       end
     end

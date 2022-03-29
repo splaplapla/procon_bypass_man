@@ -12,8 +12,8 @@ class ProconBypassMan::Procon::AnalogStickManipulator
       when 'left'
         self.manipulated_abs_x = 400
         # yを引き継ぐとタンサンボムの溜まりが悪くなったので固定値を入れる
-        # self.manipulated_abs_y = analog_stick.abs_y
-        self.manipulated_abs_y = 1808
+        self.manipulated_abs_y = analog_stick.abs_y
+        # self.manipulated_abs_y = 1808
       when 'right'
         self.manipulated_abs_x = 3400
         self.manipulated_abs_y = 1808

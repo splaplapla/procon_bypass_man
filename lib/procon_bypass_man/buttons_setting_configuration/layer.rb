@@ -19,11 +19,11 @@ module ProconBypassMan
         when TrueClass
           if_pressed = [button]
         when Symbol, String
-          if_pressed = [if_pressed]
+          if_pressed = [if_pressed.to_sym]
         when Array
-          # if_pressed = if_pressed
+          if_pressed = if_pressed.map(&:to_sym).uniq
         when FalseClass, NilClass
-          # no-op
+          if_pressed = false
         else
           raise "not support class"
         end
@@ -31,11 +31,12 @@ module ProconBypassMan
         hash = { if_pressed: if_pressed }
         case force_neutral
         when TrueClass
-          raise "ボタンを渡してください"
+          Kernel.warn "#{force_neutral}を受け取りました. エラーです. flipのforce_neutralにはボタンを渡してください."
+          return
         when Symbol, String
-          hash[:force_neutral] = [force_neutral]
+          hash[:force_neutral] = [force_neutral.to_sym]
         when Array
-          hash[:force_neutral] = force_neutral
+          hash[:force_neutral] = force_neutral.map(&:to_sym).uniq
         when FalseClass, NilClass
           # no-op
         else
@@ -55,10 +56,21 @@ module ProconBypassMan
       end
 
       # @param [String, Class] プラグインのclass
-      def macro(name, if_pressed: , if_tilted_left_stick: nil)
+      def macro(name, if_pressed: , if_tilted_left_stick: nil, force_neutral: nil)
+        case force_neutral
+        when Array
+          # no-op
+        when String, Symbol
+          force_neutral = [force_neutral]
+        when Integer
+          warn "#macro {name}のforce_neutralで想定外の値です"
+          return
+        when NilClass
+        end
+
         macro_name = name.to_s.to_sym
         if ProconBypassMan::ButtonsSettingConfiguration.instance.macro_plugins[macro_name]
-          self.macros[macro_name] = { if_pressed: if_pressed, if_tilted_left_stick: if_tilted_left_stick }.compact
+          self.macros[macro_name] = { if_pressed: if_pressed, if_tilted_left_stick: if_tilted_left_stick, force_neutral: force_neutral }.compact
         else
           warn "#{macro_name}マクロがinstallされていません"
         end
@@ -67,10 +79,21 @@ module ProconBypassMan
       # 設定ファイルに直接マクロを打ち込める
       # @param [String, Class] macroの識別子
       # @paramh[Array<Symbol>] macroの本体. ボタンの配列
-      def open_macro(name, steps: , if_pressed: , if_tilted_left_stick: nil)
+      def open_macro(name, steps: , if_pressed: , if_tilted_left_stick: nil, force_neutral: nil)
+        case force_neutral
+        when Array
+          # no-op
+        when String, Symbol
+          force_neutral = [force_neutral]
+        when Integer
+          warn "#macro {name}のforce_neutralで想定外の値です"
+          return
+        when NilClass
+        end
+
         macro_name = name || "OpenMacro-#{steps.join}".to_sym
         ProconBypassMan::Procon::MacroRegistry.install_plugin(macro_name, steps: steps)
-        self.macros[macro_name] = { if_pressed: if_pressed, if_tilted_left_stick: if_tilted_left_stick }.compact
+        self.macros[macro_name] = { if_pressed: if_pressed, if_tilted_left_stick: if_tilted_left_stick, force_neutral: force_neutral }.compact
       end
 
       def disable_macro(name, if_pressed: nil)
