@@ -27,4 +27,13 @@ describe ProconBypassMan::Plugin::Splatoon2 do
       ])
     end
   end
+
+  describe 'charge_tansan_bomb' do
+    it do
+      expect(ProconBypassMan::Plugin::Splatoon2::Macro::ChargeTansanBomb.name).to eq('ProconBypassMan::Plugin::Splatoon2::Macro::ChargeTansanBomb')
+      expect(ProconBypassMan::Plugin::Splatoon2::Macro::ChargeTansanBomb.steps).to eq([
+        :shake_left_stick_and_toggle_b_for_0_1sec,
+      ])
+    end
+  end
 end
