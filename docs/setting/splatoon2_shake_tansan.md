@@ -3,11 +3,12 @@
 https://user-images.githubusercontent.com/1664497/160649435-52b084ed-05b0-4c58-88ba-667b5f256405.mp4
 
 * procon_bypass_man: 0.1.22以上が必要です
-* 左スティックを高速に左右にシェイクするマクロです
-* タンサンボムを貯めるのに使えます
+* このマクロは、スティックの左右に入れつつ、Bボタンを連打します
+* タンサンボムを貯めるのに使います
 
 ## 1. layer内にopen_macroを記述します
 * `setting.yml` のlayer内に`open_macro :shake, steps: [:shake_left_stick_and_toggle_b_for_0_1sec], if_pressed: [:b, :r], force_neutral: [:b]` と書きます
+  * タンサンボムは、スティックの動きとBボタンでもチャージすることができるので、RボタンとBボタンを同時押ししたときに、発動するようにしています。
 
 ## 2. 設定を反映させる
 * 上記の記述を加えたsetting.ymlを起動中のprocon_bypass_manプロセスで読み込むには、プロセスにその旨を伝える必要があります
@@ -27,5 +28,20 @@ setting: |-
 
   layer :up do
     open_macro :shake, steps: [:shake_left_stick_and_toggle_b_for_0_1sec], if_pressed: [:b, :r], force_neutral: [:b]
+  end
+```
+
+## 設定例2
+pluginとして登録してあるので、 `macro` を使っても同じことができます。
+
+```yaml
+version: 1.0
+setting: |-
+  prefix_keys_for_changing_layer [:zr, :zl, :l]
+
+  install_macro_plugin(ProconBypassMan::Plugin::Splatoon2::Macro::ChargeTansanBomb)
+
+  layer :up do
+    macro ProconBypassMan::Plugin::Splatoon2::Macro::ChargeTansanBomb, if_pressed: [:b, :r], force_neutral: [:b]
   end
 ```
