@@ -222,21 +222,21 @@ describe ProconBypassMan::ButtonsSettingConfiguration::Layer do
     subject { layer.open_macro(name, steps: steps, **options); layer.macros }
 
     context 'nameにnilを渡すとき' do
-      let(:name ) { nil }
+      let(:name) { nil }
       let(:steps) { [] }
       let(:options) { { if_pressed: :x } }
       it { expect(subject).to eq({}) }
     end
 
     context 'stepsにnilを渡すとき' do
-      let(:name ) { "name" }
+      let(:name) { "name" }
       let(:steps) { nil }
       let(:options) { { if_pressed: :x } }
       it { expect(subject).to eq({}) }
     end
 
     describe 'steps' do
-      let(:name ) { "name" }
+      let(:name) { "name" }
       let(:steps) { subject_value }
       let(:options) { { if_pressed: :x } }
       context 'is nil' do
@@ -274,7 +274,7 @@ describe ProconBypassMan::ButtonsSettingConfiguration::Layer do
     end
 
     context 'nameとstepsに値があるとき' do
-      let(:name ) { "name" }
+      let(:name) { "name" }
       let(:steps) { [] }
 
       context 'macroをインストール済み' do
@@ -357,13 +357,13 @@ describe ProconBypassMan::ButtonsSettingConfiguration::Layer do
     subject { layer.disable_macro(name, **options); layer.disable_macros }
 
     context 'nameにnilを渡すとき' do
-      let(:name ) { nil }
+      let(:name) { nil }
       let(:options) { { } }
       it { expect(subject).to eq([]) }
     end
 
     describe 'if_pressed' do
-      let(:name ) { "disable_macro_name" }
+      let(:name) { "disable_macro_name" }
       let(:options) { { if_pressed: subject_value } }
 
       context 'is nil' do
@@ -388,5 +388,68 @@ describe ProconBypassMan::ButtonsSettingConfiguration::Layer do
       end
     end
 
+  end
+
+  describe 'remap' do
+    subject { layer.remap(button, **options); layer.remaps }
+
+    describe 'button' do
+      let(:options) { { to: :r } }
+
+      context '存在するボタン' do
+        let(:button) { :b }
+        it { expect(subject).to eq({ :b => {:to=>[:r]} }) }
+
+        describe 'to' do
+          let(:options) { { to: subject_value } }
+
+          context 'is nil' do
+            let(:subject_value) { nil }
+            it { expect(subject).to eq({}) }
+          end
+          context '存在しないボタン' do
+            let(:subject_value) { :g }
+            it { expect(subject).to eq({ :b => { :to=>[:g] } }) }
+          end
+          context 'integer' do
+            let(:subject_value) { 1 }
+            it { expect(subject).to eq({}) }
+          end
+          context 'array' do
+            let(:subject_value) { [:x] }
+            it { expect(subject).to eq({ :b => {:to=>[:x]} }) }
+          end
+          context 'array' do
+            let(:subject_value) { [:x, :y] }
+            it { expect(subject).to eq({ :b => {:to=>[:x, :y]} }) }
+          end
+          context 'nil' do
+            let(:subject_value) { nil }
+            it { expect(subject).to eq({}) }
+          end
+        end
+      end
+
+      context 'is nil' do
+        let(:button) { nil }
+        it { expect(subject).to eq({}) }
+      end
+      context '存在しないボタン' do
+        let(:button) { :g }
+        it { expect(subject).to eq({ :g => {:to=>[:r]} }) }
+      end
+      context 'integer' do
+        let(:button) { 1 }
+        it { expect(subject).to eq({}) }
+      end
+      context 'array' do
+        let(:button) { [] }
+        it { expect(subject).to eq({}) }
+      end
+      context 'nil' do
+        let(:button) { nil }
+        it { expect(subject).to eq({}) }
+      end
+    end
   end
 end

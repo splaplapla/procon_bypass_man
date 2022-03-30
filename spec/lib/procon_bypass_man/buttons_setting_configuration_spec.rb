@@ -687,15 +687,6 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
         expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].remaps).to eq(:l=>{ to: [:zr] })
       end
       it  'with remap' do
-        expect {
-          ProconBypassMan.buttons_setting_configure do
-            layer :up do
-              remap :l, to: []
-            end
-          end
-        }.to raise_error RuntimeError, "ボタンを渡してください"
-      end
-      it  'with remap' do
         ProconBypassMan.buttons_setting_configure do
           layer :up do
             remap :l, to: [:zr]

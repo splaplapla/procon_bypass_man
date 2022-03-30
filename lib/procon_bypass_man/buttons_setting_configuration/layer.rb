@@ -218,14 +218,32 @@ module ProconBypassMan
       end
 
       def remap(button, to: )
+        case button
+        when TrueClass, FalseClass, NilClass, Array, Integer
+          Kernel.warn "設定ファイルに記述ミスがあります. リマップ対象にはボタンを渡してください."
+          return
+        when Symbol, String
+          button = button.to_sym
+        else
+          Kernel.warn "設定ファイルに記述ミスがあります. 未対応の値を受け取りました."
+          return
+        end
+
         case to
         when TrueClass, FalseClass, NilClass
-          raise "ボタンを渡してください"
+          Kernel.warn "設定ファイルに記述ミスがあります. toにボタンを渡してください."
+          return
         when Symbol, String
-          self.remaps[button] = { to: [to] }
+          self.remaps[button] = { to: [to.to_sym] }
         when Array
-          raise "ボタンを渡してください" if to.size.zero?
-          self.remaps[button] = { to: to }
+          if to.size.zero?
+            Kernel.warn "設定ファイルに記述ミスがあります. toにボタンを渡してください."
+            return
+          end
+          self.remaps[button] = { to: to.map(&:to_sym).uniq }
+        else
+          Kernel.warn "設定ファイルに記述ミスがあります. 未対応の値を受け取りました."
+          return
         end
       end
 
