@@ -151,10 +151,18 @@ describe ProconBypassMan::ButtonsSettingConfiguration::Layer do
         context 'is string' do
           let(:subject_value) { 'y' }
           it { expect(subject).to eq({:TheMacro => {:if_pressed=>[:x] }}) }
+          it do
+            subject
+            expect(ProconBypassMan::Procon::MacroRegistry.plugins[:TheMacro].call).not_to be_nil
+          end
         end
         context 'is array' do
           let(:subject_value) { ['y', 'y'] }
           it { expect(subject).to eq({:TheMacro => {:if_pressed=>[:x] } }) }
+          it do
+            subject
+            expect(ProconBypassMan::Procon::MacroRegistry.plugins[:TheMacro].call).not_to be_nil
+          end
         end
       end
 
@@ -205,6 +213,141 @@ describe ProconBypassMan::ButtonsSettingConfiguration::Layer do
         context 'is array' do
           let(:options) { { if_pressed: ['x', 'x'] } }
           it { expect(subject).to eq({}) }
+        end
+      end
+    end
+  end
+
+  describe '#open_macro' do
+    subject { layer.open_macro(name, steps: steps, **options); layer.macros }
+
+    context 'nameにnilを渡すとき' do
+      let(:name ) { nil }
+      let(:steps) { [] }
+      let(:options) { { if_pressed: :x } }
+      it { expect(subject).to eq({}) }
+    end
+
+    context 'stepsにnilを渡すとき' do
+      let(:name ) { "name" }
+      let(:steps) { nil }
+      let(:options) { { if_pressed: :x } }
+      it { expect(subject).to eq({}) }
+    end
+
+    describe 'steps' do
+      let(:name ) { "name" }
+      let(:steps) { subject_value }
+      let(:options) { { if_pressed: :x } }
+      context 'is nil' do
+        let(:subject_value) { nil }
+        it { expect(subject).to eq({}) }
+      end
+      context 'is true' do
+        let(:subject_value) { true }
+        it { expect(subject).to eq({}) }
+      end
+      context 'is symbol' do
+        let(:subject_value) { :x }
+        it { expect(subject).to eq({"name" => {:if_pressed=>[:x]}}) }
+        it do
+          subject
+          expect(ProconBypassMan::Procon::MacroRegistry.plugins[:name].call).to eq([:x])
+        end
+      end
+      context 'is string' do
+        let(:subject_value) { "x" }
+        it { expect(subject).to eq({"name" => {:if_pressed=>[:x]}}) }
+        it do
+          subject
+          expect(ProconBypassMan::Procon::MacroRegistry.plugins[:name].call).to eq([:x])
+        end
+      end
+      context 'is array' do
+        let(:subject_value) { ["x", "x"] }
+        it { expect(subject).to eq({"name" => {:if_pressed=>[:x]}}) }
+        it do
+          subject
+          expect(ProconBypassMan::Procon::MacroRegistry.plugins[:name].call).to eq([:x])
+        end
+      end
+    end
+
+    context 'nameとstepsに値があるとき' do
+      let(:name ) { "name" }
+      let(:steps) { [] }
+
+      context 'macroをインストール済み' do
+        describe 'if_pressed' do
+          context 'is nil' do
+            let(:options) { { if_pressed: nil } }
+            it { expect(subject).to eq({}) }
+          end
+          context 'is true' do
+            let(:options) { { if_pressed: true } }
+            it { expect(subject).to eq({}) }
+          end
+          context 'is symbol' do
+            let(:options) { { if_pressed: :x } }
+            it { expect(subject).to eq({"name" => {:if_pressed=>[:x]}}) }
+          end
+          context 'is string' do
+            let(:options) { { if_pressed: 'x' } }
+            it { expect(subject).to eq({"name" => {:if_pressed=>[:x]}}) }
+          end
+          context 'is array' do
+            let(:options) { { if_pressed: ['x', 'x'] } }
+            it { expect(subject).to eq({"name" => {:if_pressed=>[:x]}}) }
+          end
+        end
+
+        context 'valid if_pressed && if_tilted_left_stick' do
+          let(:options) { { if_pressed: :x, if_tilted_left_stick: subject_value } }
+          context 'is nil' do
+            let(:subject_value) { nil }
+            it { expect(subject).to eq({"name" => {:if_pressed=>[:x] }}) }
+          end
+          context 'is true' do
+            let(:subject_value) { true }
+            it { expect(subject).to eq({"name" => {:if_pressed=>[:x], if_tilted_left_stick: true }}) }
+          end
+          context 'is symbol' do
+            let(:subject_value) { :y }
+            it { expect(subject).to eq({"name" => {:if_pressed=>[:x] }}) }
+          end
+          context 'is string' do
+            let(:subject_value) { 'y' }
+            it { expect(subject).to eq({"name" => {:if_pressed=>[:x] }}) }
+          end
+          context 'is array' do
+            let(:subject_value) { ['y', 'y'] }
+            it { expect(subject).to eq({"name" => {:if_pressed=>[:x] } }) }
+          end
+        end
+
+        context 'valid if_pressed && force_neutral' do
+          let(:options) { { if_pressed: :x, force_neutral: subject_value } }
+          context 'is nil' do
+            let(:subject_value) { nil }
+            it { expect(subject).to eq({"name" => {:if_pressed=>[:x] }}) }
+          end
+          context 'is true' do
+            let(:subject_value) { true }
+            it { expect(subject).to eq({}) }
+          end
+          context 'is symbol' do
+            let(:subject_value) { :y }
+            it { expect(subject).to eq({"name" => {:if_pressed=>[:x], :force_neutral=>[:y] }}) }
+          end
+          context 'is string' do
+            let(:subject_value) { 'y' }
+            let(:options) { { if_pressed: :x, force_neutral: 'y' } }
+            it { expect(subject).to eq({"name" => {:if_pressed=>[:x], :force_neutral=>[:y] }}) }
+          end
+          context 'is array' do
+            let(:subject_value) { ['y', 'y'] }
+            it { expect(subject).to eq({"name" => {:if_pressed=>[:x], :force_neutral=>[:y] } }) }
+          end
         end
       end
     end

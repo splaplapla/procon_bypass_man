@@ -73,7 +73,6 @@ module ProconBypassMan
         case force_neutral
         when Array
           force_neutral = force_neutral.map(&:to_sym).uniq
-          # no-op
         when String, Symbol
           force_neutral = [force_neutral].map(&:to_sym).uniq
         when Integer, TrueClass
@@ -85,7 +84,6 @@ module ProconBypassMan
 
         case if_pressed
         when Array
-          # no-op
           if_pressed = if_pressed.map(&:to_sym).uniq
         when String, Symbol
           if_pressed = [if_pressed].map(&:to_sym).uniq
@@ -108,16 +106,63 @@ module ProconBypassMan
       # 設定ファイルに直接マクロを打ち込める
       # @param [String, Class] macroの識別子
       # @paramh[Array<Symbol>] macroの本体. ボタンの配列
-      def open_macro(name, steps: , if_pressed: , if_tilted_left_stick: nil, force_neutral: nil)
+      def open_macro(name, steps: [], if_pressed: nil, if_tilted_left_stick: nil, force_neutral: nil)
+        if name.nil?
+          Kernel.warn "設定ファイルに記述ミスがあります. open_macroのnameには一意になる名前を渡してください."
+          return
+        end
+
+        if steps.nil?
+          Kernel.warn "設定ファイルに記述ミスがあります. open_macroのstepsはボタンを渡してください."
+          return
+        end
+
+        case steps
+        when Array
+          steps = steps.map(&:to_sym).uniq
+        when Integer, TrueClass, NilClass, FalseClass
+          warn "macro #{name}のstepsで想定外の値です"
+          return
+        when String, Symbol
+          steps = [steps.to_sym]
+        end
+
+        if if_pressed.nil?
+          Kernel.warn "設定ファイルに記述ミスがあります. macroのif_pressedはボタンを渡してください."
+          return
+        end
+
+        case if_tilted_left_stick
+        when Integer, String, Symbol, Array
+          warn "macro #{name}のif_tilted_left_stickで想定外の値です"
+          if_tilted_left_stick = nil
+        when TrueClass, NilClass, FalseClass
+          # OK
+        end
+
         case force_neutral
         when Array
-          # no-op
+          force_neutral = force_neutral.map(&:to_sym).uniq
         when String, Symbol
-          force_neutral = [force_neutral]
-        when Integer
-          warn "#macro {name}のforce_neutralで想定外の値です"
+          force_neutral = [force_neutral].map(&:to_sym).uniq
+        when Integer, TrueClass
+          warn "macro #{name}のforce_neutralで想定外の値です"
           return
         when NilClass
+          # no-op
+        end
+
+        case if_pressed
+        when Array
+          if_pressed = if_pressed.map(&:to_sym).uniq
+        when String, Symbol
+          if_pressed = [if_pressed].map(&:to_sym).uniq
+        when Integer, TrueClass, FalseClass
+          warn "macro #{name}のif_pressedで想定外の値です"
+          return
+        when NilClass
+          Kernel.warn "設定ファイルに記述ミスがあります. macroのif_pressedはボタンを渡してください."
+          return # これはトリガーなので必須
         end
 
         macro_name = name || "OpenMacro-#{steps.join}".to_sym
