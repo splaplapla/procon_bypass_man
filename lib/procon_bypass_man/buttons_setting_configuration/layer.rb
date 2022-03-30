@@ -25,7 +25,8 @@ module ProconBypassMan
         when FalseClass, NilClass
           if_pressed = false
         else
-          raise "not support class"
+          Kernel.warn "設定ファイルに記述ミスがあります. 未対応の値を受け取りました."
+          return
         end
 
         hash = { if_pressed: if_pressed }
@@ -40,7 +41,8 @@ module ProconBypassMan
         when FalseClass, NilClass
           # no-op
         else
-          raise "not support value"
+          Kernel.warn "設定ファイルに記述ミスがあります. 未対応の値を受け取りました."
+          return
         end
 
         if flip_interval
@@ -68,6 +70,9 @@ module ProconBypassMan
           if_tilted_left_stick = nil
         when TrueClass, NilClass, FalseClass
           # OK
+        else
+          Kernel.warn "設定ファイルに記述ミスがあります. 未対応の値を受け取りました."
+          return
         end
 
         case force_neutral
@@ -80,6 +85,9 @@ module ProconBypassMan
           return
         when NilClass
           # no-op
+        else
+          Kernel.warn "設定ファイルに記述ミスがあります. 未対応の値を受け取りました."
+          return
         end
 
         case if_pressed
@@ -93,6 +101,9 @@ module ProconBypassMan
         when NilClass
           Kernel.warn "設定ファイルに記述ミスがあります. macroのif_pressedはボタンを渡してください."
           return # これはトリガーなので必須
+        else
+          Kernel.warn "設定ファイルに記述ミスがあります. 未対応の値を受け取りました."
+          return
         end
 
         macro_name = name.to_s.to_sym
@@ -113,18 +124,21 @@ module ProconBypassMan
         end
 
         if steps.nil?
-          Kernel.warn "設定ファイルに記述ミスがあります. open_macroのstepsはボタンを渡してください."
+          Kernel.warn "設定ファイルに記述ミスがあります. open_macroのstepsは値を渡してください."
           return
         end
 
         case steps
         when Array
-          steps = steps.map(&:to_sym).uniq
+          steps = steps.map(&:to_sym)
         when Integer, TrueClass, NilClass, FalseClass
           warn "macro #{name}のstepsで想定外の値です"
           return
         when String, Symbol
           steps = [steps.to_sym]
+        else
+          Kernel.warn "設定ファイルに記述ミスがあります. 未対応の値を受け取りました."
+          return
         end
 
         if if_pressed.nil?
@@ -136,8 +150,11 @@ module ProconBypassMan
         when Integer, String, Symbol, Array
           warn "macro #{name}のif_tilted_left_stickで想定外の値です"
           if_tilted_left_stick = nil
-        when TrueClass, NilClass, FalseClass
+        when TrueClass, NilClass, FalseClass, Hash
           # OK
+        else
+          Kernel.warn "設定ファイルに記述ミスがあります. 未対応の値を受け取りました."
+          return
         end
 
         case force_neutral
@@ -150,6 +167,9 @@ module ProconBypassMan
           return
         when NilClass
           # no-op
+        else
+          Kernel.warn "設定ファイルに記述ミスがあります. 未対応の値を受け取りました."
+          return
         end
 
         case if_pressed
@@ -163,6 +183,9 @@ module ProconBypassMan
         when NilClass
           Kernel.warn "設定ファイルに記述ミスがあります. macroのif_pressedはボタンを渡してください."
           return # これはトリガーなので必須
+        else
+          Kernel.warn "設定ファイルに記述ミスがあります. 未対応の値を受け取りました."
+          return
         end
 
         macro_name = name || "OpenMacro-#{steps.join}".to_sym
@@ -171,18 +194,24 @@ module ProconBypassMan
       end
 
       def disable_macro(name, if_pressed: nil)
+        if name.nil?
+          Kernel.warn "設定ファイルに記述ミスがあります. disable_macroのnameにはmacro nameかクラス名の名前を渡してください."
+          return
+        end
+
         hash = { name: name.to_s.to_sym, if_pressed: [] }
         case if_pressed
         when TrueClass, FalseClass
           return # booleanはよくわからないのでreturn
         when Symbol, String
-          hash[:if_pressed] = [if_pressed]
+          hash[:if_pressed] = [if_pressed.to_sym]
         when Array
-          hash[:if_pressed] = if_pressed
+          hash[:if_pressed] = if_pressed.map(&:to_sym).uniq
         when NilClass # 常に対象のmacroをdisableにする
           hash[:if_pressed] = [true]
         else
-          raise "not support value"
+          Kernel.warn "設定ファイルに記述ミスがあります. 未対応の値を受け取りました."
+          return
         end
 
         disable_macros << hash

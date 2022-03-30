@@ -268,7 +268,7 @@ describe ProconBypassMan::ButtonsSettingConfiguration::Layer do
         it { expect(subject).to eq({"name" => {:if_pressed=>[:x]}}) }
         it do
           subject
-          expect(ProconBypassMan::Procon::MacroRegistry.plugins[:name].call).to eq([:x])
+          expect(ProconBypassMan::Procon::MacroRegistry.plugins[:name].call).to eq([:x, :x])
         end
       end
     end
@@ -351,5 +351,42 @@ describe ProconBypassMan::ButtonsSettingConfiguration::Layer do
         end
       end
     end
+  end
+
+  describe 'disable_macro' do
+    subject { layer.disable_macro(name, **options); layer.disable_macros }
+
+    context 'nameにnilを渡すとき' do
+      let(:name ) { nil }
+      let(:options) { { } }
+      it { expect(subject).to eq([]) }
+    end
+
+    describe 'if_pressed' do
+      let(:name ) { "disable_macro_name" }
+      let(:options) { { if_pressed: subject_value } }
+
+      context 'is nil' do
+        let(:subject_value) { nil }
+        it { expect(subject).to eq([{:if_pressed=>[true], :name=>:disable_macro_name}]) }
+      end
+      context 'is true' do
+        let(:subject_value) { true }
+        it { expect(subject).to eq([]) }
+      end
+      context 'is symbol' do
+        let(:subject_value) { :x }
+        it { expect(subject).to eq([{:if_pressed=>[:x], :name=>:disable_macro_name}]) }
+      end
+      context 'is string' do
+        let(:subject_value) { "x" }
+        it { expect(subject).to eq([{:if_pressed=>[:x], :name=>:disable_macro_name}]) }
+      end
+      context 'is array' do
+        let(:subject_value) { ["x", "x"] }
+        it { expect(subject).to eq([{:if_pressed=>[:x], :name=>:disable_macro_name}]) }
+      end
+    end
+
   end
 end
