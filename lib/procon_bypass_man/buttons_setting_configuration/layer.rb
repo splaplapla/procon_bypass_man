@@ -31,7 +31,7 @@ module ProconBypassMan
         hash = { if_pressed: if_pressed }
         case force_neutral
         when TrueClass
-          Kernel.warn "#{force_neutral}を受け取りました. エラーです. flipのforce_neutralにはボタンを渡してください."
+          Kernel.warn "設定ファイルに記述ミスがあります. #{force_neutral}を受け取りました. flipのforce_neutralにはボタンを渡してください."
           return
         when Symbol, String
           hash[:force_neutral] = [force_neutral.to_sym]
@@ -56,16 +56,45 @@ module ProconBypassMan
       end
 
       # @param [String, Class] プラグインのclass
-      def macro(name, if_pressed: , if_tilted_left_stick: nil, force_neutral: nil)
+      def macro(name, if_pressed: nil, if_tilted_left_stick: nil, force_neutral: nil)
+        if if_pressed.nil?
+          Kernel.warn "設定ファイルに記述ミスがあります. macroのif_pressedはボタンを渡してください."
+          return
+        end
+
+        case if_tilted_left_stick
+        when Integer, String, Symbol, Array
+          warn "macro #{name}のif_tilted_left_stickで想定外の値です"
+          if_tilted_left_stick = nil
+        when TrueClass, NilClass, FalseClass
+          # OK
+        end
+
         case force_neutral
         when Array
+          force_neutral = force_neutral.map(&:to_sym).uniq
           # no-op
         when String, Symbol
-          force_neutral = [force_neutral]
-        when Integer
-          warn "#macro {name}のforce_neutralで想定外の値です"
+          force_neutral = [force_neutral].map(&:to_sym).uniq
+        when Integer, TrueClass
+          warn "macro #{name}のforce_neutralで想定外の値です"
           return
         when NilClass
+          # no-op
+        end
+
+        case if_pressed
+        when Array
+          # no-op
+          if_pressed = if_pressed.map(&:to_sym).uniq
+        when String, Symbol
+          if_pressed = [if_pressed].map(&:to_sym).uniq
+        when Integer, TrueClass, FalseClass
+          warn "macro #{name}のif_pressedで想定外の値です"
+          return
+        when NilClass
+          Kernel.warn "設定ファイルに記述ミスがあります. macroのif_pressedはボタンを渡してください."
+          return # これはトリガーなので必須
         end
 
         macro_name = name.to_s.to_sym
