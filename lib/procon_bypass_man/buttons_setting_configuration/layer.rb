@@ -157,18 +157,13 @@ module ProconBypassMan
           return
         end
 
-        case force_neutral
-        when Array
-          force_neutral = force_neutral.map(&:to_sym).uniq
-        when String, Symbol
-          force_neutral = [force_neutral].map(&:to_sym).uniq
-        when Integer, TrueClass
-          warn "macro #{name}のforce_neutralで想定外の値です"
+        begin
+          force_neutral = ParamNormalizer::ForceNeutral.new(force_neutral).to_value!
+        rescue ParamNormalizer::UnSupportValueError
+          Kernel.warn "設定ファイルに記述ミスがあります. open_macroのforce_neutralにはボタンを渡してください."
           return
-        when NilClass
-          # no-op
-        else
-          Kernel.warn "設定ファイルに記述ミスがあります. 未対応の値を受け取りました."
+        rescue ParamNormalizer::UnexpectedValueError
+          Kernel.warn "設定ファイルに記述ミスがあります. open_macroのforce_neutralで未対応の値を受け取りました."
           return
         end
 
@@ -279,17 +274,14 @@ module ProconBypassMan
           hash[:if_pressed] = if_pressed
         end
 
-        case force_neutral
-        when TrueClass
+        begin
+          if(force_neutral = ParamNormalizer::ForceNeutral.new(force_neutral).to_value!)
+            hash[:force_neutral] = force_neutral
+          end
+        rescue ParamNormalizer::UnSupportValueError
           Kernel.warn "設定ファイルに記述ミスがあります. left_analog_stick_capのforce_neutralにはボタンを渡してください."
           return
-        when Symbol, String
-          hash[:force_neutral] = [force_neutral.to_sym]
-        when Array
-          hash[:force_neutral] = force_neutral.map(&:to_sym).uniq
-        when FalseClass, NilClass
-          # no-op
-        else
+        rescue ParamNormalizer::UnexpectedValueError
           Kernel.warn "設定ファイルに記述ミスがあります. left_analog_stick_capのforce_neutralで未対応の値を受け取りました."
           return
         end
