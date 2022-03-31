@@ -298,12 +298,16 @@ module ProconBypassMan
       end
 
       def disable(button)
-        if list = ParamNormalizer::ButtonList.new(button).to_a
-          list.each do |disable|
-            disables  << disable
-          end
+        ParamNormalizer::ButtonList.new(button).to_a!.each do |disable|
+          disables  << disable
         end
         disables.uniq!
+      rescue ParamNormalizer::UnSupportValueError
+        Kernel.warn "設定ファイルに記述ミスがあります. disableにはボタンを渡してください."
+        return
+      rescue ParamNormalizer::UnexpectedValueError
+        Kernel.warn "設定ファイルに記述ミスがあります. disableで未対応の値を受け取りました."
+        return
       end
 
       # @return [Array]

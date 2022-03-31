@@ -9,11 +9,12 @@ module ProconBypassMan
         end
 
         # @return [Array]
-        def to_a
+        # @raise [UnSupportValueError]
+        # @raise [UnexpectedValueError]
+        def to_a!
           case button
           when TrueClass, FalseClass, NilClass
-            Kernel.warn "設定ファイルに記述ミスがあります. disableにはボタンを渡してください."
-            return
+            raise UnSupportValueError
           when Symbol
             return [button]
           when String
@@ -21,8 +22,7 @@ module ProconBypassMan
           when Array
             return button.map(&:to_sym).uniq
           else
-            Kernel.warn "設定ファイルに記述ミスがあります. disableで未対応の値を受け取りました."
-            return
+            raise UnexpectedValueError
           end
         end
       end
