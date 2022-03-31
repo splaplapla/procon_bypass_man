@@ -1,23 +1,26 @@
 module ProconBypassMan
   class ButtonsSettingConfiguration
     module ParamNormalizer
-      class ForceNeutral
-        attr_reader :force_neutral
+      class FlipIfPressed
+        attr_reader :value
 
-        def initialize(force_neutral)
-          @force_neutral = force_neutral
+        def initialize(value, button: )
+          @value = value
+          @button = button
         end
 
         def to_value!
-          case force_neutral
-          when Integer, TrueClass
+          case value
+          when Integer
             raise UnSupportValueError
+          when TrueClass
+            return [@button]
           when Symbol, String
-            return [force_neutral.to_sym]
+            return [value.to_sym]
           when Array
-            return force_neutral.map(&:to_sym).uniq
+            return value.map(&:to_sym).uniq
           when FalseClass, NilClass
-            # no-op
+            return false
           else
             raise UnexpectedValueError
           end

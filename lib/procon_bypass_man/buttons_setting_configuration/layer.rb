@@ -15,17 +15,13 @@ module ProconBypassMan
 
       # @param [Symbol] button
       def flip(button, if_pressed: false, force_neutral: nil, flip_interval: nil)
-        case if_pressed
-        when TrueClass
-          if_pressed = [button]
-        when Symbol, String
-          if_pressed = [if_pressed.to_sym]
-        when Array
-          if_pressed = if_pressed.map(&:to_sym).uniq
-        when FalseClass, NilClass
-          if_pressed = false
-        else
-          Kernel.warn "設定ファイルに記述ミスがあります. 未対応の値を受け取りました."
+        begin
+          if_pressed = ParamNormalizer::FlipIfPressed.new(if_pressed, button: button).to_value!
+        rescue ParamNormalizer::UnSupportValueError
+          Kernel.warn "設定ファイルに記述ミスがあります. flipのif_pressedにはボタンを渡してください."
+          return
+        rescue ParamNormalizer::UnexpectedValueError
+          Kernel.warn "設定ファイルに記述ミスがあります. flipのif_pressedで未対応の値を受け取りました."
           return
         end
 
@@ -191,12 +187,12 @@ module ProconBypassMan
 
         hash = { name: name.to_s.to_sym, if_pressed: [] }
         case if_pressed
-        when TrueClass, FalseClass
-          return # booleanはよくわからないのでreturn
-        when Symbol, String
-          hash[:if_pressed] = [if_pressed.to_sym]
         when Array
           hash[:if_pressed] = if_pressed.map(&:to_sym).uniq
+        when Symbol, String
+          hash[:if_pressed] = [if_pressed.to_sym]
+        when Integer, TrueClass, FalseClass
+          return
         when NilClass # 常に対象のmacroをdisableにする
           hash[:if_pressed] = [true]
         else
@@ -250,23 +246,16 @@ module ProconBypassMan
 
         hash = { cap: cap }
 
-        case if_pressed
-        when TrueClass, FalseClass
+        begin
+          if(if_pressed = ParamNormalizer::IfPressed.new(if_pressed, set_to_allow_falsy: false, allow_true_class: false).to_value!)
+            hash[:if_pressed] = if_pressed
+          end
+        rescue ParamNormalizer::UnSupportValueError
           Kernel.warn "設定ファイルに記述ミスがあります. left_analog_stick_capのif_pressedにはボタンを渡してください."
           return
-        when Symbol, String
-          if_pressed = [if_pressed.to_sym]
-        when Array
-          if_pressed = if_pressed.map(&:to_sym).uniq
-        when NilClass
-          # no-op
-        else
+        rescue ParamNormalizer::UnexpectedValueError
           Kernel.warn "設定ファイルに記述ミスがあります. left_analog_stick_capのif_pressedで未対応の値を受け取りました."
           return
-        end
-
-        if if_pressed
-          hash[:if_pressed] = if_pressed
         end
 
         begin

@@ -479,10 +479,10 @@ describe ProconBypassMan::ButtonsSettingConfiguration::Layer do
             let(:force_neutral) { nil }
             it { expect(subject).to eq([]) }
           end
-          context 'is true' do
+          context 'is false' do
             let(:if_pressed) { false }
             let(:force_neutral) { nil }
-            it { expect(subject).to eq([]) }
+            it { expect(subject).to eq([ { cap: 1 } ]) }
           end
           context 'is symbol' do
             let(:if_pressed) { :x }
