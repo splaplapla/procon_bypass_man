@@ -262,7 +262,7 @@ module ProconBypassMan
 
         case if_pressed
         when TrueClass, FalseClass
-          Kernel.warn "設定ファイルに記述ミスがあります. left_analog_stick_capのif_pressedで未対応の値を受け取りました."
+          Kernel.warn "設定ファイルに記述ミスがあります. left_analog_stick_capのif_pressedにはボタンを渡してください."
           return
         when Symbol, String
           if_pressed = [if_pressed.to_sym]
@@ -281,7 +281,7 @@ module ProconBypassMan
 
         case force_neutral
         when TrueClass
-          Kernel.warn "設定ファイルに記述ミスがあります. left_analog_stick_capのforce_neutralで未対応の値を受け取りました."
+          Kernel.warn "設定ファイルに記述ミスがあります. left_analog_stick_capのforce_neutralにはボタンを渡してください."
           return
         when Symbol, String
           hash[:force_neutral] = [force_neutral.to_sym]
