@@ -1,6 +1,7 @@
 module ProconBypassMan
   class ButtonsSettingConfiguration
     module ParamNormalizer
+      # falsyを許可する
       class IfPressed
         attr_reader :value
 
