@@ -1,7 +1,7 @@
 module ProconBypassMan
   class ButtonsSettingConfiguration
     module ParamNormalizer
-      class IfPressed
+      class DisableMacroIfPressed
         attr_reader :value
 
         def initialize(value)
@@ -10,14 +10,14 @@ module ProconBypassMan
 
         def to_value!
           case value
-          when Integer, TrueClass
+          when FalseClass, Integer, TrueClass
             raise UnSupportValueError
           when Symbol, String
             return [value.to_sym]
           when Array
             return value.map(&:to_sym).uniq
-          when FalseClass, NilClass
-            # OK
+          when NilClass # 常に対象のmacroをdisableにする
+            return [true]
           else
             raise UnexpectedValueError
           end

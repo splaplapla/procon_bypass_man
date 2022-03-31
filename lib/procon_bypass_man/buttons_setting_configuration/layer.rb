@@ -186,17 +186,15 @@ module ProconBypassMan
         end
 
         hash = { name: name.to_s.to_sym, if_pressed: [] }
-        case if_pressed
-        when Array
-          hash[:if_pressed] = if_pressed.map(&:to_sym).uniq
-        when Symbol, String
-          hash[:if_pressed] = [if_pressed.to_sym]
-        when Integer, TrueClass, FalseClass
+        begin
+          if(if_pressed = ParamNormalizer::DisableMacroIfPressed.new(if_pressed).to_value!)
+            hash[:if_pressed] = if_pressed
+          end
+        rescue ParamNormalizer::UnSupportValueError
+          Kernel.warn "設定ファイルに記述ミスがあります. disable_macroのif_pressedにはボタンを渡してください."
           return
-        when NilClass # 常に対象のmacroをdisableにする
-          hash[:if_pressed] = [true]
-        else
-          Kernel.warn "設定ファイルに記述ミスがあります. 未対応の値を受け取りました."
+        rescue ParamNormalizer::UnexpectedValueError
+          Kernel.warn "設定ファイルに記述ミスがあります. disable_macroのif_pressedで未対応の値を受け取りました."
           return
         end
 
@@ -247,7 +245,7 @@ module ProconBypassMan
         hash = { cap: cap }
 
         begin
-          if(if_pressed = ParamNormalizer::IfPressed.new(if_pressed, set_to_allow_falsy: false, allow_true_class: false).to_value!)
+          if(if_pressed = ParamNormalizer::IfPressed.new(if_pressed).to_value!)
             hash[:if_pressed] = if_pressed
           end
         rescue ParamNormalizer::UnSupportValueError
