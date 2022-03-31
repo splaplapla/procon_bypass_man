@@ -353,7 +353,7 @@ describe ProconBypassMan::ButtonsSettingConfiguration::Layer do
     end
   end
 
-  describe 'disable_macro' do
+  describe '#disable_macro' do
     subject { layer.disable_macro(name, **options); layer.disable_macros }
 
     context 'nameにnilを渡すとき' do
@@ -390,7 +390,7 @@ describe ProconBypassMan::ButtonsSettingConfiguration::Layer do
 
   end
 
-  describe 'remap' do
+  describe '#remap' do
     subject { layer.remap(button, **options); layer.remaps }
 
     describe 'button' do
@@ -449,6 +449,85 @@ describe ProconBypassMan::ButtonsSettingConfiguration::Layer do
       context 'nil' do
         let(:button) { nil }
         it { expect(subject).to eq({}) }
+      end
+    end
+  end
+
+  describe '#left_analog_stick_cap' do
+    subject { layer.left_analog_stick_cap(**options); layer.left_analog_stick_caps }
+
+    describe 'cap' do
+      let(:options) { { cap: cap, if_pressed: if_pressed, force_neutral: force_neutral } }
+
+      context 'is nil' do
+        let(:cap) { nil }
+        let(:if_pressed) { nil }
+        let(:force_neutral) { nil }
+        it { expect(subject).to eq([]) }
+      end
+      context 'integer' do
+        let(:cap) { 1 }
+
+        describe 'if_pressed' do
+          context 'is nil' do
+            let(:if_pressed) { nil }
+            let(:force_neutral) { nil }
+            it { expect(subject).to eq([{ :cap=>1 }]) }
+          end
+          context 'is true' do
+            let(:if_pressed) { true }
+            let(:force_neutral) { nil }
+            it { expect(subject).to eq([]) }
+          end
+          context 'is symbol' do
+            let(:if_pressed) { :x }
+
+            describe 'force_neutral' do
+              context 'is nil' do
+                let(:force_neutral) { nil }
+                it { expect(subject).to eq([{:cap=>1, :if_pressed=>[:x]}]) }
+              end
+              context 'is true' do
+                let(:force_neutral) { true }
+                it { expect(subject).to eq([]) }
+              end
+              context 'is symbol' do
+                let(:force_neutral) { :x }
+                it { expect(subject).to eq([{:cap=>1, :force_neutral=>[:x], :if_pressed=>[:x]}]) }
+              end
+              context 'is string' do
+                let(:force_neutral) { 'x' }
+                it { expect(subject).to eq([{:cap=>1, :force_neutral=>[:x], :if_pressed=>[:x]}]) }
+              end
+              context 'is array' do
+                let(:force_neutral) { ["x", "x"] }
+                it { expect(subject).to eq([{:cap=>1, :force_neutral=>[:x], :if_pressed=>[:x]}]) }
+              end
+            end
+          end
+          context 'is string' do
+            let(:if_pressed) { 'x' }
+            let(:force_neutral) { nil }
+            it { expect(subject).to eq([{:cap=>1, :if_pressed=>[:x]}]) }
+          end
+          context 'is array' do
+            let(:if_pressed) { ["x", "x"] }
+            let(:force_neutral) { nil }
+            it { expect(subject).to eq([{:cap=>1, :if_pressed=>[:x]}]) }
+          end
+        end
+      end
+      context 'float' do
+        let(:cap) { 2.1 }
+        let(:if_pressed) { nil }
+        let(:force_neutral) { nil }
+        it { expect(subject).to eq([{ :cap=>2 }]) }
+      end
+      context 'array' do
+        let(:cap) { [] }
+        let(:if_pressed) { nil }
+        let(:force_neutral) { nil }
+        it { expect(subject).to eq([]) }
       end
     end
   end

@@ -247,18 +247,32 @@ module ProconBypassMan
         end
       end
 
-      def left_analog_stick_cap(cap: , if_pressed: nil, force_neutral: nil)
+      def left_analog_stick_cap(cap: nil, if_pressed: nil, force_neutral: nil)
+        case cap
+        when Integer
+          # OK
+        when Float
+          cap = cap.to_i
+        else
+          Kernel.warn "設定ファイルに記述ミスがあります. left_analog_stick_capのcapで未対応の値を受け取りました."
+          return
+        end
+
         hash = { cap: cap }
 
         case if_pressed
         when TrueClass, FalseClass
-          raise "ボタンを渡してください"
+          Kernel.warn "設定ファイルに記述ミスがあります. left_analog_stick_capのif_pressedで未対応の値を受け取りました."
+          return
         when Symbol, String
-          if_pressed = [if_pressed]
-        when Array, NilClass
+          if_pressed = [if_pressed.to_sym]
+        when Array
+          if_pressed = if_pressed.map(&:to_sym).uniq
+        when NilClass
           # no-op
         else
-          raise "not support value"
+          Kernel.warn "設定ファイルに記述ミスがあります. left_analog_stick_capのif_pressedで未対応の値を受け取りました."
+          return
         end
 
         if if_pressed
@@ -267,15 +281,17 @@ module ProconBypassMan
 
         case force_neutral
         when TrueClass
-          raise "ボタンを渡してください"
+          Kernel.warn "設定ファイルに記述ミスがあります. left_analog_stick_capのforce_neutralで未対応の値を受け取りました."
+          return
         when Symbol, String
-          hash[:force_neutral] = [force_neutral]
+          hash[:force_neutral] = [force_neutral.to_sym]
         when Array
-          hash[:force_neutral] = force_neutral
+          hash[:force_neutral] = force_neutral.map(&:to_sym).uniq
         when FalseClass, NilClass
           # no-op
         else
-          raise "not support value"
+          Kernel.warn "設定ファイルに記述ミスがあります. left_analog_stick_capのforce_neutralで未対応の値を受け取りました."
+          return
         end
 
         left_analog_stick_caps << hash
