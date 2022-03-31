@@ -300,15 +300,17 @@ module ProconBypassMan
       def disable(button)
         case button
         when TrueClass, FalseClass, NilClass
-          raise "not support class"
+          Kernel.warn "設定ファイルに記述ミスがあります. disableにはボタンを渡してください."
+          return
         when Symbol
           disables << button
         when String
           disables << button.to_sym
         when Array
-          button.each { |b| disables << b }
+          button.map(&:to_sym).uniq.each { |b| disables << b }
         else
-          raise "not support value"
+          Kernel.warn "設定ファイルに記述ミスがあります. disableで未対応の値を受け取りました."
+          return
         end
       end
 

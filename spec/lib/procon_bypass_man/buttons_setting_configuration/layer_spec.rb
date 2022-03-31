@@ -479,6 +479,11 @@ describe ProconBypassMan::ButtonsSettingConfiguration::Layer do
             let(:force_neutral) { nil }
             it { expect(subject).to eq([]) }
           end
+          context 'is true' do
+            let(:if_pressed) { false }
+            let(:force_neutral) { nil }
+            it { expect(subject).to eq([]) }
+          end
           context 'is symbol' do
             let(:if_pressed) { :x }
 
@@ -490,6 +495,10 @@ describe ProconBypassMan::ButtonsSettingConfiguration::Layer do
               context 'is true' do
                 let(:force_neutral) { true }
                 it { expect(subject).to eq([]) }
+              end
+              context 'is false' do
+                let(:force_neutral) { false }
+                it { expect(subject).to eq([{:cap=>1, :if_pressed=>[:x]}]) }
               end
               context 'is symbol' do
                 let(:force_neutral) { :x }
@@ -528,6 +537,37 @@ describe ProconBypassMan::ButtonsSettingConfiguration::Layer do
         let(:if_pressed) { nil }
         let(:force_neutral) { nil }
         it { expect(subject).to eq([]) }
+      end
+    end
+  end
+
+  describe '#disable' do
+    subject { layer.disable(button); layer.disables }
+
+    describe 'button' do
+      context 'is nil' do
+        let(:button) { nil }
+        it { expect(subject).to eq([]) }
+      end
+      context 'is true' do
+        let(:button) { true }
+        it { expect(subject).to eq([]) }
+      end
+      context 'is false' do
+        let(:button) { false }
+        it { expect(subject).to eq([]) }
+      end
+      context 'is symbol' do
+        let(:button) { :x }
+        it { expect(subject).to eq([:x]) }
+      end
+      context 'is string' do
+        let(:button) { 'x' }
+        it { expect(subject).to eq([:x]) }
+      end
+      context 'is array' do
+        let(:button) { ["x", "x"] }
+        it { expect(subject).to eq([:x]) }
       end
     end
   end
