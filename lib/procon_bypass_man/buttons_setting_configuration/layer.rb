@@ -141,11 +141,6 @@ module ProconBypassMan
           return
         end
 
-        if if_pressed.nil?
-          Kernel.warn "設定ファイルに記述ミスがあります. macroのif_pressedはボタンを渡してください."
-          return
-        end
-
         case if_tilted_left_stick
         when Integer, String, Symbol, Array
           warn "macro #{name}のif_tilted_left_stickで想定外の値です"
