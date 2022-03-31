@@ -298,20 +298,12 @@ module ProconBypassMan
       end
 
       def disable(button)
-        case button
-        when TrueClass, FalseClass, NilClass
-          Kernel.warn "設定ファイルに記述ミスがあります. disableにはボタンを渡してください."
-          return
-        when Symbol
-          disables << button
-        when String
-          disables << button.to_sym
-        when Array
-          button.map(&:to_sym).uniq.each { |b| disables << b }
-        else
-          Kernel.warn "設定ファイルに記述ミスがあります. disableで未対応の値を受け取りました."
-          return
+        if list = ParamNormalizer::ButtonList.new(button).to_a
+          list.each do |disable|
+            disables  << disable
+          end
         end
+        disables.uniq!
       end
 
       # @return [Array]

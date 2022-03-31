@@ -1,0 +1,1 @@
+require "procon_bypass_man/buttons_setting_configuration/param_normalizer/button_list"
