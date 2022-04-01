@@ -20,24 +20,16 @@ module ProconBypassMan
         rescue ParamNormalizer::UnSupportValueError
           Kernel.warn "設定ファイルに記述ミスがあります. flipのif_pressedにはボタンを渡してください."
           return
-        rescue ParamNormalizer::UnexpectedValueError
-          Kernel.warn "設定ファイルに記述ミスがあります. flipのif_pressedで未対応の値を受け取りました."
-          return
         end
 
         hash = { if_pressed: if_pressed }
-        case force_neutral
-        when TrueClass
-          Kernel.warn "設定ファイルに記述ミスがあります. #{force_neutral}を受け取りました. flipのforce_neutralにはボタンを渡してください."
-          return
-        when Symbol, String
-          hash[:force_neutral] = [force_neutral.to_sym]
-        when Array
-          hash[:force_neutral] = force_neutral.map(&:to_sym).uniq
-        when FalseClass, NilClass
-          # no-op
-        else
-          Kernel.warn "設定ファイルに記述ミスがあります. 未対応の値を受け取りました."
+
+        begin
+          if(force_neutral = ParamNormalizer::ForceNeutral.new(force_neutral).to_value!)
+            hash[:force_neutral] = force_neutral
+          end
+        rescue ParamNormalizer::UnSupportValueError
+          Kernel.warn "設定ファイルに記述ミスがあります. flipのforce_neutralにはボタンを渡してください."
           return
         end
 
@@ -71,18 +63,12 @@ module ProconBypassMan
           return
         end
 
-        case force_neutral
-        when Array
-          force_neutral = force_neutral.map(&:to_sym).uniq
-        when String, Symbol
-          force_neutral = [force_neutral].map(&:to_sym).uniq
-        when Integer, TrueClass
-          warn "macro #{name}のforce_neutralで想定外の値です"
-          return
-        when NilClass
-          # no-op
-        else
-          Kernel.warn "設定ファイルに記述ミスがあります. 未対応の値を受け取りました."
+        begin
+          if(fn = ParamNormalizer::ForceNeutral.new(force_neutral).to_value!)
+            force_neutral = fn
+          end
+        rescue ParamNormalizer::UnSupportValueError
+          Kernel.warn "設定ファイルに記述ミスがあります. macroのforce_neutralにはボタンを渡してください."
           return
         end
 
@@ -90,9 +76,6 @@ module ProconBypassMan
           if_pressed = ParamNormalizer::IfPressed.new(if_pressed).to_value!
         rescue ParamNormalizer::UnSupportValueError
           Kernel.warn "設定ファイルに記述ミスがあります. macroのif_pressedにはボタンを渡してください."
-          return
-        rescue ParamNormalizer::UnexpectedValueError
-          Kernel.warn "設定ファイルに記述ミスがあります. macroのif_pressedで未対応の値を受け取りました."
           return
         end
 
@@ -147,18 +130,12 @@ module ProconBypassMan
         rescue ParamNormalizer::UnSupportValueError
           Kernel.warn "設定ファイルに記述ミスがあります. open_macroのforce_neutralにはボタンを渡してください."
           return
-        rescue ParamNormalizer::UnexpectedValueError
-          Kernel.warn "設定ファイルに記述ミスがあります. open_macroのforce_neutralで未対応の値を受け取りました."
-          return
         end
 
         begin
           if_pressed = ParamNormalizer::IfPressed.new(if_pressed).to_value!
         rescue ParamNormalizer::UnSupportValueError
           Kernel.warn "設定ファイルに記述ミスがあります. open_macroのif_pressedにはボタンを渡してください."
-          return
-        rescue ParamNormalizer::UnexpectedValueError
-          Kernel.warn "設定ファイルに記述ミスがあります. open_macroのif_pressedで未対応の値を受け取りました."
           return
         end
 
@@ -180,9 +157,6 @@ module ProconBypassMan
           end
         rescue ParamNormalizer::UnSupportValueError
           Kernel.warn "設定ファイルに記述ミスがあります. disable_macroのif_pressedにはボタンを渡してください."
-          return
-        rescue ParamNormalizer::UnexpectedValueError
-          Kernel.warn "設定ファイルに記述ミスがあります. disable_macroのif_pressedで未対応の値を受け取りました."
           return
         end
 
@@ -239,9 +213,6 @@ module ProconBypassMan
         rescue ParamNormalizer::UnSupportValueError
           Kernel.warn "設定ファイルに記述ミスがあります. left_analog_stick_capのif_pressedにはボタンを渡してください."
           return
-        rescue ParamNormalizer::UnexpectedValueError
-          Kernel.warn "設定ファイルに記述ミスがあります. left_analog_stick_capのif_pressedで未対応の値を受け取りました."
-          return
         end
 
         begin
@@ -250,9 +221,6 @@ module ProconBypassMan
           end
         rescue ParamNormalizer::UnSupportValueError
           Kernel.warn "設定ファイルに記述ミスがあります. left_analog_stick_capのforce_neutralにはボタンを渡してください."
-          return
-        rescue ParamNormalizer::UnexpectedValueError
-          Kernel.warn "設定ファイルに記述ミスがあります. left_analog_stick_capのforce_neutralで未対応の値を受け取りました."
           return
         end
 
@@ -266,9 +234,6 @@ module ProconBypassMan
         disables.uniq!
       rescue ParamNormalizer::UnSupportValueError
         Kernel.warn "設定ファイルに記述ミスがあります. disableにはボタンを渡してください."
-        return
-      rescue ParamNormalizer::UnexpectedValueError
-        Kernel.warn "設定ファイルに記述ミスがあります. disableで未対応の値を受け取りました."
         return
       end
 

@@ -17,7 +17,7 @@ module ProconBypassMan
           when Array
             return force_neutral.map(&:to_sym).uniq
           when FalseClass, NilClass
-            # no-op
+            return nil
           else
             raise UnexpectedValueError
           end

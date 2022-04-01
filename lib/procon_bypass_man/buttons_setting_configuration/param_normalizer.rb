@@ -9,7 +9,7 @@ module ProconBypassMan
   class ButtonsSettingConfiguration
     module ParamNormalizer
       class UnSupportValueError < StandardError; end
-      class UnexpectedValueError < StandardError; end
+      class UnexpectedValueError < UnSupportValueError; end
     end
   end
 end
