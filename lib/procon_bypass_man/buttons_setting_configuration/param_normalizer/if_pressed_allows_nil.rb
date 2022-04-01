@@ -1,8 +1,7 @@
 module ProconBypassMan
   class ButtonsSettingConfiguration
     module ParamNormalizer
-      # falsyを許可する
-      class IfPressed
+      class IfPressedAllowsFalsy
         attr_reader :value
 
         def initialize(value)

@@ -239,7 +239,7 @@ module ProconBypassMan
         hash = { cap: cap }
 
         begin
-          if(if_pressed = ParamNormalizer::IfPressed.new(if_pressed).to_value!)
+          if(if_pressed = ParamNormalizer::IfPressedAllowsFalsy.new(if_pressed).to_value!)
             hash[:if_pressed] = if_pressed
           end
         rescue ParamNormalizer::UnSupportValueError
