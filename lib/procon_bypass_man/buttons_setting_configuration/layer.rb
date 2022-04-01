@@ -96,21 +96,10 @@ module ProconBypassMan
           return
         end
 
-        if steps.nil?
-          Kernel.warn "設定ファイルに記述ミスがあります. open_macroのstepsは値を渡してください."
-          return
-        end
-
-        case steps
-        when Array
-          steps = steps.map(&:to_sym)
-        when Integer, TrueClass, NilClass, FalseClass
-          warn "macro #{name}のstepsで想定外の値です"
-          return
-        when String, Symbol
-          steps = [steps.to_sym]
-        else
-          Kernel.warn "設定ファイルに記述ミスがあります. 未対応の値を受け取りました."
+        begin
+          steps = ParamNormalizer::OpenMacroSteps.new(steps).to_value!
+        rescue ParamNormalizer::UnSupportValueError
+          Kernel.warn "設定ファイルに記述ミスがあります. open_macroのstepsには文字列の配列を渡してください."
           return
         end
 
