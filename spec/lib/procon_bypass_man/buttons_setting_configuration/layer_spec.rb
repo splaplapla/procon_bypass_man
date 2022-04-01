@@ -69,7 +69,7 @@ describe ProconBypassMan::ButtonsSettingConfiguration::Layer do
     context '存在しないボタン' do
       let(:button) { :g }
       let(:options) { {} }
-      it { expect(subject).to eq(g: {:if_pressed=>false}) }
+      it { expect(subject).to eq({}) }
     end
 
     context 'integer' do
@@ -436,7 +436,7 @@ describe ProconBypassMan::ButtonsSettingConfiguration::Layer do
       end
       context '存在しないボタン' do
         let(:button) { :g }
-        it { expect(subject).to eq({ :g => {:to=>[:r]} }) }
+        it { expect(subject).to eq({}) }
       end
       context 'integer' do
         let(:button) { 1 }

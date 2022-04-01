@@ -219,7 +219,8 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
           )
         end
       end
-      context '存在しないボタンを書いているとき2-1(remap)' do
+      # Layerでフィルタするようにしたのでエラーにならなくなった
+      xcontext '存在しないボタンを書いているとき2-1(remap)' do
         let(:setting_content) do
           <<~EOH
           version: 1.0

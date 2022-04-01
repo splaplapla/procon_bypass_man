@@ -13,6 +13,10 @@ module ProconBypassMan
           when TrueClass, FalseClass, NilClass, Array, Integer
             raise UnSupportValueError
           when Symbol, String
+            unless !!ProconBypassMan::Procon::ButtonCollection::BUTTONS_MAP[button.to_sym]
+              raise UnexpectedValueError
+            end
+
             return button.to_sym
           else
             raise UnexpectedValueError
