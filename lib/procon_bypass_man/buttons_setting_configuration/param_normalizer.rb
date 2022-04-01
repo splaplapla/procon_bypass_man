@@ -3,6 +3,7 @@ require "procon_bypass_man/buttons_setting_configuration/param_normalizer/force_
 require "procon_bypass_man/buttons_setting_configuration/param_normalizer/if_pressed_allows_nil"
 require "procon_bypass_man/buttons_setting_configuration/param_normalizer/flip_if_pressed"
 require "procon_bypass_man/buttons_setting_configuration/param_normalizer/disable_macro_if_pressed"
+require "procon_bypass_man/buttons_setting_configuration/param_normalizer/if_pressed"
 
 module ProconBypassMan
   class ButtonsSettingConfiguration

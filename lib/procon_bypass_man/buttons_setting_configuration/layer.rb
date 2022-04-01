@@ -86,16 +86,13 @@ module ProconBypassMan
           return
         end
 
-        case if_pressed
-        when Integer, TrueClass, FalseClass, NilClass
-          Kernel.warn "設定ファイルに記述ミスがあります. macroのif_pressedはボタンを渡してください."
-          return # これはトリガーなので必須
-        when String, Symbol
-          if_pressed = [if_pressed].map(&:to_sym).uniq
-        when Array
-          if_pressed = if_pressed.map(&:to_sym).uniq
-        else
-          Kernel.warn "設定ファイルに記述ミスがあります. 未対応の値を受け取りました."
+        begin
+          if_pressed = ParamNormalizer::IfPressed.new(if_pressed).to_value!
+        rescue ParamNormalizer::UnSupportValueError
+          Kernel.warn "設定ファイルに記述ミスがあります. macroのif_pressedにはボタンを渡してください."
+          return
+        rescue ParamNormalizer::UnexpectedValueError
+          Kernel.warn "設定ファイルに記述ミスがあります. macroのif_pressedで未対応の値を受け取りました."
           return
         end
 
@@ -155,16 +152,13 @@ module ProconBypassMan
           return
         end
 
-        case if_pressed
-        when Integer, TrueClass, FalseClass, NilClass
-          Kernel.warn "設定ファイルに記述ミスがあります. macroのif_pressedはボタンを渡してください."
-          return # これはトリガーなので必須
-        when String, Symbol
-          if_pressed = [if_pressed].map(&:to_sym).uniq
-        when Array
-          if_pressed = if_pressed.map(&:to_sym).uniq
-        else
-          Kernel.warn "設定ファイルに記述ミスがあります. 未対応の値を受け取りました."
+        begin
+          if_pressed = ParamNormalizer::IfPressed.new(if_pressed).to_value!
+        rescue ParamNormalizer::UnSupportValueError
+          Kernel.warn "設定ファイルに記述ミスがあります. open_macroのif_pressedにはボタンを渡してください."
+          return
+        rescue ParamNormalizer::UnexpectedValueError
+          Kernel.warn "設定ファイルに記述ミスがあります. open_macroのif_pressedで未対応の値を受け取りました."
           return
         end
 
