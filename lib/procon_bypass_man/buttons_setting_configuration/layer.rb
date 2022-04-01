@@ -47,11 +47,6 @@ module ProconBypassMan
 
       # @param [String, Class] プラグインのclass
       def macro(name, if_pressed: nil, if_tilted_left_stick: nil, force_neutral: nil)
-        if if_pressed.nil?
-          Kernel.warn "設定ファイルに記述ミスがあります. macroのif_pressedはボタンを渡してください."
-          return
-        end
-
         case if_tilted_left_stick
         when Integer, String, Symbol, Array
           warn "macro #{name}のif_tilted_left_stickで想定外の値です"
@@ -153,31 +148,17 @@ module ProconBypassMan
       end
 
       def remap(button, to: )
-        case button
-        when TrueClass, FalseClass, NilClass, Array, Integer
-          Kernel.warn "設定ファイルに記述ミスがあります. リマップ対象にはボタンを渡してください."
-          return
-        when Symbol, String
-          button = button.to_sym
-        else
-          Kernel.warn "設定ファイルに記述ミスがあります. 未対応の値を受け取りました."
+        begin
+          button = ParamNormalizer::Button.new(button).to_value!
+        rescue ParamNormalizer::UnSupportValueError
+          Kernel.warn "設定ファイルに記述ミスがあります. disable_macroのif_pressedにはボタンを渡してください."
           return
         end
 
-        case to
-        when TrueClass, FalseClass, NilClass
-          Kernel.warn "設定ファイルに記述ミスがあります. toにボタンを渡してください."
-          return
-        when Symbol, String
-          self.remaps[button] = { to: [to.to_sym] }
-        when Array
-          if to.size.zero?
-            Kernel.warn "設定ファイルに記述ミスがあります. toにボタンを渡してください."
-            return
-          end
-          self.remaps[button] = { to: to.map(&:to_sym).uniq }
-        else
-          Kernel.warn "設定ファイルに記述ミスがあります. 未対応の値を受け取りました."
+        begin
+          self.remaps[button] = { to: ParamNormalizer::ButtonList.new(to).to_value! }
+        rescue ParamNormalizer::UnSupportValueError
+          Kernel.warn "設定ファイルに記述ミスがあります. remapのtoにはボタンを渡してください."
           return
         end
       end
@@ -217,8 +198,8 @@ module ProconBypassMan
       end
 
       def disable(button)
-        ParamNormalizer::ButtonList.new(button).to_a!.each do |disable|
-          disables  << disable
+        ParamNormalizer::ButtonList.new(button).to_value!.each do |disable|
+          disables << disable
         end
         disables.uniq!
       rescue ParamNormalizer::UnSupportValueError

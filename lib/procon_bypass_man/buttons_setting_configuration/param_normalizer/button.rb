@@ -1,26 +1,19 @@
 module ProconBypassMan
   class ButtonsSettingConfiguration
     module ParamNormalizer
-      class ButtonList
+      class Button
         attr_reader :button
 
         def initialize(button)
           @button = button
         end
 
-        # @return [Array]
-        # @raise [UnSupportValueError]
-        # @raise [UnexpectedValueError]
         def to_value!
           case button
-          when Integer, TrueClass, FalseClass, NilClass
+          when TrueClass, FalseClass, NilClass, Array, Integer
             raise UnSupportValueError
-          when Symbol
-            return [button]
-          when String
-            return [button.to_sym]
-          when Array
-            return button.map(&:to_sym).uniq
+          when Symbol, String
+            return button.to_sym
           else
             raise UnexpectedValueError
           end
