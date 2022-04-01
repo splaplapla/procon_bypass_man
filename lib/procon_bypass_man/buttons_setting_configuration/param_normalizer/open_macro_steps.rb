@@ -9,13 +9,13 @@ module ProconBypassMan
         end
 
         def to_value!
-          case @steps
+          case steps
           when Integer, TrueClass, FalseClass, NilClass
             raise UnSupportValueError
           when String, Symbol
-            @steps = [@steps.to_sym]
+            return [steps.to_sym]
           when Array
-            @steps = @steps.map(&:to_sym)
+            return steps.map(&:to_sym)
           else
             raise UnexpectedValueError
           end

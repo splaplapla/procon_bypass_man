@@ -75,19 +75,19 @@ describe ProconBypassMan::ButtonsSettingConfiguration::Layer do
     context 'integer' do
       let(:button) { 1 }
       let(:options) { {} }
-      it { expect(subject).to eq(1 => {:if_pressed=>false}) }
+      it { expect(subject).to eq({}) }
     end
 
     context 'array' do
       let(:button) { [] }
       let(:options) { {} }
-      it { expect(subject).to eq([] => {:if_pressed=>false}) }
+      it { expect(subject).to eq({}) }
     end
 
     context 'nil' do
       let(:button) { nil }
       let(:options) { {} }
-      it { expect(subject).to eq(nil => {:if_pressed=>false}) }
+      it { expect(subject).to eq({}) }
     end
   end
 

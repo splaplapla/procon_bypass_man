@@ -16,6 +16,13 @@ module ProconBypassMan
       # @param [Symbol] button
       def flip(button, if_pressed: false, force_neutral: nil, flip_interval: nil)
         begin
+          button = ParamNormalizer::Button.new(button).to_value!
+        rescue ParamNormalizer::UnSupportValueError
+          Kernel.warn "設定ファイルに記述ミスがあります. flipの第一引数にはボタンを渡してください."
+          return
+        end
+
+        begin
           if_pressed = ParamNormalizer::FlipIfPressed.new(if_pressed, button: button).to_value!
         rescue ParamNormalizer::UnSupportValueError
           Kernel.warn "設定ファイルに記述ミスがあります. flipのif_pressedにはボタンを渡してください."
@@ -151,7 +158,7 @@ module ProconBypassMan
         begin
           button = ParamNormalizer::Button.new(button).to_value!
         rescue ParamNormalizer::UnSupportValueError
-          Kernel.warn "設定ファイルに記述ミスがあります. disable_macroのif_pressedにはボタンを渡してください."
+          Kernel.warn "設定ファイルに記述ミスがあります. renameにはボタンを渡してください."
           return
         end
 

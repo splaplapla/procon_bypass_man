@@ -22,16 +22,6 @@ module ProconBypassMan
             raise UnexpectedValueError
           end
         end
-
-        private
-
-        def un_support_classes
-          [FalseClass, Integer, TrueClass]
-        end
-
-        def when_nil_class
-          return [true]
-        end
       end
     end
   end
