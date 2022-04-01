@@ -107,7 +107,7 @@ module ProconBypassMan
 
         case if_tilted_left_stick
         when Integer, String, Symbol, Array
-          warn "macro #{name}のif_tilted_left_stickで想定外の値です"
+          warn "open_macro #{name}のif_tilted_left_stickで想定外の値です"
           if_tilted_left_stick = nil
         when TrueClass, NilClass, FalseClass, Hash
           # OK
@@ -158,7 +158,7 @@ module ProconBypassMan
         begin
           button = ParamNormalizer::Button.new(button).to_value!
         rescue ParamNormalizer::UnSupportValueError
-          Kernel.warn "設定ファイルに記述ミスがあります. renameにはボタンを渡してください."
+          Kernel.warn "設定ファイルに記述ミスがあります. remapにはボタンを渡してください."
           return
         end
 
