@@ -15,32 +15,29 @@ module ProconBypassMan
 
       # @param [Symbol] button
       def flip(button, if_pressed: false, force_neutral: nil, flip_interval: nil)
-        case if_pressed
-        when TrueClass
-          if_pressed = [button]
-        when Symbol, String
-          if_pressed = [if_pressed.to_sym]
-        when Array
-          if_pressed = if_pressed.map(&:to_sym).uniq
-        when FalseClass, NilClass
-          if_pressed = false
-        else
-          raise "not support class"
+        begin
+          button = ParamNormalizer::Button.new(button).to_value!
+        rescue ParamNormalizer::UnSupportValueError
+          Kernel.warn "設定ファイルに記述ミスがあります. flipの第一引数にはボタンを渡してください."
+          return
+        end
+
+        begin
+          if_pressed = ParamNormalizer::FlipIfPressed.new(if_pressed, button: button).to_value!
+        rescue ParamNormalizer::UnSupportValueError
+          Kernel.warn "設定ファイルに記述ミスがあります. flipのif_pressedにはボタンを渡してください."
+          return
         end
 
         hash = { if_pressed: if_pressed }
-        case force_neutral
-        when TrueClass
-          Kernel.warn "#{force_neutral}を受け取りました. エラーです. flipのforce_neutralにはボタンを渡してください."
+
+        begin
+          if(force_neutral = ParamNormalizer::ForceNeutral.new(force_neutral).to_value!)
+            hash[:force_neutral] = force_neutral
+          end
+        rescue ParamNormalizer::UnSupportValueError
+          Kernel.warn "設定ファイルに記述ミスがあります. flipのforce_neutralにはボタンを渡してください."
           return
-        when Symbol, String
-          hash[:force_neutral] = [force_neutral.to_sym]
-        when Array
-          hash[:force_neutral] = force_neutral.map(&:to_sym).uniq
-        when FalseClass, NilClass
-          # no-op
-        else
-          raise "not support value"
         end
 
         if flip_interval
@@ -56,16 +53,32 @@ module ProconBypassMan
       end
 
       # @param [String, Class] プラグインのclass
-      def macro(name, if_pressed: , if_tilted_left_stick: nil, force_neutral: nil)
-        case force_neutral
-        when Array
-          # no-op
-        when String, Symbol
-          force_neutral = [force_neutral]
-        when Integer
-          warn "#macro {name}のforce_neutralで想定外の値です"
+      def macro(name, if_pressed: nil, if_tilted_left_stick: nil, force_neutral: nil)
+        case if_tilted_left_stick
+        when Integer, String, Symbol, Array
+          warn "macro #{name}のif_tilted_left_stickで想定外の値です"
+          if_tilted_left_stick = nil
+        when TrueClass, NilClass, FalseClass
+          # OK
+        else
+          Kernel.warn "設定ファイルに記述ミスがあります. 未対応の値を受け取りました."
           return
-        when NilClass
+        end
+
+        begin
+          if(fn = ParamNormalizer::ForceNeutral.new(force_neutral).to_value!)
+            force_neutral = fn
+          end
+        rescue ParamNormalizer::UnSupportValueError
+          Kernel.warn "設定ファイルに記述ミスがあります. macroのforce_neutralにはボタンを渡してください."
+          return
+        end
+
+        begin
+          if_pressed = ParamNormalizer::IfPressed.new(if_pressed).to_value!
+        rescue ParamNormalizer::UnSupportValueError
+          Kernel.warn "設定ファイルに記述ミスがあります. macroのif_pressedにはボタンを渡してください."
+          return
         end
 
         macro_name = name.to_s.to_sym
@@ -79,16 +92,42 @@ module ProconBypassMan
       # 設定ファイルに直接マクロを打ち込める
       # @param [String, Class] macroの識別子
       # @paramh[Array<Symbol>] macroの本体. ボタンの配列
-      def open_macro(name, steps: , if_pressed: , if_tilted_left_stick: nil, force_neutral: nil)
-        case force_neutral
-        when Array
-          # no-op
-        when String, Symbol
-          force_neutral = [force_neutral]
-        when Integer
-          warn "#macro {name}のforce_neutralで想定外の値です"
+      def open_macro(name, steps: [], if_pressed: nil, if_tilted_left_stick: nil, force_neutral: nil)
+        if name.nil?
+          Kernel.warn "設定ファイルに記述ミスがあります. open_macroのnameには一意になる名前を渡してください."
           return
-        when NilClass
+        end
+
+        begin
+          steps = ParamNormalizer::OpenMacroSteps.new(steps).to_value!
+        rescue ParamNormalizer::UnSupportValueError
+          Kernel.warn "設定ファイルに記述ミスがあります. open_macroのstepsには文字列の配列を渡してください."
+          return
+        end
+
+        case if_tilted_left_stick
+        when Integer, String, Symbol, Array
+          warn "open_macro #{name}のif_tilted_left_stickで想定外の値です"
+          if_tilted_left_stick = nil
+        when TrueClass, NilClass, FalseClass, Hash
+          # OK
+        else
+          Kernel.warn "設定ファイルに記述ミスがあります. 未対応の値を受け取りました."
+          return
+        end
+
+        begin
+          force_neutral = ParamNormalizer::ForceNeutral.new(force_neutral).to_value!
+        rescue ParamNormalizer::UnSupportValueError
+          Kernel.warn "設定ファイルに記述ミスがあります. open_macroのforce_neutralにはボタンを渡してください."
+          return
+        end
+
+        begin
+          if_pressed = ParamNormalizer::IfPressed.new(if_pressed).to_value!
+        rescue ParamNormalizer::UnSupportValueError
+          Kernel.warn "設定ファイルに記述ミスがあります. open_macroのif_pressedにはボタンを渡してください."
+          return
         end
 
         macro_name = name || "OpenMacro-#{steps.join}".to_sym
@@ -97,82 +136,82 @@ module ProconBypassMan
       end
 
       def disable_macro(name, if_pressed: nil)
+        if name.nil?
+          Kernel.warn "設定ファイルに記述ミスがあります. disable_macroのnameにはmacro nameかクラス名の名前を渡してください."
+          return
+        end
+
         hash = { name: name.to_s.to_sym, if_pressed: [] }
-        case if_pressed
-        when TrueClass, FalseClass
-          return # booleanはよくわからないのでreturn
-        when Symbol, String
-          hash[:if_pressed] = [if_pressed]
-        when Array
-          hash[:if_pressed] = if_pressed
-        when NilClass # 常に対象のmacroをdisableにする
-          hash[:if_pressed] = [true]
-        else
-          raise "not support value"
+        begin
+          if(if_pressed = ParamNormalizer::DisableMacroIfPressed.new(if_pressed).to_value!)
+            hash[:if_pressed] = if_pressed
+          end
+        rescue ParamNormalizer::UnSupportValueError
+          Kernel.warn "設定ファイルに記述ミスがあります. disable_macroのif_pressedにはボタンを渡してください."
+          return
         end
 
         disable_macros << hash
       end
 
       def remap(button, to: )
-        case to
-        when TrueClass, FalseClass, NilClass
-          raise "ボタンを渡してください"
-        when Symbol, String
-          self.remaps[button] = { to: [to] }
-        when Array
-          raise "ボタンを渡してください" if to.size.zero?
-          self.remaps[button] = { to: to }
+        begin
+          button = ParamNormalizer::Button.new(button).to_value!
+        rescue ParamNormalizer::UnSupportValueError
+          Kernel.warn "設定ファイルに記述ミスがあります. remapにはボタンを渡してください."
+          return
+        end
+
+        begin
+          self.remaps[button] = { to: ParamNormalizer::ButtonList.new(to).to_value! }
+        rescue ParamNormalizer::UnSupportValueError
+          Kernel.warn "設定ファイルに記述ミスがあります. remapのtoにはボタンを渡してください."
+          return
         end
       end
 
-      def left_analog_stick_cap(cap: , if_pressed: nil, force_neutral: nil)
+      def left_analog_stick_cap(cap: nil, if_pressed: nil, force_neutral: nil)
+        case cap
+        when Integer
+          # OK
+        when Float
+          cap = cap.to_i
+        else
+          Kernel.warn "設定ファイルに記述ミスがあります. left_analog_stick_capのcapで未対応の値を受け取りました."
+          return
+        end
+
         hash = { cap: cap }
 
-        case if_pressed
-        when TrueClass, FalseClass
-          raise "ボタンを渡してください"
-        when Symbol, String
-          if_pressed = [if_pressed]
-        when Array, NilClass
-          # no-op
-        else
-          raise "not support value"
+        begin
+          if(if_pressed = ParamNormalizer::IfPressedAllowsFalsy.new(if_pressed).to_value!)
+            hash[:if_pressed] = if_pressed
+          end
+        rescue ParamNormalizer::UnSupportValueError
+          Kernel.warn "設定ファイルに記述ミスがあります. left_analog_stick_capのif_pressedにはボタンを渡してください."
+          return
         end
 
-        if if_pressed
-          hash[:if_pressed] = if_pressed
-        end
-
-        case force_neutral
-        when TrueClass
-          raise "ボタンを渡してください"
-        when Symbol, String
-          hash[:force_neutral] = [force_neutral]
-        when Array
-          hash[:force_neutral] = force_neutral
-        when FalseClass, NilClass
-          # no-op
-        else
-          raise "not support value"
+        begin
+          if(force_neutral = ParamNormalizer::ForceNeutral.new(force_neutral).to_value!)
+            hash[:force_neutral] = force_neutral
+          end
+        rescue ParamNormalizer::UnSupportValueError
+          Kernel.warn "設定ファイルに記述ミスがあります. left_analog_stick_capのforce_neutralにはボタンを渡してください."
+          return
         end
 
         left_analog_stick_caps << hash
       end
 
       def disable(button)
-        case button
-        when TrueClass, FalseClass, NilClass
-          raise "not support class"
-        when Symbol
-          disables << button
-        when String
-          disables << button.to_sym
-        when Array
-          button.each { |b| disables << b }
-        else
-          raise "not support value"
+        ParamNormalizer::ButtonList.new(button).to_value!.each do |disable|
+          disables << disable
         end
+        disables.uniq!
+      rescue ParamNormalizer::UnSupportValueError
+        Kernel.warn "設定ファイルに記述ミスがあります. disableにはボタンを渡してください."
+        return
       end
 
       # @return [Array]

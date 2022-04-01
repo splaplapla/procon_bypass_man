@@ -219,7 +219,8 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
           )
         end
       end
-      context '存在しないボタンを書いているとき2-1(remap)' do
+      # Layerでフィルタするようにしたのでエラーにならなくなった
+      xcontext '存在しないボタンを書いているとき2-1(remap)' do
         let(:setting_content) do
           <<~EOH
           version: 1.0
@@ -685,15 +686,6 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
           end
         end
         expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].remaps).to eq(:l=>{ to: [:zr] })
-      end
-      it  'with remap' do
-        expect {
-          ProconBypassMan.buttons_setting_configure do
-            layer :up do
-              remap :l, to: []
-            end
-          end
-        }.to raise_error RuntimeError, "ボタンを渡してください"
       end
       it  'with remap' do
         ProconBypassMan.buttons_setting_configure do

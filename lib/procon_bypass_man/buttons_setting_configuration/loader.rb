@@ -1,3 +1,5 @@
+require "procon_bypass_man/buttons_setting_configuration/param_normalizer"
+
 module ProconBypassMan
   class ButtonsSettingConfiguration
     module Loader
