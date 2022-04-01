@@ -87,13 +87,13 @@ module ProconBypassMan
         end
 
         case if_pressed
-        when Array
-          if_pressed = if_pressed.map(&:to_sym).uniq
-        when String, Symbol
-          if_pressed = [if_pressed].map(&:to_sym).uniq
         when Integer, TrueClass, FalseClass, NilClass
           Kernel.warn "設定ファイルに記述ミスがあります. macroのif_pressedはボタンを渡してください."
           return # これはトリガーなので必須
+        when String, Symbol
+          if_pressed = [if_pressed].map(&:to_sym).uniq
+        when Array
+          if_pressed = if_pressed.map(&:to_sym).uniq
         else
           Kernel.warn "設定ファイルに記述ミスがあります. 未対応の値を受け取りました."
           return
