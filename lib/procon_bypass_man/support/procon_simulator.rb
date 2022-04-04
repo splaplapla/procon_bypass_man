@@ -4,9 +4,10 @@ class ProconBypassMan::ProconSimulator
 
   def read_once
     raw_data = read
-    data = raw_data.unpack("H*").first
-    case data
-    when "0000", "8005", "8001", "8002", "8004"
+    first_data_part = raw_data[0].unpack("H*").first
+    case first_data_part
+    when "00", "80"
+      data = raw_data.unpack("H*").first
       puts(">>> #{data}")
       case data
       when "0000", "8005"
@@ -20,10 +21,10 @@ class ProconBypassMan::ProconSimulator
       else
         puts "unknown!!!!!!"
       end
-
-    when /^01/
-      case data
-      when /^0100/ # Set NFC/IR MCU configuration
+    when "01"
+      sub_command = raw_data[10].unpack("H*").first
+      case sub_command
+      when "03" # Set NFC/IR MCU configuration
         response("219a810080007bd8789128700a800300000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000")
       end
     end
