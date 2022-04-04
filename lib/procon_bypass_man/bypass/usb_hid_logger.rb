@@ -13,10 +13,10 @@ class ProconBypassMan::Bypass
       return unless bypass_value.to_text
 
       if ProconBypassMan.config.verbose_bypass_log
-        ProconBypassMan.logger.debug { ">>> #{bypass_value.to_text}" }
+        ProconBypassMan.logger.debug { ">>>> #{bypass_value.to_text}" }
       else
         ProconBypassMan.cache.fetch key: 'bypass_log', expires_in: 1 do
-          ProconBypassMan.logger.debug { ">>> #{bypass_value.to_text}" }
+          ProconBypassMan.logger.debug { ">>>> #{bypass_value.to_text}" }
         end
       end
     end
@@ -25,10 +25,10 @@ class ProconBypassMan::Bypass
       return unless bypass_value.to_text
 
       if ProconBypassMan.config.verbose_bypass_log
-        ProconBypassMan.logger.debug { "<<< #{bypass_value.to_text}" }
+        ProconBypassMan.logger.debug { "<<<< #{bypass_value.to_text}" }
       else
         ProconBypassMan.cache.fetch key: 'bypass_log', expires_in: 1 do
-          ProconBypassMan.logger.debug { "<<< #{bypass_value.to_text}" }
+          ProconBypassMan.logger.debug { "<<<< #{bypass_value.to_text}" }
         end
       end
 
