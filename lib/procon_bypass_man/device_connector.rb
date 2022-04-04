@@ -10,9 +10,6 @@ class ProconBypassMan::DeviceConnector
     end
   end
 
-  PROCON_PATH = "/dev/hidraw0"
-  PROCON2_PATH = "/dev/hidraw1"
-
   def self.connect
     s = new(throw_error_if_timeout: true, enable_at_exit: false)
     s.add([
