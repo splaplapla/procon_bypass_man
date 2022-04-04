@@ -24,7 +24,7 @@ class ProconBypassMan::ProconSimulator
     when "01"
       sub_command = raw_data[10].unpack("H*").first
       case sub_command
-      when "03" # Set NFC/IR MCU configuration
+      when "03" # Set input report mode
         response("219a810080007bd8789128700a800300000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000")
       end
     end
