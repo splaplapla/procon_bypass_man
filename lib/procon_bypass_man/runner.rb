@@ -28,7 +28,7 @@ class ProconBypassMan::Runner
       $will_terminate_token = false
       # NOTE メインプロセスではThreadをいくつか起動しているので念のためパフォーマンスを優先するためにforkしていく
       child_pid = Kernel.fork {
-        DRb.start_service
+        DRb.start_service if defined?(DRb)
         ProconBypassMan::RemoteMacroReceiver.start!
         ProconBypassMan::BypassCommand.new(gadget: @gadget, procon: @procon).execute
       }
