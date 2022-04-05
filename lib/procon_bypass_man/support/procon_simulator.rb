@@ -10,6 +10,8 @@ class ProconBypassMan::ProconSimulator
   def read_once
     raw_data = read
     first_data_part = raw_data[0].unpack("H*").first
+    binding.pry if $aaaa
+
     case first_data_part
     when "00", "80"
       data = raw_data.unpack("H*").first
@@ -31,8 +33,12 @@ class ProconBypassMan::ProconSimulator
       sub_command = raw_data[10].unpack("H*").first
 
       case sub_command
+      when "01" # Bluetooth manual pairing
+        uart_response("81", sub_command, "03")
       when "02" # Request device info
         uart_response("82", sub_command, "0348030298b6e942bd2d0301") # including macadress
+      when "04" # Trigger buttons elapsed time
+        uart_response("83", sub_command, [])
       when "48" # 01000000000000000000480000000000000000000000000000000000000000000000000000000000000000000000000000
         uart_response("80", sub_command, [])
       when "03" # Set input report mode
@@ -48,8 +54,8 @@ class ProconBypassMan::ProconSimulator
         when "5060" # Controller Color
           spi_response(arg, 'bc114 275a928 ffffff ffffff ff'.gsub(" ", "")) # Raspberry Color
         else
+          binding.pry if $aaaa
         end
-
       end
     end
   end
