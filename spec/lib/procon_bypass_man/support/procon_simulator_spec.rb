@@ -2,13 +2,20 @@ require "spec_helper"
 require "procon_bypass_man/support/procon_simulator"
 
 describe ProconBypassMan::ProconSimulator do
+  let(:simulator) { described_class.new }
+
   describe '#response_counter' do
-    it do
+    it '256の次は0になること' do
+      255.times do |index|
+        expect(simulator.send(:response_counter)).to eq(index + 1)
+      end
+
+      expect(simulator.send(:response_counter)).to eq(256)
+      expect(simulator.send(:response_counter)).to eq(0)
     end
   end
 
   context 'first step' do
-    let(:simulator) { described_class.new }
 
     before do
       allow(simulator).to receive(:read).and_return(

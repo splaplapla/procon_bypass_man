@@ -54,10 +54,10 @@ class ProconBypassMan::ProconSimulator
   end
 
   def response_counter
-    if @response_counter > 256
+    if @response_counter >= 256
       @response_counter = 0
     else
-      @response_counter =+ 1
+      @response_counter = @response_counter + 1
     end
     @response_counter
   end
