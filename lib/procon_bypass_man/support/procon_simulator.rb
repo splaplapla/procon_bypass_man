@@ -1,5 +1,6 @@
 class ProconBypassMan::ProconSimulator
   def initialize
+    @response_counter = 0
   end
 
   def read_once
@@ -17,7 +18,8 @@ class ProconBypassMan::ProconSimulator
       when "8002"
         response("81020000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000")
       when "8004"
-        input_response
+        start_procon_simulator_thread
+        return nil
       else
         puts "unknown!!!!!!"
       end
@@ -28,7 +30,6 @@ class ProconBypassMan::ProconSimulator
         response("219a810080007bd8789128700a800300000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000")
       end
     end
-
   end
 
   private
@@ -43,8 +44,22 @@ class ProconBypassMan::ProconSimulator
     return data
   end
 
+  def make_response(code, cmd, buf)
+    [code, cmd, buf].join
+  end
+
   def input_response
-    response("309e810080007cc8788f28700a78fd0d00f90ff5ff0100080075fd0900f70ff5ff0200070071fd0900f70ff5ff02000700000000000000000000000000000000")
+    # response("309e810080007cc8788f28700a78fd0d00f90ff5ff0100080075fd0900f70ff5ff0200070071fd0900f70ff5ff02000700000000000000000000000000000000")
+    make_response("30", response_counter, "810080007cc8788f28700a78fd0d00f90ff5ff0100080075fd0900f70ff5ff0200070071fd0900f70ff5ff02000700000000000000000000000000000000")
+  end
+
+  def response_counter
+    if @response_counter > 256
+      @response_counter = 0
+    else
+      @response_counter =+ 1
+    end
+    @response_counter
   end
 
   def write(data)
@@ -59,5 +74,16 @@ class ProconBypassMan::ProconSimulator
   end
 
   def spi_response
+  end
+
+  def start_procon_simulator_thread
+    Thread.start do
+      loop do
+        write(input_response)
+        sleep(0.03)
+      rescue IO::EAGAINWaitReadable
+        retry
+      end
+    end
   end
 end

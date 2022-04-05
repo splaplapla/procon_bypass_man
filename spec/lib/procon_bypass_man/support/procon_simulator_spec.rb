@@ -2,6 +2,11 @@ require "spec_helper"
 require "procon_bypass_man/support/procon_simulator"
 
 describe ProconBypassMan::ProconSimulator do
+  describe '#response_counter' do
+    it do
+    end
+  end
+
   context 'first step' do
     let(:simulator) { described_class.new }
 
@@ -26,7 +31,7 @@ describe ProconBypassMan::ProconSimulator do
       expect(simulator.read_once).to match("810100032dbd42e9b698000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000")
       expect(simulator.read_once).to match("81020000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000")
       expect(simulator.read_once).to match("219a810080007bd8789128700a800300000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000")
-      expect(simulator.read_once).to match("309e810080007cc8788f28700a78fd0d00f90ff5ff0100080075fd0900f70ff5ff0200070071fd0900f70ff5ff02000700000000000000000000000000000000")
+      expect(simulator.read_once).to match(nil)
     end
   end
 end
