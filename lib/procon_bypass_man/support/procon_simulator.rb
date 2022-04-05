@@ -9,6 +9,12 @@ class ProconBypassMan::ProconSimulator
     @procon_simulator_thread = nil
   end
 
+  def run
+    loop do
+      read_once
+    end
+  end
+
   def read_once
     raw_data = read
     first_data_part = raw_data[0].unpack("H*").first
@@ -85,11 +91,14 @@ class ProconBypassMan::ProconSimulator
 
   def read
     gadget.read_nonblock(64)
+  rescue IO::EAGAINWaitReadable
+    retry
   end
 
-  def response(data)
-    write(data)
-    return data
+  # @return [String] switchに入力する用の128byte data
+  def make_response(code, cmd, buf)
+    buf = [code, cmd, buf].join
+    buf.ljust(128, "0")
   end
 
   def spi_response(addr, data)
@@ -110,10 +119,9 @@ class ProconBypassMan::ProconSimulator
     )
   end
 
-  # @return [String] switchに入力する用の128byte data
-  def make_response(code, cmd, buf)
-    buf = [code, cmd, buf].join
-    buf.ljust(128, "0")
+  def response(data)
+    write(data)
+    return data
   end
 
   def response_counter
@@ -126,9 +134,10 @@ class ProconBypassMan::ProconSimulator
   end
 
   def write(data)
-    return
     puts("<<< #{data}")
     gadget.write_nonblock([data].pack("H*"))
+  rescue IO::EAGAINWaitReadable
+    retry
   end
 
   def gadget
