@@ -27,31 +27,48 @@ class ProconBypassMan::ProconSimulator
     when "01"
       sub_command = raw_data[10].unpack("H*").first
       case sub_command
+      when "02" # Request device info
+        uart_response("82", sub_command, "0348030298b6e942bd2d0301") # including macadress
+      when "48" # 01000000000000000000480000000000000000000000000000000000000000000000000000000000000000000000000000
+        uart_response("80", sub_command, [])
       when "03" # Set input report mode
-        response("219a810080007bd8789128700a800300000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000")
+        uart_response("80", sub_command, [])
       end
     end
   end
 
   private
 
+  UART_INITIAL_INPUT = '81008000f8d77a22c87b0c'
+  # UART_INITIAL_INPUT = '810080007bd8789028700382020348030298b6e942bd2d030100000000000000000000000000000000000000000000000000000000000000000000000000'
+
   def read
     gadget.read_nonblock(64)
   end
 
   def response(data)
-    puts("<<< #{data}")
     write(data)
     return data
   end
 
-  def make_response(code, cmd, buf)
-    [code, cmd, buf].join
+  def uart_response(code, subcmd, data)
+    buf = [UART_INITIAL_INPUT, code, subcmd].join
+    response(
+      make_response("21", response_counter, buf)
+    )
   end
 
   def input_response
     # response("309e810080007cc8788f28700a78fd0d00f90ff5ff0100080075fd0900f70ff5ff0200070071fd0900f70ff5ff02000700000000000000000000000000000000")
-    make_response("30", response_counter, "810080007cc8788f28700a78fd0d00f90ff5ff0100080075fd0900f70ff5ff0200070071fd0900f70ff5ff02000700000000000000000000000000000000")
+    response(
+      make_response("30", response_counter, "810080007cc8788f28700a78fd0d00f90ff5ff0100080075fd0900f70ff5ff0200070071fd0900f70ff5ff02000700000000000000000000000000000000")
+    )
+  end
+
+  # @return [String] switchに入力する用の128byte data
+  def make_response(code, cmd, buf)
+    buf = [code, cmd, buf].join
+    buf.ljust(128, "0")
   end
 
   def response_counter
@@ -60,18 +77,17 @@ class ProconBypassMan::ProconSimulator
     else
       @response_counter = @response_counter + 1
     end
-    @response_counter
+    @response_counter.to_s.rjust(2, "0")
   end
 
   def write(data)
-    # gadget.write_nonblock([data].pack("H*"))
+    return
+    puts("<<< #{data}")
+    gadget.write_nonblock([data].pack("H*"))
   end
 
   def gadget
     @gadget ||= File.open('/dev/hidg0', "w+b")
-  end
-
-  def uart_response
   end
 
   def spi_response
@@ -81,7 +97,7 @@ class ProconBypassMan::ProconSimulator
     @procon_simulator_thread =
       Thread.start do
         loop do
-          write(input_response)
+          input_response
           sleep(0.03)
         rescue IO::EAGAINWaitReadable
           retry
