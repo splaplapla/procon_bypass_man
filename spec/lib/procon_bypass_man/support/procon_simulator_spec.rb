@@ -3,7 +3,7 @@ require "procon_bypass_man/support/procon_simulator"
 
 describe ProconBypassMan::ProconSimulator do
   let(:initial_input) { ProconBypassMan::ProconSimulator::UART_INITIAL_INPUT }
-  let(:device_info) { ProconBypassMan::ProconSimulator::UART_DEVICE_INFO }
+  let(:procon_mac_addr) { ProconBypassMan::ProconSimulator::MAC_ADDR }
   let(:simulator) { described_class.new }
 
   describe '#response_counter' do
@@ -61,7 +61,7 @@ describe ProconBypassMan::ProconSimulator do
       expect(simulator.read_once).to match(nil)
       expect(simulator.instance_eval { @procon_simulator_thread }).not_to be_nil
       expect(simulator.read_once).to match(/21..#{initial_input}804800000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000/) # 01-48
-      expect(simulator.read_once).to match(/21..#{initial_input}8202#{device_info          }00000000000000000000000000000000000000000000000000000000000000000000000000/) # 01-02
+        expect(simulator.read_once).to match(/21..#{initial_input}820203480302#{procon_mac_addr.reverse}030100000000000000000000000000000000000000000000000000000000000000000000000000/) # 01-02
       expect(simulator.read_once).to match(/21..#{initial_input}800800000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000/) # 01-08
       expect(simulator.read_once).to match(/21..#{initial_input}90100060000010ffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000/) # 01-10-0060, Serial number
       expect(simulator.read_once).to match(/21..#{initial_input}90105060000010bc114275a928ffffffffffffff00000000000000000000000000000000000000000000000000000000000000/) # Controller Color

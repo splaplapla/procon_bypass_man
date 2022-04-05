@@ -39,10 +39,10 @@ class ProconBypassMan::ProconSimulator
       when "01" # Bluetooth manual pairing
         uart_response("81", sub_command, "03")
       when "02" # Request device info
-        uart_response("82", sub_command, "0348030298b6e942bd2d0301") # including macadress
+        uart_response("82", sub_command, "03480302#{MAC_ADDR.reverse}0301")
       when "04" # Trigger buttons elapsed time
         uart_response("83", sub_command, [])
-      when "48" # 01000000000000000000480000000000000000000000000000000000000000000000000000000000000000000000000000
+      when "48"
         uart_response("80", sub_command, [])
       when "03" # Set input report mode
         uart_response("80", sub_command, [])
