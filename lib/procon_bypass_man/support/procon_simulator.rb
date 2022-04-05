@@ -1,4 +1,6 @@
 class ProconBypassMan::ProconSimulator
+  MAC_ADDR = '00005e00535e'
+
   UART_INITIAL_INPUT = '81008000f8d77a22c87b0c'
   UART_DEVICE_INFO = '0348030298b6e942bd2d0301'
 
@@ -10,7 +12,6 @@ class ProconBypassMan::ProconSimulator
   def read_once
     raw_data = read
     first_data_part = raw_data[0].unpack("H*").first
-    binding.pry if $aaaa
 
     return if first_data_part == "10" && raw_data.size == 10
 
@@ -22,14 +23,14 @@ class ProconBypassMan::ProconSimulator
       when "0000", "8005"
         return data # do not need response
       when "8001"
-        response("810100032dbd42e9b698000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000")
+        make_response("81", "01", "0003#{MAC_ADDR}")
       when "8002"
-        response("81020000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000")
+        make_response("81", "02", [])
       when "8004"
         start_procon_simulator_thread
         return nil
       else
-        puts "unknown!!!!!!"
+        puts "#{raw_data.unpack("H*").first} is unknown!!!!!!(1)"
       end
     when "01"
       sub_command = raw_data[10].unpack("H*").first
@@ -72,15 +73,15 @@ class ProconBypassMan::ProconSimulator
         when "2880" # User 6-Axis Motion Sensor calibration
           spi_response(arg, 'beff3e00f001004000400040fefffeff0800e73be73be73b')
         else
-          binding.pry if $aaaa
+          puts "#{first_data_part}-#{sub_command}-#{arg} is unknown!!!!!!(2)"
         end
       end
+    else
+      puts "#{first_data_part}} is unknown!!!!!!(3)"
     end
   end
 
   private
-
-  # UART_INITIAL_INPUT = '810080007bd8789028700382020348030298b6e942bd2d030100000000000000000000000000000000000000000000000000000000000000000000000000'
 
   def read
     gadget.read_nonblock(64)
@@ -104,7 +105,6 @@ class ProconBypassMan::ProconSimulator
   end
 
   def input_response
-    # response("309e810080007cc8788f28700a78fd0d00f90ff5ff0100080075fd0900f70ff5ff0200070071fd0900f70ff5ff02000700000000000000000000000000000000")
     response(
       make_response("30", response_counter, "810080007cc8788f28700a78fd0d00f90ff5ff0100080075fd0900f70ff5ff0200070071fd0900f70ff5ff02000700000000000000000000000000000000")
     )
