@@ -12,6 +12,8 @@ class ProconBypassMan::ProconSimulator
     first_data_part = raw_data[0].unpack("H*").first
     binding.pry if $aaaa
 
+    return if first_data_part == "10" && raw_data.size == 10
+
     case first_data_part
     when "00", "80"
       data = raw_data.unpack("H*").first
@@ -45,6 +47,12 @@ class ProconBypassMan::ProconSimulator
         uart_response("80", sub_command, [])
       when "08"
         uart_response("80", sub_command, [])
+      when "30"
+        uart_response("80", sub_command, [])
+      when "40"
+        uart_response("80", sub_command, [])
+      when "48"
+        uart_response("80", sub_command, [])
       when "10"
         arg = raw_data[11..12].unpack("H*").first
 
@@ -57,6 +65,12 @@ class ProconBypassMan::ProconSimulator
           spi_response(arg, '50fd0000c60f0f30619630f3d41454411554c7799c333663')
         when "9860" # Factory Stick device parameters 2
           spi_response(arg, '0f30619630f3d41454411554c7799c333663')
+        when "1080" # User Analog sticks calibration
+          spi_response(arg, 'ffffffffffffffffffffffffffffffffffffffffffffb2a1')
+        when "3d60" # Factory configuration & calibration 2
+          spi_response(arg, 'ba156211b87f29065bffe77e0e36569e8560ff323232ffffff')
+        when "2880" # User 6-Axis Motion Sensor calibration
+          spi_response(arg, 'beff3e00f001004000400040fefffeff0800e73be73be73b')
         else
           binding.pry if $aaaa
         end
