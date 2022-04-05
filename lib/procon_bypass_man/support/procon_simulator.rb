@@ -1,4 +1,7 @@
 class ProconBypassMan::ProconSimulator
+  UART_INITIAL_INPUT = '81008000f8d77a22c87b0c'
+  UART_DEVICE_INFO = '0348030298b6e942bd2d0301'
+
   def initialize
     @response_counter = 0
     @procon_simulator_thread = nil
@@ -26,6 +29,7 @@ class ProconBypassMan::ProconSimulator
       end
     when "01"
       sub_command = raw_data[10].unpack("H*").first
+
       case sub_command
       when "02" # Request device info
         uart_response("82", sub_command, "0348030298b6e942bd2d0301") # including macadress
@@ -33,13 +37,22 @@ class ProconBypassMan::ProconSimulator
         uart_response("80", sub_command, [])
       when "03" # Set input report mode
         uart_response("80", sub_command, [])
+      when "08"
+        uart_response("80", sub_command, [])
+      when "10"
+        arg = raw_data[11..12].unpack("H*").first
+
+        case arg
+        when "0060" # Serial number
+          spi_response(arg, 'ffffffffffffffffffffffffffffffff')
+        end
+
       end
     end
   end
 
   private
 
-  UART_INITIAL_INPUT = '81008000f8d77a22c87b0c'
   # UART_INITIAL_INPUT = '810080007bd8789028700382020348030298b6e942bd2d030100000000000000000000000000000000000000000000000000000000000000000000000000'
 
   def read
@@ -51,8 +64,15 @@ class ProconBypassMan::ProconSimulator
     return data
   end
 
+  def spi_response(addr, data)
+    binding.pry
+    $aaaa = 1
+    buf = [addr, "00", "00", "10", data].join
+    uart_response("90", "10", buf)
+  end
+
   def uart_response(code, subcmd, data)
-    buf = [UART_INITIAL_INPUT, code, subcmd].join
+    buf = [UART_INITIAL_INPUT, code, subcmd, data].join
     response(
       make_response("21", response_counter, buf)
     )
@@ -88,9 +108,6 @@ class ProconBypassMan::ProconSimulator
 
   def gadget
     @gadget ||= File.open('/dev/hidg0', "w+b")
-  end
-
-  def spi_response
   end
 
   def start_procon_simulator_thread
