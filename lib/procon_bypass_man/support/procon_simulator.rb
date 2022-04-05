@@ -1,6 +1,7 @@
 class ProconBypassMan::ProconSimulator
   def initialize
     @response_counter = 0
+    @procon_simulator_thread = nil
   end
 
   def read_once
@@ -77,13 +78,14 @@ class ProconBypassMan::ProconSimulator
   end
 
   def start_procon_simulator_thread
-    Thread.start do
-      loop do
-        write(input_response)
-        sleep(0.03)
-      rescue IO::EAGAINWaitReadable
-        retry
+    @procon_simulator_thread =
+      Thread.start do
+        loop do
+          write(input_response)
+          sleep(0.03)
+        rescue IO::EAGAINWaitReadable
+          retry
+        end
       end
-    end
   end
 end
