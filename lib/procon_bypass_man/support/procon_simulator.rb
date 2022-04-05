@@ -46,20 +46,12 @@ class ProconBypassMan::ProconSimulator
         uart_response("81", sub_command, "03")
       when "02" # Request device info
         uart_response("82", sub_command, "03480302#{MAC_ADDR.reverse}0301")
+      when "03", "08", "30", "38", "40", "48"
+        uart_response("80", sub_command, [])
       when "04" # Trigger buttons elapsed time
         uart_response("83", sub_command, [])
-      when "48"
-        uart_response("80", sub_command, [])
-      when "03" # Set input report mode
-        uart_response("80", sub_command, [])
-      when "08"
-        uart_response("80", sub_command, [])
-      when "30"
-        uart_response("80", sub_command, [])
-      when "40"
-        uart_response("80", sub_command, [])
-      when "48"
-        uart_response("80", sub_command, [])
+      when "21" # Set NFC/IR MCU configuration
+        uart_response("a0", sub_command, "0100ff0003000501")
       when "10"
         arg = raw_data[11..12].unpack("H*").first
 

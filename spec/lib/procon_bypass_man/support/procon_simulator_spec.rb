@@ -8,7 +8,7 @@ describe ProconBypassMan::ProconSimulator do
 
   describe '#response_counter' do
     it '256の次は0になること' do
-      255.times do |index|
+      255.times do
         simulator.send(:response_counter)
       end
 
@@ -52,6 +52,7 @@ describe ProconBypassMan::ProconSimulator do
     end
 
     it do
+      expect(simulator).to receive(:start_procon_simulator_thread).once
       expect(simulator.read_once).to eq("0000")
       expect(simulator.read_once).to eq("0000")
       expect(simulator.read_once).to eq("8005")
@@ -60,7 +61,6 @@ describe ProconBypassMan::ProconSimulator do
       expect(simulator.read_once).to match("81020000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000")
       expect(simulator.read_once).to match(/^21..#{initial_input}800300000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000/) # 01-03
       expect(simulator.read_once).to match(nil)
-      expect(simulator.instance_eval { @procon_simulator_thread }).not_to be_nil
       expect(simulator.read_once).to match(/^21..#{initial_input}804800000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000/) # 01-48
       expect(simulator.read_once).to match(/^21..#{initial_input}820203480302#{procon_mac_addr.reverse}030100000000000000000000000000000000000000000000000000000000000000000000000000/) # 01-02
       expect(simulator.read_once).to match(/^21..#{initial_input}800800000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000/) # 01-08
