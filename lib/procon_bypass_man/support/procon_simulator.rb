@@ -53,6 +53,10 @@ class ProconBypassMan::ProconSimulator
           spi_response(arg, 'ffffffffffffffffffffffffffffffff')
         when "5060" # Controller Color
           spi_response(arg, 'bc114 275a928 ffffff ffffff ff'.gsub(" ", "")) # Raspberry Color
+        when "8060" # Factory Sensor and Stick device parameters
+          spi_response(arg, '50fd0000c60f0f30619630f3d41454411554c7799c333663')
+        when "9860" # Factory Stick device parameters 2
+          spi_response(arg, '0f30619630f3d41454411554c7799c333663')
         else
           binding.pry if $aaaa
         end
