@@ -45,6 +45,9 @@ class ProconBypassMan::ProconSimulator
         case arg
         when "0060" # Serial number
           spi_response(arg, 'ffffffffffffffffffffffffffffffff')
+        when "5060" # Controller Color
+          spi_response(arg, 'bc114 275a928 ffffff ffffff ff'.gsub(" ", "")) # Raspberry Color
+        else
         end
 
       end
@@ -65,8 +68,6 @@ class ProconBypassMan::ProconSimulator
   end
 
   def spi_response(addr, data)
-    binding.pry
-    $aaaa = 1
     buf = [addr, "00", "00", "10", data].join
     uart_response("90", "10", buf)
   end
