@@ -1,4 +1,5 @@
 class ProconBypassMan::ProconSimulator
+  attr_accessor :gadget, :procon
   MAC_ADDR = '00005e00535e'
 
   UART_INITIAL_INPUT = '81008000f8d77a22c87b0c'
@@ -129,7 +130,7 @@ class ProconBypassMan::ProconSimulator
 
   def write(data)
     puts("<<< #{data}")
-    gadget.write_nonblock([data].pack("H*"))
+    @gadget.write_nonblock([data].pack("H*"))
   rescue IO::EAGAINWaitReadable
     retry
   end
@@ -151,11 +152,6 @@ class ProconBypassMan::ProconSimulator
   end
 
   def init_devices
-    ProconBypassMan::UsbDeviceController.reset
-
-    @procon = ProconBypassMan::DeviceProconFinder.find
-    @gadget = File.open('/dev/hidg0', "w+b")
-
-    ProconBypassMan::UsbDeviceController.reset
+    @gadget, _ = ProconBypassMan::DeviceConnector.connect
   end
 end
