@@ -10,6 +10,8 @@ class ProconBypassMan::ProconSimulator
   end
 
   def run
+    init_devices
+
     loop do
       read_once
     end
@@ -146,5 +148,12 @@ class ProconBypassMan::ProconSimulator
           retry
         end
       end
+  end
+
+  def init_devices
+    ProconBypassMan::UsbDeviceController.reset
+
+    @procon = ProconBypassMan::DeviceProconFinder.find
+    @gadget = File.open('/dev/hidg0', "w+b")
   end
 end
