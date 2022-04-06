@@ -1,0 +1,7 @@
+#!/usr/bin/env ruby
+
+require "bundler/setup"
+require "procon_bypass_man"
+require "procon_bypass_man/support/procon_simulator"
+
+ProconBypassMan::ProconSimulator.new.run
