@@ -152,6 +152,16 @@ class ProconBypassMan::ProconSimulator
   end
 
   def init_devices
-    @gadget, _ = ProconBypassMan::DeviceConnector.connect
+    ProconBypassMan::UsbDeviceController.init
+
+    if path = ProconBypassMan::DeviceProconFinder.find
+      @procon = File.open(path, "w+b")
+      ProconBypassMan.logger.info "proconのデバイスファイルは#{path}を使います"
+    else
+      raise(ProconBypassMan::DeviceConnector::NotFoundProconError)
+    end
+    @gadget = File.open('/dev/hidg0', "w+b")
+
+    ProconBypassMan::UsbDeviceController.reset
   end
 end
