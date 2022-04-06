@@ -10,16 +10,13 @@ class ProconBypassMan::DeviceConnector
     end
   end
 
-  PROCON_PATH = "/dev/hidraw0"
-  PROCON2_PATH = "/dev/hidraw1"
-
   def self.connect
     s = new(throw_error_if_timeout: true, enable_at_exit: false)
     s.add([
       ["0000"],
       ["0000"],
       ["8005"],
-      ["0010"],
+      ["0000"],
     ], read_from: :switch)
     # 1. Sends current connection status, and if the Joy-Con are connected,
     s.add([["8001"]], read_from: :switch)
