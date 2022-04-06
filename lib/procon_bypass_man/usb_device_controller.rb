@@ -3,7 +3,7 @@ class ProconBypassMan::UsbDeviceController
     def reset
       system('echo > /sys/kernel/config/usb_gadget/procon/UDC')
       system('ls /sys/class/udc > /sys/kernel/config/usb_gadget/procon/UDC')
-      sleep 5
+      sleep 0.5
     end
 
     def init
