@@ -32,9 +32,13 @@ class ProconBypassMan::ProconSimulator
       when "0000", "8005"
         return data # do not need response
       when "8001"
-        make_response("81", "01", "0003#{MAC_ADDR}")
+        response(
+          make_response("81", "01", "0003#{MAC_ADDR}")
+        )
       when "8002"
-        make_response("81", "02", [])
+        response(
+          make_response("81", "02", [])
+        )
       when "8004"
         start_procon_simulator_thread
         return nil
