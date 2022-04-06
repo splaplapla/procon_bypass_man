@@ -155,5 +155,7 @@ class ProconBypassMan::ProconSimulator
 
     @procon = ProconBypassMan::DeviceProconFinder.find
     @gadget = File.open('/dev/hidg0', "w+b")
+
+    ProconBypassMan::UsbDeviceController.reset
   end
 end
