@@ -1,4 +1,4 @@
-## [0.1.22] - 2022-03-
+## [0.1.22] - 2022-04-09
 * スティックを左右に入れるマクロが使えるようになりました
   * スプラトゥーン2でのタンサンボムのチャージに使えます
   * 例: `open_macro :shake, steps: [:shake_left_stick_and_toggle_b_for_0_1sec], if_pressed: [:b, :r], force_neutral: [:b]`
