@@ -10,8 +10,6 @@ class ProconBypassMan::UsbDeviceController
       return if initialized?
 
       shell = <<~EOH
-        #!/bin/bash
-
         cd /sys/kernel/config/usb_gadget/
         mkdir -p procon
         cd procon

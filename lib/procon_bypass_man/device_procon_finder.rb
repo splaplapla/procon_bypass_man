@@ -31,8 +31,6 @@ class ProconBypassMan::DeviceProconFinder
 
   def get_list_shell
     <<~SHELL
-      #!/bin/bash
-
       FILES=/dev/hidraw*
       for f in $FILES
       do
