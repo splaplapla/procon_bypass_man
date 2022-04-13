@@ -30,5 +30,8 @@ module ProconBypassMan
         buttons: pressing,
       }
     end
+
+    def gyro
+    end
   end
 end
