@@ -25,8 +25,9 @@ class ProconBypassMan::Bypass
     self.bypass_value = BypassValue.new(nil, sent = false)
 
     run_callbacks(:send_gadget_to_procon) do
+      break if $will_terminate_token
+
       begin
-        break if $will_terminate_token
         # TODO blocking readにしたいが、接続時のフェーズによって長さが違うので厳しい
         input = self.gadget.read_nonblock(64)
         self.bypass_value.binary = ProconBypassMan::Domains::InboundProconBinary.new(binary: input)
@@ -89,5 +90,11 @@ class ProconBypassMan::Bypass
       end
     end
     monitor.record(:end_function)
+  end
+
+  # @return [void]
+  def direct_connect_switch_via_bluetooth!
+    ProconBypassMan.logger.debug { "direct_connect_switch_via_bluetooth!" }
+    self.procon.write_nonblock(["8005"].pack("H*"))
   end
 end
