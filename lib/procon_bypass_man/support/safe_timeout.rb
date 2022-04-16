@@ -7,8 +7,14 @@ module ProconBypassMan
       @timeout = timeout
     end
 
+    # @raise [Timeout]
     def throw_if_timeout!
-      raise Timeout if @timeout < Time.now
+      raise Timeout if timeout?
+    end
+
+    # @return [Boolean]
+    def timeout?
+      @timeout < Time.now
     end
   end
 end
