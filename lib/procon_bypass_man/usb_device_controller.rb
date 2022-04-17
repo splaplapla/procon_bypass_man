@@ -5,7 +5,7 @@ class ProconBypassMan::UsbDeviceController
         "ls /sys/class/udc > /sys/kernel/config/usb_gadget/procon/UDC",
       ].each do |shell|
         system shell
-        ProconBypassMan.logger.debug { shell }
+        ProconBypassMan.logger.debug { "[SHELL] #{shell}" }
       end
       sleep 0.5
     end
