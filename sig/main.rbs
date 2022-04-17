@@ -11,9 +11,6 @@ module ProconBypassMan
   class CouldNotLoadConfigError < StandardError
   end
 
-  class FirstConnectionError < StandardError
-  end
-
   class EternalConnectionError < StandardError
   end
 
@@ -255,7 +252,7 @@ class ProconBypassMan::DeviceConnector
 
   def self.connect: () -> ::Array[untyped]
 
-  def initialize: (?throw_error_if_timeout: bool throw_error_if_timeout, ?throw_error_if_mismatch: bool throw_error_if_mismatch, ?enable_at_exit: bool enable_at_exit) -> untyped
+  def initialize: (?throw_error_if_timeout: bool throw_error_if_timeout, ?throw_error_if_mismatch: bool throw_error_if_mismatch) -> untyped
 
   def add: (untyped values, read_from: untyped read_from) -> untyped
 

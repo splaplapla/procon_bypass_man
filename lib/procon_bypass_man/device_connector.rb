@@ -33,12 +33,11 @@ class ProconBypassMan::DeviceConnector
     return [s.switch, s.procon]
   end
 
-  def initialize(throw_error_if_timeout: false, throw_error_if_mismatch: false , enable_at_exit: true)
+  def initialize(throw_error_if_timeout: false, throw_error_if_mismatch: false)
     @stack = []
     @initialized_devices = false
     @throw_error_if_timeout = throw_error_if_timeout
     @throw_error_if_mismatch = throw_error_if_mismatch
-    @enable_at_exit = enable_at_exit
   end
 
   def add(values, read_from: )
@@ -139,14 +138,6 @@ class ProconBypassMan::DeviceConnector
     ProconBypassMan::UsbDeviceController.reset
 
     @initialized_devices = true
-
-    if @enable_at_exit
-      at_exit do
-        @procon&.close
-        @gadget&.close
-        ProconBypassMan::UsbDeviceController.reset
-      end
-    end
   rescue Errno::ENXIO => e
     # /dev/hidg0 をopenできないときがある
     ProconBypassMan::SendErrorCommand.execute(error: "Errno::ENXIO (No such device or address @ rb_sysopen - /dev/hidg0)が起きました。resetします.\n #{e.full_message}")
