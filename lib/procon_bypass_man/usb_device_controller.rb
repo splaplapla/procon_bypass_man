@@ -1,8 +1,12 @@
 class ProconBypassMan::UsbDeviceController
   class << self
     def reset
-      system('echo > /sys/kernel/config/usb_gadget/procon/UDC')
-      system('ls /sys/class/udc > /sys/kernel/config/usb_gadget/procon/UDC')
+      [ "echo > /sys/kernel/config/usb_gadget/procon/UDC",
+        "ls /sys/class/udc > /sys/kernel/config/usb_gadget/procon/UDC",
+      ].each do |shell|
+        system shell
+        ProconBypassMan.logger.debug { "[SHELL] #{shell}" }
+      end
       sleep 0.5
     end
 

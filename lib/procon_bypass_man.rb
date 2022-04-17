@@ -63,7 +63,6 @@ module ProconBypassMan
 
   class CouldNotLoadConfigError < StandardError; end
   class ConnectionError < StandardError; end
-  class FirstConnectionError < ConnectionError; end
   class EternalConnectionError < ConnectionError; end
 
   # @return [void]
@@ -107,9 +106,6 @@ module ProconBypassMan
       ProconBypassMan::DeviceStatus.change_to_connected_but_sleeping!
       FileUtils.rm_rf(ProconBypassMan.pid_path)
       eternal_sleep
-    rescue ProconBypassMan::FirstConnectionError
-      ProconBypassMan::SendErrorCommand.execute(error: "接続を確立できませんでした。やりなおします。")
-      retry
     end
   end
 
@@ -139,6 +135,11 @@ module ProconBypassMan
     system("renice -n -20 -p #{$$}")
     File.write(pid_path, $$)
     ProconBypassMan::DeviceStatus.change_to_running!
+
+    at_exit do
+      next if ENV['PBM_ENV'] == "test"
+      ProconBypassMan::UsbDeviceController.reset
+    end
   end
 
   def self.eternal_sleep
