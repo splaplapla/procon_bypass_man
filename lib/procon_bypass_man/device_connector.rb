@@ -11,7 +11,7 @@ class ProconBypassMan::DeviceConnector
   end
 
   def self.connect
-    s = new(throw_error_if_timeout: true, enable_at_exit: false)
+    s = new(throw_error_if_timeout: true)
     s.add([
       ["0000"],
       ["0000"],
