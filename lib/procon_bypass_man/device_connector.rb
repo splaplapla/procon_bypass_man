@@ -144,6 +144,7 @@ class ProconBypassMan::DeviceConnector
       at_exit do
         @procon&.close
         @gadget&.close
+        ProconBypassMan::UsbDeviceController.reset
       end
     end
   rescue Errno::ENXIO => e
