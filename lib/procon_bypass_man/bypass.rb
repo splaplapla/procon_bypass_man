@@ -106,6 +106,7 @@ class ProconBypassMan::Bypass
       output = self.procon.read_nonblock(64)
       ProconBypassMan.logger.debug { "[ProconBypassMan::Bypass#be_empty_procon] #{output.unpack("H*").first}" }
     rescue IO::EAGAINWaitReadable
+      # no-op
     end
   end
 end
