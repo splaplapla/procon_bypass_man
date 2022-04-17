@@ -70,7 +70,8 @@ class ProconBypassMan::BypassCommand
       bypass = ProconBypassMan::Bypass.new(gadget: @gadget, procon: @procon, monitor: monitor2)
       loop do
         if $will_terminate_token
-          bypass.direct_connect_switch_via_bluetooth!
+          bypass.direct_connect_switch_via_bluetooth
+          bypass.be_empty_procon
           break
         end
 

@@ -93,8 +93,20 @@ class ProconBypassMan::Bypass
   end
 
   # @return [void]
-  def direct_connect_switch_via_bluetooth!
+  def direct_connect_switch_via_bluetooth
     ProconBypassMan.logger.debug { "direct_connect_switch_via_bluetooth!" }
     self.procon.write_nonblock(["8005"].pack("H*"))
+  end
+
+  # @return [void] 入力してから取り出さないと接続しっぱなしになるっぽいのでこれが必要っぽい
+  def be_empty_procon
+    timer = ProconBypassMan::SafeTimeout.new(timeout: Time.now + 2)
+    loop do
+      break if timer.timeout?
+      output = self.procon.read_nonblock(64)
+      ProconBypassMan.logger.debug { "[ProconBypassMan::Bypass#be_empty_procon] #{output.unpack("H*").first}" }
+    rescue IO::EAGAINWaitReadable
+      # no-op
+    end
   end
 end
