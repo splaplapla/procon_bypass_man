@@ -261,15 +261,6 @@ class ProconBypassMan::DeviceConnector
 
   def drain_all: () -> untyped
 
-  # switchに任意の命令を入力して、switchから読み取る
-  def write_switch: (untyped data, ?only_write: bool only_write) -> untyped
-
-  def write_procon: (untyped data, ?only_write: bool only_write) -> untyped
-
-  def read_procon: (?only_read: bool only_read) -> untyped
-
-  def read_switch: (?only_read: bool only_read) -> untyped
-
   def from_device: (untyped item) -> untyped
 
   # fromの対になる
