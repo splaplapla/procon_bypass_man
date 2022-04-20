@@ -3,10 +3,10 @@ require "procon_bypass_man/bypass/usb_hid_logger"
 class ProconBypassMan::Bypass
   include ProconBypassMan::Bypass::UsbHidLogger
 
-  class BypassValue < Struct.new(:binary, :sent)
+  class BypassValue < Struct.new(:binary)
     def to_text
       return unless binary
-      "#{binary.unpack.first} #{'x' unless sent}"
+      binary.unpack.first
     end
   end
 
@@ -21,24 +21,23 @@ class ProconBypassMan::Bypass
   # ゆっくりでいい
   def send_gadget_to_procon!
     monitor.record(:start_function)
-    input = nil
-    self.bypass_value = BypassValue.new(nil, sent = false)
+    self.bypass_value = BypassValue.new(nil)
 
     run_callbacks(:send_gadget_to_procon) do
       break if $will_terminate_token
 
+      raw_input = nil
       begin
         # TODO blocking readにしたいが、接続時のフェーズによって長さが違うので厳しい
-        input = self.gadget.read_nonblock(64)
-        self.bypass_value.binary = ProconBypassMan::Domains::InboundProconBinary.new(binary: input)
+        raw_input = self.gadget.read_nonblock(64)
+        self.bypass_value.binary = ProconBypassMan::Domains::InboundProconBinary.new(binary: raw_input)
       rescue IO::EAGAINWaitReadable
         monitor.record(:eagain_wait_readable_on_read)
       end
 
-      if input
+      if raw_input
         begin
-          self.procon.write_nonblock(input)
-          self.bypass_value.sent = true
+          self.procon.write_nonblock(raw_input)
         rescue IO::EAGAINWaitReadable
           monitor.record(:eagain_wait_readable_on_write)
           break
@@ -51,15 +50,15 @@ class ProconBypassMan::Bypass
 
   def send_procon_to_gadget!
     monitor.record(:start_function)
-    output = nil
-    self.bypass_value = BypassValue.new(nil, sent = false)
+    self.bypass_value = BypassValue.new(nil)
 
     run_callbacks(:send_procon_to_gadget) do
+      break if $will_terminate_token
+
       begin
-        break if $will_terminate_token
         Timeout.timeout(1) do
-          output = self.procon.read(64)
-          self.bypass_value.binary = ProconBypassMan::Domains::InboundProconBinary.new(binary: output)
+          raw_output = self.procon.read(64)
+          self.bypass_value.binary = ProconBypassMan::Domains::InboundProconBinary.new(binary: raw_output)
         end
       rescue Timeout::Error
         ProconBypassMan.logger.debug { "read timeout! do sleep. by send_procon_to_gadget!" }
@@ -74,16 +73,10 @@ class ProconBypassMan::Bypass
         retry
       end
 
-      # blocking readをしているのでnilが入ることはないが、雑なテストでnilが通るので分岐を入れる。できれば消したい
-      break if output.nil?
-
       begin
         self.gadget.write_nonblock(
-          ProconBypassMan::Processor.new(
-            ProconBypassMan::Domains::InboundProconBinary.new(binary: output)
-          ).process
+          ProconBypassMan::Processor.new(bypass_value.binary).process
         )
-        self.bypass_value.sent = true
       rescue IO::EAGAINWaitReadable
         monitor.record(:eagain_wait_readable_on_write)
         break
