@@ -55,7 +55,6 @@ class ProconBypassMan::Bypass
     run_callbacks(:send_procon_to_gadget) do
       break if $will_terminate_token
 
-      raw_output = nil
       begin
         Timeout.timeout(1) do
           raw_output = self.procon.read(64)
@@ -74,14 +73,9 @@ class ProconBypassMan::Bypass
         retry
       end
 
-      # blocking readをしているのでnilが入ることはないが、雑なテストでnilが通るので分岐を入れる。できれば消したい
-      break if raw_output.nil?
-
       begin
         self.gadget.write_nonblock(
-          ProconBypassMan::Processor.new(
-            ProconBypassMan::Domains::InboundProconBinary.new(binary: raw_output)
-          ).process
+          ProconBypassMan::Processor.new(bypass_value.binary).process
         )
       rescue IO::EAGAINWaitReadable
         monitor.record(:eagain_wait_readable_on_write)
