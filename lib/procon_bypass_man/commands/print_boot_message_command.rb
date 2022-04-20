@@ -42,7 +42,7 @@ class ProconBypassMan::PrintBootMessageCommand
       uptime from boot: #{@table[:uptime_from_boot]} sec
       use_pbmenv: #{@table[:use_pbmenv]}
       session_id: #{ProconBypassMan.session_id}
-      device_id: #{ProconBypassMan.device_id}
+      device_id: #{ProconBypassMan.device_id.gsub(/.{25}$/, "*"*25)}
       bypass_mode: #{ProconBypassMan.config.bypass_mode}
       ----
       EOF
