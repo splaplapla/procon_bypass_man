@@ -3,10 +3,10 @@ require "procon_bypass_man/bypass/usb_hid_logger"
 class ProconBypassMan::Bypass
   include ProconBypassMan::Bypass::UsbHidLogger
 
-  class BypassValue < Struct.new(:binary, :sent)
+  class BypassValue < Struct.new(:binary)
     def to_text
       return unless binary
-      "#{binary.unpack.first} #{'x' unless sent}"
+      binary.unpack.first
     end
   end
 
@@ -22,7 +22,7 @@ class ProconBypassMan::Bypass
   def send_gadget_to_procon!
     monitor.record(:start_function)
     input = nil
-    self.bypass_value = BypassValue.new(nil, sent = false)
+    self.bypass_value = BypassValue.new(nil)
 
     run_callbacks(:send_gadget_to_procon) do
       break if $will_terminate_token
@@ -38,7 +38,6 @@ class ProconBypassMan::Bypass
       if input
         begin
           self.procon.write_nonblock(input)
-          self.bypass_value.sent = true
         rescue IO::EAGAINWaitReadable
           monitor.record(:eagain_wait_readable_on_write)
           break
@@ -52,7 +51,7 @@ class ProconBypassMan::Bypass
   def send_procon_to_gadget!
     monitor.record(:start_function)
     output = nil
-    self.bypass_value = BypassValue.new(nil, sent = false)
+    self.bypass_value = BypassValue.new(nil)
 
     run_callbacks(:send_procon_to_gadget) do
       begin
@@ -83,7 +82,6 @@ class ProconBypassMan::Bypass
             ProconBypassMan::Domains::InboundProconBinary.new(binary: output)
           ).process
         )
-        self.bypass_value.sent = true
       rescue IO::EAGAINWaitReadable
         monitor.record(:eagain_wait_readable_on_write)
         break
