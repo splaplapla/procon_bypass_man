@@ -62,8 +62,7 @@ module ProconBypassMan
   extend ProconBypassMan::NeverExitAccidentally
 
   class CouldNotLoadConfigError < StandardError; end
-  class ConnectionError < StandardError; end
-  class EternalConnectionError < ConnectionError; end
+  class EternalConnectionError < StandardError; end
 
   # @return [void]
   def self.run(setting_path: nil)
@@ -98,15 +97,11 @@ module ProconBypassMan
       FileUtils.rm_rf(ProconBypassMan.digest_path)
       ProconBypassMan::QueueOverProcess.shutdown
     end
-  rescue ProconBypassMan::ConnectionError
-    begin
-      raise
-    rescue ProconBypassMan::EternalConnectionError
-      ProconBypassMan::SendErrorCommand.execute(error: "接続の見込みがないのでsleepしまくります")
-      ProconBypassMan::DeviceStatus.change_to_connected_but_sleeping!
-      FileUtils.rm_rf(ProconBypassMan.pid_path)
-      eternal_sleep
-    end
+  rescue ProconBypassMan::EternalConnectionError
+    ProconBypassMan::SendErrorCommand.execute(error: "接続の見込みがないのでsleepしまくります")
+    ProconBypassMan::DeviceStatus.change_to_connected_but_sleeping!
+    FileUtils.rm_rf(ProconBypassMan.pid_path)
+    eternal_sleep
   end
 
   def self.configure(&block)
