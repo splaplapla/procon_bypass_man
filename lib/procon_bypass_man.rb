@@ -131,11 +131,6 @@ module ProconBypassMan
     system("renice -n -20 -p #{$$}")
     File.write(pid_path, $$)
     ProconBypassMan::DeviceStatus.change_to_running!
-
-    at_exit do
-      next if ENV['PBM_ENV'] == "test"
-      ProconBypassMan::UsbDeviceController.reset
-    end
   end
 
   def self.eternal_sleep

@@ -30,8 +30,15 @@ class ProconBypassMan::Runner
       child_pid = Kernel.fork {
         DRb.start_service if defined?(DRb)
         ProconBypassMan::RemoteMacroReceiver.start!
-        ProconBypassMan::BypassCommand.new(gadget: @gadget, procon: @procon).execute
+        ProconBypassMan::BypassCommand.new(gadget: @gadget, procon: @procon).execute # ここでblockingする
+        next
       }
+
+      # fork先で
+      at_exit do
+        next if ENV['PBM_ENV'] == "test"
+        ProconBypassMan::UsbDeviceController.reset
+      end
 
       begin
         # TODO 小プロセスが消滅した時に、メインプロセスは生き続けてしまい、何もできなくなる問題がある
