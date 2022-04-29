@@ -25,9 +25,9 @@ class ProconBypassMan::Runner
     end
 
     loop do
-      $will_terminate_token = false
       # NOTE メインプロセスではThreadをいくつか起動しているので念のためパフォーマンスを優先するためにforkしていく
       child_pid = Kernel.fork {
+        $will_terminate_token = false
         DRb.start_service if defined?(DRb)
         ProconBypassMan::RemoteMacroReceiver.start!
         ProconBypassMan::BypassCommand.new(gadget: @gadget, procon: @procon).execute # ここでblockingする
@@ -47,7 +47,6 @@ class ProconBypassMan::Runner
           handle_signal(signal)
         end
       rescue InterruptForRestart
-        $will_terminate_token = true
         Process.kill("USR2", child_pid)
         Process.wait
         ProconBypassMan::PrintMessageCommand.execute(text: "Reloading config file")
@@ -60,7 +59,6 @@ class ProconBypassMan::Runner
         end
         ProconBypassMan::PrintMessageCommand.execute(text: "バイパス処理を再開します")
       rescue Interrupt
-        $will_terminate_token = true
         Process.kill("TERM", child_pid)
         Process.wait
         ProconBypassMan::PrintMessageCommand.execute(text: "処理を終了します")
