@@ -1,5 +1,7 @@
 # n秒間sleepしつつ、mainスレッドをm秒間隔で動かしたい時に使う
-class ProconBypassMan::InterruptionableSleep
+class ProconBypassMan::CycleSleep
+  attr_accessor :cycle_interval, :execution_cycle
+
   def initialize(cycle_interval: , execution_cycle: )
     @cycle_interval = cycle_interval
     @execution_cycle = execution_cycle
