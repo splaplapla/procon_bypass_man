@@ -34,7 +34,7 @@ class ProconBypassMan::Runner
         next
       }
 
-      # fork先で
+      # fork先には適用しないためにfork後で実行する
       at_exit do
         next if ENV['PBM_ENV'] == "test"
         ProconBypassMan::UsbDeviceController.reset
@@ -48,7 +48,7 @@ class ProconBypassMan::Runner
         end
       rescue InterruptForRestart
         $will_terminate_token = true
-        Process.kill("TERM", child_pid)
+        Process.kill("USR2", child_pid)
         Process.wait
         ProconBypassMan::PrintMessageCommand.execute(text: "Reloading config file")
         begin
