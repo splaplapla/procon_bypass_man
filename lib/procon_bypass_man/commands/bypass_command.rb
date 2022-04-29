@@ -1,6 +1,11 @@
 class ProconBypassMan::BypassCommand
   include ProconBypassMan::SignalHandler
 
+  module WILL_TERMINATE_TOKEN
+    TERMINATE = :terminate
+    RESTART = :restart
+  end
+
   def initialize(gadget:, procon:)
     @gadget = gadget
     @procon = procon
@@ -12,7 +17,7 @@ class ProconBypassMan::BypassCommand
 
   def execute
     self_read, self_write = IO.pipe
-    %w(TERM INT).each do |sig|
+    %w(TERM INT USR2).each do |sig|
       begin
         trap sig do
           self_write.puts(sig)
@@ -70,8 +75,10 @@ class ProconBypassMan::BypassCommand
       bypass = ProconBypassMan::Bypass.new(gadget: @gadget, procon: @procon, monitor: monitor2)
       loop do
         if $will_terminate_token
-          bypass.direct_connect_switch_via_bluetooth
-          bypass.be_empty_procon
+          if $will_terminate_token == WILL_TERMINATE_TOKEN::TERMINATE
+            bypass.direct_connect_switch_via_bluetooth
+            bypass.be_empty_procon
+          end
           break
         end
 
@@ -92,8 +99,14 @@ class ProconBypassMan::BypassCommand
         signal = readable_io.first[0].gets.strip
         handle_signal(signal)
       end
+    rescue ProconBypassMan::Runner::InterruptForRestart
+      $will_terminate_token = WILL_TERMINATE_TOKEN::RESTART
+      [t1, t2].each(&:join)
+      @gadget&.close
+      @procon&.close
+      exit! 1 # child processなのでexitしていい
     rescue Interrupt
-      $will_terminate_token = true
+      $will_terminate_token = WILL_TERMINATE_TOKEN::TERMINATE
       [t1, t2].each(&:join)
       @gadget&.close
       @procon&.close

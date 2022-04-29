@@ -14,7 +14,7 @@ class ProconBypassMan::Runner
 
   def run
     self_read, self_write = IO.pipe
-    %w(TERM INT USR1 USR2).each do |sig|
+    %w(TERM INT USR2).each do |sig|
       begin
         trap sig do
           self_write.puts(sig)
@@ -25,13 +25,20 @@ class ProconBypassMan::Runner
     end
 
     loop do
-      $will_terminate_token = false
       # NOTE メインプロセスではThreadをいくつか起動しているので念のためパフォーマンスを優先するためにforkしていく
       child_pid = Kernel.fork {
+        $will_terminate_token = false
         DRb.start_service if defined?(DRb)
         ProconBypassMan::RemoteMacroReceiver.start!
-        ProconBypassMan::BypassCommand.new(gadget: @gadget, procon: @procon).execute
+        ProconBypassMan::BypassCommand.new(gadget: @gadget, procon: @procon).execute # ここでblockingする
+        next
       }
+
+      # fork先には適用しないためにfork後で実行する
+      at_exit do
+        next if ENV['PBM_ENV'] == "test"
+        ProconBypassMan::UsbDeviceController.reset
+      end
 
       begin
         # TODO 小プロセスが消滅した時に、メインプロセスは生き続けてしまい、何もできなくなる問題がある
@@ -40,8 +47,7 @@ class ProconBypassMan::Runner
           handle_signal(signal)
         end
       rescue InterruptForRestart
-        $will_terminate_token = true
-        Process.kill("TERM", child_pid)
+        Process.kill("USR2", child_pid)
         Process.wait
         ProconBypassMan::PrintMessageCommand.execute(text: "Reloading config file")
         begin
@@ -53,7 +59,6 @@ class ProconBypassMan::Runner
         end
         ProconBypassMan::PrintMessageCommand.execute(text: "バイパス処理を再開します")
       rescue Interrupt
-        $will_terminate_token = true
         Process.kill("TERM", child_pid)
         Process.wait
         ProconBypassMan::PrintMessageCommand.execute(text: "処理を終了します")
