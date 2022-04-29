@@ -34,12 +34,6 @@ class ProconBypassMan::Runner
         next
       }
 
-      # fork先には適用しないためにfork後で実行する
-      at_exit do
-        next if ENV['PBM_ENV'] == "test"
-        ProconBypassMan::UsbDeviceController.reset
-      end
-
       begin
         # TODO 小プロセスが消滅した時に、メインプロセスは生き続けてしまい、何もできなくなる問題がある
         while(readable_io = IO.select([self_read]))
@@ -62,6 +56,7 @@ class ProconBypassMan::Runner
         Process.kill("TERM", child_pid)
         Process.wait
         ProconBypassMan::PrintMessageCommand.execute(text: "処理を終了します")
+        ProconBypassMan::UsbDeviceController.reset
         @gadget&.close
         @procon&.close
         break
