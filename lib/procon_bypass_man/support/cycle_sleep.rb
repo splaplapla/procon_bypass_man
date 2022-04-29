@@ -9,13 +9,14 @@ class ProconBypassMan::CycleSleep
   end
 
   def sleep_or_execute
+    result = nil
     if @counter >= @execution_cycle
       @counter = 0
-      return yield
+      result = yield
     else
-      sleep(@cycle_interval)
       @counter += 1
-      return nil
     end
+    sleep(@cycle_interval)
+    return result
   end
 end
