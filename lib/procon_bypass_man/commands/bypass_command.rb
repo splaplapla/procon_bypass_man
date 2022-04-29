@@ -33,17 +33,19 @@ class ProconBypassMan::BypassCommand
     monitor2 = ProconBypassMan::IOMonitor.new(label: "procon -> switch")
     ProconBypassMan.logger.info "Thread1を起動します"
 
-    @send_interval = 0.005
+    cycle_sleep = ProconBypassMan::CycleSleep.new(cycle_interval: 0.005, execution_cycle: 0)
 
     t1 = Thread.new do
       timer = ProconBypassMan::SafeTimeout.new(timeout: Time.now + 10)
       @did_first_step = false
       loop do
-        bypass = ProconBypassMan::Bypass.new(gadget: @gadget, procon: @procon, monitor: monitor1)
         break if $will_terminate_token
-        !@did_first_step && timer.throw_if_timeout!
-        bypass.send_gadget_to_procon!
-        sleep(@send_interval)
+
+        cycle_sleep.sleep_or_execute do
+          bypass = ProconBypassMan::Bypass.new(gadget: @gadget, procon: @procon, monitor: monitor1)
+          !@did_first_step && timer.throw_if_timeout!
+          bypass.send_gadget_to_procon!
+        end
       rescue ProconBypassMan::SafeTimeout::Timeout
         case ProconBypassMan.config.bypass_mode.mode
         when ProconBypassMan::BypassMode::TYPE_AGGRESSIVE
@@ -52,7 +54,8 @@ class ProconBypassMan::BypassCommand
           break
         when ProconBypassMan::BypassMode::TYPE_NORMAL
           ProconBypassMan.logger.info "10秒経過したのでsend_intervalを長くします"
-          @send_interval = ProconBypassMan.config.bypass_mode.gadget_to_procon_interval
+          cycle_sleep.cycle_interval = 1
+          cycle_sleep.execution_cycle = ProconBypassMan.config.bypass_mode.gadget_to_procon_interval
         else
           raise "unknown type"
         end
