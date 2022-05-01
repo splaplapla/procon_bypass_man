@@ -35,9 +35,16 @@ class ProconBypassMan::Bypass
         monitor.record(:eagain_wait_readable_on_read)
       end
 
-      if raw_input
+      if self.bypass_value.binary
         begin
-          self.procon.write_nonblock(raw_input)
+          raw_data =
+            case
+            when self.bypass_value.binary.rumble_data?
+              ProconBypassMan::RumbleBinary.new(self.bypass_value.binary.raw).noop_raw
+            else
+              self.bypass_value.binary.raw
+            end
+          self.procon.write_nonblock(raw_data)
         rescue IO::EAGAINWaitReadable
           monitor.record(:eagain_wait_readable_on_write)
           break

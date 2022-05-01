@@ -1,0 +1,2 @@
+class ProconBypassMan::RumbleBinary
+end
