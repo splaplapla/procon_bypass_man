@@ -40,7 +40,7 @@ class ProconBypassMan::Bypass
           raw_data =
             case
             when self.bypass_value.binary.rumble_data?
-              ProconBypassMan::RumbleBinary.new(self.bypass_value.binary.raw).noop_raw
+              ProconBypassMan::RumbleBinary.new(binary: self.bypass_value.binary.raw).noop_raw
             else
               self.bypass_value.binary.raw
             end
