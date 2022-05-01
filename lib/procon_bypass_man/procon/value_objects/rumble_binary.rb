@@ -9,6 +9,7 @@ class ProconBypassMan::RumbleBinary
   end
 
   def noop!
+    @binary = ProconBypassMan::SuppressRumble.new(binary: @binary).execute
   end
 
   def raw
