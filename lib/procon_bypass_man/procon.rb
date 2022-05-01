@@ -11,6 +11,7 @@ class ProconBypassMan::Procon
   require "procon_bypass_man/procon/user_operation"
   require "procon_bypass_man/procon/flip_cache"
   require "procon_bypass_man/procon/press_button_aware"
+  require "procon_bypass_man/procon/suppress_rumble"
 
   attr_accessor :user_operation
 

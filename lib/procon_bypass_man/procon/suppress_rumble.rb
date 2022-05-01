@@ -1,0 +1,2 @@
+class ProconBypassMan::SuppressRumble
+end
