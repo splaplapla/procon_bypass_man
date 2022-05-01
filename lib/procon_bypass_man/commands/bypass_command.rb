@@ -54,8 +54,7 @@ class ProconBypassMan::BypassCommand
           break
         when ProconBypassMan::BypassMode::TYPE_NORMAL
           ProconBypassMan.logger.info "10秒経過したのでsend_intervalを長くします"
-          cycle_sleep.cycle_interval = 1
-          cycle_sleep.execution_cycle = ProconBypassMan.config.bypass_mode.gadget_to_procon_interval
+          cycle_sleep = ProconBypassMan::CycleSleep.new(cycle_interval: 1, execution_cycle: ProconBypassMan.config.bypass_mode.gadget_to_procon_interval)
         else
           raise "unknown type"
         end
