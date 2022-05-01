@@ -2,8 +2,11 @@ require "procon_bypass_man/procon/macro_plugin_map"
 
 class ProconBypassMan::Procon
   require "procon_bypass_man/procon/value_objects/analog_stick"
+  require "procon_bypass_man/procon/value_objects/analog_stick_position"
   require "procon_bypass_man/procon/value_objects/procon_reader"
   require "procon_bypass_man/procon/value_objects/rumble_binary"
+  require "procon_bypass_man/procon/value_objects/binary"
+  require "procon_bypass_man/procon/value_objects/bypass_mode"
 
   require "procon_bypass_man/procon/consts"
   require "procon_bypass_man/procon/mode_registry"
