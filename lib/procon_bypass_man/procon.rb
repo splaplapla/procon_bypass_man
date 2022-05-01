@@ -1,6 +1,10 @@
 require "procon_bypass_man/procon/macro_plugin_map"
 
 class ProconBypassMan::Procon
+  require "procon_bypass_man/procon/value_objects/analog_stick"
+  require "procon_bypass_man/procon/value_objects/procon_reader"
+  require "procon_bypass_man/procon/value_objects/rumble_binary"
+
   require "procon_bypass_man/procon/consts"
   require "procon_bypass_man/procon/mode_registry"
   require "procon_bypass_man/procon/macro"
@@ -11,6 +15,7 @@ class ProconBypassMan::Procon
   require "procon_bypass_man/procon/user_operation"
   require "procon_bypass_man/procon/flip_cache"
   require "procon_bypass_man/procon/press_button_aware"
+  require "procon_bypass_man/procon/suppress_rumble"
 
   attr_accessor :user_operation
 

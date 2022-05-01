@@ -54,4 +54,18 @@ describe ProconBypassMan::Domains::InboundProconBinary do
       is_expected.to eq(false)
     end
   end
+
+  describe '#rumble_data?' do
+    subject { described_class.new(binary: binary).rumble_data? }
+
+    context 'x10' do
+      let(:data) { "100d0001404000014040" }
+      it { is_expected.to eq(true) }
+    end
+
+    context 'x30' do
+      let(:data) { "307781058000" }
+      it { is_expected.to eq(false) }
+    end
+  end
 end

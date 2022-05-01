@@ -6,4 +6,9 @@ class ProconBypassMan::Domains::InboundProconBinary < ProconBypassMan::Domains::
   def user_operation_data?
     binary[0] == "\x30".b
   end
+
+  # @return [Boolean]
+  def rumble_data?
+    binary[0] == "\x10".b
+  end
 end
