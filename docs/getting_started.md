@@ -180,6 +180,7 @@ discordで質問してみてください。
 https://pbm-cloud.herokuapp.com/  
 procon_bypass_man_cloudの運用をWEBで完結できるようになる無料のWEBサービスです。  
   
-procon_bypass_man_cloudとの接続が完了後、Raspberry Piを起動時にprocon_bypass_man_cloudが自動で立ち上がるように設定すれば、Raspberry Piへのログインが不要で設定ファイルの変更やprocon_bypass_man_cloudのアップグレードができます。  
+procon_bypass_man_cloudとの接続が完了後、Raspberry Piを起動時にprocon_bypass_manが自動で立ち上がるように設定すれば、Raspberry Piへのログインが不要で設定ファイルの変更やprocon_bypass_man自体のアップグレードができます。  
 セットアップ方法などでわからないことがあればdiscordで質問してみてください。  
+  
 セットアップ方法は https://pbm-cloud.herokuapp.com/faq に書いています。
