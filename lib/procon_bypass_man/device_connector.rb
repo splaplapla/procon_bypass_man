@@ -4,9 +4,11 @@ class ProconBypassMan::DeviceConnector
 
   class Value
     attr_accessor :read_from, :values
-    def initialize(values: , read_from: )
+    def initialize(values: , read_from: , call_block_if_receive: false, &block)
       @values = values
       @read_from = read_from
+      @call_block_if_receive = call_block_if_receive
+      @plan_b_block = block
     end
   end
 
@@ -26,7 +28,14 @@ class ProconBypassMan::DeviceConnector
     s.add([/^8102/], read_from: :procon)
     # 3
     s.add([/^0100/], read_from: :switch)
-    s.add([/^21/], read_from: :procon)
+    s.add([/^21/], read_from: :procon, call_block_if_receive: ["^8101"]) do
+      # blocking_read_with_timeout # <<< 810100032dbd42e9b698000
+      # write("8002")
+      # blocking_read_with_timeout
+      # write "01000000000000000000033000000000000000000000000000000000000000000000000000000000000000000000000000"
+      # blocking_read_with_timeout
+    end
+
     # 4. Forces the Joy-Con or Pro Controller to only talk over USB HID without any timeouts. This is required for the Pro Controller to not time out and revert to Bluetooth.
     s.add([["8004"]], read_from: :switch)
     s.drain_all
@@ -40,8 +49,8 @@ class ProconBypassMan::DeviceConnector
     @throw_error_if_mismatch = throw_error_if_mismatch
   end
 
-  def add(values, read_from: )
-    @stack << Value.new(values: values, read_from: read_from)
+  def add(values, read_from: , call_block_if_receive: false, &block)
+    @stack << Value.new(values: values, read_from: read_from, call_block_if_receive: call_block_if_receive, &block)
   end
 
   def drain_all
