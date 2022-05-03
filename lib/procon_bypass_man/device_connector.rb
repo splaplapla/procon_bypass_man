@@ -32,6 +32,7 @@ class ProconBypassMan::DeviceConnector
     # 3
     s.add([/^0100/], read_from: :switch)
     s.add([/^21/], read_from: :procon, call_block_if_receive: [/^8101/]) do |in_stack|
+      ProconBypassMan.logger.info "(start special route)"
       in_stack.blocking_read_with_timeout_from_procon # <<< 810100032dbd42e9b698000
       in_stack.write_to_procon("8002")
       in_stack.blocking_read_with_timeout_from_procon # <<< 8102
