@@ -40,7 +40,7 @@ jobs:
       tag: 3.0.1
     steps:
       - checkout
-      - run: GEM_VERSION=$(grep -o -E '[0-9.]+' lib/procon_bypass_man/version.rb) && GEM_VERSION_IN_BUNDER=$(grep procon_bypass_man project_template/app.rb | grep -o -E '[0-9.]+') && test "$GEM_VERSION" = "$GEM_VERSION_IN_BUNDER"
+      - run: GEM_VERSION=$(grep -o -E '[0-9.]+' lib/procon_bypass_man/version.rb) && GEM_VERSION_IN_BUNDER=$(grep procon_bypass_man project_template/app.rb | grep "gem 'procon_bypass_man'" | grep -o -E '[0-9.]+') && test "$GEM_VERSION" = "$GEM_VERSION_IN_BUNDER"
 
   syntax_check:
     parameters:
