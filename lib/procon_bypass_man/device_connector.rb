@@ -1,14 +1,17 @@
+require "timeout"
+
 class ProconBypassMan::DeviceConnector
   class BytesMismatchError < StandardError; end
   class NotFoundProconError < StandardError; end
 
   class Value
-    attr_accessor :read_from, :values
+    attr_accessor :read_from, :values, :call_block_if_receive, :block
+
     def initialize(values: , read_from: , call_block_if_receive: false, &block)
       @values = values
       @read_from = read_from
       @call_block_if_receive = call_block_if_receive
-      @plan_b_block = block
+      @block = block
     end
   end
 
@@ -28,12 +31,12 @@ class ProconBypassMan::DeviceConnector
     s.add([/^8102/], read_from: :procon)
     # 3
     s.add([/^0100/], read_from: :switch)
-    s.add([/^21/], read_from: :procon, call_block_if_receive: ["^8101"]) do
-      # blocking_read_with_timeout # <<< 810100032dbd42e9b698000
-      # write("8002")
-      # blocking_read_with_timeout
-      # write "01000000000000000000033000000000000000000000000000000000000000000000000000000000000000000000000000"
-      # blocking_read_with_timeout
+    s.add([/^21/], read_from: :procon, call_block_if_receive: [/^8101/]) do |in_stack|
+      in_stack.blocking_read_with_timeout_from_procon # <<< 810100032dbd42e9b698000
+      in_stack.write_to_procon("8002")
+      in_stack.blocking_read_with_timeout_from_procon # <<< 8102
+      in_stack.write_to_procon("01000000000000000000033000000000000000000000000000000000000000000000000000000000000000000000000000")
+      in_stack.blocking_read_with_timeout_from_procon # <<< 21
     end
 
     # 4. Forces the Joy-Con or Pro Controller to only talk over USB HID without any timeouts. This is required for the Pro Controller to not time out and revert to Bluetooth.
@@ -61,39 +64,43 @@ class ProconBypassMan::DeviceConnector
 
     while(item = @stack.shift)
       item.values.each do |value|
-        data = nil
+        raw_data = nil
         timer = ProconBypassMan::SafeTimeout.new
         begin
           timer.throw_if_timeout!
-          data = from_device(item).read_nonblock(64)
-          debug_log_buffer << "read_from(#{item.read_from}): #{data.unpack("H*")}"
+          raw_data = from_device(item).read_nonblock(64)
+          debug_log_buffer << "read_from(#{item.read_from}): #{raw_data.unpack("H*")}"
         rescue IO::EAGAINWaitReadable
           # debug_log_buffer << "read_from(#{item.read_from}): IO::EAGAINWaitReadable"
           retry
         end
 
+        if item.call_block_if_receive =~ raw_data.unpack("H*").first
+          raw_data = item.block.call(self)
+        end
+
         result =
           case value
           when String, Array
-            value == data.unpack("H*")
+            value == raw_data.unpack("H*")
           when Regexp
-            value =~ data.unpack("H*").first
+            value =~ raw_data.unpack("H*").first
           else
             raise "#{value}は知りません"
           end
         if result
-          ProconBypassMan.logger.info "OK(expected: #{value}, got: #{data.unpack("H*")})"
-          debug_log_buffer << "OK(expected: #{value}, got: #{data.unpack("H*")})"
+          ProconBypassMan.logger.info "OK(expected: #{value}, got: #{raw_data.unpack("H*")})"
+          debug_log_buffer << "OK(expected: #{value}, got: #{raw_data.unpack("H*")})"
         else
-          ProconBypassMan.logger.info "NG(expected: #{value}, got: #{data.unpack("H*")})"
-          debug_log_buffer << "NG(expected: #{value}, got: #{data.unpack("H*")})"
-          raise BytesMismatchError if @throw_error_if_mismatch
+          ProconBypassMan.logger.info "NG(expected: #{value}, got: #{raw_data.unpack("H*")})"
+          debug_log_buffer << "NG(expected: #{value}, got: #{raw_data.unpack("H*")})"
+          raise BytesMismatchError.new(debug_log_buffer) if @throw_error_if_mismatch
         end
-        to_device(item).write_nonblock(data)
+        to_device(item).write_nonblock(raw_data)
       end
     end
-  rescue ProconBypassMan::SafeTimeout::Timeout
-    ProconBypassMan.logger.error "timeoutになりました"
+  rescue ProconBypassMan::SafeTimeout::Timeout, Timeout::Error => e
+    ProconBypassMan.logger.error "timeoutになりました(#{e.message})"
     compressed_buffer_text = ProconBypassMan::CompressArray.new(debug_log_buffer).compress.join("\n")
     ProconBypassMan::SendErrorCommand.execute(error: compressed_buffer_text)
     raise if @throw_error_if_timeout
@@ -152,5 +159,18 @@ class ProconBypassMan::DeviceConnector
     ProconBypassMan::SendErrorCommand.execute(error: "Errno::ENXIO (No such device or address @ rb_sysopen - /dev/hidg0)が起きました。resetします.\n #{e.full_message}")
     ProconBypassMan::UsbDeviceController.reset
     retry
+  end
+
+  def blocking_read_with_timeout_from_procon
+    Timeout.timeout(4) do
+      raw_data = procon.read(64)
+      ProconBypassMan.logger.info "<<< #{raw_data.unpack("H*").first}"
+      return raw_data
+    end
+  end
+
+  def write_to_procon(data)
+    ProconBypassMan.logger.info ">>> #{data}"
+    procon.write_nonblock([data].pack("H*"))
   end
 end
