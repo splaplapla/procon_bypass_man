@@ -31,13 +31,13 @@ class ProconBypassMan::DeviceConnector
     s.add([/^8102/], read_from: :procon)
     # 3
     s.add([/^0100/], read_from: :switch)
-    s.add([/^21/], read_from: :procon, call_block_if_receive: /^8101/) do |in_stack|
+    s.add([/^21/], read_from: :procon, call_block_if_receive: /^8101/) do |this|
       ProconBypassMan.logger.info "(start special route)"
-      in_stack.blocking_read_with_timeout_from_procon # <<< 810100032dbd42e9b698000
-      in_stack.write_to_procon("8002")
-      in_stack.blocking_read_with_timeout_from_procon # <<< 8102
-      in_stack.write_to_procon("01000000000000000000033000000000000000000000000000000000000000000000000000000000000000000000000000")
-      in_stack.blocking_read_with_timeout_from_procon # <<< 21
+      this.blocking_read_with_timeout_from_procon # <<< 810100032dbd42e9b698000
+      this.write_to_procon("8002")
+      this.blocking_read_with_timeout_from_procon # <<< 8102
+      this.write_to_procon("01000000000000000000033000000000000000000000000000000000000000000000000000000000000000000000000000")
+      this.blocking_read_with_timeout_from_procon # <<< 21
     end
 
     # 4. Forces the Joy-Con or Pro Controller to only talk over USB HID without any timeouts. This is required for the Pro Controller to not time out and revert to Bluetooth.
@@ -47,14 +47,14 @@ class ProconBypassMan::DeviceConnector
   end
 
   def initialize(throw_error_if_timeout: false, throw_error_if_mismatch: false)
-    @stack = []
+    @queue = []
     @initialized_devices = false
     @throw_error_if_timeout = throw_error_if_timeout
     @throw_error_if_mismatch = throw_error_if_mismatch
   end
 
   def add(values, read_from: , call_block_if_receive: false, &block)
-    @stack << Value.new(values: values, read_from: read_from, call_block_if_receive: call_block_if_receive, &block)
+    @queue << Value.new(values: values, read_from: read_from, call_block_if_receive: call_block_if_receive, &block)
   end
 
   def drain_all
@@ -63,7 +63,7 @@ class ProconBypassMan::DeviceConnector
       init_devices
     end
 
-    while(item = @stack.shift)
+    while(item = @queue.shift)
       item.values.each do |value|
         raw_data = nil
         timer = ProconBypassMan::SafeTimeout.new
