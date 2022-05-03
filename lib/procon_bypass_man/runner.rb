@@ -35,7 +35,7 @@ class ProconBypassMan::Runner
       }
 
       begin
-        # TODO 小プロセスが消滅した時に、メインプロセスは生き続けてしまい、何もできなくなる問題がある
+        # TODO 子プロセスが消滅した時に、メインプロセスは生き続けてしまい、何もできなくなる問題がある
         while(readable_io = IO.select([self_read]))
           signal = readable_io.first[0].gets.strip
           handle_signal(signal)
