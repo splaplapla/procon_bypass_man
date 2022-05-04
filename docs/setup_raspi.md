@@ -33,7 +33,6 @@ https://github.com/splaplapla/procon_bypass_man/blob/master/docs/setup_raspi_by_
   * chmod 755 ~/add_procon_gadget.sh
   * sudo reboot
   * sudo sh ~/add_procon_gadget.sh の実行に成功させる
-  *  /etc/rc.local に sh /home/pi/add_procon_gadget.sh って書く
 * cd ~ && mkdir -p src && cd ~/src && git clone https://github.com/jiikko/procon_bypass_man_sample && cd procon_bypass_man_sample
 
 おわり. 起動する時は都度 sudo ruby app.rb を実行する
