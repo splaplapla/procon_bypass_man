@@ -6,7 +6,7 @@ begin
   gemfile do
     source 'https://rubygems.org'
     git_source(:github) {|repo_name| "https://github.com/#{repo_name}" }
-    gem 'procon_bypass_man', '0.1.22'
+    gem 'procon_bypass_man', '0.1.23'
   end
 rescue Bundler::Source::Git::GitCommandError => e
   # install中に強制終了するとgitの管理ファイルが不正状態になり、次のエラーが起きるので発生したらcache directoryを削除する
