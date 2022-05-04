@@ -41,7 +41,7 @@ GEM
       coderay (~> 1.1)
       method_source (~> 1.0)
     rack (2.2.3)
-    rack-protection (2.1.0)
+    rack-protection (2.2.0)
       rack
     rainbow (3.0.0)
     rake (13.0.6)
@@ -79,10 +79,10 @@ GEM
     ruby-progressbar (1.11.0)
     ruby2_keywords (0.0.5)
     set (1.0.2)
-    sinatra (2.1.0)
+    sinatra (2.2.0)
       mustermann (~> 1.0)
       rack (~> 2.2)
-      rack-protection (= 2.1.0)
+      rack-protection (= 2.2.0)
       tilt (~> 2.0)
     sorted_set (1.0.3)
       rbtree
