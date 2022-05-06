@@ -5,9 +5,11 @@ class ProconBypassMan::Procon::MacroBuilder
         return subjects.first.to_steps
       end
 
-      base = subjects.first
-      remain = subjects[1..-1]
-      remain.map { |x| base.to_steps.zip(x.to_steps) }.first
+      subjects.inject([[], []]) do |acc, item|
+        acc[0] << item.to_steps[0]
+        acc[1] << item.to_steps[1]
+        acc
+      end
     end
   end
 
