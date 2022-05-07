@@ -34,6 +34,9 @@ ProconBypassMan.configure do |config|
   # pbm-cloudで使う場合はnever_exitにtrueをセットしてください. trueがセットされている場合、不慮の事故が発生してもプロセスが終了しなくなります
   config.never_exit_accidentally = true
 
+  # 毎秒行ったIOをログに出力するか
+  config.io_monitor_logging = false
+
   # 操作が高頻度で固まるときは、 gadget_to_procon_interval の数値は大きくしてください
   config.bypass_mode = { mode: :normal, gadget_to_procon_interval: 5 }
 end

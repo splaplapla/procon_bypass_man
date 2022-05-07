@@ -47,10 +47,14 @@ class ProconBypassMan::Configuration
     def fallback_setting_path
       "/tmp/procon_bypass_man_fallback_setting.yaml"
     end
+
+    def io_monitor_logging
+      config.io_monitor_logging
+    end
   end
 
   attr_accessor :enable_critical_error_logging
-  attr_writer :verbose_bypass_log, :raw_setting, :enable_reporting_pressed_buttons, :never_exit_accidentally
+  attr_writer :verbose_bypass_log, :raw_setting, :enable_reporting_pressed_buttons, :never_exit_accidentally, :io_monitor_logging
 
   def root=(path)
     @root = path
@@ -193,5 +197,10 @@ class ProconBypassMan::Configuration
   # @return [Boolean]
   def never_exit_accidentally
     @never_exit_accidentally || false
+  end
+
+  # @return [Boolean]
+  def io_monitor_logging
+    @io_monitor_logging ||= false
   end
 end

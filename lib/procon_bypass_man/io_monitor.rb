@@ -1,4 +1,12 @@
 module ProconBypassMan
+  class NullCounter
+    def initialize(label: )
+    end
+
+    def record(_)
+    end
+  end
+
   class Counter
     attr_accessor :label, :table, :previous_table, :active
 
@@ -40,7 +48,11 @@ module ProconBypassMan
   end
 
   module IOMonitor
+    @@thread = nil
+
     def self.new(label: )
+      return NullCounter.new(label: label) if not started?
+
       counter = Counter.new(label: label)
       @@list << counter
       counter
@@ -51,9 +63,13 @@ module ProconBypassMan
       @@list
     end
 
+    def self.started?
+      !!@@thread
+    end
+
     # ここで集計する
     def self.start!
-      Thread.start do
+      @@thread = Thread.start do
         max_output_length = 0
         loop do
           list = @@list.select(&:active).dup

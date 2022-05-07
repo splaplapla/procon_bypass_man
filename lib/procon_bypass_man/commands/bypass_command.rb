@@ -10,7 +10,7 @@ class ProconBypassMan::BypassCommand
     @gadget = gadget
     @procon = procon
 
-    ProconBypassMan::IOMonitor.start!
+    ProconBypassMan::IOMonitor.start! if ProconBypassMan.io_monitor_logging
     ProconBypassMan::Background::JobRunner.queue.clear # forkしたときに残留物も移ってしまうため
     ProconBypassMan::Background::JobRunner.start!
   end
