@@ -3,6 +3,7 @@ require "spec_helper"
 describe ProconBypassMan::IOMonitor do
   before(:each) do
     ProconBypassMan::IOMonitor.reset!
+    allow(ProconBypassMan::IOMonitor).to receive(:started?) { true }
     $is_stable = true
   end
 
