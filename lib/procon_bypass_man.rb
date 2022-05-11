@@ -65,11 +65,6 @@ module ProconBypassMan
 
   # @return [void]
   def self.run(setting_path: nil)
-    ProconBypassMan::Scheduler.start!
-    ProconBypassMan::Background::JobRunner.start!
-    ProconBypassMan::Websocket::Client.start!
-    ProconBypassMan::QueueOverProcess.start!
-
     ProconBypassMan::PrintMessageCommand.execute(text: "PBMを起動しています")
     initialize_pbm
 
@@ -128,6 +123,11 @@ module ProconBypassMan
 
   # @return [Void]
   def self.initialize_pbm
+    ProconBypassMan::Scheduler.start!
+    ProconBypassMan::Background::JobRunner.start!
+    ProconBypassMan::Websocket::Client.start!
+    ProconBypassMan::QueueOverProcess.start!
+
     ProconBypassMan::WriteDeviceIdCommand.execute
     ProconBypassMan::WriteSessionIdCommand.execute
     system("renice -n -20 -p #{$$}")
