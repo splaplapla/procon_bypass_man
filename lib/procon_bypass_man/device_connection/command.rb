@@ -15,7 +15,7 @@ class ProconBypassMan::DeviceConnection::Command
       raise ProconBypassMan::EternalConnectionError
     end
 
-    ProconBypassMan::DeviceConnection::PreBypass.new(gadget: gadget, procon: procon).execute!
+    # ProconBypassMan::DeviceConnection::PreBypass.new(gadget: gadget, procon: procon).execute!
     return [gadget, procon]
   end
 end
