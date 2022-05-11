@@ -1,11 +1,11 @@
 require "spec_helper"
 
-describe ProconBypassMan::ConnectDeviceCommand do
+describe ProconBypassMan::DeviceConnection::Command do
   describe '.execute!' do
     subject { described_class.execute! }
 
     before do
-      allow(ProconBypassMan::DeviceConnector).to receive(:connect)
+      allow(ProconBypassMan::DeviceConnection::Executer).to receive(:connect)
     end
 
     it do
@@ -14,7 +14,7 @@ describe ProconBypassMan::ConnectDeviceCommand do
 
     context 'when timeout' do
       before do
-        allow(ProconBypassMan::DeviceConnector).to receive(:connect) { raise ProconBypassMan::SafeTimeout::Timeout }
+        allow(ProconBypassMan::DeviceConnection::Executer).to receive(:connect) { raise ProconBypassMan::SafeTimeout::Timeout }
       end
 
       it do
@@ -24,12 +24,12 @@ describe ProconBypassMan::ConnectDeviceCommand do
 
     context 'when procon not found ' do
       before do
-        allow(ProconBypassMan::DeviceConnector).to receive(:connect) { raise ProconBypassMan::DeviceConnector::NotFoundProconError }
+        allow(ProconBypassMan::DeviceConnection::Executer).to receive(:connect) { raise ProconBypassMan::DeviceConnection::NotFoundProconError }
         allow(ProconBypassMan).to receive(:logger) { Logger.new("/dev/null") }
       end
 
       it do
-        expect { subject }.to raise_error(ProconBypassMan::ConnectDeviceCommand::NotFoundProconError)
+        expect { subject }.to raise_error(ProconBypassMan::DeviceConnection::NotFoundProconError)
       end
     end
   end

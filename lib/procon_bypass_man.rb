@@ -15,7 +15,7 @@ require_relative "procon_bypass_man/version"
 require_relative "procon_bypass_man/remote_pbm_action"
 require_relative "procon_bypass_man/remote_macro"
 
-
+require_relative "procon_bypass_man/device_connection"
 require_relative "procon_bypass_man/support/usb_device_controller"
 require_relative "procon_bypass_man/support/device_procon_finder"
 require_relative "procon_bypass_man/support/device_mouse_finder"
@@ -38,7 +38,6 @@ require_relative "procon_bypass_man/support/cycle_sleep"
 require_relative "procon_bypass_man/background"
 require_relative "procon_bypass_man/commands"
 require_relative "procon_bypass_man/bypass"
-require_relative "procon_bypass_man/device_connector"
 require_relative "procon_bypass_man/device_status"
 require_relative "procon_bypass_man/runner"
 require_relative "procon_bypass_man/processor"
@@ -83,8 +82,8 @@ module ProconBypassMan
     end
 
     begin
-      gadget, procon = ProconBypassMan::ConnectDeviceCommand.execute!
-    rescue ProconBypassMan::ConnectDeviceCommand::NotFoundProconError
+      gadget, procon = ProconBypassMan::DeviceConnection::Command.execute!
+    rescue ProconBypassMan::DeviceConnection::NotFoundProconError
       ProconBypassMan::SendErrorCommand.execute(error: "プロコンが見つかりませんでした。")
       ProconBypassMan::DeviceStatus.change_to_procon_not_found_error!
       # TODO シグナルトラップをしていないのでUSR2を送ったときにプロセスが停止している. 明示的にハンドリングするべき.

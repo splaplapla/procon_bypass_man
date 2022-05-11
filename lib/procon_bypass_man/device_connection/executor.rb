@@ -1,9 +1,6 @@
 require "timeout"
 
-class ProconBypassMan::DeviceConnector
-  class BytesMismatchError < StandardError; end
-  class NotFoundProconError < StandardError; end
-
+class ProconBypassMan::DeviceConnection::Executer
   class Value
     attr_accessor :read_from, :values, :call_block_if_receive, :block
 
@@ -99,7 +96,7 @@ class ProconBypassMan::DeviceConnector
         else
           ProconBypassMan.logger.info "NG(expected: #{value}, got: #{raw_data.unpack("H*")})"
           debug_log_buffer << "NG(expected: #{value}, got: #{raw_data.unpack("H*")})"
-          raise BytesMismatchError.new(debug_log_buffer) if @throw_error_if_mismatch
+          raise ProconBypassMan::DeviceConnection::BytesMismatchError.new(debug_log_buffer) if @throw_error_if_mismatch
         end
         to_device(item).write_nonblock(raw_data)
       end
@@ -152,7 +149,7 @@ class ProconBypassMan::DeviceConnector
       @procon = File.open(path, "w+b")
       ProconBypassMan.logger.info "proconのデバイスファイルは#{path}を使います"
     else
-      raise(ProconBypassMan::DeviceConnector::NotFoundProconError)
+      raise(ProconBypassMan::DeviceConnection::NotFoundProconError)
     end
     @gadget = File.open('/dev/hidg0', "w+b")
 
