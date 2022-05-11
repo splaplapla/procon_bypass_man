@@ -62,7 +62,7 @@ describe ProconBypassMan do
 
       before do
         allow(ProconBypassMan::ButtonsSettingConfiguration::Loader).to receive(:load)
-        allow(ProconBypassMan::ConnectDeviceCommand).to receive(:execute!)
+        allow(ProconBypassMan::DeviceConnection::Command).to receive(:execute!)
       end
 
       context 'エラーが起きない' do
@@ -93,7 +93,7 @@ describe ProconBypassMan do
 
       context 'NotFoundProconErrorが起きるとき' do
         before do
-          allow(ProconBypassMan::ConnectDeviceCommand).to receive(:execute!) { raise ProconBypassMan::ConnectDeviceCommand::NotFoundProconError }
+          allow(ProconBypassMan::DeviceConnection::Command).to receive(:execute!) { raise ProconBypassMan::DeviceConnection::NotFoundProconError }
         end
 
         it do
@@ -104,7 +104,7 @@ describe ProconBypassMan do
 
       context 'EternalConnectionErrorが起きるとき' do
         before do
-          allow(ProconBypassMan::ConnectDeviceCommand).to receive(:execute!) { raise ProconBypassMan::EternalConnectionError }
+          allow(ProconBypassMan::DeviceConnection::Command).to receive(:execute!) { raise ProconBypassMan::EternalConnectionError }
         end
 
         it do

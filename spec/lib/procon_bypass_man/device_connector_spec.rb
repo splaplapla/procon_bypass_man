@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe ProconBypassMan::DeviceConnector do
+describe ProconBypassMan::DeviceConnection::Executer do
   subject(:s) { described_class.new(throw_error_if_mismatch: true) }
 
   describe '#drain_all' do
@@ -84,7 +84,7 @@ describe ProconBypassMan::DeviceConnector do
           # 4
           s.add([["8004"]], read_from: :switch)
 
-          expect { s.drain_all }.to raise_error(ProconBypassMan::DeviceConnector::BytesMismatchError)
+          expect { s.drain_all }.to raise_error(ProconBypassMan::DeviceConnection::BytesMismatchError)
         end
       end
     end
@@ -142,7 +142,7 @@ describe ProconBypassMan::DeviceConnector do
         allow(ProconBypassMan::DeviceProconFinder).to receive(:find)
       end
       it do
-        expect { s.init_devices }.to raise_error(ProconBypassMan::DeviceConnector::NotFoundProconError)
+        expect { s.init_devices }.to raise_error(ProconBypassMan::DeviceConnection::NotFoundProconError)
       end
     end
   end
