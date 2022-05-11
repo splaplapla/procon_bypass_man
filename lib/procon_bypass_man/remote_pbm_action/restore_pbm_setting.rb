@@ -17,7 +17,8 @@ module ProconBypassMan
           path: ProconBypassMan::ButtonsSettingConfiguration.instance.setting_path,
           content: setting,
         )
-        ProconBypassMan.hot_reload!
+
+        hot_reload!
       end
 
       private
@@ -28,6 +29,11 @@ module ProconBypassMan
 
       def after_action_callback
         be_processed
+      end
+
+      # @return [void]
+      def hot_reload!
+        Process.kill(:USR2, ProconBypassMan.pid)
       end
     end
   end

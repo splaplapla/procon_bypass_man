@@ -14,6 +14,8 @@ require "pbmenv"
 require_relative "procon_bypass_man/version"
 require_relative "procon_bypass_man/remote_pbm_action"
 require_relative "procon_bypass_man/remote_macro"
+
+
 require_relative "procon_bypass_man/support/usb_device_controller"
 require_relative "procon_bypass_man/support/device_procon_finder"
 require_relative "procon_bypass_man/support/device_mouse_finder"
@@ -101,10 +103,12 @@ module ProconBypassMan
     terminate_pbm
   end
 
+  # 実行ファイル(app.rb)から呼び出している
+  # @return [void]
   def self.configure(&block)
     @@configuration = ProconBypassMan::Configuration.new
     @@configuration.instance_eval(&block)
-    @@configuration
+    nil
   end
 
   # @return [ProconBypassMan::Configuration]
@@ -121,7 +125,7 @@ module ProconBypassMan
     ProconBypassMan::IOMonitor.reset!
   end
 
-  # @return [Void]
+  # @return [void]
   def self.initialize_pbm
     ProconBypassMan::Scheduler.start!
     ProconBypassMan::Background::JobRunner.start!
@@ -135,20 +139,15 @@ module ProconBypassMan
     ProconBypassMan::DeviceStatus.change_to_running!
   end
 
-  # @return [Void]
+  # @return [void]
   def self.terminate_pbm
     FileUtils.rm_rf(ProconBypassMan.pid_path)
     FileUtils.rm_rf(ProconBypassMan.digest_path)
     ProconBypassMan::QueueOverProcess.shutdown
   end
 
-  # @return [Void]
+  # @return [void]
   def self.eternal_sleep
     sleep(999999999)
-  end
-
-  # @return [Void]
-  def self.hot_reload!
-    Process.kill(:USR2, pid)
   end
 end
