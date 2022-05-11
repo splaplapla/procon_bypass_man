@@ -82,7 +82,7 @@ describe ProconBypassMan do
 
       context 'CouldNotLoadConfigErrorが起きるとき' do
         before do
-          allow(ProconBypassMan::Runner).to receive(:new) { raise ProconBypassMan::CouldNotLoadConfigError }
+          allow(ProconBypassMan::ButtonsSettingConfiguration::Loader).to receive(:load) { raise ProconBypassMan::CouldNotLoadConfigError }
         end
 
         it do
@@ -93,7 +93,7 @@ describe ProconBypassMan do
 
       context 'NotFoundProconErrorが起きるとき' do
         before do
-          allow(ProconBypassMan::Runner).to receive(:new) { raise ProconBypassMan::ConnectDeviceCommand::NotFoundProconError }
+          allow(ProconBypassMan::ConnectDeviceCommand).to receive(:execute!) { raise ProconBypassMan::ConnectDeviceCommand::NotFoundProconError }
         end
 
         it do
@@ -104,7 +104,7 @@ describe ProconBypassMan do
 
       context 'EternalConnectionErrorが起きるとき' do
         before do
-          allow(ProconBypassMan::Runner).to receive(:new) { raise ProconBypassMan::EternalConnectionError }
+          allow(ProconBypassMan::ConnectDeviceCommand).to receive(:execute!) { raise ProconBypassMan::EternalConnectionError }
         end
 
         it do

@@ -72,35 +72,38 @@ module ProconBypassMan
 
     ProconBypassMan::PrintMessageCommand.execute(text: "PBMを起動しています")
     initialize_pbm
-    ProconBypassMan::ButtonsSettingConfiguration::Loader.load(setting_path: setting_path)
-    gadget, procon = ProconBypassMan::ConnectDeviceCommand.execute!
+
+    begin
+      ProconBypassMan::ButtonsSettingConfiguration::Loader.load(setting_path: setting_path)
+    rescue ProconBypassMan::CouldNotLoadConfigError
+      ProconBypassMan::SendErrorCommand.execute(error: "設定ファイルが不正です。設定ファイルの読み込みに失敗しました")
+      ProconBypassMan::DeviceStatus.change_to_setting_syntax_error_and_shutdown!
+      # TODO シグナルトラップをしていないのでUSR2を送ったときにプロセスが停止している. 明示的にハンドリングするべき.
+      ProconBypassMan.exit_if_allow(1) do
+        terminate_pbm
+      end
+      return
+    end
+
+    begin
+      gadget, procon = ProconBypassMan::ConnectDeviceCommand.execute!
+    rescue ProconBypassMan::ConnectDeviceCommand::NotFoundProconError
+      ProconBypassMan::SendErrorCommand.execute(error: "プロコンが見つかりませんでした。")
+      ProconBypassMan::DeviceStatus.change_to_procon_not_found_error!
+      # TODO シグナルトラップをしていないのでUSR2を送ったときにプロセスが停止している. 明示的にハンドリングするべき.
+      ProconBypassMan.exit_if_allow(1) do
+        terminate_pbm
+      end
+      return
+    rescue ProconBypassMan::EternalConnectionError
+      ProconBypassMan::SendErrorCommand.execute(error: "接続の見込みがないのでsleepしまくります")
+      ProconBypassMan::DeviceStatus.change_to_connected_but_sleeping!
+      eternal_sleep
+      return
+    end
+
     Runner.new(gadget: gadget, procon: procon).run # ここでblockingする
-    FileUtils.rm_rf(ProconBypassMan.pid_path)
-    FileUtils.rm_rf(ProconBypassMan.digest_path)
-    ProconBypassMan::QueueOverProcess.shutdown
-  rescue ProconBypassMan::CouldNotLoadConfigError
-    ProconBypassMan::SendErrorCommand.execute(error: "設定ファイルが不正です。設定ファイルの読み込みに失敗しました")
-    ProconBypassMan::DeviceStatus.change_to_setting_syntax_error_and_shutdown!
-    # TODO シグナルトラップをしていないのでUSR2を送ったときにプロセスが停止している. 明示的にハンドリングするべき.
-    ProconBypassMan.exit_if_allow(1) do
-      FileUtils.rm_rf(ProconBypassMan.pid_path)
-      FileUtils.rm_rf(ProconBypassMan.digest_path)
-      ProconBypassMan::QueueOverProcess.shutdown
-    end
-  rescue ProconBypassMan::ConnectDeviceCommand::NotFoundProconError
-    ProconBypassMan::SendErrorCommand.execute(error: "プロコンが見つかりませんでした。")
-    ProconBypassMan::DeviceStatus.change_to_procon_not_found_error!
-    # TODO シグナルトラップをしていないのでUSR2を送ったときにプロセスが停止している. 明示的にハンドリングするべき.
-    ProconBypassMan.exit_if_allow(1) do
-      FileUtils.rm_rf(ProconBypassMan.pid_path)
-      FileUtils.rm_rf(ProconBypassMan.digest_path)
-      ProconBypassMan::QueueOverProcess.shutdown
-    end
-  rescue ProconBypassMan::EternalConnectionError
-    ProconBypassMan::SendErrorCommand.execute(error: "接続の見込みがないのでsleepしまくります")
-    ProconBypassMan::DeviceStatus.change_to_connected_but_sleeping!
-    FileUtils.rm_rf(ProconBypassMan.pid_path)
-    eternal_sleep
+    terminate_pbm
   end
 
   def self.configure(&block)
@@ -123,6 +126,7 @@ module ProconBypassMan
     ProconBypassMan::IOMonitor.reset!
   end
 
+  # @return [Void]
   def self.initialize_pbm
     ProconBypassMan::WriteDeviceIdCommand.execute
     ProconBypassMan::WriteSessionIdCommand.execute
@@ -131,6 +135,14 @@ module ProconBypassMan
     ProconBypassMan::DeviceStatus.change_to_running!
   end
 
+  # @return [Void]
+  def self.terminate_pbm
+    FileUtils.rm_rf(ProconBypassMan.pid_path)
+    FileUtils.rm_rf(ProconBypassMan.digest_path)
+    ProconBypassMan::QueueOverProcess.shutdown
+  end
+
+  # @return [Void]
   def self.eternal_sleep
     sleep(999999999)
   end
