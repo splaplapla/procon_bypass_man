@@ -1,11 +1,11 @@
 module ProconBypassMan
   module NeverExitAccidentally
-    def exit_if_allow(status)
+    def self.exit_if_allow_at_config
       if ProconBypassMan.never_exit_accidentally
-        eternal_sleep
+        ProconBypassMan.eternal_sleep
       else
         yield if block_given?
-        exit(status)
+        exit 1
       end
     end
   end
