@@ -169,4 +169,3 @@ class ProconBypassMan::DeviceConnection::OutputReportReminder
     end
   end
 end
-end

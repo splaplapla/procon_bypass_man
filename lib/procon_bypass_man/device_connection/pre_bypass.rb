@@ -5,6 +5,8 @@ class ProconBypassMan::DeviceConnection::PreBypass
     @output_report_reminder = ProconBypassMan::DeviceConnection::OutputReportReminder.new
   end
 
+  # NOTE 脳死でx01とx21をバイパスする
+  # NOTE 返事が返ってくるまで任意のx01(home led光らせる)をプロコンに送りつける
   def execute!
     loop do
       raw_data = read_from_switch
