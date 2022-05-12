@@ -18,7 +18,7 @@ class ProconBypassMan::DeviceConnection::OutputReportObserver
 
     def sub_command_with_arg
       case @sub_command
-      when "30", "40"
+      when "30", "40", "03"
         @sub_command
       else
         "#{@sub_command}-#{@sub_command_arg}"
@@ -63,7 +63,7 @@ class ProconBypassMan::DeviceConnection::OutputReportObserver
       end
 
       case sub_command
-      when "30", "40"
+      when "30", "40", "03"
         @hid_sub_command_request_table[sub_command] = false
       else
         @hid_sub_command_request_table["#{sub_command}-#{sub_command_arg}"] = false
@@ -78,7 +78,7 @@ class ProconBypassMan::DeviceConnection::OutputReportObserver
     end
 
     case sub_command
-    when "30", "40"
+    when "30", "40", "03"
       @hid_sub_command_request_table.key?(sub_command)
     else
       @hid_sub_command_request_table.key?("#{sub_command}-#{sub_command_arg}")

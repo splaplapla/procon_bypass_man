@@ -102,7 +102,7 @@ describe ProconBypassMan::DeviceConnection::OutputReportObserver do
     let(:input_report) { to_raw("213881008000a4f8775b587101804000000000000") }
   end
 
-  describe '10-02:  SPI flash read' do
+  describe '10-28:  SPI flash read' do
     include_examples '入力と出力の突き合わせができること'
 
     let(:sub_command) { "10" }
@@ -110,4 +110,61 @@ describe ProconBypassMan::DeviceConnection::OutputReportObserver do
     let(:output_report) { to_raw("010600000000000000001028800000180000000") }
     let(:input_report) { to_raw("212d81008000a6d8775b68710190102880000018eefea9004602004000400040f7fffdff0900e73be73be73b00") }
   end
+
+  describe '10-3d:  SPI flash read' do
+    include_examples '入力と出力の突き合わせができること'
+
+    let(:sub_command) { "10" }
+    let(:sub_command_arg) { "3d" }
+    let(:output_report) { to_raw("01050000000000000000103d6000001900000000000000000000") }
+    let(:input_report) { to_raw("212681008000a7e8775968710190103d60000019db255d4b287bd3955769c872f3f55caeb560ff323232ffffff0000000") }
+  end
+
+
+  describe '10-98:  SPI flash read' do
+    include_examples '入力と出力の突き合わせができること'
+
+    let(:sub_command) { "10" }
+    let(:sub_command_arg) { "98" }
+    let(:output_report) { to_raw("010200000000000000001098600000120000") }
+    let(:input_report) { to_raw("211681008000a7d8775a587101901098600000120f30619630f3d41454411554c7799c33366300000000") }
+  end
+
+  describe '10-10:  SPI flash read' do
+    include_examples '入力と出力の突き合わせができること'
+
+    let(:sub_command) { "10" }
+    let(:sub_command_arg) { "10" }
+    let(:output_report) { to_raw("01040000000000000000101080000018000000") }
+    let(:input_report) { to_raw("211c81008000a7c8775b48710190101080000018ffffffffffffffffffffffffffffffffffffffffffffb2a10000000000000000000000000000000000000000") }
+  end
+
+  describe '10-80:  SPI flash read' do
+    include_examples '入力と出力の突き合わせができること'
+
+    let(:sub_command) { "10" }
+    let(:sub_command_arg) { "80" }
+    let(:output_report) { to_raw("0101000000000000000010806000001800") }
+    let(:input_report) { to_raw("210a81008000a6d8775a5871019010806000001850fd0000c60f0f30619630f3d41454411554c7799c3336630000000000000000000000000000000000000000") }
+  end
+
+  describe '10-80:  SPI flash read' do
+    include_examples '入力と出力の突き合わせができること'
+
+    let(:sub_command) { "04" }
+    let(:sub_command_arg) { "00" }
+    let(:output_report) { to_raw("01000000000000000000040000000000000000000000000000000000000000000000000000000000000000000000000000") }
+    let(:input_report) { to_raw("210081008000a6e8775958710183040000b73a553ab33a0000000000000000000000000000000000000000000000000000000000000000000000000000000000") }
+  end
+
+  describe '10-80:  SPI flash read' do
+    include_examples '入力と出力の突き合わせができること'
+
+    let(:sub_command) { "03" }
+    let(:sub_command_arg) { "30" }
+    let(:output_report) { to_raw("010f0001404000014040033000000000000000000000000000000000000000000000000000000000000000000000000000") }
+    let(:input_report) { to_raw("21f781008000a6d87757487101800300000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000") }
+  end
+
+
 end
