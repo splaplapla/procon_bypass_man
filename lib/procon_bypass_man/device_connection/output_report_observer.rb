@@ -4,7 +4,8 @@ class ProconBypassMan::DeviceConnection::OutputReportObserver
 
     def self.parse(data)
       if sub_command = data[28..29]
-        new(sub_command: sub_command, sub_command_arg: nil)
+        sub_command_arg = data[30..31]
+        new(sub_command: sub_command, sub_command_arg: sub_command_arg)
       else
         raise "could not parse"
       end
@@ -17,10 +18,10 @@ class ProconBypassMan::DeviceConnection::OutputReportObserver
 
     def sub_command_with_arg
       case @sub_command
-      when "30"
-        "30"
-      else
+      when "30", "40"
         @sub_command
+      else
+        "#{@sub_command}-#{@sub_command_arg}"
       end
     end
   end
@@ -62,7 +63,7 @@ class ProconBypassMan::DeviceConnection::OutputReportObserver
       end
 
       case sub_command
-      when "30" # player led
+      when "30", "40"
         @hid_sub_command_request_table[sub_command] = false
       else
         @hid_sub_command_request_table["#{sub_command}-#{sub_command_arg}"] = false
@@ -77,7 +78,7 @@ class ProconBypassMan::DeviceConnection::OutputReportObserver
     end
 
     case sub_command
-    when "30" # player led
+    when "30", "40"
       @hid_sub_command_request_table.key?(sub_command)
     else
       @hid_sub_command_request_table.key?("#{sub_command}-#{sub_command_arg}")

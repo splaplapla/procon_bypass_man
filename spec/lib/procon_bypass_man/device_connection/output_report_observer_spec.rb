@@ -83,4 +83,52 @@ describe ProconBypassMan::DeviceConnection::OutputReportObserver do
     it { expect(report_observer.sent?(sub_command: "30", sub_command_arg: "01")).to eq(false) }
     it { expect(report_observer.received?(sub_command: "30", sub_command_arg: "01")).to eq(false) }
   end
+
+  describe '40-01: Enable IMU (6-Axis sensor)' do
+    let(:sub_command) { "40" }
+    let(:sub_command_arg) { "01" }
+    let(:output_report) { to_raw("0107000000000000000040010000") }
+    let(:input_report) { to_raw("213881008000a4f8775b587101804000000000000") }
+
+    it do
+      report_observer.mark_as_send(output_report)
+      report_observer.mask_as_receive(input_report)
+      expect(report_observer.received?(sub_command: sub_command, sub_command_arg: sub_command_arg)).to eq(true)
+    end
+    it do
+      report_observer.mark_as_send(output_report)
+      expect(report_observer.received?(sub_command: sub_command, sub_command_arg: sub_command_arg)).to eq(false)
+    end
+    it do
+      report_observer.mark_as_send(output_report)
+      expect(report_observer.sent?(sub_command: sub_command, sub_command_arg: sub_command_arg)).to eq(true)
+    end
+    it { expect(report_observer.sent?(sub_command: sub_command, sub_command_arg: sub_command_arg)).to eq(false) }
+    it { expect(report_observer.received?(sub_command: sub_command, sub_command_arg: sub_command_arg)).to eq(false) }
+  end
+
+  describe '10-02:  SPI flash read' do
+    let(:sub_command) { "10" }
+    let(:sub_command_arg) { "28" }
+    let(:output_report) { to_raw("010600000000000000001028800000180000000") }
+    let(:input_report) { to_raw("212d81008000a6d8775b68710190102880000018eefea9004602004000400040f7fffdff0900e73be73be73b00") }
+
+    it do
+      report_observer.mark_as_send(output_report)
+      report_observer.mask_as_receive(input_report)
+      expect(report_observer.received?(sub_command: sub_command, sub_command_arg: sub_command_arg)).to eq(true)
+    end
+    it do
+      report_observer.mark_as_send(output_report)
+      expect(report_observer.received?(sub_command: sub_command, sub_command_arg: sub_command_arg)).to eq(false)
+    end
+    it do
+      report_observer.mark_as_send(output_report)
+      expect(report_observer.sent?(sub_command: sub_command, sub_command_arg: sub_command_arg)).to eq(true)
+    end
+    it { expect(report_observer.sent?(sub_command: sub_command, sub_command_arg: sub_command_arg)).to eq(false) }
+    it { expect(report_observer.received?(sub_command: sub_command, sub_command_arg: sub_command_arg)).to eq(false) }
+  end
+
+
 end
