@@ -1,6 +1,6 @@
 class ProconBypassMan::DeviceConnection::OutputReportObserver
   class HIDSubCommandResponse
-    attr_accessor :sub_command
+    attr_accessor :sub_command, :sub_command_arg
 
     def self.parse(data)
       if sub_command = data[28..29]
@@ -26,6 +26,44 @@ class ProconBypassMan::DeviceConnection::OutputReportObserver
     end
   end
 
+  class HIDSubCommandRequestTable
+    def initialize
+      @table = {}
+    end
+
+    def has_key?(sub_command: , sub_command_arg: )
+      case sub_command
+      when *SPECIAL_SUB_COMMANDS
+        @table.key?(sub_command)
+      else
+        response = HIDSubCommandResponse.new(sub_command: sub_command, sub_command_arg: sub_command_arg)
+        @table.key?(response.sub_command_with_arg)
+      end
+    end
+
+    def mask_as_send(sub_command: , sub_command_arg: )
+      case sub_command
+      when *SPECIAL_SUB_COMMANDS
+        @table[sub_command] = false
+      else
+        response = HIDSubCommandResponse.new(sub_command: sub_command, sub_command_arg: sub_command_arg)
+        @table[response.sub_command_with_arg] = false
+      end
+    end
+
+    def mask_as_receive(sub_command: , sub_command_arg: )
+      response = HIDSubCommandResponse.new(sub_command: sub_command, sub_command_arg: sub_command_arg)
+      if @table.key?(response.sub_command_with_arg)
+        @table[response.sub_command_with_arg] = true
+      end
+    end
+
+    def has_value?(sub_command: , sub_command_arg: )
+      response = HIDSubCommandResponse.new(sub_command: sub_command, sub_command_arg: sub_command_arg)
+      @table[response.sub_command_with_arg] || false
+    end
+  end
+
   # レスポンスに引数が含まれない
   SPECIAL_SUB_COMMANDS = ["30", "40", "03", "02", "01"]
   IGNORE_OBSERVE_SUB_COMMANDS = { "48-01" => true }
@@ -45,11 +83,10 @@ class ProconBypassMan::DeviceConnection::OutputReportObserver
     30-01
     40-01
     48-00
-  )
+  ).map{ |x| x.split("-") }
 
   def initialize
-    @counter = 0
-    @hid_sub_command_request_table = {}
+    @hid_sub_command_request_table = HIDSubCommandRequestTable.new
   end
 
   # @return [void]
@@ -64,12 +101,7 @@ class ProconBypassMan::DeviceConnection::OutputReportObserver
         return true
       end
 
-      case sub_command
-      when *SPECIAL_SUB_COMMANDS
-        @hid_sub_command_request_table[sub_command] = false
-      else
-        @hid_sub_command_request_table["#{sub_command}-#{sub_command_arg}"] = false
-      end
+      @hid_sub_command_request_table.mask_as_send(sub_command: sub_command, sub_command_arg: sub_command_arg)
     end
   end
 
@@ -79,12 +111,7 @@ class ProconBypassMan::DeviceConnection::OutputReportObserver
       return true
     end
 
-    case sub_command
-    when *SPECIAL_SUB_COMMANDS
-      @hid_sub_command_request_table.key?(sub_command)
-    else
-      @hid_sub_command_request_table.key?("#{sub_command}-#{sub_command_arg}")
-    end
+    @hid_sub_command_request_table.has_key?(sub_command: sub_command, sub_command_arg: sub_command_arg)
   end
 
   INPUT_REPORT_FORMAT = /^21/
@@ -93,22 +120,19 @@ class ProconBypassMan::DeviceConnection::OutputReportObserver
     case data
     when INPUT_REPORT_FORMAT
       response = HIDSubCommandResponse.parse(data)
-      if @hid_sub_command_request_table.key?(response.sub_command_with_arg)
-        @hid_sub_command_request_table[response.sub_command_with_arg] = true
-      end
+      @hid_sub_command_request_table.mask_as_receive(sub_command: response.sub_command, sub_command_arg: response.sub_command_arg)
     end
   end
 
   # @return [Boolean]
   def received?(sub_command: , sub_command_arg: )
-    response = HIDSubCommandResponse.new(sub_command: sub_command, sub_command_arg: sub_command_arg)
-    @hid_sub_command_request_table[response.sub_command_with_arg] || false
+    @hid_sub_command_request_table.has_value?(sub_command: sub_command, sub_command_arg: sub_command_arg)
   end
 
   # @return [Boolean]
   def completed?
-    EXPECTED_SUB_COMMANDS.all? do |sub_command_with_arg|
-      @hid_sub_command_request_table[sub_command_with_arg]
+    EXPECTED_SUB_COMMANDS.all? do |sub_command, sub_command_arg|
+      @hid_sub_command_request_table.has_value?(sub_command: sub_command, sub_command_arg: sub_command_arg)
     end
   end
 end
