@@ -54,15 +54,15 @@ class ProconBypassMan::DeviceConnection::PreBypass
 
   # @return [void]
   def send_procon(raw_data)
-    procon.write_nonblock([data].pack("H*"))
+    procon.write_nonblock(raw_data)
   end
 
   # @return [void]
   def send_switch(raw_data)
-    gadget.write_nonblock([data].pack("H*"))
+    gadget.write_nonblock(raw_data)
   end
 
   def to_stdout(text)
-    puts to_stdout
+    puts text
   end
 end

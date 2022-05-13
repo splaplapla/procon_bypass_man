@@ -37,17 +37,17 @@ describe ProconBypassMan::DeviceConnection::OutputReportObserver do
     end
   end
 
-  describe '#mask_as_receive' do
+  describe '#mark_as_receive' do
     it do
       report_observer.mark_as_send(to_raw("010000000000000000003001"))
-      report_observer.mask_as_receive(to_raw("2143810080007cb878903870098030"))
+      report_observer.mark_as_receive(to_raw("2143810080007cb878903870098030"))
     end
   end
 
   shared_examples '入力と出力の突き合わせができること' do
     it do
       report_observer.mark_as_send(output_report)
-      report_observer.mask_as_receive(input_report)
+      report_observer.mark_as_receive(input_report)
       expect(report_observer.received?(sub_command: sub_command, sub_command_arg: sub_command_arg)).to eq(true)
     end
     it do
@@ -195,8 +195,8 @@ describe ProconBypassMan::DeviceConnection::OutputReportObserver do
 
     context '一部のみreceiveしたとき' do
       before do
-        report_observer.mask_as_receive("0107000000000000000040010000")
-        report_observer.mask_as_receive("213881008000a4f8775b587101804000000000000")
+        report_observer.mark_as_receive("0107000000000000000040010000")
+        report_observer.mark_as_receive("213881008000a4f8775b587101804000000000000")
       end
 
       it do
@@ -227,8 +227,8 @@ describe ProconBypassMan::DeviceConnection::OutputReportObserver do
 
     context '一部のみreceiveしたとき' do
       before do
-        report_observer.mask_as_receive("0107000000000000000040010000")
-        report_observer.mask_as_receive("213881008000a4f8775b587101804000000000000")
+        report_observer.mark_as_receive("0107000000000000000040010000")
+        report_observer.mark_as_receive("213881008000a4f8775b587101804000000000000")
       end
 
       it do

@@ -51,7 +51,7 @@ class ProconBypassMan::DeviceConnection::OutputReportObserver
       end
     end
 
-    def mask_as_receive(sub_command: , sub_command_arg: )
+    def mark_as_receive(sub_command: , sub_command_arg: )
       response = HIDSubCommandResponse.new(sub_command: sub_command, sub_command_arg: sub_command_arg)
       if @table.key?(response.sub_command_with_arg)
         @table[response.sub_command_with_arg] = true
@@ -116,12 +116,12 @@ class ProconBypassMan::DeviceConnection::OutputReportObserver
   end
 
   INPUT_REPORT_FORMAT = /^21/
-  def mask_as_receive(raw_data)
+  def mark_as_receive(raw_data)
     data = raw_data.unpack("H*").first
     case data
     when INPUT_REPORT_FORMAT
       response = HIDSubCommandResponse.parse(data)
-      @hid_sub_command_request_table.mask_as_receive(sub_command: response.sub_command, sub_command_arg: response.sub_command_arg)
+      @hid_sub_command_request_table.mark_as_receive(sub_command: response.sub_command, sub_command_arg: response.sub_command_arg)
     end
   end
 
