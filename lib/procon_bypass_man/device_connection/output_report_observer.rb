@@ -27,7 +27,7 @@ class ProconBypassMan::DeviceConnection::OutputReportObserver
   end
 
   class HIDSubCommandRequestTable
-    def initialize
+    def initialize(timeout: )
       @table = {}
     end
 
@@ -87,6 +87,7 @@ class ProconBypassMan::DeviceConnection::OutputReportObserver
 
   def initialize
     @hid_sub_command_request_table = HIDSubCommandRequestTable.new
+    @timer = ProconBypassMan::SafeTimeout.new
   end
 
   # @return [void]
@@ -138,6 +139,12 @@ class ProconBypassMan::DeviceConnection::OutputReportObserver
 
   # @return [Boolean]
   # @raise [Timeout::Error]
-  def completed_and_timeout?
+  def timeout_or_completed?
+    if @timer.timeout?
+      ProconBypassMan.logger.error "pre_bypassフェーズがタイムアウトしました"
+      return true
+    end
+
+    return true if completed?
   end
 end
