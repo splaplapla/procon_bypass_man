@@ -14,7 +14,7 @@ class ProconBypassMan::DeviceConnection::PreBypass
       begin
         raw_data = non_blocking_read_switch
         output_report_observer.mark_as_send(raw_data)
-        to_stdout("[observer] >>> #{raw_data.unpack("H*").first}")
+        ProconBypassMan.logger.info "[observer] >>> #{raw_data.unpack("H*").first}"
         send_procon(raw_data)
       rescue IO::EAGAINWaitReadable
       end
@@ -23,7 +23,7 @@ class ProconBypassMan::DeviceConnection::PreBypass
         begin
           raw_data = non_blocking_read_procon
           output_report_observer.mark_as_receive(raw_data)
-          to_stdout("[observer] <<< #{raw_data.unpack("H*").first}")
+          ProconBypassMan.logger.info "[observer] <<< #{raw_data.unpack("H*").first}"
           send_switch(raw_data)
         rescue IO::EAGAINWaitReadable
         end
@@ -59,9 +59,5 @@ class ProconBypassMan::DeviceConnection::PreBypass
   # @return [void]
   def send_switch(raw_data)
     gadget.write_nonblock(raw_data)
-  end
-
-  def to_stdout(text)
-    puts text
   end
 end
