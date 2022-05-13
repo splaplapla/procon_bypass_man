@@ -12,12 +12,11 @@ class ProconBypassMan::DeviceConnection::PreBypass
 
     loop do
       begin
-        raw_data = non_blocking_from_switch
+        raw_data = non_blocking_read_switch
         output_report_observer.mark_as_send(raw_data)
         to_stdout("[observer] >>> #{raw_data.unpack("H*").first}")
         send_procon(raw_data)
       rescue IO::EAGAINWaitReadable
-        retry
       end
 
       5.times do
@@ -40,7 +39,7 @@ class ProconBypassMan::DeviceConnection::PreBypass
 
   # @raise [IO::EAGAINWaitReadable]
   # @return [String]
-  def non_blocking_from_switch
+  def non_blocking_read_switch
     raw_data = gadget.read_nonblock(64)
     return raw_data
   end
