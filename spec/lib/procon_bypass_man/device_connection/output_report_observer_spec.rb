@@ -84,22 +84,49 @@ describe ProconBypassMan::DeviceConnection::OutputReportObserver do
     it { expect(report_observer.received?(sub_command: sub_command, sub_command_arg: sub_command_arg)).to eq(false) }
   end
 
-  describe '30: player light' do
+  describe '01-04: Bluetooth manual pairing' do
     include_examples '入力と出力の突き合わせができること'
 
-    let(:sub_command) { "30" }
-    let(:sub_command_arg) { "01" }
-    let(:output_report) { to_raw("010000000000000000003001") }
-    let(:input_report) { to_raw("2143810080007cb878903870098030") }
+    let(:sub_command) { "01" }
+    let(:sub_command_arg) { "04" }
+    let(:output_report) { to_raw("010e000000000000000001044c748786451c00043c4e696e74656e646f2053776974636800000000006800c0887c462e00") }
+    let(:input_report) { to_raw("21ef81008000a6e8775b687101810103000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000") }
   end
 
-  describe '40-01: Enable IMU (6-Axis sensor)' do
+  describe '02-00: Request device info' do
     include_examples '入力と出力の突き合わせができること'
 
-    let(:sub_command) { "40" }
-    let(:sub_command_arg) { "01" }
-    let(:output_report) { to_raw("0107000000000000000040010000") }
-    let(:input_report) { to_raw("213881008000a4f8775b587101804000000000000") }
+    let(:sub_command) { "02" }
+    let(:sub_command_arg) { "00" }
+    let(:output_report) { to_raw("010a0000000000000000020000000000000000000000000000000000000000000000000000000000000000000000000000") }
+    let(:input_report) { to_raw("21ca81008000a7c8775b48710182020348030298b6e942bd2d030100000000000000000000000000000000000000000000000000000000000000000000000000") }
+  end
+
+  describe '03-30: Set input report mode' do
+    include_examples '入力と出力の突き合わせができること'
+
+    let(:sub_command) { "03" }
+    let(:sub_command_arg) { "30" }
+    let(:output_report) { to_raw("010f0001404000014040033000000000000000000000000000000000000000000000000000000000000000000000000000") }
+    let(:input_report) { to_raw("21f781008000a6d87757487101800300000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000") }
+  end
+
+  describe '04-00:  SPI flash read' do
+    include_examples '入力と出力の突き合わせができること'
+
+    let(:sub_command) { "04" }
+    let(:sub_command_arg) { "00" }
+    let(:output_report) { to_raw("01000000000000000000040000000000000000000000000000000000000000000000000000000000000000000000000000") }
+    let(:input_report) { to_raw("210081008000a6e8775958710183040000b73a553ab33a0000000000000000000000000000000000000000000000000000000000000000000000000000000000") }
+  end
+
+  describe '08-00: Set shipment low power state' do
+    include_examples '入力と出力の突き合わせができること'
+
+    let(:sub_command) { "08" }
+    let(:sub_command_arg) { "00" }
+    let(:output_report) { to_raw("010b0000000000000000080000000000000000000000000000000000000000000000000000000000000000000000000000") }
+    let(:input_report) { to_raw("21d481008000a7d8775b687101800800000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000") }
   end
 
   describe '10-28:  SPI flash read' do
@@ -119,7 +146,6 @@ describe ProconBypassMan::DeviceConnection::OutputReportObserver do
     let(:output_report) { to_raw("01050000000000000000103d6000001900000000000000000000") }
     let(:input_report) { to_raw("212681008000a7e8775968710190103d60000019db255d4b287bd3955769c872f3f55caeb560ff323232ffffff0000000") }
   end
-
 
   describe '10-98:  SPI flash read' do
     include_examples '入力と出力の突き合わせができること'
@@ -148,23 +174,45 @@ describe ProconBypassMan::DeviceConnection::OutputReportObserver do
     let(:input_report) { to_raw("210a81008000a6d8775a5871019010806000001850fd0000c60f0f30619630f3d41454411554c7799c3336630000000000000000000000000000000000000000") }
   end
 
-  describe '10-80:  SPI flash read' do
+  describe '10-00: SPI flash read' do
     include_examples '入力と出力の突き合わせができること'
 
-    let(:sub_command) { "04" }
+    let(:sub_command) { "10" }
     let(:sub_command_arg) { "00" }
-    let(:output_report) { to_raw("01000000000000000000040000000000000000000000000000000000000000000000000000000000000000000000000000") }
-    let(:input_report) { to_raw("210081008000a6e8775958710183040000b73a553ab33a0000000000000000000000000000000000000000000000000000000000000000000000000000000000") }
+    let(:output_report) { to_raw("010c0000000000000000100060000010000000000000000000000000000000000000000000000000000000000000000000") }
+    let(:input_report) { to_raw("21de81008000a7e8775b78710190100060000010ffffffffffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000") }
   end
 
-  describe '10-80:  SPI flash read' do
+  describe '10-50: SPI flash read' do
     include_examples '入力と出力の突き合わせができること'
 
-    let(:sub_command) { "03" }
-    let(:sub_command_arg) { "30" }
-    let(:output_report) { to_raw("010f0001404000014040033000000000000000000000000000000000000000000000000000000000000000000000000000") }
-    let(:input_report) { to_raw("21f781008000a6d87757487101800300000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000") }
+    let(:sub_command) { "10" }
+    let(:sub_command_arg) { "50" }
+    let(:output_report) { to_raw("010d000000000000000010506000000d000000000000000000000000000000000000000000000000000000000000000000") }
+    let(:input_report) { to_raw("21e681008000a6e8775b4871019010506000000d323232ffffffffffffffffffff00000000000000000000000000000000000000000000000000000000000000") }
   end
 
+  describe '30-01: player light' do
+    include_examples '入力と出力の突き合わせができること'
 
+    let(:sub_command) { "30" }
+    let(:sub_command_arg) { "01" }
+    let(:output_report) { to_raw("010000000000000000003001") }
+    let(:input_report) { to_raw("2143810080007cb878903870098030") }
+  end
+
+  describe '40-01: Enable IMU (6-Axis sensor)' do
+    include_examples '入力と出力の突き合わせができること'
+
+    let(:sub_command) { "40" }
+    let(:sub_command_arg) { "01" }
+    let(:output_report) { to_raw("0107000000000000000040010000") }
+    let(:input_report) { to_raw("213881008000a4f8775b587101804000000000000") }
+  end
+
+  describe '#completed?' do
+    it do
+      expect(report_observer.completed?).to eq(false)
+    end
+  end
 end
