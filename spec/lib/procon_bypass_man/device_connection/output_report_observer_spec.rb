@@ -7,28 +7,6 @@ describe ProconBypassMan::DeviceConnection::OutputReportObserver do
 
   let(:report_observer) { described_class.new }
 
-  describe '' do
-    xit do
-      loop do
-        # switch -> procon
-        raw_data = read_from
-        report_observer.mark_as_send(raw_data)
-        send_procon(raw_data)
-
-        # procon -> switch
-        5.times do
-          raw_data = read_procon
-          report_observer.mark_as_receive(raw_data)
-        end
-
-        if report_observer.completed?
-          break
-        end
-      end
-    end
-  end
-
-
   describe '#sent?' do
     context 'ignoreしている' do
       it do
