@@ -16,7 +16,7 @@ class ProconBypassMan::DeviceConnection::Executer
     new(throw_error_if_timeout: true)
   end
 
-  def self.connect
+  def self.execute!
     s = new_with_default_args
     s.add([
       ["0000"],

@@ -2,7 +2,7 @@ class ProconBypassMan::DeviceConnection::Command
   # @return [void]
   def self.execute!
     begin
-      gadget, procon = ProconBypassMan::DeviceConnection::Executer.connect
+      gadget, procon = ProconBypassMan::DeviceConnection::Executer.execute!
     rescue ProconBypassMan::DeviceConnection::NotFoundProconError => e
       ProconBypassMan.logger.error e
       gadget&.close

@@ -135,4 +135,9 @@ class ProconBypassMan::DeviceConnection::OutputReportObserver
       @hid_sub_command_request_table.has_value?(sub_command: sub_command, sub_command_arg: sub_command_arg)
     end
   end
+
+  # @return [Boolean]
+  # @raise [Timeout::Error]
+  def completed_and_timeout?
+  end
 end

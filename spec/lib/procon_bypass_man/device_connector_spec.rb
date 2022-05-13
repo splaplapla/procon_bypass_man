@@ -132,7 +132,7 @@ describe ProconBypassMan::DeviceConnection::Executer do
 
     it do
       allow(described_class).to receive(:new_with_default_args) { s }
-      expect(described_class.connect).to eq([switch, procon])
+      expect(described_class.execute!).to eq([switch, procon])
     end
   end
 
