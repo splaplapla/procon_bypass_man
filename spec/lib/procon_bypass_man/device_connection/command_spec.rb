@@ -5,7 +5,8 @@ describe ProconBypassMan::DeviceConnection::Command do
     subject { described_class.execute! }
 
     before do
-      allow(ProconBypassMan::DeviceConnection::Executer).to receive(:connect)
+      allow(ProconBypassMan::DeviceConnection::Executer).to receive(:execute!)
+      allow(ProconBypassMan::DeviceConnection::PreBypass).to receive(:new) { double(:x).as_null_object }
     end
 
     it do
@@ -14,7 +15,7 @@ describe ProconBypassMan::DeviceConnection::Command do
 
     context 'when timeout' do
       before do
-        allow(ProconBypassMan::DeviceConnection::Executer).to receive(:connect) { raise ProconBypassMan::SafeTimeout::Timeout }
+        allow(ProconBypassMan::DeviceConnection::Executer).to receive(:execute!) { raise ProconBypassMan::SafeTimeout::Timeout }
       end
 
       it do
@@ -24,7 +25,7 @@ describe ProconBypassMan::DeviceConnection::Command do
 
     context 'when procon not found ' do
       before do
-        allow(ProconBypassMan::DeviceConnection::Executer).to receive(:connect) { raise ProconBypassMan::DeviceConnection::NotFoundProconError }
+        allow(ProconBypassMan::DeviceConnection::Executer).to receive(:execute!) { raise ProconBypassMan::DeviceConnection::NotFoundProconError }
         allow(ProconBypassMan).to receive(:logger) { Logger.new("/dev/null") }
       end
 

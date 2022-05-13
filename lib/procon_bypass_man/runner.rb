@@ -41,9 +41,9 @@ class ProconBypassMan::Runner
           handle_signal(signal)
         end
       rescue InterruptForRestart
+        ProconBypassMan::PrintMessageCommand.execute(text: "Reloading config file")
         Process.kill("USR2", child_pid)
         Process.wait
-        ProconBypassMan::PrintMessageCommand.execute(text: "Reloading config file")
         begin
           ProconBypassMan::ButtonsSettingConfiguration::Loader.reload_setting
           ProconBypassMan::SendReloadConfigEventCommand.execute
@@ -53,9 +53,9 @@ class ProconBypassMan::Runner
         end
         ProconBypassMan::PrintMessageCommand.execute(text: "バイパス処理を再開します")
       rescue Interrupt
+        ProconBypassMan::PrintMessageCommand.execute(text: "処理を終了します")
         Process.kill("TERM", child_pid)
         Process.wait
-        ProconBypassMan::PrintMessageCommand.execute(text: "処理を終了します")
         ProconBypassMan::UsbDeviceController.reset
         @gadget&.close
         @procon&.close

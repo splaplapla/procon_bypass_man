@@ -4,4 +4,6 @@ module ProconBypassMan::DeviceConnection
 end
 
 require_relative "device_connection/executor"
+require_relative "device_connection/pre_bypass"
 require_relative "device_connection/command"
+require_relative "device_connection/output_report_observer"
