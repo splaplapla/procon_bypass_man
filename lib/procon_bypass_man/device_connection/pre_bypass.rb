@@ -17,6 +17,7 @@ class ProconBypassMan::DeviceConnection::PreBypass
         ProconBypassMan.logger.info "[observer] >>> #{raw_data.unpack("H*").first}"
         send_procon(raw_data)
       rescue IO::EAGAINWaitReadable
+        # no-op
       end
 
       5.times do
@@ -26,6 +27,7 @@ class ProconBypassMan::DeviceConnection::PreBypass
           ProconBypassMan.logger.info "[observer] <<< #{raw_data.unpack("H*").first}"
           send_switch(raw_data)
         rescue IO::EAGAINWaitReadable
+          # no-op
         end
       end
 
