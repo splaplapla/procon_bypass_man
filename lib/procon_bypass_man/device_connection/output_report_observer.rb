@@ -18,7 +18,7 @@ class ProconBypassMan::DeviceConnection::OutputReportObserver
 
     def sub_command_with_arg
       case @sub_command
-      when "30", "40", "03", "02", "01"
+      when *SPECIAL_SUB_COMMANDS
         @sub_command
       else
         "#{@sub_command}-#{@sub_command_arg}"
@@ -26,6 +26,8 @@ class ProconBypassMan::DeviceConnection::OutputReportObserver
     end
   end
 
+  # レスポンスに引数が含まれない
+  SPECIAL_SUB_COMMANDS = ["30", "40", "03", "02", "01"]
   IGNORE_OBSERVE_SUB_COMMANDS = { "48-01" => true }
   EXPECTED_SUB_COMMANDS = %w(
     01-04
@@ -63,7 +65,7 @@ class ProconBypassMan::DeviceConnection::OutputReportObserver
       end
 
       case sub_command
-      when "30", "40", "03", "02", "01"
+      when *SPECIAL_SUB_COMMANDS
         @hid_sub_command_request_table[sub_command] = false
       else
         @hid_sub_command_request_table["#{sub_command}-#{sub_command_arg}"] = false
@@ -78,17 +80,18 @@ class ProconBypassMan::DeviceConnection::OutputReportObserver
     end
 
     case sub_command
-    when "30", "40", "03", "02", "01"
+    when *SPECIAL_SUB_COMMANDS
       @hid_sub_command_request_table.key?(sub_command)
     else
       @hid_sub_command_request_table.key?("#{sub_command}-#{sub_command_arg}")
     end
   end
 
+  INPUT_REPORT_FORMAT = /^21/
   def mask_as_receive(raw_data)
     data = raw_data.unpack("H*").first
     case data
-    when /^21/
+    when INPUT_REPORT_FORMAT
       response = HIDSubCommandResponse.parse(data)
       if @hid_sub_command_request_table.key?(response.sub_command_with_arg)
         @hid_sub_command_request_table[response.sub_command_with_arg] = true
