@@ -27,7 +27,7 @@ class ProconBypassMan::DeviceConnection::OutputReportObserver
   end
 
   class HIDSubCommandRequestTable
-    def initialize(timeout: )
+    def initialize
       @table = {}
     end
 

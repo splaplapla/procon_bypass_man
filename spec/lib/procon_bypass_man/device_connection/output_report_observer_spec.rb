@@ -214,5 +214,51 @@ describe ProconBypassMan::DeviceConnection::OutputReportObserver do
     it do
       expect(report_observer.completed?).to eq(false)
     end
+
+    context '一部のみreceiveしたとき' do
+      before do
+        report_observer.mask_as_receive("0107000000000000000040010000")
+        report_observer.mask_as_receive("213881008000a4f8775b587101804000000000000")
+      end
+
+      it do
+        expect(report_observer.completed?).to eq(false)
+      end
+    end
+
+    xcontext '全部receiveする' do
+    end
+  end
+
+  describe '#timeout_or_completed?' do
+    it do
+      expect(report_observer.completed?).to eq(false)
+    end
+
+    context 'timeoutしたとき' do
+      before do
+        Timecop.freeze(Time.now - 10) do
+          report_observer
+        end
+      end
+
+      it do
+        expect(report_observer.timeout_or_completed?).to eq(true)
+      end
+    end
+
+    context '一部のみreceiveしたとき' do
+      before do
+        report_observer.mask_as_receive("0107000000000000000040010000")
+        report_observer.mask_as_receive("213881008000a4f8775b587101804000000000000")
+      end
+
+      it do
+        expect(report_observer.completed?).to eq(false)
+      end
+    end
+
+    xcontext '全部receiveする' do
+    end
   end
 end
