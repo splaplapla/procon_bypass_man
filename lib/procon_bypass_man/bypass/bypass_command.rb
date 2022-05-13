@@ -79,9 +79,11 @@ class ProconBypassMan::BypassCommand
       rescue EOFError => e
         ProconBypassMan::SendErrorCommand.execute(error: "Proconが切断されました。終了処理を開始します. #{e.full_message}")
         Process.kill "TERM", Process.ppid
+        break
       rescue Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError, Errno::ESHUTDOWN => e
         ProconBypassMan::SendErrorCommand.execute(error: "Proconが切断されました。終了処理を開始します2. #{e.full_message}")
         Process.kill "TERM", Process.ppid
+        break
       end
       ProconBypassMan.logger.info "Thread2を終了します"
     end
