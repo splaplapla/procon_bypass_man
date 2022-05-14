@@ -53,6 +53,7 @@ class ProconBypassMan::Runner
         end
         ProconBypassMan::PrintMessageCommand.execute(text: "バイパス処理を再開します")
       rescue Interrupt
+        puts
         ProconBypassMan::PrintMessageCommand.execute(text: "処理を終了します")
         Process.kill("TERM", child_pid)
         Process.wait
