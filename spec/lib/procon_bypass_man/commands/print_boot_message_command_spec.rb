@@ -18,7 +18,7 @@ describe ProconBypassMan::PrintBootMessageCommand do
 
   describe '.execute' do
     it do
-      expect { described_class.execute }.to change { ProconBypassMan::Background::JobRunner.queue.size }.by(2)
+      expect { described_class.execute }.to change { ProconBypassMan::Background::JobRunner.queue.size }.by(1)
     end
 
     it do
@@ -27,10 +27,6 @@ describe ProconBypassMan::PrintBootMessageCommand do
       expect(job[:reporter_class]).to eq(ProconBypassMan::ReportBootJob)
       expect(job[:args]).to be_a(Array)
       expect(job[:args][0]).to be_a(Hash)
-
-      job = ProconBypassMan::Background::JobRunner.queue.pop
-      expect(job[:reporter_class]).to eq(ProconBypassMan::ReportLoadConfigJob)
-      expect(job[:args]).to be_a(Array)
     end
   end
 end

@@ -8,8 +8,6 @@ class ProconBypassMan::Runner
   def initialize(gadget: , procon: )
     @gadget = gadget
     @procon = procon
-
-    ProconBypassMan::PrintBootMessageCommand.execute
   end
 
   def run

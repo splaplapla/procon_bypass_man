@@ -98,6 +98,7 @@ module ProconBypassMan
       return
     end
 
+    ready_pbm
     Runner.new(gadget: gadget, procon: procon).run # ここでblockingする
     terminate_pbm
   end
@@ -136,6 +137,11 @@ module ProconBypassMan
     `renice -n -20 -p #{$$}`
     File.write(pid_path, $$)
     ProconBypassMan::DeviceStatus.change_to_running!
+  end
+
+  def self.ready_pbm
+    ProconBypassMan::PrintBootMessageCommand.execute
+    ProconBypassMan::ReportLoadConfigJob.perform_async(ProconBypassMan.config.raw_setting)
   end
 
   # @return [void]
