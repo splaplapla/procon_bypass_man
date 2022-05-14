@@ -60,7 +60,7 @@ class ProconBypassMan::DeviceConnection::OutputReportWatcher
 
     def has_value?(sub_command: , sub_command_arg: )
       response = HIDSubCommandResponse.new(sub_command: sub_command, sub_command_arg: sub_command_arg)
-      @table[response.sub_command_with_arg] || false
+      !!@table[response.sub_command_with_arg]
     end
   end
 
