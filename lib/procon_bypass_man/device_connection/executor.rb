@@ -158,7 +158,7 @@ class ProconBypassMan::DeviceConnection::Executer
     @initialized_devices = true
   rescue Errno::ENXIO => e
     # /dev/hidg0 をopenできないときがある
-    ProconBypassMan::SendErrorCommand.execute(error: "Errno::ENXIO (No such device or address @ rb_sysopen - /dev/hidg0)が起きました。resetします.\n #{e.full_message}")
+    ProconBypassMan::SendErrorCommand.execute(error: "Errno::ENXIOが起きたのでresetします.\n #{e.full_message}", stdout: false)
     ProconBypassMan::UsbDeviceController.reset
     retry
   end

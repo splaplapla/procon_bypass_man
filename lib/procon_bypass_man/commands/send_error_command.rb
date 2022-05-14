@@ -1,7 +1,7 @@
 class ProconBypassMan::SendErrorCommand
   # @param [String, Hash, Exception] error
   # @return [void]
-  def self.execute(error: )
+  def self.execute(error: , stdout: false)
     body =
       case error
       when String, Hash
@@ -12,7 +12,7 @@ class ProconBypassMan::SendErrorCommand
 
     ProconBypassMan.logger.error body
     ProconBypassMan.error_logger.error body
-    puts body
+    puts body if not stdout
 
     ProconBypassMan::ReportErrorJob.perform(error)
   end
