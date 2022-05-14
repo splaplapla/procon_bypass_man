@@ -32,8 +32,8 @@ class ProconBypassMan::PrintBootMessageCommand
     def to_s
       booted_message = <<~EOF
       ----
-      RUBY_VERSION: #{@table[:ruby_version]}
       ProconBypassMan::VERSION: #{@table[:pbm_version]}
+      RUBY_VERSION: #{@table[:ruby_version]}
       Pbmenv::VERSION: #{@table[:pbmenv_version]}
       pid: #{@table[:pid]}
       root: #{@table[:root_path]}
