@@ -41,7 +41,7 @@ class ProconBypassMan::Runner
           handle_signal(signal)
         end
       rescue InterruptForRestart
-        ProconBypassMan::PrintMessageCommand.execute(text: "Reloading config file")
+        ProconBypassMan::PrintMessageCommand.execute(text: "設定ファイルの再読み込みを開始します")
         Process.kill("USR2", child_pid)
         Process.wait
         begin
