@@ -23,7 +23,7 @@ module ProconBypassMan
             ProconBypassMan.logger.info('websocket client: successfully connected in ProconBypassMan::Websocket::Client')
           }
           client.subscribed { |msg|
-            ProconBypassMan.logger.info('websocket client: subscribed')
+            ProconBypassMan.logger.info("websocket client: subscribed(#{msg})")
             ProconBypassMan::SyncDeviceStatsJob.perform(ProconBypassMan::DeviceStatus.current)
           }
 
@@ -38,13 +38,11 @@ module ProconBypassMan
 
           client.disconnected {
             ProconBypassMan.logger.info('websocket client: disconnected!!')
-            puts :disconnected
             client.reconnect!
             sleep 2
           }
           client.errored { |msg|
             ProconBypassMan.logger.error("websocket client: errored!!, #{msg}")
-            puts :errored
             client.reconnect!
             sleep 2
           }
