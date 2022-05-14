@@ -9,7 +9,6 @@ class ProconBypassMan::DeviceConnection::ProconSettingOverrider
   end
 
   def execute!
-
     loop do
       run_once
 
@@ -24,12 +23,11 @@ class ProconBypassMan::DeviceConnection::ProconSettingOverrider
 
     if /^21/ =~ raw_data.unpack("H*").first
       output_report_watcher.mark_as_receive(raw_data)
-
       if output_report_watcher.has_unreceived_command?
-        send_to_procon(output_report_watcher.unreceived_raw_data)
+        send_to_procon(output_report_generator.generate_by_sub_command_with_arg(output_report_watcher.unreceived_sub_command_with_arg))
       else
         if(setting_step = @setting_steps.shift)
-          raw_data = output_report_generator.generate(step: setting_step)
+          raw_data = output_report_generator.generate_by_step(setting_step)
           output_report_watcher.mark_as_send(raw_data)
           send_to_procon(raw_data)
         else

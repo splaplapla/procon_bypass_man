@@ -1,4 +1,5 @@
 class ProconBypassMan::DeviceConnection::SpoofingOutputReportWatcher
+  OUTPUT_REPORT_FORMAT = /^01/
   INPUT_REPORT_FORMAT = /^21/
 
   def initialize
@@ -31,12 +32,11 @@ class ProconBypassMan::DeviceConnection::SpoofingOutputReportWatcher
   end
 
   def has_unreceived_command?
+    @hid_sub_command_request_table.has_unreceived_command?
   end
 
-  def unreceived_raw_data
-  end
-
-  def raw_data_of
+  def unreceived_sub_command_with_arg
+    @hid_sub_command_request_table.unreceived_sub_command_with_arg
   end
 
   def timeout_or_completed?

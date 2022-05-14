@@ -76,4 +76,13 @@ class ProconBypassMan::DeviceConnection::OutputReportSubCommandTable
     response = HIDSubCommandResponse.new(sub_command: sub_command, sub_command_arg: sub_command_arg)
     !!@table[response.sub_command_with_arg]
   end
+
+  # @return [Boolean]
+  def has_unreceived_command?
+    !@table.values.all? { |key, value| value }
+  end
+
+  def unreceived_sub_command_with_arg
+    @table.detect { |key, value| !value }&.first
+  end
 end
