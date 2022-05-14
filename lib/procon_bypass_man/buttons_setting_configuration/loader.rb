@@ -32,7 +32,7 @@ module ProconBypassMan
         ProconBypassMan::ButtonsSettingConfiguration.instance.reset!
         ProconBypassMan.reset!
 
-        yaml = YAML.load_file(setting_path)
+        yaml = ProconBypassMan::YamlLoader.load(path: setting_path)
         ProconBypassMan.config.raw_setting = yaml.dup
         case yaml["version"]
         when 1.0, nil
