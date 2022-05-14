@@ -1,4 +1,4 @@
-class ProconBypassMan::DeviceConnection::OutputReportObserver
+class ProconBypassMan::DeviceConnection::OutputReportWatcher
   class HIDSubCommandResponse
     attr_accessor :sub_command, :sub_command_arg
 

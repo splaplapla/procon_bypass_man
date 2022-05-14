@@ -10,12 +10,12 @@ describe ProconBypassMan::DeviceConnection::PreBypass do
     subject { instance.execute! }
 
     context 'loopの終了条件がtrueになるとき' do
-      let(:output_report_observer) { ProconBypassMan::DeviceConnection::OutputReportObserver.new }
+      let(:output_report_watcher) { ProconBypassMan::DeviceConnection::OutputReportWatcher.new }
 
       before do
         allow(instance).to receive(:run_once)
-        allow(output_report_observer).to receive(:timeout_or_completed?) { true }
-        allow(instance).to receive(:output_report_observer) { output_report_observer }
+        allow(output_report_watcher).to receive(:timeout_or_completed?) { true }
+        allow(instance).to receive(:output_report_watcher) { output_report_watcher }
       end
 
       it { expect { subject }.not_to raise_error }

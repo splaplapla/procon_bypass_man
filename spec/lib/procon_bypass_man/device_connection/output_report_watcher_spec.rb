@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe ProconBypassMan::DeviceConnection::OutputReportObserver do
+describe ProconBypassMan::DeviceConnection::OutputReportWatcher do
   def to_raw(data)
     [data].pack("H*")
   end

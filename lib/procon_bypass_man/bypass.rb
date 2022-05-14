@@ -29,7 +29,6 @@ class ProconBypassMan::Bypass
 
       raw_input = nil
       begin
-        # TODO blocking readにしたいが、接続時のフェーズによって長さが違うので厳しい
         raw_input = self.gadget.read_nonblock(64)
         self.bypass_value.binary = ProconBypassMan::Domains::InboundProconBinary.new(binary: raw_input)
       rescue IO::EAGAINWaitReadable
