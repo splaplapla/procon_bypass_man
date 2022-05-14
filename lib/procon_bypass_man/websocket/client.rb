@@ -24,7 +24,6 @@ module ProconBypassMan
           }
           client.subscribed { |msg|
             ProconBypassMan.logger.info('websocket client: subscribed')
-            puts({ event: :subscribed, msg: msg })
             ProconBypassMan::SyncDeviceStatsJob.perform(ProconBypassMan::DeviceStatus.current)
           }
 
