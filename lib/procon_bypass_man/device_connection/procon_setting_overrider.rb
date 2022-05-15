@@ -1,9 +1,9 @@
 class ProconBypassMan::DeviceConnection::ProconSettingOverrider
-  attr_accessor :procon, :output_report_watcher
+  attr_accessor :procon, :output_report_watcher, :output_report_generator
 
   def initialize(procon: )
     @setting_steps = []
-    @output_report_generator = ProconBypassMan::DeviceConnection::OutputReportGenerator.new
+    self.output_report_generator = ProconBypassMan::DeviceConnection::OutputReportGenerator.new
     self.procon = procon
     self.output_report_watcher = ProconBypassMan::DeviceConnection::SpoofingOutputReportWatcher.new
   end
