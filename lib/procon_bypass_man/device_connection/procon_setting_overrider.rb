@@ -30,16 +30,14 @@ class ProconBypassMan::DeviceConnection::ProconSettingOverrider
     end
 
     ProconBypassMan.logger.info "[procon_setting_overrider] <<< #{raw_data.unpack("H*").first}"
-    if /^21/ =~ raw_data.unpack("H*").first
-      output_report_watcher.mark_as_receive(raw_data)
-      if output_report_watcher.has_unreceived_command?
-        re_override_setting_by_cmd(output_report_watcher.unreceived_sub_command_with_arg)
+    output_report_watcher.mark_as_receive(raw_data)
+    if output_report_watcher.has_unreceived_command?
+      re_override_setting_by_cmd(output_report_watcher.unreceived_sub_command_with_arg)
+    else
+      if(setting_step = @setting_steps.shift)
+        override_setting_by_step(setting_step)
       else
-        if(setting_step = @setting_steps.shift)
-          override_setting_by_step(setting_step)
-        else
-          return
-        end
+        return
       end
     end
   end
