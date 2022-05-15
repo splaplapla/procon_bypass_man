@@ -23,6 +23,7 @@ class ProconBypassMan::DeviceConnection::ProconSettingOverrider
   def run_once
     raw_data = non_blocking_read_procon
 
+    ProconBypassMan.logger.info "[procon_setting_overrider] <<< #{raw_data.unpack("H*").first}"
     if /^21/ =~ raw_data.unpack("H*").first
       output_report_watcher.mark_as_receive(raw_data)
       if output_report_watcher.has_unreceived_command?
@@ -44,6 +45,7 @@ class ProconBypassMan::DeviceConnection::ProconSettingOverrider
   # @return [void]
   def override_setting_by_step(setting_step)
     raw_data = output_report_generator.generate_by_step(setting_step)
+    ProconBypassMan.logger.info "[procon_setting_overrider] >>> #{raw_data.unpack("H*").first}"
     output_report_watcher.mark_as_send(raw_data)
     send_procon(raw_data)
   end
@@ -51,6 +53,7 @@ class ProconBypassMan::DeviceConnection::ProconSettingOverrider
   # @return [void]
   def re_override_setting_by_cmd(sub_command_with_arg)
     raw_data = output_report_generator.generate_by_sub_command_with_arg(sub_command_with_arg)
+    ProconBypassMan.logger.info "[procon_setting_overrider] >>> #{raw_data.unpack("H*").first}"
     send_procon(raw_data)
   end
 
