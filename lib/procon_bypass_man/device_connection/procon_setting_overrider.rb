@@ -5,7 +5,7 @@ class ProconBypassMan::DeviceConnection::ProconSettingOverrider
 
   def initialize(procon: )
     @setting_steps = SETTING_STEPS.dup
-    self.procon = procon
+    self.procon = ProconBypassMan::DeviceModel.new(procon)
     self.output_report_watcher = ProconBypassMan::DeviceConnection::SpoofingOutputReportWatcher.new
     self.output_report_generator = ProconBypassMan::DeviceConnection::OutputReportGenerator.new
   end
@@ -35,6 +35,8 @@ class ProconBypassMan::DeviceConnection::ProconSettingOverrider
         end
       end
     end
+  rescue IO::EAGAINWaitReadable
+    # no-op
   end
 
   private
@@ -52,15 +54,11 @@ class ProconBypassMan::DeviceConnection::ProconSettingOverrider
     send_procon(raw_data)
   end
 
-  # @raise [IO::EAGAINWaitReadable]
-  # @return [String]
   def non_blocking_read_procon
-    raw_data = procon.read_nonblock(64)
-    return raw_data
+    procon.non_blocking_read
   end
 
-  # @return [void]
   def send_procon(raw_data)
-    procon.write_nonblock(raw_data)
+    procon.send(raw_data)
   end
 end
