@@ -25,5 +25,4 @@ module ProconBypassMan::DeviceConnection::Markerable
       @hid_sub_command_request_table.mark_as_receive(sub_command: sub_command, sub_command_arg: sub_command_arg)
     end
   end
-
 end

@@ -24,7 +24,7 @@ class ProconBypassMan::DeviceConnection::PreBypass
     begin
       raw_data = non_blocking_read_switch
       output_report_watcher.mark_as_send(raw_data)
-      ProconBypassMan.logger.info "[observer] >>> #{raw_data.unpack("H*").first}"
+      ProconBypassMan.logger.info "[pre_bypass] >>> #{raw_data.unpack("H*").first}"
       send_procon(raw_data)
     rescue IO::EAGAINWaitReadable
       # no-op
@@ -34,7 +34,7 @@ class ProconBypassMan::DeviceConnection::PreBypass
       begin
         raw_data = non_blocking_read_procon
         output_report_watcher.mark_as_receive(raw_data)
-        ProconBypassMan.logger.info "[observer] <<< #{raw_data.unpack("H*").first}"
+        ProconBypassMan.logger.info "[pre_bypass] <<< #{raw_data.unpack("H*").first}"
         send_switch(raw_data)
       rescue IO::EAGAINWaitReadable
         # no-op

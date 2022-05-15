@@ -7,27 +7,29 @@ describe ProconBypassMan::DeviceConnection::SpoofingOutputReportWatcher do
 
   let(:instance) { described_class.new }
 
-  shared_examples '入力と出力の突き合わせができること' do
-    it do
-      instance.mark_as_send(output_report)
-      instance.mark_as_receive(input_report)
-      expect(instance.has_unreceived_command?).to eq(true)
-      expect(instance.unreceived_sub_command_with_arg).to eq("#{sub_command}-#{sub_command_arg}")
+  describe do
+    shared_examples '入力と出力の突き合わせができること' do
+      it do
+        instance.mark_as_send(output_report)
+        instance.mark_as_receive(input_report)
+        expect(instance.has_unreceived_command?).to eq(true)
+        expect(instance.unreceived_sub_command_with_arg).to eq("#{sub_command}-#{sub_command_arg}")
+      end
+      it do
+        instance.mark_as_send(output_report)
+        expect(instance.has_unreceived_command?).to eq(true)
+      end
+      it { expect(instance.has_unreceived_command?).to eq(false) }
     end
-    it do
-      instance.mark_as_send(output_report)
-      expect(instance.has_unreceived_command?).to eq(true)
+
+    describe '38-01' do
+      include_examples '入力と出力の突き合わせができること'
+
+      let(:sub_command) { "38" }
+      let(:sub_command_arg) { "01" }
+      let(:output_report) { to_raw("010200000000000000003801") }
+      let(:input_report) { to_raw("213881008000a4f8775b587101804000000000000") }
     end
-    it { expect(instance.has_unreceived_command?).to eq(false) }
-  end
-
-  describe '38-01' do
-    include_examples '入力と出力の突き合わせができること'
-
-    let(:sub_command) { "38" }
-    let(:sub_command_arg) { "01" }
-    let(:output_report) { to_raw("010200000000000000003801") }
-    let(:input_report) { to_raw("213881008000a4f8775b587101804000000000000") }
   end
 
   describe '#unreceived_sub_command_with_arg' do
@@ -38,6 +40,27 @@ describe ProconBypassMan::DeviceConnection::SpoofingOutputReportWatcher do
       it do
         instance.mark_as_send(output_report)
         expect(instance.unreceived_sub_command_with_arg).to eq("38-01")
+      end
+    end
+  end
+
+  describe '#completed?' do
+    subject { instance.completed? }
+
+    context '初期状態' do
+      it do
+        expect(instance.completed?).to eq(false)
+      end
+    end
+
+    context '全部receiveしたとき' do
+      before do
+        instance.mark_as_send(to_raw("010200000000000000003801"))
+        instance.mark_as_receive(to_raw(["21", "0"*26, "3801"].join))
+      end
+
+      it do
+        expect(instance.completed?).to eq(true)
       end
     end
   end

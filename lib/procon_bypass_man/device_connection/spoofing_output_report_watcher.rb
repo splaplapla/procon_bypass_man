@@ -1,6 +1,10 @@
 class ProconBypassMan::DeviceConnection::SpoofingOutputReportWatcher
   include ProconBypassMan::DeviceConnection::Markerable
 
+  EXPECTED_SUB_COMMANDS = %w(
+    38-01
+  ).map{ |x| x.split("-") }
+
   def initialize
     @timer = ProconBypassMan::SafeTimeout.new
     @hid_sub_command_request_table = ProconBypassMan::DeviceConnection::OutputReportSubCommandTable.new
@@ -17,6 +21,13 @@ class ProconBypassMan::DeviceConnection::SpoofingOutputReportWatcher
   end
 
   # @return [Boolean]
+  def completed?
+    EXPECTED_SUB_COMMANDS.all? do |sub_command, sub_command_arg|
+      @hid_sub_command_request_table.has_value?(sub_command: sub_command, sub_command_arg: sub_command_arg)
+    end
+  end
+
+  # @return [Boolean]
   def timeout_or_completed?
     if @timer.timeout?
       ProconBypassMan.logger.info "[procon setting override] プロコンの設定上書き処理がタイムアウトしました"
@@ -24,7 +35,7 @@ class ProconBypassMan::DeviceConnection::SpoofingOutputReportWatcher
     end
 
     if completed?
-      ProconBypassMan.logger.info "[observer] pre_bypassフェーズが想定通り終了しました"
+      ProconBypassMan.logger.info "[procon setting override] プロコンの設定上書き処理が想定通り終了しました"
       return true
     end
   end
