@@ -7,6 +7,7 @@ describe ProconBypassMan::DeviceConnection::Command do
     before do
       allow(ProconBypassMan::DeviceConnection::Executer).to receive(:execute!)
       allow(ProconBypassMan::DeviceConnection::PreBypass).to receive(:new) { double(:x).as_null_object }
+      allow(ProconBypassMan::DeviceConnection::ProconSettingOverrider).to receive(:new) { double(:x).as_null_object }
     end
 
     it do
