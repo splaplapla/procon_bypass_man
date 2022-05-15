@@ -53,6 +53,16 @@ describe ProconBypassMan::DeviceConnection::SpoofingOutputReportWatcher do
       end
     end
 
+    context '送っただけのとき' do
+      before do
+        instance.mark_as_send(to_raw("010200000000000000003801"))
+      end
+
+      it do
+        expect(instance.completed?).to eq(false)
+      end
+    end
+
     context '全部receiveしたとき' do
       before do
         instance.mark_as_send(to_raw("010200000000000000003801"))
