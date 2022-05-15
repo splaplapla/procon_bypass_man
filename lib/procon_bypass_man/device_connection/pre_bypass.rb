@@ -7,7 +7,6 @@ class ProconBypassMan::DeviceConnection::PreBypass
     self.output_report_watcher = ProconBypassMan::DeviceConnection::OutputReportWatcher.new
   end
 
-  # TODO 返事が返ってくるまで任意のx01(home led光らせる)をプロコンに送りつける
   # @return [void]
   def execute!
     loop do
