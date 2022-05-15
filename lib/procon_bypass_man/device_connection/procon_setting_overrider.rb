@@ -1,8 +1,10 @@
 class ProconBypassMan::DeviceConnection::ProconSettingOverrider
   attr_accessor :procon, :output_report_watcher, :output_report_generator
 
+  SETTING_STEPS = [:home_led_on]
+
   def initialize(procon: )
-    @setting_steps = [:home_led_on]
+    @setting_steps = SETTING_STEPS.dup
     self.procon = procon
     self.output_report_watcher = ProconBypassMan::DeviceConnection::SpoofingOutputReportWatcher.new
     self.output_report_generator = ProconBypassMan::DeviceConnection::OutputReportGenerator.new
@@ -46,7 +48,7 @@ class ProconBypassMan::DeviceConnection::ProconSettingOverrider
 
   # @return [void]
   def re_override_setting_by_cmd(sub_command_with_arg)
-    raw_data = output_report_generator.generate_by_sub_command_with_arg(output_report_watcher.unreceived_sub_command_with_arg)
+    raw_data = output_report_generator.generate_by_sub_command_with_arg(sub_command_with_arg)
     send_procon(raw_data)
   end
 

@@ -82,7 +82,8 @@ class ProconBypassMan::DeviceConnection::OutputReportSubCommandTable
     !@table.values.all?(&:itself)
   end
 
+  # @return [String, NilClass]
   def unreceived_sub_command_with_arg
-    @table.detect { |key, value| !value }&.first
+    @table.detect { |_key, value| !value }&.first
   end
 end
