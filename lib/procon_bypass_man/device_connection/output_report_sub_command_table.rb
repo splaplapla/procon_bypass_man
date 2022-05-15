@@ -19,9 +19,14 @@ class ProconBypassMan::DeviceConnection::OutputReportSubCommandTable
 
   IGNORE_SUB_COMMANDS = { "48-01" => true }
   # レスポンスに引数が含まれない
-  SPECIAL_SUB_COMMANDS = ["30", "40", "03", "02", "01", "38"]
-  # レスポンスに引数が含まれないが、再送時に引数を含めたい。ワークアラウンド
-  SPECIAL_SUB_COMMAND_ARGS =  { "38" => "F1F" }
+  SPECIAL_SUB_COMMANDS = [
+    "01",
+    "02",
+    "03",
+    "30",
+    "38", # home led
+    "40",
+  ]
 
   def initialize
     @table = {}
@@ -87,7 +92,7 @@ class ProconBypassMan::DeviceConnection::OutputReportSubCommandTable
   # @return [String, NilClass]
   def unreceived_sub_command_with_arg
     sub_command = @table.detect { |_key, value| !value }&.first
-    if(arg = SPECIAL_SUB_COMMAND_ARGS[sub_command])
+    if(arg = ProconBypassMan::DeviceConnection::ProconSettingOverrider::SPECIAL_SUB_COMMAND_ARGS[sub_command])
       "#{sub_command}#{arg}"
     else
       sub_command
