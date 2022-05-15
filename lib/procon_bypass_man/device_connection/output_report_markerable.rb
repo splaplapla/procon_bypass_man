@@ -1,4 +1,4 @@
-module ProconBypassMan::DeviceConnection::Markerable
+module ProconBypassMan::DeviceConnection::OutputReportMarkerable
   OUTPUT_REPORT_FORMAT = /^01/
   INPUT_REPORT_FORMAT = /^21/
 

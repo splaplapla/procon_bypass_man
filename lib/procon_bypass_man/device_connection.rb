@@ -6,7 +6,7 @@ end
 require_relative "device_connection/executor"
 require_relative "device_connection/pre_bypass"
 require_relative "device_connection/command"
-require_relative "device_connection/markerable"
+require_relative "device_connection/output_report_markerable"
 require_relative "device_connection/procon_setting_overrider"
 require_relative "device_connection/output_report_generator"
 require_relative "device_connection/output_report_sub_command_table"

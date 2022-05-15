@@ -1,5 +1,5 @@
 class ProconBypassMan::DeviceConnection::OutputReportWatcher
-  include ProconBypassMan::DeviceConnection::Markerable
+  include ProconBypassMan::DeviceConnection::OutputReportMarkerable
 
   EXPECTED_SUB_COMMANDS = %w(
     01-04

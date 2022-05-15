@@ -1,5 +1,5 @@
 class ProconBypassMan::DeviceConnection::SpoofingOutputReportWatcher
-  include ProconBypassMan::DeviceConnection::Markerable
+  include ProconBypassMan::DeviceConnection::OutputReportMarkerable
 
   def initialize(expected_sub_commands: )
     @timer = ProconBypassMan::SafeTimeout.new
