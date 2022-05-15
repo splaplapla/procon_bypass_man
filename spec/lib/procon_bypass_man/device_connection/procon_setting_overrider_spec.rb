@@ -41,7 +41,27 @@ describe ProconBypassMan::DeviceConnection::ProconSettingOverrider do
       end
 
       it do
+        expect(instance).to receive(:override_setting_by_step).and_call_original
         expect { instance_run_once }.not_to raise_error
+
+        expect(instance).to receive(:re_override_setting_by_cmd).and_call_original
+        expect { instance_run_once }.not_to raise_error
+      end
+    end
+
+    context '2回目でレスポンスが返ってくるとき' do
+      before do
+        allow(instance).to receive(:non_blocking_read_procon).and_return(
+          ["21"].pack("H*"),
+          [["21", "0"*26, "3801"].join].pack("H*"),
+        )
+      end
+
+      it do
+        expect(instance).to receive(:override_setting_by_step).and_call_original
+        expect { instance_run_once }.not_to raise_error
+
+        expect(instance).not_to receive(:re_override_setting_by_cmd)
         expect { instance_run_once }.not_to raise_error
       end
     end

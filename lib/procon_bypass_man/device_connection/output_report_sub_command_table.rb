@@ -79,7 +79,7 @@ class ProconBypassMan::DeviceConnection::OutputReportSubCommandTable
 
   # @return [Boolean]
   def has_unreceived_command?
-    !@table.values.all? { |key, value| value }
+    !@table.values.all?(&:itself)
   end
 
   def unreceived_sub_command_with_arg
