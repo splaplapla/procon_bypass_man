@@ -5,18 +5,18 @@ describe ProconBypassMan::DeviceConnection::OutputReportWatcher do
     [data].pack("H*")
   end
 
-  let(:report_observer) { described_class.new }
+  let(:report_watcher) { described_class.new }
 
   describe '#sent?' do
     context 'ignoreしている' do
       it do
-        expect(report_observer.sent?(sub_command: "48", sub_command_arg: "01")).to eq(true)
+        expect(report_watcher.sent?(sub_command: "48", sub_command_arg: "01")).to eq(true)
       end
     end
 
     context 'ignoreしていない' do
       it do
-        expect(report_observer.sent?(sub_command: "48", sub_command_arg: "00")).to eq(false)
+        expect(report_watcher.sent?(sub_command: "48", sub_command_arg: "00")).to eq(false)
       end
     end
   end
@@ -24,42 +24,42 @@ describe ProconBypassMan::DeviceConnection::OutputReportWatcher do
   describe '#mark_as_send' do
     context 'ignore' do
       it do
-        report_observer.mark_as_send(to_raw("0109000000000000000048010000"))
-        expect(report_observer.sent?(sub_command: "48", sub_command_arg: "01")).to eq(true)
+        report_watcher.mark_as_send(to_raw("0109000000000000000048010000"))
+        expect(report_watcher.sent?(sub_command: "48", sub_command_arg: "01")).to eq(true)
       end
     end
 
     context 'not ignore' do
       it do
-        report_observer.mark_as_send(to_raw("0109000000000000000048000000"))
-        expect(report_observer.sent?(sub_command: "48", sub_command_arg: "00")).to eq(true)
+        report_watcher.mark_as_send(to_raw("0109000000000000000048000000"))
+        expect(report_watcher.sent?(sub_command: "48", sub_command_arg: "00")).to eq(true)
       end
     end
   end
 
   describe '#mark_as_receive' do
     it do
-      report_observer.mark_as_send(to_raw("010000000000000000003001"))
-      report_observer.mark_as_receive(to_raw("2143810080007cb878903870098030"))
+      report_watcher.mark_as_send(to_raw("010000000000000000003001"))
+      report_watcher.mark_as_receive(to_raw("2143810080007cb878903870098030"))
     end
   end
 
   shared_examples '入力と出力の突き合わせができること' do
     it do
-      report_observer.mark_as_send(output_report)
-      report_observer.mark_as_receive(input_report)
-      expect(report_observer.received?(sub_command: sub_command, sub_command_arg: sub_command_arg)).to eq(true)
+      report_watcher.mark_as_send(output_report)
+      report_watcher.mark_as_receive(input_report)
+      expect(report_watcher.received?(sub_command: sub_command, sub_command_arg: sub_command_arg)).to eq(true)
     end
     it do
-      report_observer.mark_as_send(output_report)
-      expect(report_observer.received?(sub_command: sub_command, sub_command_arg: sub_command_arg)).to eq(false)
+      report_watcher.mark_as_send(output_report)
+      expect(report_watcher.received?(sub_command: sub_command, sub_command_arg: sub_command_arg)).to eq(false)
     end
     it do
-      report_observer.mark_as_send(output_report)
-      expect(report_observer.sent?(sub_command: sub_command, sub_command_arg: sub_command_arg)).to eq(true)
+      report_watcher.mark_as_send(output_report)
+      expect(report_watcher.sent?(sub_command: sub_command, sub_command_arg: sub_command_arg)).to eq(true)
     end
-    it { expect(report_observer.sent?(sub_command: sub_command, sub_command_arg: sub_command_arg)).to eq(false) }
-    it { expect(report_observer.received?(sub_command: sub_command, sub_command_arg: sub_command_arg)).to eq(false) }
+    it { expect(report_watcher.sent?(sub_command: sub_command, sub_command_arg: sub_command_arg)).to eq(false) }
+    it { expect(report_watcher.received?(sub_command: sub_command, sub_command_arg: sub_command_arg)).to eq(false) }
   end
 
   describe '01-04: Bluetooth manual pairing' do
@@ -190,17 +190,17 @@ describe ProconBypassMan::DeviceConnection::OutputReportWatcher do
 
   describe '#completed?' do
     it do
-      expect(report_observer.completed?).to eq(false)
+      expect(report_watcher.completed?).to eq(false)
     end
 
     context '一部のみreceiveしたとき' do
       before do
-        report_observer.mark_as_receive("0107000000000000000040010000")
-        report_observer.mark_as_receive("213881008000a4f8775b587101804000000000000")
+        report_watcher.mark_as_receive("0107000000000000000040010000")
+        report_watcher.mark_as_receive("213881008000a4f8775b587101804000000000000")
       end
 
       it do
-        expect(report_observer.completed?).to eq(false)
+        expect(report_watcher.completed?).to eq(false)
       end
     end
 
@@ -210,29 +210,29 @@ describe ProconBypassMan::DeviceConnection::OutputReportWatcher do
 
   describe '#timeout_or_completed?' do
     it do
-      expect(report_observer.completed?).to eq(false)
+      expect(report_watcher.completed?).to eq(false)
     end
 
     context 'timeoutしたとき' do
       before do
         Timecop.freeze(Time.now - 10) do
-          report_observer
+          report_watcher
         end
       end
 
       it do
-        expect(report_observer.timeout_or_completed?).to eq(true)
+        expect(report_watcher.timeout_or_completed?).to eq(true)
       end
     end
 
     context '一部のみreceiveしたとき' do
       before do
-        report_observer.mark_as_receive("0107000000000000000040010000")
-        report_observer.mark_as_receive("213881008000a4f8775b587101804000000000000")
+        report_watcher.mark_as_receive("0107000000000000000040010000")
+        report_watcher.mark_as_receive("213881008000a4f8775b587101804000000000000")
       end
 
       it do
-        expect(report_observer.completed?).to eq(false)
+        expect(report_watcher.completed?).to eq(false)
       end
     end
 
