@@ -13,7 +13,7 @@ describe ProconBypassMan::DeviceConnection::SpoofingOutputReportWatcher do
         instance.mark_as_send(output_report)
         instance.mark_as_receive(input_report)
         expect(instance.has_unreceived_command?).to eq(true)
-        expect(instance.unreceived_sub_command_with_arg).to eq("#{sub_command}-#{sub_command_arg}")
+        expect(instance.unreceived_sub_command_with_arg).to eq("#{sub_command}#{sub_command_arg}")
       end
       it do
         instance.mark_as_send(output_report)
@@ -39,7 +39,7 @@ describe ProconBypassMan::DeviceConnection::SpoofingOutputReportWatcher do
       let(:output_report) { to_raw("010200000000000000003801") }
       it do
         instance.mark_as_send(output_report)
-        expect(instance.unreceived_sub_command_with_arg).to eq("38-01")
+        expect(instance.unreceived_sub_command_with_arg).to eq("3801")
       end
     end
   end
