@@ -23,7 +23,11 @@ class ProconBypassMan::DeviceConnection::ProconSettingOverrider
   end
 
   def run_once
-    raw_data = non_blocking_read_procon
+    begin
+      raw_data = non_blocking_read_procon
+    rescue IO::EAGAINWaitReadable
+      return
+    end
 
     ProconBypassMan.logger.info "[procon_setting_overrider] <<< #{raw_data.unpack("H*").first}"
     if /^21/ =~ raw_data.unpack("H*").first
@@ -38,8 +42,6 @@ class ProconBypassMan::DeviceConnection::ProconSettingOverrider
         end
       end
     end
-  rescue IO::EAGAINWaitReadable
-    # no-op
   end
 
   private
