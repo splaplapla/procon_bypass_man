@@ -9,7 +9,7 @@ describe ProconBypassMan::DeviceConnection::ProconSettingOverrider do
     subject { instance.execute! }
 
     context 'loopの終了条件がtrueになるとき' do
-      let(:output_report_watcher) { ProconBypassMan::DeviceConnection::SpoofingOutputReportWatcher.new }
+      let(:output_report_watcher) { ProconBypassMan::DeviceConnection::SpoofingOutputReportWatcher.new(expected_sub_commands: [["38", "01"]]) }
 
       before do
         allow(instance).to receive(:run_once)

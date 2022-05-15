@@ -1,13 +1,10 @@
 class ProconBypassMan::DeviceConnection::SpoofingOutputReportWatcher
   include ProconBypassMan::DeviceConnection::Markerable
 
-  EXPECTED_SUB_COMMANDS = %w(
-    38-01
-  ).map{ |x| x.split("-") }
-
-  def initialize
+  def initialize(expected_sub_commands: )
     @timer = ProconBypassMan::SafeTimeout.new
     @hid_sub_command_request_table = ProconBypassMan::DeviceConnection::OutputReportSubCommandTable.new
+    @expected_sub_commands = expected_sub_commands
   end
 
   # @return [Boolean]
@@ -22,7 +19,7 @@ class ProconBypassMan::DeviceConnection::SpoofingOutputReportWatcher
 
   # @return [Boolean]
   def completed?
-    EXPECTED_SUB_COMMANDS.all? do |sub_command, sub_command_arg|
+    @expected_sub_commands.all? do |sub_command, sub_command_arg|
       @hid_sub_command_request_table.has_value?(sub_command: sub_command, sub_command_arg: sub_command_arg)
     end
   end

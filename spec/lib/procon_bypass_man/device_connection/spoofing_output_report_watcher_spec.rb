@@ -5,7 +5,7 @@ describe ProconBypassMan::DeviceConnection::SpoofingOutputReportWatcher do
     [data].pack("H*")
   end
 
-  let(:instance) { described_class.new }
+  let(:instance) { described_class.new(expected_sub_commands: [["38", "01"]]) }
 
   describe do
     shared_examples '入力と出力の突き合わせができること' do
