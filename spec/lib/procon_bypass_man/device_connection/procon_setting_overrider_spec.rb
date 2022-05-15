@@ -53,7 +53,7 @@ describe ProconBypassMan::DeviceConnection::ProconSettingOverrider do
       before do
         allow(instance).to receive(:non_blocking_read_procon).and_return(
           ["21"].pack("H*"),
-          [["21", "0"*26, "3801"].join].pack("H*"),
+          ["214d810080004c2876a458720b803800000"].pack("H*"),
         )
       end
 

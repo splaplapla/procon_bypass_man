@@ -19,7 +19,7 @@ class ProconBypassMan::DeviceConnection::OutputReportSubCommandTable
 
   IGNORE_SUB_COMMANDS = { "48-01" => true }
   # レスポンスに引数が含まれない
-  SPECIAL_SUB_COMMANDS = ["30", "40", "03", "02", "01"]
+  SPECIAL_SUB_COMMANDS = ["30", "40", "03", "02", "01", "38"]
 
   def initialize
     @table = {}
