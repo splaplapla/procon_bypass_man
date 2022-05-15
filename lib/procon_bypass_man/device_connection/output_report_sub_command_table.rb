@@ -21,7 +21,7 @@ class ProconBypassMan::DeviceConnection::OutputReportSubCommandTable
   # レスポンスに引数が含まれない
   SPECIAL_SUB_COMMANDS = ["30", "40", "03", "02", "01", "38"]
   # レスポンスに引数が含まれないが、再送時に引数を含めたい。ワークアラウンド
-  SPECIAL_SUB_COMMAND_ARGS =  { "38" => "01" }
+  SPECIAL_SUB_COMMAND_ARGS =  { "38" => "F1F" }
 
   def initialize
     @table = {}

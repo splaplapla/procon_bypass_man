@@ -1,6 +1,6 @@
 class ProconBypassMan::DeviceConnection::OutputReportGenerator
   SUPPORT_STEPS = {
-    home_led_on: "3801",
+    home_led_on: "38F1F",
   }
 
   def initialize
