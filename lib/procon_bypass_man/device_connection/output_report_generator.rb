@@ -1,5 +1,5 @@
 class ProconBypassMan::DeviceConnection::OutputReportGenerator
-  STEPS = {
+  SUPPORT_STEPS = {
     home_led_on: "3801",
   }
 
@@ -8,7 +8,7 @@ class ProconBypassMan::DeviceConnection::OutputReportGenerator
   end
 
   def generate_by_step(step)
-    sub_command_with_arg = STEPS[step] or raise
+    sub_command_with_arg = SUPPORT_STEPS[step] or raise("Unsupport step")
     raw_data = [
       ["01", counter, "00" * 8, sub_command_with_arg].join
     ].pack("H*")
