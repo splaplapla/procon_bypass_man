@@ -7,24 +7,29 @@ class ProconBypassMan::DeviceConnection::OutputReportGenerator
     @counter = 0
   end
 
+  # @return [String]
   def generate_by_step(step)
     sub_command_with_arg = SUPPORT_STEPS[step] or raise("Unsupport step")
-    raw_data = [
-      ["01", counter, "00" * 8, sub_command_with_arg].join
-    ].pack("H*")
+    raw_data = generate(sub_command_with_arg)
     count_up
     raw_data
   end
 
+  # @return [String]
   def generate_by_sub_command_with_arg(sub_command_with_arg)
-    raw_data = [
-      ["01", counter, "00" * 8, sub_command_with_arg].join
-    ].pack("H*")
+    raw_data = generate(sub_command_with_arg)
     count_up
     raw_data
   end
 
   private
+
+  # @return [String]
+  def generate(sub_command_with_arg)
+    [
+      ["01", counter, "00" * 8, sub_command_with_arg].join
+    ].pack("H*")
+  end
 
   def count_up
     @counter = @counter + 1
