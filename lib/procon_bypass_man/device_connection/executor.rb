@@ -105,7 +105,7 @@ class ProconBypassMan::DeviceConnection::Executer
     ProconBypassMan.logger.error "timeoutになりました(#{e.message})"
     compressed_buffer_text = ProconBypassMan::CompressArray.new(debug_log_buffer).compress.join("\n")
     ProconBypassMan::SendErrorCommand.execute(error: compressed_buffer_text)
-    raise if @throw_error_if_timeout
+    raise ProconBypassMan::EternalConnectionError if @throw_error_if_timeout
   end
 
   def from_device(item)
