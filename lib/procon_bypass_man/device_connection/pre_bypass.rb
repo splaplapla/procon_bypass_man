@@ -2,12 +2,11 @@ class ProconBypassMan::DeviceConnection::PreBypass
   attr_accessor :gadget, :procon, :output_report_watcher
 
   def initialize(gadget: , procon: )
-    self.gadget = gadget
-    self.procon = procon
+    self.gadget = ProconBypassMan::DeviceModel.new(gadget)
+    self.procon = ProconBypassMan::DeviceModel.new(procon)
     self.output_report_watcher = ProconBypassMan::DeviceConnection::OutputReportWatcher.new
   end
 
-  # TODO 返事が返ってくるまで任意のx01(home led光らせる)をプロコンに送りつける
   # @return [void]
   def execute!
     loop do
@@ -24,7 +23,7 @@ class ProconBypassMan::DeviceConnection::PreBypass
     begin
       raw_data = non_blocking_read_switch
       output_report_watcher.mark_as_send(raw_data)
-      ProconBypassMan.logger.info "[observer] >>> #{raw_data.unpack("H*").first}"
+      ProconBypassMan.logger.info "[pre_bypass] >>> #{raw_data.unpack("H*").first}"
       send_procon(raw_data)
     rescue IO::EAGAINWaitReadable
       # no-op
@@ -34,7 +33,7 @@ class ProconBypassMan::DeviceConnection::PreBypass
       begin
         raw_data = non_blocking_read_procon
         output_report_watcher.mark_as_receive(raw_data)
-        ProconBypassMan.logger.info "[observer] <<< #{raw_data.unpack("H*").first}"
+        ProconBypassMan.logger.info "[pre_bypass] <<< #{raw_data.unpack("H*").first}"
         send_switch(raw_data)
       rescue IO::EAGAINWaitReadable
         # no-op
@@ -47,24 +46,22 @@ class ProconBypassMan::DeviceConnection::PreBypass
   # @raise [IO::EAGAINWaitReadable]
   # @return [String]
   def non_blocking_read_switch
-    raw_data = gadget.read_nonblock(64)
-    return raw_data
+    gadget.non_blocking_read
   end
 
   # @raise [IO::EAGAINWaitReadable]
   # @return [String]
   def non_blocking_read_procon
-    raw_data = procon.read_nonblock(64)
-    return raw_data
+    procon.non_blocking_read
   end
 
   # @return [void]
   def send_procon(raw_data)
-    procon.write_nonblock(raw_data)
+    procon.send(raw_data)
   end
 
   # @return [void]
   def send_switch(raw_data)
-    gadget.write_nonblock(raw_data)
+    gadget.send(raw_data)
   end
 end

@@ -16,6 +16,7 @@ class ProconBypassMan::DeviceConnection::Command
     end
 
     ProconBypassMan::DeviceConnection::PreBypass.new(gadget: gadget, procon: procon).execute!
+    ProconBypassMan::DeviceConnection::ProconSettingOverrider.new(procon: procon).execute!
     return [gadget, procon]
   end
 end

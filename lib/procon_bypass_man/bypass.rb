@@ -97,6 +97,10 @@ class ProconBypassMan::Bypass
   # @return [void]
   def direct_connect_switch_via_bluetooth
     ProconBypassMan.logger.debug { "direct_connect_switch_via_bluetooth!" }
+    self.procon.write_nonblock(["010500000000000000003800"].pack("H*")) # home led off
+    self.procon.write_nonblock(["010600000000000000003800"].pack("H*")) # home led off
+    self.procon.write_nonblock(["010700000000000000003800"].pack("H*")) # home led off
+    self.procon.write_nonblock(["010800000000000000003800"].pack("H*")) # home led off
     self.procon.write_nonblock(["8005"].pack("H*"))
     self.procon.write_nonblock(["8005"].pack("H*"))
     self.procon.write_nonblock(["8005"].pack("H*"))
@@ -104,13 +108,20 @@ class ProconBypassMan::Bypass
 
   # @return [void] 入力してから取り出さないと接続しっぱなしになるっぽいのでこれが必要っぽい
   def be_empty_procon
-    timer = ProconBypassMan::SafeTimeout.new(timeout: Time.now + 5)
-    loop do
-      break if timer.timeout?
-      output = self.procon.read_nonblock(64)
-      ProconBypassMan.logger.debug { "[ProconBypassMan::Bypass#be_empty_procon] #{output.unpack("H*").first}" }
-    rescue IO::EAGAINWaitReadable
-      # no-op
+    # タイムアウトまでブロッキングされるので、プロセスに逃す
+    fork do
+      timer = ProconBypassMan::SafeTimeout.new(timeout: Time.now + 2)
+      loop do
+        break if timer.timeout?
+        output = self.procon.read_nonblock(64)
+        ProconBypassMan.logger.debug { "[ProconBypassMan::Bypass#be_empty_procon] #{output.unpack("H*").first}" }
+      rescue IO::EAGAINWaitReadable
+        # no-op
+      end
+
+      @gadget&.close
+      @procon&.close
+      ProconBypassMan::UsbDeviceController.reset(cooldown: 0)
     end
   end
 end
