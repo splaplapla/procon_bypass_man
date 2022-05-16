@@ -5,8 +5,8 @@ describe ProconBypassMan::DeviceConnection::OutputReportGenerator do
 
   describe '#generate_by_step' do
     it do
-      expect(instance.generate_by_step(:home_led_on)).to eq([["01", "00", "00" * 8, "38F1F"].join].pack("H*"))
-      expect(instance.generate_by_step(:home_led_on)).to eq([["01", "01", "00" * 8, "38F1F"].join].pack("H*"))
+      expect(instance.generate_by_step(:home_led_on)).to eq([["01", "00", "00" * 8, "381FF0FF"].join].pack("H*"))
+      expect(instance.generate_by_step(:home_led_on)).to eq([["01", "01", "00" * 8, "381FF0FF"].join].pack("H*"))
     end
   end
 
