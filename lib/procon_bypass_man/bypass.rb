@@ -108,13 +108,16 @@ class ProconBypassMan::Bypass
 
   # @return [void] 入力してから取り出さないと接続しっぱなしになるっぽいのでこれが必要っぽい
   def be_empty_procon
-    timer = ProconBypassMan::SafeTimeout.new(timeout: Time.now + 5)
-    loop do
-      break if timer.timeout?
-      output = self.procon.read_nonblock(64)
-      ProconBypassMan.logger.debug { "[ProconBypassMan::Bypass#be_empty_procon] #{output.unpack("H*").first}" }
-    rescue IO::EAGAINWaitReadable
-      # no-op
+    # タイムアウトまでブロッキングされるので、プロセスに逃す
+    fork do
+      timer = ProconBypassMan::SafeTimeout.new(timeout: Time.now + 2)
+      loop do
+        break if timer.timeout?
+        output = self.procon.read_nonblock(64)
+        ProconBypassMan.logger.debug { "[ProconBypassMan::Bypass#be_empty_procon] #{output.unpack("H*").first}" }
+      rescue IO::EAGAINWaitReadable
+        # no-op
+      end
     end
   end
 end
