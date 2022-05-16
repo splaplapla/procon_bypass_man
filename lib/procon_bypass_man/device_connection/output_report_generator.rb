@@ -5,7 +5,7 @@ class ProconBypassMan::DeviceConnection::OutputReportGenerator
 
   # @return [String]
   def generate_by_step(step)
-    sub_command_with_arg = ProconBypassMan::DeviceConnection::ProconSettingOverrider::SUPPORT_STEPS[:home_led_on]&.join or raise("Unsupport step")
+    sub_command_with_arg = ProconBypassMan::DeviceConnection::ProconSettingOverrider::SUPPORT_STEPS[step]&.join or raise("Unsupport step")
     raw_data = generate(sub_command_with_arg)
     count_up
     raw_data
