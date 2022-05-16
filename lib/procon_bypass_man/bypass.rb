@@ -118,6 +118,10 @@ class ProconBypassMan::Bypass
       rescue IO::EAGAINWaitReadable
         # no-op
       end
+
+      @gadget&.close
+      @procon&.close
+      ProconBypassMan::UsbDeviceController.reset(cooldown: 0)
     end
   end
 end

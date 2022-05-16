@@ -55,9 +55,6 @@ class ProconBypassMan::Runner
         ProconBypassMan::PrintMessageCommand.execute(text: "処理を終了します")
         Process.kill("TERM", child_pid)
         Process.wait
-        @gadget&.close
-        @procon&.close
-        ProconBypassMan::UsbDeviceController.reset(cooldown: 0)
         break
       end
     end
