@@ -1,14 +1,19 @@
 class ProconBypassMan::DeviceConnection::ProconSettingOverrider
   attr_accessor :procon, :output_report_watcher, :output_report_generator
 
-  SETTING_STEPS = {
-    home_led_on: ["38", "01"],
+  SUB_COMMAND_HOME_LED_ON = "38"
+  SUB_COMMAND_ARG_HOME_LED_ON = "F1F"
+  SPECIAL_SUB_COMMAND_ARGS =  {
+    SUB_COMMAND_HOME_LED_ON => SUB_COMMAND_ARG_HOME_LED_ON,
+  }
+  SUPPORT_STEPS = {
+    home_led_on: [SUB_COMMAND_HOME_LED_ON, SUB_COMMAND_ARG_HOME_LED_ON],
   }
 
   def initialize(procon: )
-    @setting_steps = SETTING_STEPS.dup.keys
+    @setting_steps = SUPPORT_STEPS.keys
     self.procon = ProconBypassMan::DeviceModel.new(procon)
-    self.output_report_watcher = ProconBypassMan::DeviceConnection::SpoofingOutputReportWatcher.new(expected_sub_commands: SETTING_STEPS.values)
+    self.output_report_watcher = ProconBypassMan::DeviceConnection::SpoofingOutputReportWatcher.new(expected_sub_commands: SUPPORT_STEPS.values)
     self.output_report_generator = ProconBypassMan::DeviceConnection::OutputReportGenerator.new
   end
 
