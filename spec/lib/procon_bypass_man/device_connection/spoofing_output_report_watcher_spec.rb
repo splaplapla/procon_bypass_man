@@ -26,7 +26,7 @@ describe ProconBypassMan::DeviceConnection::SpoofingOutputReportWatcher do
       include_examples '入力と出力の突き合わせができること'
 
       let(:sub_command) { "38" }
-      let(:sub_command_arg) { "F1F" }
+      let(:sub_command_arg) { "1FF0FF" }
       let(:output_report) { to_raw("010200000000000000003801") }
       let(:input_report) { to_raw("213881008000a4f8775b587101804000000000000") }
     end
@@ -39,7 +39,7 @@ describe ProconBypassMan::DeviceConnection::SpoofingOutputReportWatcher do
       let(:output_report) { to_raw("010200000000000000003801") }
       it do
         instance.mark_as_send(output_report)
-        expect(instance.unreceived_sub_command_with_arg).to eq("38F1F")
+        expect(instance.unreceived_sub_command_with_arg).to eq("381FF0FF")
       end
     end
   end
