@@ -86,11 +86,9 @@ class ProconBypassMan::DeviceConnection::Executer
         end
 
         if item.call_block_if_receive
-          ProconBypassMan.logger.info "call block if receive: #{raw_data.unpack("H*")} from: #{item.read_from}"
+          ProconBypassMan.logger.info "call block if expect to receive: #{item.call_block_if_receive}, actual: #{raw_data.unpack("H*")} from: #{item.read_from}"
           if item.call_block_if_receive =~ raw_data.unpack("H*").first
             raw_data = item.block.call(self)
-          else
-            next
           end
         end
 
