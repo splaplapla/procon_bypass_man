@@ -9,7 +9,7 @@ class ProconBypassMan::DeviceConnection::Command
       procon&.close
       raise ProconBypassMan::DeviceConnection::NotFoundProconError
     rescue ProconBypassMan::DeviceConnection::FirstTimeoutError
-      ProconBypassMan.logger.error "接続に失敗したのでもう一度トライします"
+      ProconBypassMan::SendErrorCommand.execute(error: "接続に失敗したのでもう一度トライします")
       sleep(2)
       retry
     rescue ProconBypassMan::SafeTimeout::Timeout
