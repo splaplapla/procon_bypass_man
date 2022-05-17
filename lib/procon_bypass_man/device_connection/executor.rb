@@ -1,8 +1,6 @@
 require "timeout"
 
 class ProconBypassMan::DeviceConnection::Executer
-  class FirstTimeoutError < StandardError; end
-
   class Value
     attr_accessor :read_from, :values, :call_block_if_receive, :block
 
@@ -43,7 +41,7 @@ class ProconBypassMan::DeviceConnection::Executer
         this.write_to_procon("01000000000000000000033000000000000000000000000000000000000000000000000000000000000000000000000000")
         this.blocking_read_with_timeout_from_procon # <<< 21
       rescue ProconBypassMan::SafeTimeout::Timeout, Timeout::Error
-        raise ProconBypassMan::DeviceConnection::FirstTimeoutError
+        raise ProconBypassMan::DeviceConnection::TimeoutErrorInConditionalRoute
       end
     end
 

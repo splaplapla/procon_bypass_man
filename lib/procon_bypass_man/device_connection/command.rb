@@ -8,7 +8,7 @@ class ProconBypassMan::DeviceConnection::Command
       gadget&.close
       procon&.close
       raise ProconBypassMan::DeviceConnection::NotFoundProconError
-    rescue ProconBypassMan::DeviceConnection::FirstTimeoutError
+    rescue ProconBypassMan::DeviceConnection::TimeoutErrorInConditionalRoute
       ProconBypassMan::SendErrorCommand.execute(error: "接続に失敗したのでもう一度トライします")
       sleep(2)
       retry
