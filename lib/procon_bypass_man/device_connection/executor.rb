@@ -144,6 +144,7 @@ class ProconBypassMan::DeviceConnection::Executer
       return
     end
     ProconBypassMan::UsbDeviceController.init
+    ProconBypassMan::UsbDeviceController.reset
 
     if path = ProconBypassMan::DeviceProconFinder.find
       @procon = File.open(path, "w+b")
@@ -151,16 +152,17 @@ class ProconBypassMan::DeviceConnection::Executer
     else
       raise(ProconBypassMan::DeviceConnection::NotFoundProconError)
     end
-    @gadget = File.open('/dev/hidg0', "w+b")
 
-    ProconBypassMan::UsbDeviceController.reset
+    begin
+      @gadget = File.open('/dev/hidg0', "w+b")
+    rescue Errno::ENXIO => e
+      # /dev/hidg0 をopenできないときがある
+      ProconBypassMan::SendErrorCommand.execute(error: "Errno::ENXIOが起きたのでresetします.\n #{e.full_message}", stdout: false)
+      ProconBypassMan::UsbDeviceController.reset
+      retry
+    end
 
     @initialized_devices = true
-  rescue Errno::ENXIO => e
-    # /dev/hidg0 をopenできないときがある
-    ProconBypassMan::SendErrorCommand.execute(error: "Errno::ENXIOが起きたのでresetします.\n #{e.full_message}", stdout: false)
-    ProconBypassMan::UsbDeviceController.reset
-    retry
   end
 
   def blocking_read_with_timeout_from_procon
