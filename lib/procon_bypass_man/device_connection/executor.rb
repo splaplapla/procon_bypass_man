@@ -42,7 +42,7 @@ class ProconBypassMan::DeviceConnection::Executer
         this.blocking_read_with_timeout_from_procon # <<< 8102
         this.write_to_procon("01000000000000000000033000000000000000000000000000000000000000000000000000000000000000000000000000")
         this.blocking_read_with_timeout_from_procon # <<< 21
-      rescue ProconBypassMan::SafeTimeout::Timeout
+      rescue ProconBypassMan::SafeTimeout::Timeout, Timeout::Error
         raise ProconBypassMan::DeviceConnection::FirstTimeoutError
       end
     end
