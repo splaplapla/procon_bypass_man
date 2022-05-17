@@ -1,6 +1,7 @@
 module ProconBypassMan::DeviceConnection
   class BytesMismatchError < StandardError; end
   class NotFoundProconError < StandardError; end
+  class FirstTimeoutError < StandardError; end
 end
 
 require_relative "device_connection/executor"

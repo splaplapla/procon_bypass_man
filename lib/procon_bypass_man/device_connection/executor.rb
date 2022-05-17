@@ -1,6 +1,8 @@
 require "timeout"
 
 class ProconBypassMan::DeviceConnection::Executer
+  class FirstTimeoutError < StandardError; end
+
   class Value
     attr_accessor :read_from, :values, :call_block_if_receive, :block
 
@@ -33,12 +35,16 @@ class ProconBypassMan::DeviceConnection::Executer
     # 3
     s.add(expected_to_receive: [/^0100/], read_from: :switch)
     s.add(expected_to_receive: [/^21/], read_from: :procon, call_block_if_receive: /^8101/) do |this|
-      ProconBypassMan.logger.info "(start special route)"
-      this.blocking_read_with_timeout_from_procon # <<< 810100032dbd42e9b698000
-      this.write_to_procon("8002")
-      this.blocking_read_with_timeout_from_procon # <<< 8102
-      this.write_to_procon("01000000000000000000033000000000000000000000000000000000000000000000000000000000000000000000000000")
-      this.blocking_read_with_timeout_from_procon # <<< 21
+      begin
+        ProconBypassMan.logger.info "(start special route)"
+        this.blocking_read_with_timeout_from_procon # <<< 810100032dbd42e9b698000
+        this.write_to_procon("8002")
+        this.blocking_read_with_timeout_from_procon # <<< 8102
+        this.write_to_procon("01000000000000000000033000000000000000000000000000000000000000000000000000000000000000000000000000")
+        this.blocking_read_with_timeout_from_procon # <<< 21
+      rescue ProconBypassMan::SafeTimeout::Timeout
+        raise ProconBypassMan::DeviceConnection::FirstTimeoutError
+      end
     end
 
     # 4. Forces the Joy-Con or Pro Controller to only talk over USB HID without any timeouts. This is required for the Pro Controller to not time out and revert to Bluetooth.

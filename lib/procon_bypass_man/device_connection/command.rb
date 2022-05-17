@@ -8,6 +8,10 @@ class ProconBypassMan::DeviceConnection::Command
       gadget&.close
       procon&.close
       raise ProconBypassMan::DeviceConnection::NotFoundProconError
+    rescue ProconBypassMan::DeviceConnection::FirstTimeoutError
+      ProconBypassMan.logger.error "接続に失敗したのでもう一度トライします"
+      sleep(2)
+      retry
     rescue ProconBypassMan::SafeTimeout::Timeout
       ProconBypassMan.logger.error "デバイスとの通信でタイムアウトが起きて接続ができませんでした。"
       gadget&.close
