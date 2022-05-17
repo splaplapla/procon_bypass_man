@@ -70,9 +70,6 @@ class ProconBypassMan::BypassCommand
         if $will_terminate_token
           if $will_terminate_token == WILL_TERMINATE_TOKEN::TERMINATE
             bypass.direct_connect_switch_via_bluetooth
-            fork do
-              ProconBypassMan::UsbDeviceController.reset(cooldown: 0)
-            end
           end
           break
         end
