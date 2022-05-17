@@ -69,6 +69,7 @@ class ProconBypassMan::DeviceConnection::Executer
       item.values.each do |value|
         raw_data = nil
         timer = ProconBypassMan::SafeTimeout.new
+
         begin
           timer.throw_if_timeout!
           raw_data = from_device(item).read_nonblock(64)
@@ -79,6 +80,7 @@ class ProconBypassMan::DeviceConnection::Executer
         end
 
         if item.call_block_if_receive
+          ProconBypassMan.logger.info "call block if receive: #{raw_data.unpack("H*")} from: #{item.read_from}"
           if item.call_block_if_receive =~ raw_data.unpack("H*").first
             raw_data = item.block.call(self)
           else
@@ -95,6 +97,7 @@ class ProconBypassMan::DeviceConnection::Executer
           else
             raise "#{value}は知りません"
           end
+
         if result
           ProconBypassMan.logger.info "OK(expected: #{value}, got: #{raw_data.unpack("H*")})"
           debug_log_buffer << "OK(expected: #{value}, got: #{raw_data.unpack("H*")})"
@@ -109,7 +112,7 @@ class ProconBypassMan::DeviceConnection::Executer
   rescue ProconBypassMan::SafeTimeout::Timeout, Timeout::Error => e
     ProconBypassMan.logger.error "timeoutになりました(#{e.message})"
     compressed_buffer_text = ProconBypassMan::CompressArray.new(debug_log_buffer).compress.join("\n")
-    ProconBypassMan::SendErrorCommand.execute(error: compressed_buffer_text)
+    ProconBypassMan::SendErrorCommand.execute(error: compressed_buffer_text, stdout: false)
     raise ProconBypassMan::EternalConnectionError if @throw_error_if_timeout
   end
 
