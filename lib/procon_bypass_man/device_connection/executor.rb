@@ -54,7 +54,7 @@ class ProconBypassMan::DeviceConnection::Executer
     @throw_error_if_mismatch = throw_error_if_mismatch
   end
 
-  def add(values, read_from: , call_block_if_receive: false, &block)
+  def add(values, read_from: , call_block_if_receive: nil, &block)
     @queue << Value.new(values: values, read_from: read_from, call_block_if_receive: call_block_if_receive, &block)
   end
 
@@ -77,8 +77,12 @@ class ProconBypassMan::DeviceConnection::Executer
           retry
         end
 
-        if item.call_block_if_receive =~ raw_data.unpack("H*").first
-          raw_data = item.block.call(self)
+        if item.call_block_if_receive
+          if item.call_block_if_receive =~ raw_data.unpack("H*").first
+            raw_data = item.block.call(self)
+          else
+            next
+          end
         end
 
         result =
