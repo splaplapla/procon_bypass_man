@@ -4,9 +4,9 @@
   - 有効にする場合はapp.rbに `config.io_monitor_logging = true` を記述してください
 - 接続が安定化するまでの時間が短くなりました
 - 接続中にプロコンのケーブルを抜くと、エラーを吐いて終了できなくなる不具合を修正しました
-- プロセスをCtrl+Cで停止するときに終了速度が速くなりました
+- プロセスをCtrl+Cで停止するときに終了するまでの時間が短くなりました
 - 接続に成功するとhomeボタンのledが光るようになりました
-  - 無効にする場合はapp.rbに `config.enable_home_led_on_connect = true` を記述してください
+  - 無効にする場合はapp.rbに `config.enable_home_led_on_connect = false` を記述してください
 
 ## [0.1.23] - 2022-05-04
 - プロセスを停止するとプロコンがBluetooth経由でSwitchと接続するようになりました
