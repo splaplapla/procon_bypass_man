@@ -20,7 +20,7 @@ describe ProconBypassMan::DeviceConnection::Command do
       end
 
       it do
-        expect { subject }.to raise_error(::ProconBypassMan::EternalConnectionError)
+        expect { subject }.to raise_error(ProconBypassMan::DeviceConnection::TimeoutError)
       end
     end
 

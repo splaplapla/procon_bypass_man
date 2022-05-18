@@ -65,6 +65,7 @@ module ProconBypassMan
 
   class CouldNotLoadConfigError < StandardError; end
   class EternalConnectionError < StandardError; end
+  class NotFoundProconError < StandardError; end
 
   # @return [void]
   def self.run(setting_path: nil)
@@ -88,12 +89,12 @@ module ProconBypassMan
     rescue ProconBypassMan::DeviceConnection::NotFoundProconError
       ProconBypassMan::SendErrorCommand.execute(error: "プロコンが見つかりませんでした。")
       ProconBypassMan::DeviceStatus.change_to_procon_not_found_error!
-      # TODO シグナルトラップをしていないのでUSR2を送ったときにプロセスが停止している. 明示的にハンドリングするべき.
+      # TODO シグナルトラップをしていないので以下の状態に、USR2を送ったときにプロセスが停止してしまう
       ProconBypassMan::NeverExitAccidentally.exit_if_allow_at_config do
         terminate_pbm
       end
       return
-    rescue ProconBypassMan::EternalConnectionError
+    rescue ProconBypassMan::DeviceConnection::TimeoutError
       ProconBypassMan::SendErrorCommand.execute(error: "接続の見込みがないのでsleepしまくります")
       ProconBypassMan::DeviceStatus.change_to_connected_but_sleeping!
       eternal_sleep

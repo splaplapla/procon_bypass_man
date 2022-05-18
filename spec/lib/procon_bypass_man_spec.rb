@@ -104,7 +104,7 @@ describe ProconBypassMan do
 
       context 'EternalConnectionErrorが起きるとき' do
         before do
-          allow(ProconBypassMan::DeviceConnection::Command).to receive(:execute!) { raise ProconBypassMan::EternalConnectionError }
+          allow(ProconBypassMan::DeviceConnection::Command).to receive(:execute!) { raise ProconBypassMan::DeviceConnection::TimeoutError }
         end
 
         it do
