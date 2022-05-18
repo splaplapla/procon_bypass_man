@@ -89,14 +89,15 @@ describe ProconBypassMan::DeviceConnection::OutputReportWatcher do
     let(:input_report) { to_raw("21f781008000a6d87757487101800300000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000") }
   end
 
-  xdescribe '04-00: Trigger buttons elapsed time' do
-    include_examples '入力と出力の突き合わせができること'
+  # 帰ってこないことがあるので無視対象
+  # describe '04-00: Trigger buttons elapsed time' do
+  #   include_examples '入力と出力の突き合わせができること'
 
-    let(:sub_command) { "04" }
-    let(:sub_command_arg) { "00" }
-    let(:output_report) { to_raw("01000000000000000000040000000000000000000000000000000000000000000000000000000000000000000000000000") }
-    let(:input_report) { to_raw("210081008000a6e8775958710183040000b73a553ab33a0000000000000000000000000000000000000000000000000000000000000000000000000000000000") }
-  end
+  #   let(:sub_command) { "04" }
+  #   let(:sub_command_arg) { "00" }
+  #   let(:output_report) { to_raw("01000000000000000000040000000000000000000000000000000000000000000000000000000000000000000000000000") }
+  #   let(:input_report) { to_raw("210081008000a6e8775958710183040000b73a553ab33a0000000000000000000000000000000000000000000000000000000000000000000000000000000000") }
+  # end
 
   describe '08-00: Set shipment low power state' do
     include_examples '入力と出力の突き合わせができること'
