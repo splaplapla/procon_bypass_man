@@ -1,11 +1,19 @@
 class ProconBypassMan::DeviceConnection::Command
+  MAX_RETRY_COUNT = 3
+
   # @return [void]
-  def self.execute!
+  def self.execute!(retry_count: 0)
     begin
       gadget, procon = ProconBypassMan::DeviceConnection::Executer.execute!
     rescue ProconBypassMan::DeviceConnection::TimeoutErrorInConditionalRoute
-      ProconBypassMan::SendErrorCommand.execute(error: "接続に失敗したのでもう一度トライします")
-      sleep(2) # もう少し短くできると思うが、再現しにくくいので適当
+      if retry_count >= MAX_RETRY_COUNT
+        ProconBypassMan::SendErrorCommand.execute(error: "リトライしましたが、接続できませんでした")
+        raise ProconBypassMan::DeviceConnection::TimeoutError
+      else
+        ProconBypassMan::SendErrorCommand.execute(error: "接続に失敗したのでリトライします")
+      end
+
+      retry_count = retry_count + 1
       retry
     rescue ProconBypassMan::DeviceConnection::NotFoundProconError => e
       raise
