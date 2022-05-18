@@ -42,23 +42,23 @@ describe ProconBypassMan::DeviceConnection::Executer do
 
       context 'ただしい' do
         it do
-          s.add([
+          s.add(expected_to_receive: [
             ["0000"],
             ["0000"],
             ["8005"],
             ["0000"],
           ], read_from: :switch)
           # 1
-          s.add([["8001"]], read_from: :switch)
-          s.add([/^8101/], read_from: :procon)
+          s.add(expected_to_receive: [["8001"]], read_from: :switch)
+          s.add(expected_to_receive: [/^8101/], read_from: :procon)
           # 2
-          s.add([["8002"]], read_from: :switch)
-          s.add([/^8102/], read_from: :procon)
+          s.add(expected_to_receive: [["8002"]], read_from: :switch)
+          s.add(expected_to_receive: [/^8102/], read_from: :procon)
           # 3
-          s.add([/^0100/], read_from: :switch)
-          s.add([/^21/], read_from: :procon)
+          s.add(expected_to_receive: [/^0100/], read_from: :switch)
+          s.add(expected_to_receive: [/^21/], read_from: :procon)
           # 4
-          s.add([["8004"]], read_from: :switch)
+          s.add(expected_to_receive: [["8004"]], read_from: :switch)
 
           expect { s.drain_all }.not_to raise_error
         end
@@ -66,23 +66,23 @@ describe ProconBypassMan::DeviceConnection::Executer do
 
       context '間違っている' do
         it do
-          s.add([
+          s.add(expected_to_receive: [
             ["0000"],
             ["0000"],
             ["8005"],
             ["0010"],
           ], read_from: :switch)
           # 1
-          s.add([["8001"]], read_from: :switch)
-          s.add([/^8101/], read_from: :procon)
+          s.add(expected_to_receive: [["8001"]], read_from: :switch)
+          s.add(expected_to_receive: [/^8101/], read_from: :procon)
           # 2
-          s.add([["8002"]], read_from: :switch)
-          s.add([/^8102/], read_from: :procon)
+          s.add(expected_to_receive: [["8002"]], read_from: :switch)
+          s.add(expected_to_receive: [/^8102/], read_from: :procon)
           # 3
-          s.add([/^0100/], read_from: :switch)
-          s.add([/^21/], read_from: :procon)
+          s.add(expected_to_receive: [/^0100/], read_from: :switch)
+          s.add(expected_to_receive: [/^21/], read_from: :procon)
           # 4
-          s.add([["8004"]], read_from: :switch)
+          s.add(expected_to_receive: [["8004"]], read_from: :switch)
 
           expect { s.drain_all }.to raise_error(ProconBypassMan::DeviceConnection::BytesMismatchError)
         end
