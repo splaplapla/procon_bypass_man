@@ -54,7 +54,7 @@ class ProconBypassMan::Configuration
   end
 
   attr_accessor :enable_critical_error_logging
-  attr_writer :verbose_bypass_log, :raw_setting, :enable_reporting_pressed_buttons, :never_exit_accidentally, :io_monitor_logging
+  attr_writer :verbose_bypass_log, :raw_setting, :enable_reporting_pressed_buttons, :never_exit_accidentally, :io_monitor_logging, :enable_home_led_on_connect
 
   def root=(path)
     @root = path
@@ -190,17 +190,27 @@ class ProconBypassMan::Configuration
     @raw_setting ||= {}
   end
 
+  # @return [Boolean] default false
   def enable_reporting_pressed_buttons
     @enable_reporting_pressed_buttons ||= false
   end
 
-  # @return [Boolean]
+  # @return [Boolean] default false
   def never_exit_accidentally
     @never_exit_accidentally || false
   end
 
-  # @return [Boolean]
+  # @return [Boolean] default false
   def io_monitor_logging
     @io_monitor_logging ||= false
+  end
+
+  # @return [Boolean] default true
+  def enable_home_led_on_connect
+    if defined?(@enable_home_led_on_connect)
+      return @enable_home_led_on_connect
+    else
+      true
+    end
   end
 end
