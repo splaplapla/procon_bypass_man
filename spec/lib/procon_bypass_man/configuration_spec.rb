@@ -71,6 +71,25 @@ describe ProconBypassMan::Configuration do
     end
   end
 
+  describe '#enable_home_led_on_connect' do
+    let(:config) { described_class.new }
+    subject { config.enable_home_led_on_connect }
+
+    it 'default true' do
+      expect(subject).to eq(true)
+    end
+
+    it do
+      config.enable_home_led_on_connect = true
+      expect(subject).to eq(true)
+    end
+
+    it do
+      config.enable_home_led_on_connect = false
+      expect(subject).to eq(false)
+    end
+  end
+
   describe '#has_api_server?' do
     let(:config) { described_class.new }
     context 'when has api_server' do

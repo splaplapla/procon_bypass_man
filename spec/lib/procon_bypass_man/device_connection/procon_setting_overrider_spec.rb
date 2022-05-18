@@ -28,12 +28,10 @@ describe ProconBypassMan::DeviceConnection::ProconSettingOverrider do
       instance.run_once
     end
 
-    before do
-      allow(instance).to receive(:send_procon)
-    end
-
-    context '2回目でレスポンスが返ってこないとき' do
+    context 'ProconBypassMan.config.enable_home_led_on_connectが無効なとき' do
       before do
+        ProconBypassMan.config.enable_home_led_on_connect = false
+        allow(instance).to receive(:send_procon)
         allow(instance).to receive(:non_blocking_read_procon).and_return(
           ["21"].pack("H*"),
           ["21"].pack("H*"),
@@ -41,28 +39,51 @@ describe ProconBypassMan::DeviceConnection::ProconSettingOverrider do
       end
 
       it do
-        expect(instance).to receive(:override_setting_by_step).and_call_original
-        expect { instance_run_once }.not_to raise_error
-
-        expect(instance).to receive(:re_override_setting_by_cmd).and_call_original
-        expect { instance_run_once }.not_to raise_error
-      end
-    end
-
-    context '2回目でレスポンスが返ってくるとき' do
-      before do
-        allow(instance).to receive(:non_blocking_read_procon).and_return(
-          ["21"].pack("H*"),
-          ["214d810080004c2876a458720b803800000"].pack("H*"),
-        )
-      end
-
-      it do
-        expect(instance).to receive(:override_setting_by_step).and_call_original
+        expect(instance).not_to receive(:override_setting_by_step)
         expect { instance_run_once }.not_to raise_error
 
         expect(instance).not_to receive(:re_override_setting_by_cmd)
         expect { instance_run_once }.not_to raise_error
+      end
+    end
+
+    context 'ProconBypassMan.config.enable_home_led_on_connectが有効なとき' do
+      before do
+        ProconBypassMan.config.enable_home_led_on_connect = true
+        allow(instance).to receive(:send_procon)
+      end
+
+      context '2回目でレスポンスが返ってこないとき' do
+        before do
+          allow(instance).to receive(:non_blocking_read_procon).and_return(
+            ["21"].pack("H*"),
+            ["21"].pack("H*"),
+          )
+        end
+
+        it do
+          expect(instance).to receive(:override_setting_by_step).and_call_original
+          expect(instance).to receive(:re_override_setting_by_cmd).and_call_original
+          expect { instance_run_once }.not_to raise_error
+          expect { instance_run_once }.not_to raise_error
+        end
+      end
+
+      context '2回目でレスポンスが返ってくるとき' do
+        before do
+          allow(instance).to receive(:non_blocking_read_procon).and_return(
+            ["21"].pack("H*"),
+            ["214d810080004c2876a458720b803800000"].pack("H*"),
+          )
+        end
+
+        it do
+          expect(instance).to receive(:override_setting_by_step).and_call_original
+          expect { instance_run_once }.not_to raise_error
+
+          expect(instance).not_to receive(:re_override_setting_by_cmd)
+          expect { instance_run_once }.not_to raise_error
+        end
       end
     end
   end
