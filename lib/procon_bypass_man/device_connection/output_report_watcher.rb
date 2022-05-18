@@ -29,7 +29,7 @@ class ProconBypassMan::DeviceConnection::OutputReportWatcher
   # @raise [Timeout::Error]
   def timeout_or_completed?
     if @timer.timeout?
-      ProconBypassMan.logger.info "[pre_bypass] pre_bypassフェーズがタイムアウトしました"
+      ProconBypassMan::SendErrorCommand.execute(error: "[pre_bypass] pre_bypassフェーズがタイムアウトしました")
       return true
     end
 
