@@ -5,6 +5,9 @@ module ProconBypassMan
 
     def record(_)
     end
+
+    def shutdown
+    end
   end
 
   class Counter

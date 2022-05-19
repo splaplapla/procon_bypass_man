@@ -11,9 +11,6 @@ module ProconBypassMan
   class CouldNotLoadConfigError < StandardError
   end
 
-  class EternalConnectionError < StandardError
-  end
-
   def self.configure: (?setting_path: untyped? setting_path) { () -> untyped } -> untyped
 
   def self.run: (?setting_path: untyped? setting_path) { () -> untyped } -> untyped

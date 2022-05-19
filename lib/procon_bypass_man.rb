@@ -64,7 +64,6 @@ module ProconBypassMan
   extend ProconBypassMan::NeverExitAccidentally
 
   class CouldNotLoadConfigError < StandardError; end
-  class EternalConnectionError < StandardError; end
   class NotFoundProconError < StandardError; end
 
   # @return [void]
