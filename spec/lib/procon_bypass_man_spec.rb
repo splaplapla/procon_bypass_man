@@ -112,6 +112,12 @@ describe ProconBypassMan do
           subject
           expect(ProconBypassMan::DeviceStatus.current).to eq(ProconBypassMan::DeviceStatus::CONNECTED_BUT_SLEEPING)
         end
+
+        it do
+          allow(ProconBypassMan).to receive(:eternal_sleep)
+          expect(Kernel).to receive(:trap).exactly(3).times
+          subject
+        end
       end
     end
   end
