@@ -96,6 +96,12 @@ module ProconBypassMan
     rescue ProconBypassMan::DeviceConnection::TimeoutError
       ProconBypassMan::SendErrorCommand.execute(error: "接続の見込みがないのでsleepしまくります")
       ProconBypassMan::DeviceStatus.change_to_connected_but_sleeping!
+      %w(TERM INT).each do |sig|
+        Kernel.trap(sig) { exit 0 }
+      end
+      Kernel.trap :USR2 do
+        exit 0 # TODO retryする
+      end
       eternal_sleep
       return
     end
