@@ -29,7 +29,7 @@ class ProconBypassMan::DeviceConnection::PreBypass
       # no-op
     end
 
-    5.times do
+    3.times do
       begin
         raw_data = non_blocking_read_procon
         output_report_watcher.mark_as_receive(raw_data)
