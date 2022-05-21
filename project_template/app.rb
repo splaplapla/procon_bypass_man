@@ -19,7 +19,7 @@ end
 
 ProconBypassMan.configure do |config|
   config.root = File.expand_path(__dir__)
-  config.logger = Logger.new("#{ProconBypassMan.root}/app.log", 5, 1024 * 1024 * 10)
+  config.logger = Logger.new("#{ProconBypassMan.root}/app.log", 1, 1024 * 1024 * 1)
   config.logger.level = :debug
 
   # バイパスするログを全部app.logに流すか
