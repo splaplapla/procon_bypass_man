@@ -24,6 +24,7 @@ class ProconBypassMan::DeviceConnection::OutputReportSubCommandTable
   IGNORE_SUB_COMMANDS = {
     "48-01" => true,
     "04-00" => true,
+    "10-28" => true, # 返ってこないことがあった
   }
   # レスポンスに引数が含まれない
   SPECIAL_SUB_COMMANDS = [
@@ -46,7 +47,6 @@ class ProconBypassMan::DeviceConnection::OutputReportSubCommandTable
     "10-80",
     "10-98",
     "10-10",
-    "10-28",
     "30-",
     "40-",
     "48-", # Enable vibration
