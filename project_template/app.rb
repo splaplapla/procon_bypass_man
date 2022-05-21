@@ -41,7 +41,7 @@ ProconBypassMan.configure do |config|
   config.enable_home_led_on_connect = true
 
   # 操作が高頻度で固まるときは、 gadget_to_procon_interval の数値を大きくしてください
-  config.bypass_mode = { mode: :normal, gadget_to_procon_interval: 5 }
+  config.bypass_mode = { mode: :normal, gadget_to_procon_interval: 10 }
 end
 
 ProconBypassMan.run(setting_path: "/usr/share/pbm/current/setting.yml")
