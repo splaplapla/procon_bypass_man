@@ -104,7 +104,7 @@ class ProconBypassMan::Configuration
 
   def error_logger
     if enable_critical_error_logging
-      @error_logger ||= Logger.new("#{ProconBypassMan.root}/error.log", 5, 1024 * 1024 * 10)
+      @error_logger ||= Logger.new("#{ProconBypassMan.root}/error.log", 1, 1024 * 1024 * 1)
     else
       Logger.new(File.open("/dev/null"))
     end
