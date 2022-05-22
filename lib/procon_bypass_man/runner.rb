@@ -28,6 +28,7 @@ class ProconBypassMan::Runner
         $will_terminate_token = false
         DRb.start_service if defined?(DRb)
         ProconBypassMan::RemoteMacroReceiver.start!
+        ProconBypassMan::ProconDisplay::Server.start!
         ProconBypassMan::BypassCommand.new(gadget: @gadget, procon: @procon).execute # ここでblockingする
         next
       }
