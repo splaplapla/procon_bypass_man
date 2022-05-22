@@ -14,6 +14,7 @@ require "pbmenv"
 require_relative "procon_bypass_man/version"
 require_relative "procon_bypass_man/remote_pbm_action"
 require_relative "procon_bypass_man/remote_macro"
+require_relative "procon_bypass_man/procon_display"
 
 require_relative "procon_bypass_man/device_connection"
 require_relative "procon_bypass_man/support/usb_device_controller"

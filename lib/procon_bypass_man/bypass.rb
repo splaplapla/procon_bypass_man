@@ -105,9 +105,4 @@ class ProconBypassMan::Bypass
     self.procon.write_nonblock(["8005"].pack("H*"))
     self.procon.write_nonblock(["8005"].pack("H*"))
   end
-
-  # @return [void] 入力してから取り出さないと接続しっぱなしになるっぽいのでこれが必要っぽい
-  def be_empty_procon
-    # タイムアウトまでブロッキングされるので、プロセスに逃す
-  end
 end
