@@ -3,6 +3,8 @@ require "procon_bypass_man/bypass/bypass_command"
 
 class ProconBypassMan::Bypass
   include ProconBypassMan::Bypass::UsbHidLogger
+  # TODO callbackモジュールを修正して複数のメソッドをチェインできるようにする
+  # include ProconBypassMan::ProconDisplay::BypassCallback
 
   class BypassValue < Struct.new(:binary)
     def to_text

@@ -1,8 +1,6 @@
 # 入力表示用
 
-module ProconBypassMan
-  class ProconDisplay
-  end
+module ProconBypassMan::ProconDisplay
 end
 
 require "procon_bypass_man/procon_display/server"

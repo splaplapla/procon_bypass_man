@@ -10,7 +10,7 @@ class ProconBypassMan::ProconDisplay::Server
   end
 
   def start_with_foreground
-    server = TCPServer.new('127.0.0.1', PORT)
+    server = TCPServer.new('0.0.0.0', PORT)
     loop do
       socket = server.accept
       socket.write(response)
@@ -21,7 +21,7 @@ class ProconBypassMan::ProconDisplay::Server
   end
 
   def response
-    ProconBypassMan::ProconDisplay::Status.instance.to_json
+    ProconBypassMan::ProconDisplay::Status.instance.current.to_json
   end
 end
 
