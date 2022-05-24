@@ -12,16 +12,15 @@ class ProconBypassMan::ProconDisplay::Server
   def start_with_foreground
     server = TCPServer.new('0.0.0.0', PORT)
     loop do
-      socket = server.accept
-      socket.write(response)
-      socket.close
+      conn = server.accept
+      response = App.new(
+        HttpRequest.parse(conn).to_hash
+      ).call
+      conn.write(response)
+      conn.close
     end
   rescue Errno::EADDRINUSE => e
     ProconBypassMan::SendErrorCommand.execute(error: e)
-  end
-
-  def response
-    ProconBypassMan::ProconDisplay::Status.instance.current.to_json
   end
 end
 
