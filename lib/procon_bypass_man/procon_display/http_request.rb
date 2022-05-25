@@ -18,7 +18,7 @@ module ProconBypassMan::ProconDisplay
     end
 
     def path
-      request_method_and_path = @headers.detect { |key, value| key.start_with?("GET") }.first
+      request_method_and_path = @headers.detect { |key, _value| key.start_with?("GET") }.first
       if request_method_and_path =~ /(?:GET) ([^ ]+)/ && (path = $1)
         return path
       end
