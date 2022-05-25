@@ -1,4 +1,5 @@
 module ProconBypassMan::ProconDisplay
+  # NOTE Support GET only
   class HttpRequest
     def self.parse(conn)
       headers = {}
@@ -17,6 +18,10 @@ module ProconBypassMan::ProconDisplay
     end
 
     def path
+      request_method_and_path = @headers.detect { |key, value| key.start_with?("GET") }.first
+      if request_method_and_path =~ /(?:GET) ([^ ]+)/ && (path = $1)
+        return path
+      end
     end
   end
 end
