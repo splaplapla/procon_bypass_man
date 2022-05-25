@@ -12,6 +12,7 @@ rescue Bundler::Source::Git::GitCommandError => e
   # install中に強制終了するとgitの管理ファイルが不正状態になり、次のエラーが起きるので発生したらcache directoryを削除する
   #"Git error: command `git fetch --force --quiet --tags https://github.com/splaplapla/procon_bypass_man refs/heads/\\*:refs/heads/\\*` in directory /home/pi/.rbenv/versions/3.0.1/lib/ruby/gems/3.0.0/cache/bundler/git/procon_bypass_man-ae4c9016d76b667658c8ba66f3bbd2eebf2656af has failed.\n\nIf this error persists you could try removing the cache directory '/home/pi/.rbenv/versions/3.0.1/lib/ruby/gems/3.0.0/cache/bundler/git/procon_bypass_man-ae4c9016d76b667658c8ba66f3bbd2eebf2656af'"
   if /try removing the cache directory '([^']+)'/ =~ e.message
+    require 'fileutils'
     FileUtils.rm_rf($1)
     retry
   end
