@@ -10,10 +10,13 @@ module ProconBypassMan::ProconDisplay
       end
     end
 
+    def initialize
+      @server = TCPServer.new('0.0.0.0', PORT)
+    end
+
     def start_with_foreground
-      server = TCPServer.new('0.0.0.0', PORT)
       loop do
-        conn = server.accept
+        conn = @server.accept
         response = ServerApp.new(
           HttpRequest.parse(conn).to_hash
         ).call
@@ -22,6 +25,8 @@ module ProconBypassMan::ProconDisplay
       end
     rescue Errno::EADDRINUSE => e
       ProconBypassMan::SendErrorCommand.execute(error: e)
+    rescue
+      retry
     end
   end
 end
