@@ -11,6 +11,7 @@ module ProconBypassMan::ProconDisplay
         HTTP/1.1 #{@status}
         Content-Length: #{@body&.bytes&.size || 0}
         Content-Type: #{@format}
+        Connection: close
 
         #{@body}
       EOH

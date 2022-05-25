@@ -1,25 +1,27 @@
 require 'socket'
 
-class ProconBypassMan::ProconDisplay::Server
-  PORT = 9900
+module ProconBypassMan::ProconDisplay
+  class Server
+    PORT = 9900
 
-  def self.start!
-    Thread.new do
-      new.start_with_foreground
+    def self.start!
+      Thread.new do
+        new.start_with_foreground
+      end
     end
-  end
 
-  def start_with_foreground
-    server = TCPServer.new('0.0.0.0', PORT)
-    loop do
-      conn = server.accept
-      response = App.new(
-        HttpRequest.parse(conn).to_hash
-      ).call
-      conn.write(response)
-      conn.close
+    def start_with_foreground
+      server = TCPServer.new('0.0.0.0', PORT)
+      loop do
+        conn = server.accept
+        response = ServerApp.new(
+          HttpRequest.parse(conn).to_hash
+        ).call
+        conn.write(response)
+        conn.close
+      end
+    rescue Errno::EADDRINUSE => e
+      ProconBypassMan::SendErrorCommand.execute(error: e)
     end
-  rescue Errno::EADDRINUSE => e
-    ProconBypassMan::SendErrorCommand.execute(error: e)
   end
 end

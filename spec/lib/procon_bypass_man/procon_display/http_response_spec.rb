@@ -13,6 +13,7 @@ describe ProconBypassMan::ProconDisplay::HttpResponse do
           HTTP/1.1 200
           Content-Length: 7
           Content-Type: text/json
+          Connection: close
 
           #{body.to_json}
         EOH
@@ -28,6 +29,7 @@ describe ProconBypassMan::ProconDisplay::HttpResponse do
           HTTP/1.1 404
           Content-Length: 2
           Content-Type: text/json
+          Connection: close
 
           {}
         EOH
@@ -43,6 +45,7 @@ describe ProconBypassMan::ProconDisplay::HttpResponse do
           HTTP/1.1 200
           Content-Length: 2
           Content-Type: text/json
+          Connection: close
 
           {}
         EOH
@@ -58,6 +61,7 @@ describe ProconBypassMan::ProconDisplay::HttpResponse do
           HTTP/1.1 200
           Content-Length: 0
           Content-Type: text/json
+          Connection: close
 
 
         EOH
