@@ -17,7 +17,7 @@ accept: */*
       end
 
       it do
-        expect(subject.path).to eq("/health_check")
+        expect(subject.to_hash).to eq({ "PATH" => "/health_check" })
       end
     end
 
@@ -32,6 +32,10 @@ GET / HTTP/1.1
 
       it do
         expect(subject.path).to eq("/")
+      end
+
+      it do
+        expect(subject.to_hash).to eq({ "PATH" => "/" })
       end
     end
   end

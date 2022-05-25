@@ -23,9 +23,3 @@ class ProconBypassMan::ProconDisplay::Server
     ProconBypassMan::SendErrorCommand.execute(error: e)
   end
 end
-
-# client例
-# require 'socket'
-# TCPSocket.open('127.0.0.1', 9900){ |s|
-#   print s.read
-# }

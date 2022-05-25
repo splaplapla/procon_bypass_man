@@ -1,27 +1,19 @@
 module ProconBypassMan::ProconDisplay
-  # NOTE Support GET only
-  class HttpRequest
-    def self.parse(conn)
-      headers = {}
-      loop do
-        line = conn.gets("\n")&.strip
-        break if line.nil? || line.strip.empty?
-        key, value = line.split(/:\s/, 2)
-        headers[key] = value
-      end
-
-      new(headers)
+  class HttpResponse
+    def initialize(body, status: , format: "text/json")
+      @body = body&.to_json
+      @status = status
+      @format = format
     end
 
-    def initialize(headers)
-      @headers = headers
-    end
+    def to_s
+      <<~EOH
+        HTTP/1.1 #{@status}
+        Content-Length: #{@body&.bytes&.size || 0}
+        Content-Type: #{@format}
 
-    def path
-      request_method_and_path = @headers.detect { |key, value| key.start_with?("GET") }.first
-      if request_method_and_path =~ /(?:GET) ([^ ]+)/ && (path = $1)
-        return path
-      end
+        #{@body}
+      EOH
     end
   end
 end
