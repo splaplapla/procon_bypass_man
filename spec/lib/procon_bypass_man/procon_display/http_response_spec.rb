@@ -16,6 +16,7 @@ describe ProconBypassMan::ProconDisplay::HttpResponse do
           Access-Control-Allow-Origin: *
           Access-Control-Allow-Methods: GET
           Access-Control-Allow-Private-Network：true
+          Connection: close
 
           #{body.to_json}
         EOH
@@ -34,6 +35,7 @@ describe ProconBypassMan::ProconDisplay::HttpResponse do
           Access-Control-Allow-Origin: *
           Access-Control-Allow-Methods: GET
           Access-Control-Allow-Private-Network：true
+          Connection: close
 
           {}
         EOH
@@ -52,6 +54,7 @@ describe ProconBypassMan::ProconDisplay::HttpResponse do
           Access-Control-Allow-Origin: *
           Access-Control-Allow-Methods: GET
           Access-Control-Allow-Private-Network：true
+          Connection: close
 
           {}
         EOH
@@ -70,6 +73,7 @@ describe ProconBypassMan::ProconDisplay::HttpResponse do
           Access-Control-Allow-Origin: *
           Access-Control-Allow-Methods: GET
           Access-Control-Allow-Private-Network：true
+          Connection: close
 
 
         EOH
