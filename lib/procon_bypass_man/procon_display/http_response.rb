@@ -12,7 +12,6 @@ module ProconBypassMan::ProconDisplay
         Content-Length: #{@body&.bytes&.size || 0}
         Content-Type: #{@format}
         Access-Control-Allow-Origin: *
-        Connection: close
 
         #{@body}
       EOH

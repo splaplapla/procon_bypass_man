@@ -14,7 +14,6 @@ describe ProconBypassMan::ProconDisplay::HttpResponse do
           Content-Length: 7
           Content-Type: text/json
           Access-Control-Allow-Origin: *
-          Connection: close
 
           #{body.to_json}
         EOH
@@ -31,7 +30,6 @@ describe ProconBypassMan::ProconDisplay::HttpResponse do
           Content-Length: 2
           Content-Type: text/json
           Access-Control-Allow-Origin: *
-          Connection: close
 
           {}
         EOH
@@ -48,7 +46,6 @@ describe ProconBypassMan::ProconDisplay::HttpResponse do
           Content-Length: 2
           Content-Type: text/json
           Access-Control-Allow-Origin: *
-          Connection: close
 
           {}
         EOH
@@ -65,7 +62,6 @@ describe ProconBypassMan::ProconDisplay::HttpResponse do
           Content-Length: 0
           Content-Type: text/json
           Access-Control-Allow-Origin: *
-          Connection: close
 
 
         EOH

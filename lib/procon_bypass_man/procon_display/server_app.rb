@@ -6,7 +6,7 @@ module ProconBypassMan::ProconDisplay
 
     def call
       case @env["PATH"]
-      when "/"
+      when "/input"
         response = ProconBypassMan::ProconDisplay::Status.instance.current
         HttpResponse.new(response, status: 200).to_s
       else

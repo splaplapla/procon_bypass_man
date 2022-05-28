@@ -5,8 +5,8 @@ describe ProconBypassMan::ProconDisplay::ServerApp do
     subject { described_class.new(env).call  }
 
 
-    context '/' do
-      let(:env) { { "PATH" => "/" } }
+    context '/input' do
+      let(:env) { { "PATH" => "/input" } }
 
       context 'has value status' do
         before do
@@ -19,7 +19,6 @@ describe ProconBypassMan::ProconDisplay::ServerApp do
           Content-Length: 9
           Content-Type: text/json
           Access-Control-Allow-Origin: *
-          Connection: close
 
           #{{a: 123 }.to_json}
           EOH
@@ -37,7 +36,6 @@ describe ProconBypassMan::ProconDisplay::ServerApp do
           Content-Length: 2
           Content-Type: text/json
           Access-Control-Allow-Origin: *
-          Connection: close
 
           {}
           EOH
@@ -54,7 +52,6 @@ describe ProconBypassMan::ProconDisplay::ServerApp do
           Content-Length: 0
           Content-Type: text/json
           Access-Control-Allow-Origin: *
-          Connection: close
 
 
         EOH
