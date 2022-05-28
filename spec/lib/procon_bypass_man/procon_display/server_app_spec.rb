@@ -19,6 +19,8 @@ describe ProconBypassMan::ProconDisplay::ServerApp do
           Content-Length: 9
           Content-Type: text/json
           Access-Control-Allow-Origin: *
+          Access-Control-Allow-Methods: GET
+          Access-Control-Allow-Private-Network：true
 
           #{{a: 123 }.to_json}
           EOH
@@ -36,6 +38,8 @@ describe ProconBypassMan::ProconDisplay::ServerApp do
           Content-Length: 2
           Content-Type: text/json
           Access-Control-Allow-Origin: *
+          Access-Control-Allow-Methods: GET
+          Access-Control-Allow-Private-Network：true
 
           {}
           EOH
@@ -52,6 +56,8 @@ describe ProconBypassMan::ProconDisplay::ServerApp do
           Content-Length: 0
           Content-Type: text/json
           Access-Control-Allow-Origin: *
+          Access-Control-Allow-Methods: GET
+          Access-Control-Allow-Private-Network：true
 
 
         EOH
