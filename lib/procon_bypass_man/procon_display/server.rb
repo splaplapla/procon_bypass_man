@@ -25,7 +25,8 @@ module ProconBypassMan::ProconDisplay
       end
     rescue Errno::EADDRINUSE => e
       ProconBypassMan::SendErrorCommand.execute(error: e)
-    rescue
+    rescue => e
+      ProconBypassMan::SendErrorCommand.execute(error: e)
       retry
     end
   end
