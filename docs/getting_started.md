@@ -13,6 +13,7 @@
 * モード
 * [マクロ](#マクロ)
 * [左スティックの感度調整](#左スティックの感度調整)
+* [入力表示](#入力表示)
 * 設定ファイルの書き方
 * プラグインの書き方
 * [設定ファイルの書き方がわからない、エラーが起きるとき](#設定ファイルの書き方がわからない、エラーが起きるとき)
@@ -39,6 +40,8 @@
   * [設定方法](/docs/setting/left-analogstick-cap.md)
 * WEBから設定状態の閲覧・反映
 * ボタンリマップ
+* 入力表示
+　　* https://github.com/splaplapla/switch-procon-input-viewer
 
 ## セットアップ
 ### ラズベリーパイのセットアップ
@@ -161,6 +164,10 @@ open_macro :sokuwari, steps: [:toggle_r_for_0_2sec, :toggle_thumbr_for_0_14sec, 
 
 ## 左スティックの感度調整
 [左スティックの感度調整](/docs/setting/left-analogstick-cap.md)
+
+## 入力表示
+* https://github.com/splaplapla/switch-procon-input-viewer
+* 後で書きます
 
 ## 設定ファイルの書き方
 * 後で書きます
