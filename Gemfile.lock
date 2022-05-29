@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    procon_bypass_man (0.2.0)
+    procon_bypass_man (0.2.1)
       action_cable_client
       pbmenv (>= 0.1.9)
       sorted_set

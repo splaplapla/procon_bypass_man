@@ -1,4 +1,4 @@
-## unrelease
+## [0.2.1] - 2022-05-29
 - 入力表示機能を提供するSwitchProconInputViewerに対応しました
 - app.rb内のバグ修正, ログファイルとして残る世代を減らしました
 
