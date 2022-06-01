@@ -1,0 +1,6 @@
+#!/usr/bin/env ruby
+
+@enable_integration_with_pbm_cloud = false
+
+require "./project_template/lib/generate_app"
+puts "Created project_template/app.rb"
