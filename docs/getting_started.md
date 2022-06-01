@@ -41,7 +41,7 @@
 * WEBから設定状態の閲覧・反映
 * ボタンリマップ
 * 入力表示
-　　* https://github.com/splaplapla/switch-procon-input-viewer
+  * https://github.com/splaplapla/switch-procon-input-viewer
 
 ## セットアップ
 ### ラズベリーパイのセットアップ
