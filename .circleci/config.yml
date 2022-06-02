@@ -55,6 +55,14 @@ jobs:
       - run: ruby -cw project_template/web.rb
       - run: ruby -ryaml -e 'puts YAML.load_file("./project_template/setting.yml")["setting"]' > /tmp/content_of_setting.rb && ruby -cw /tmp/content_of_setting.rb
 
+  outdated_app_checker:
+    executor:
+      name: ruby
+      tag: 3.0.1
+    steps:
+      - checkout
+      - run: ruby bin/generate_default_app  && git diff project_template/app.rb
+
   bundle_install:
     parameters:
       ruby-version:
@@ -101,6 +109,7 @@ jobs:
 
 build_jobs: &build_jobs
   - check_pbm_version
+  - outdated_app_checker
   - syntax_check:
       matrix:
         parameters:
