@@ -20,10 +20,10 @@ class AppGenerator
   private
 
   def template_path
-    File.join(prefix_path, "project_template/app.rb.erb")
+    File.join(prefix_path, "app.rb.erb")
   end
 
   def output_path
-    File.join(prefix_path, "project_template/app.rb")
+    File.join(prefix_path, "app.rb")
   end
 end
