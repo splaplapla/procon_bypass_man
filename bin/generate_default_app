@@ -3,7 +3,7 @@
 require "./project_template/lib/app_generator"
 
 AppGenerator.new(
-  path: "./",
+  prefix_path: "./project_template",
   enable_integration_with_pbm_cloud: false,
 ).generate
 

@@ -1,27 +1,27 @@
 require "erb"
 
 class AppGenerator
-  attr_reader :path
+  attr_reader :prefix_path
 
-  def initialize(path: , enable_integration_with_pbm_cloud: )
-    @path = path
+  def initialize(prefix_path: , enable_integration_with_pbm_cloud: )
+    @prefix_path = prefix_path
     @enable_integration_with_pbm_cloud = enable_integration_with_pbm_cloud
   end
 
   def generate
-    erb = File.read(File.join(path, template_path))
+    erb = File.read(template_path)
     enable_integration_with_pbm_cloud = @enable_integration_with_pbm_cloud
     app_rb = ERB.new(erb, trim_mode: '-').result(binding)
-    File.write(File.join(path, output_path), app_rb)
+    File.write(output_path, app_rb)
   end
 
   private
 
   def template_path
-    "project_template/app.rb.erb"
+    File.join(prefix_path, "app.rb.erb")
   end
 
   def output_path
-    "project_template/app.rb"
+    File.join(prefix_path, "app.rb")
   end
 end
