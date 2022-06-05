@@ -1,3 +1,6 @@
+## unrelease
+* project_template/app.rbを動的に生成する仕組みを追加しました
+
 ## [0.2.1] - 2022-05-29
 - 入力表示機能を提供するSwitchProconInputViewerに対応しました
   - https://github.com/splaplapla/switch-procon-input-viewer
