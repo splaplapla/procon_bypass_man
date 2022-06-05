@@ -9,11 +9,11 @@ describe AppGenerator do
   end
 
   it do
-    expect(File.exists?(tmp_app_path)).to eq(false)
+    expect(File.exist?(tmp_app_path)).to eq(false)
     described_class.new(
       prefix_path: "./tmp",
       enable_integration_with_pbm_cloud: true
     ).generate
-    expect(File.exists?(tmp_app_path)).to eq(true)
+    expect(File.exist?(tmp_app_path)).to eq(true)
   end
 end
