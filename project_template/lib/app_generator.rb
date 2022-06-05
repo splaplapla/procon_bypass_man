@@ -1,8 +1,12 @@
 require "erb"
 
+# NOTE pbmenvで参照しているクラス
+# 後方互換を維持するために、パラメータの削除・必須をしてはいけない
 class AppGenerator
   attr_reader :prefix_path
 
+  # @param [String] prefix_path
+  # @param [Boolean] enable_integration_with_pbm_cloud
   def initialize(prefix_path: , enable_integration_with_pbm_cloud: )
     @prefix_path = prefix_path
     @enable_integration_with_pbm_cloud = enable_integration_with_pbm_cloud
