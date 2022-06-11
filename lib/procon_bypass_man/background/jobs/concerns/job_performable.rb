@@ -1,6 +1,6 @@
 module ProconBypassMan
   module Background
-    module JobRunnable
+    module JobPerformable
       def perform(*)
         raise NotImplementedError, nil
       end
