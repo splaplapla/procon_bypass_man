@@ -1,5 +1,5 @@
 class ProconBypassMan::BaseJob
-  extend ProconBypassMan::Background::JobRunnable
+  extend ProconBypassMan::Background::JobPerformable
 
   def self.servers
     raise NotImplementedError
