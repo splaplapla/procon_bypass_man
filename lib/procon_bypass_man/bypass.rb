@@ -4,6 +4,9 @@ require "procon_bypass_man/bypass/bypass_command"
 class ProconBypassMan::Bypass
   extend ProconBypassMan::CallbacksRegisterable
 
+  # TODO callbackモジュールを修正して複数のメソッドをチェインできるようにする
+  # include ProconBypassMan::ProconDisplay::BypassCallback
+
   class BypassValue < Struct.new(:binary)
     def to_text
       return unless binary
