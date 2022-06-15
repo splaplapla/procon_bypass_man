@@ -1,18 +1,37 @@
 module ProconBypassMan
   module Callbacks
-    class CallbacksChain
+    def self.included(mod)
+      mod.singleton_class.attr_accessor :__callbacks
+    end
+
+    class CallbackChain
+      attr_accessor :callbacks
+
+      def initialize
+        self.callbacks = {}
+      end
+
+      def empty?
+        callbacks.empty?
+      end
+
+      def append(callback)
+        self.callbacks[callback.filter] ||= []
+        self.callbacks[callback.filter] << callback
+      end
+
+      def [](filter)
+        self.callbacks[filter]
+      end
+    end
+
+    class Callback
       attr_accessor :filter, :chain_method
+
       def initialize(filter: , chain_method: , block: )
         @filter = filter
         @chain_method = chain_method
         @block = block
-      end
-    end
-
-    # TODO __callbacksをincludeしたクラス側で保持する. 今はnemespaceがない
-    module M
-      class << self
-        attr_accessor :__callbacks
       end
     end
 
@@ -23,14 +42,15 @@ module ProconBypassMan
 
         module_eval <<-RUBY, __FILE__, __LINE__ + 1
           def _run_#{name}_callbacks(&block)
-            __run_callbacks__(_#{name}_callbacks, &block)
+            __ruu_callbacks__(_#{name}_callbacks, &block)
           end
         RUBY
       end
 
       def set_callback(kind, filter, chain_method, &block)
-        ProconBypassMan::Callbacks::M.__callbacks ||= {}
-        ProconBypassMan::Callbacks::M.__callbacks[kind] = CallbacksChain.new(
+        self.__callbacks ||= {}
+        self.__callbacks[kind] ||= CallbackChain.new
+        self.__callbacks[kind].append Callback.new(
           filter: filter,
           chain_method: chain_method,
           block: block,
@@ -39,32 +59,24 @@ module ProconBypassMan
     end
 
     # TODO haltしたらcallbackを止める
-    # TODO 複数をチェインできるようにする
     def run_callbacks(kind, &block)
-      chain = get_callbacks(kind) or raise("unknown callback")
-      case chain.filter
-      when :before
-        send chain.chain_method
+      chains = get_callbacks(kind) or raise("unknown callback")
+      if chains.nil? || chains.empty?
         block.call
-      when :after
-        block.call
+        return
+      end
+
+      chains[:before]&.each do |chain|
         send chain.chain_method
-      else
-        raise("unknown filter")
+      end
+      block.call
+      chains[:after]&.each do |chain|
+        send chain.chain_method
       end
     end
 
-    # def __run_callbacks__(name, &block)
-    #   puts "called"
-    # end
-
     def get_callbacks(kind) # :nodoc:
-      ProconBypassMan::Callbacks::M.__callbacks[kind.to_sym]
-    end
-
-    def set_callbacks(name, callbacks) # :nodoc:
-      send "_#{name}_callbacks=", callbacks
-      ProconBypassMan::Callbacks::M.__callbacks[kind.to_sym] = callbacks
+      self.class.__callbacks[kind.to_sym]
     end
   end
 end
