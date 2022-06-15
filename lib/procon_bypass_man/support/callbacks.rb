@@ -1,4 +1,14 @@
 module ProconBypassMan
+  module CallbacksRegisterable
+    attr_accessor :callbacks
+
+    def register_callback_module(mod)
+      self.callbacks ||= []
+      callbacks << mod
+      self.include(mod)
+    end
+  end
+
   module Callbacks
     def self.included(mod)
       mod.singleton_class.attr_accessor :__callbacks
@@ -76,6 +86,11 @@ module ProconBypassMan
     end
 
     def get_callbacks(kind) # :nodoc:
+      # classに直接moduleをincludeしている場合
+      if defined?(self.class.__callbacks)
+        return self.class.__callbacks[kind.to_sym]
+      end
+
       list = self.class.callbacks.flat_map { |callback_mod|
         callback_mod.__callbacks[kind.to_sym]
       }

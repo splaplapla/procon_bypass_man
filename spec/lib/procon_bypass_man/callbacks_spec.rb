@@ -73,6 +73,54 @@ describe ProconBypassMan::Callbacks do
     end
   end
 
+  context 'moduleにcallbackを定義しているとき' do
+    let(:klass) do
+      Class.new do
+        extend ProconBypassMan::CallbacksRegisterable
+
+        attr_accessor :called
+
+        def call
+          @called = [:before]
+          run_callbacks :call do
+            @called << :call
+          end
+          @called << :after
+        end
+      end
+    end
+
+    let(:mod) do
+      Module.new do
+        extend ProconBypassMan::Callbacks::ClassMethods
+        include ProconBypassMan::Callbacks
+
+        define_callbacks :call
+
+        set_callback :call, :before, :before_hook_method
+        set_callback :call, :after, :after_hook_method
+
+        def before_hook_method
+          @called << :callback_in_before
+        end
+
+        def after_hook_method
+          @called << :callback_in_after
+        end
+      end
+    end
+
+    before do
+      klass.register_callback_module(mod)
+    end
+
+    it do
+      s = klass.new
+      s.call
+      expect(s.called).to eq([:before, :callback_in_before, :call, :callback_in_after, :after])
+    end
+  end
+
   context 'has super calss' do
     let(:super_class) do
       Class.new do

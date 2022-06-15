@@ -2,20 +2,7 @@ require "procon_bypass_man/bypass/usb_hid_logger"
 require "procon_bypass_man/bypass/bypass_command"
 
 class ProconBypassMan::Bypass
-  # include ProconBypassMan::Callbackable
-
-  class << self
-    attr_accessor :callbacks
-  end
-
-  def self.register_callback_module(mod)
-    self.callbacks ||= []
-    callbacks << mod
-    self.include(mod)
-  end
-
-  # TODO callbackモジュールを修正して複数のメソッドをチェインできるようにする
-  # include ProconBypassMan::ProconDisplay::BypassCallback
+  extend ProconBypassMan::CallbacksRegisterable
 
   class BypassValue < Struct.new(:binary)
     def to_text
