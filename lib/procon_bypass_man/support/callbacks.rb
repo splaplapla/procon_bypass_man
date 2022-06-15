@@ -76,7 +76,13 @@ module ProconBypassMan
     end
 
     def get_callbacks(kind) # :nodoc:
-      self.class.__callbacks[kind.to_sym]
+      list = self.class.callbacks.flat_map { |callback_mod|
+        callback_mod.__callbacks[kind.to_sym]
+      }
+      table = {}
+      table[:before] = list.flat_map { |x| x[:before] }.compact
+      table[:after] = list.flat_map { |x| x[:after] }.compact
+      table
     end
   end
 end
