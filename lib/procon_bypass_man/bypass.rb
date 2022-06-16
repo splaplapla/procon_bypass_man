@@ -2,7 +2,8 @@ require "procon_bypass_man/bypass/usb_hid_logger"
 require "procon_bypass_man/bypass/bypass_command"
 
 class ProconBypassMan::Bypass
-  include ProconBypassMan::Bypass::UsbHidLogger
+  extend ProconBypassMan::CallbacksRegisterable
+
   # TODO callbackモジュールを修正して複数のメソッドをチェインできるようにする
   # include ProconBypassMan::ProconDisplay::BypassCallback
 
@@ -108,3 +109,5 @@ class ProconBypassMan::Bypass
     self.procon.write_nonblock(["8005"].pack("H*"))
   end
 end
+
+ProconBypassMan::Bypass.register_callback_module(ProconBypassMan::Bypass::UsbHidLogger)

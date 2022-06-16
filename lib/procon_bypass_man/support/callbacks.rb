@@ -1,21 +1,15 @@
 module ProconBypassMan
+  module CallbacksRegisterable
+    attr_accessor :callbacks
+
+    def register_callback_module(mod)
+      self.callbacks ||= []
+      callbacks << mod
+      self.include(mod)
+    end
+  end
+
   module Callbacks
-    class CallbacksChain
-      attr_accessor :filter, :chain_method
-      def initialize(filter: , chain_method: , block: )
-        @filter = filter
-        @chain_method = chain_method
-        @block = block
-      end
-    end
-
-    # TODO __callbacksをincludeしたクラス側で保持する. 今はnemespaceがない
-    module M
-      class << self
-        attr_accessor :__callbacks
-      end
-    end
-
     module ClassMethods
       def define_callbacks(name)
         self.singleton_class.attr_accessor "_#{name}_callbacks"
@@ -29,8 +23,9 @@ module ProconBypassMan
       end
 
       def set_callback(kind, filter, chain_method, &block)
-        ProconBypassMan::Callbacks::M.__callbacks ||= {}
-        ProconBypassMan::Callbacks::M.__callbacks[kind] = CallbacksChain.new(
+        self.__callbacks ||= {}
+        self.__callbacks[kind] ||= CallbackChain.new
+        self.__callbacks[kind].append Callback.new(
           filter: filter,
           chain_method: chain_method,
           block: block,
@@ -38,33 +33,72 @@ module ProconBypassMan
       end
     end
 
-    # TODO haltしたらcallbackを止める
-    # TODO 複数をチェインできるようにする
-    def run_callbacks(kind, &block)
-      chain = get_callbacks(kind) or raise("unknown callback")
-      case chain.filter
-      when :before
-        send chain.chain_method
-        block.call
-      when :after
-        block.call
-        send chain.chain_method
-      else
-        raise("unknown filter")
+    def self.included(mod)
+      mod.singleton_class.attr_accessor :__callbacks
+      mod.extend(ClassMethods)
+    end
+
+    class CallbackChain
+      attr_accessor :callbacks
+
+      def initialize
+        self.callbacks = {}
+      end
+
+      def empty?
+        callbacks.empty?
+      end
+
+      def append(callback)
+        self.callbacks[callback.filter] ||= []
+        self.callbacks[callback.filter] << callback
+      end
+
+      def [](filter)
+        self.callbacks[filter]
       end
     end
 
-    # def __run_callbacks__(name, &block)
-    #   puts "called"
-    # end
+    class Callback
+      attr_accessor :filter, :chain_method
 
-    def get_callbacks(kind) # :nodoc:
-      ProconBypassMan::Callbacks::M.__callbacks[kind.to_sym]
+      def initialize(filter: , chain_method: , block: )
+        @filter = filter
+        @chain_method = chain_method
+        @block = block
+      end
     end
 
-    def set_callbacks(name, callbacks) # :nodoc:
-      send "_#{name}_callbacks=", callbacks
-      ProconBypassMan::Callbacks::M.__callbacks[kind.to_sym] = callbacks
+    # TODO haltしたらcallbackを止める
+    def run_callbacks(kind, &block)
+      chains = get_callbacks(kind) or raise("unknown callback")
+      if chains.nil? || chains.empty?
+        block.call
+        return
+      end
+
+      chains[:before]&.each do |chain|
+        send chain.chain_method
+      end
+      block.call
+      chains[:after]&.each do |chain|
+        send chain.chain_method
+      end
+    end
+
+    def get_callbacks(kind) # :nodoc:
+      # classに直接moduleをincludeしている場合
+      if defined?(self.class.__callbacks)
+        return self.class.__callbacks[kind.to_sym]
+      end
+
+      list = self.class.callbacks.flat_map { |callback_mod|
+        callback_mod.__callbacks[kind.to_sym]
+      }
+      table = {}
+      table[:before] = list.flat_map { |x| x[:before] }.compact
+      table[:after] = list.flat_map { |x| x[:after] }.compact
+      table
     end
   end
 end
