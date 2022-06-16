@@ -5,7 +5,6 @@ describe ProconBypassMan::Callbacks do
     context 'when use a set_callback' do
       let(:klass) do
         Class.new do
-          extend ProconBypassMan::Callbacks::ClassMethods
           include ProconBypassMan::Callbacks
 
           attr_accessor :called
@@ -37,7 +36,6 @@ describe ProconBypassMan::Callbacks do
     context 'when use two set_callbacks' do
       let(:klass) do
         Class.new do
-          extend ProconBypassMan::Callbacks::ClassMethods
           include ProconBypassMan::Callbacks
 
           attr_accessor :called
@@ -92,7 +90,6 @@ describe ProconBypassMan::Callbacks do
 
     let(:mod) do
       Module.new do
-        extend ProconBypassMan::Callbacks::ClassMethods
         include ProconBypassMan::Callbacks
 
         define_callbacks :call
@@ -124,7 +121,6 @@ describe ProconBypassMan::Callbacks do
   context 'has super calss' do
     let(:super_class) do
       Class.new do
-        extend ProconBypassMan::Callbacks::ClassMethods
         include ProconBypassMan::Callbacks
 
         attr_accessor :called

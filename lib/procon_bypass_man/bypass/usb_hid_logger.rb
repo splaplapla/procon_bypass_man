@@ -1,6 +1,5 @@
 class ProconBypassMan::Bypass
   module UsbHidLogger
-    extend ProconBypassMan::Callbacks::ClassMethods
     include ProconBypassMan::Callbacks
 
     define_callbacks :send_gadget_to_procon

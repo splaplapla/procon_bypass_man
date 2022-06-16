@@ -10,8 +10,32 @@ module ProconBypassMan
   end
 
   module Callbacks
+    module ClassMethods
+      def define_callbacks(name)
+        self.singleton_class.attr_accessor "_#{name}_callbacks"
+        send "_#{name}_callbacks=", [name] # CallbacksChain
+
+        module_eval <<-RUBY, __FILE__, __LINE__ + 1
+          def _run_#{name}_callbacks(&block)
+            __run_callbacks__(_#{name}_callbacks, &block)
+          end
+        RUBY
+      end
+
+      def set_callback(kind, filter, chain_method, &block)
+        self.__callbacks ||= {}
+        self.__callbacks[kind] ||= CallbackChain.new
+        self.__callbacks[kind].append Callback.new(
+          filter: filter,
+          chain_method: chain_method,
+          block: block,
+        )
+      end
+    end
+
     def self.included(mod)
       mod.singleton_class.attr_accessor :__callbacks
+      mod.extend(ClassMethods)
     end
 
     class CallbackChain
@@ -42,29 +66,6 @@ module ProconBypassMan
         @filter = filter
         @chain_method = chain_method
         @block = block
-      end
-    end
-
-    module ClassMethods
-      def define_callbacks(name)
-        self.singleton_class.attr_accessor "_#{name}_callbacks"
-        send "_#{name}_callbacks=", [name] # CallbacksChain
-
-        module_eval <<-RUBY, __FILE__, __LINE__ + 1
-          def _run_#{name}_callbacks(&block)
-            __ruu_callbacks__(_#{name}_callbacks, &block)
-          end
-        RUBY
-      end
-
-      def set_callback(kind, filter, chain_method, &block)
-        self.__callbacks ||= {}
-        self.__callbacks[kind] ||= CallbackChain.new
-        self.__callbacks[kind].append Callback.new(
-          filter: filter,
-          chain_method: chain_method,
-          block: block,
-        )
       end
     end
 
