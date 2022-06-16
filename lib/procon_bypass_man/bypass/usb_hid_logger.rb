@@ -31,9 +31,6 @@ class ProconBypassMan::Bypass
         end
       end
 
-      # TODO 別のコールバッククラスから実行したい
-      ProconBypassMan::ProconDisplay::Status.instance.current = bypass_value.binary.to_procon_reader.to_hash.dup
-
       if ProconBypassMan.config.enable_reporting_pressed_buttons
         ProconBypassMan.cache.fetch key: 'pressed_buttons_reporter', expires_in: 5 do
           ProconBypassMan::ReportPressedButtonsJob.perform_async(
