@@ -93,8 +93,8 @@ module ProconBypassMan
       end
 
       list = self.class.callbacks.flat_map { |callback_mod|
-        callback_mod.__callbacks[kind.to_sym]
-      }
+        callback_mod.__callbacks && callback_mod.__callbacks[kind.to_sym]
+      }.compact
       table = {}
       table[:before] = list.flat_map { |x| x[:before] }.compact
       table[:after] = list.flat_map { |x| x[:after] }.compact
