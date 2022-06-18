@@ -4,6 +4,9 @@ require "procon_bypass_man/bypass/bypass_command"
 class ProconBypassMan::Bypass
   extend ProconBypassMan::CallbacksRegisterable
 
+  register_callback_module(ProconBypassMan::Bypass::UsbHidLogger)
+  register_callback_module(ProconBypassMan::ProconDisplay::BypassHook)
+
   class BypassValue < Struct.new(:binary)
     def to_text
       return unless binary
@@ -106,6 +109,3 @@ class ProconBypassMan::Bypass
     self.procon.write_nonblock(["8005"].pack("H*"))
   end
 end
-
-ProconBypassMan::Bypass.register_callback_module(ProconBypassMan::Bypass::UsbHidLogger)
-ProconBypassMan::Bypass.register_callback_module(ProconBypassMan::ProconDisplay::BypassHook)
