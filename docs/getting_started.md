@@ -68,7 +68,7 @@ procon_bypass_manはバージョンアップによって起動スクリプトに
 
 ##### 1-1) systemにインストールされているrubyを使う場合(初心者におすすめ)
 
-```shell
+```bash
 sudo apt-get install ruby ruby-dev
 sudo gem i bundler pbmenv
 sudo pbmenv install latest --use
@@ -79,7 +79,7 @@ sudo ruby app.rb
 ##### 1-2) rbenvでインストールしたrubyを使う場合
 rbenvはrubyのパッケージマネージャーです。  
 
-```shell
+```bash
 rbenv install 3.0.1
 sudo gem install pbmenv
 sudo pbmenv install latest --use
@@ -92,7 +92,7 @@ https://github.com/jiikko/procon_bypass_man_sample にある app.rb と setting.
 
 ##### 2-1) systemにインストールされているrubyを使う場合(初心者におすすめ)
 
-```shell
+```bash
 sudo apt-get install ruby ruby-dev wget
 wget https://raw.githubusercontent.com/jiikko/procon_bypass_man_sample/master/app.rb
 wget https://raw.githubusercontent.com/jiikko/procon_bypass_man_sample/master/setting.yml
@@ -103,7 +103,7 @@ sudo ruby app.rb
 ##### 2-2) rbenvでインストールしたrubyを使う場合
 rbenvはrubyのパッケージマネージャーです。  
 
-```shell
+```bash
 rbenv install 3.0.1
 sudo apt-get install wget
 wget https://raw.githubusercontent.com/jiikko/procon_bypass_man_sample/master/app.rb
@@ -116,7 +116,7 @@ sudo /home/pi/.rbenv/versions/3.0.1/bin/ruby app.rb
 procon_bypass_manを起動するだけでプロコンと接続ができるようになったら、Raspberry Piを起動したときにprocon_bypass_manも自動起動するように設定しましょう。  
 これを設定すると、Switch本体の電源ボタンを押すだけで使えるようになります。(実際には、Raspberry Piが起動して、procon_bypass_manが動き始めるまでに30秒くらいかかります。)
 
-自動起動方法は、pbmenvを使っているなら以下の2行をshellで実行すれば完了です。
+自動起動方法は、pbmenvを使っているなら以下の2行をbashで実行すれば完了です。
 
 ```
 sudo systemctl link /usr/share/pbm/current/systemd_units/pbm.service
