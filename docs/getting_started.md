@@ -116,7 +116,7 @@ sudo /home/pi/.rbenv/versions/3.0.1/bin/ruby app.rb
 procon_bypass_manを起動するだけでプロコンと接続ができるようになったら、Raspberry Piを起動したときにprocon_bypass_manも自動起動するように設定しましょう。  
 これを設定すると、Switch本体の電源ボタンを押すだけで使えるようになります。(実際には、Raspberry Piが起動して、procon_bypass_manが動き始めるまでに30秒くらいかかります。)
 
-自動起動方法は、pbmenvを使っているなら以下の2行をbashで実行すれば完了です。
+自動起動方法は、pbmenvを使っているなら以下の2行をshellで実行すれば完了です。
 
 ```
 sudo systemctl link /usr/share/pbm/current/systemd_units/pbm.service
