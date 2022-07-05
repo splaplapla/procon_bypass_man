@@ -68,7 +68,7 @@ procon_bypass_manはバージョンアップによって起動スクリプトに
 
 ##### 1-1) systemにインストールされているrubyを使う場合(初心者におすすめ)
 
-```
+```shell
 sudo apt-get install ruby ruby-dev
 sudo gem i bundler pbmenv
 sudo pbmenv install latest --use
@@ -79,7 +79,7 @@ sudo ruby app.rb
 ##### 1-2) rbenvでインストールしたrubyを使う場合
 rbenvはrubyのパッケージマネージャーです。  
 
-```
+```shell
 rbenv install 3.0.1
 sudo gem install pbmenv
 sudo pbmenv install latest --use
@@ -92,7 +92,7 @@ https://github.com/jiikko/procon_bypass_man_sample にある app.rb と setting.
 
 ##### 2-1) systemにインストールされているrubyを使う場合(初心者におすすめ)
 
-```
+```shell
 sudo apt-get install ruby ruby-dev wget
 wget https://raw.githubusercontent.com/jiikko/procon_bypass_man_sample/master/app.rb
 wget https://raw.githubusercontent.com/jiikko/procon_bypass_man_sample/master/setting.yml
@@ -103,7 +103,7 @@ sudo ruby app.rb
 ##### 2-2) rbenvでインストールしたrubyを使う場合
 rbenvはrubyのパッケージマネージャーです。  
 
-```
+```shell
 rbenv install 3.0.1
 sudo apt-get install wget
 wget https://raw.githubusercontent.com/jiikko/procon_bypass_man_sample/master/app.rb
