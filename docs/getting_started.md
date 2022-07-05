@@ -50,29 +50,65 @@
 
 ### procon_bypass_manのインストール
 
-pbmenvを使うと https://pbm-cloud.herokuapp.com と連携ができるのでおすすめですが、pbmenvを使わなくてもprocon_bypass_manをインストールすることは可能です。
+pbmenvを使うと https://pbm-cloud.herokuapp.com と連携ができるのでおすすめですが、pbmenvを使わなくてもprocon_bypass_manをインストールすることは可能です。  
+次の4つからインストール方法を1つ選んでください。
 
-#### pbmenvを使う方法
+* pbmenvを使う方法
+  * systemにインストールされているrubyを使う場合(初心者におすすめ)
+  * rbenvでインストールしたrubyを使う場合
+* pbmenvを使わない方法
+  * systemにインストールされているrubyを使う場合(初心者におすすめ)
+  * rbenvでインストールしたrubyを使う場合
+
+#### 1) pbmenvを使う方法
 
 https://github.com/splaplapla/pbmenv  
-pbmenvはprocon_bypass_manのバージョンマネジャーです。procon_bypass_manはバージョンアップによって起動スクリプトに変更が入ることがあって、バージョンアップするときはpbmenvを使うとエラーが起きることなくインストールができるようになります。また、pbm-cloudと連携してすべての機能を使うには、pbmenvの利用が必須になります。
+pbmenvはprocon_bypass_manのバージョンマネジャーです。  
+procon_bypass_manはバージョンアップによって起動スクリプトに変更が入ることがあって、バージョンアップするときはpbmenvを使うとエラーが起きることなくインストールができるようになります。また、pbm-cloudと連携してすべての機能を使うには、pbmenvの利用が必須になります。
+
+##### 1-1) systemにインストールされているrubyを使う場合(初心者におすすめ)
 
 ```
-gem install pbmenv
-sudo pbmenv install latest
+sudo apt-get install ruby ruby-dev
+sudo gem i bundler pbmenv
+sudo pbmenv install latest --use
+cd /usr/share/pbm/current
+sudo ruby app.rb
+```
+
+##### 1-2) rbenvでインストールしたrubyを使う場合
+rbenvはrubyのパッケージマネージャーです。  
+
+```
+rbenv install 3.0.1
+sudo gem install pbmenv
+sudo pbmenv install latest --use
 cd /usr/share/pbm/current
 sudo /home/pi/.rbenv/versions/3.0.1/bin/ruby app.rb
 ```
 
-#### pbmenvを使わない方法
-
+#### 2) pbmenvを使わない方法
 https://github.com/jiikko/procon_bypass_man_sample にある app.rb と setting.yml を Raspberry Pi にダウンロードすれば、起動することができます。  
-systemにインストールされているrubyでも使うこともできます。
+
+##### 2-1) systemにインストールされているrubyを使う場合(初心者におすすめ)
 
 ```
-sudo apt-get install ruby ruby-dev
+sudo apt-get install ruby ruby-dev wget
+wget https://raw.githubusercontent.com/jiikko/procon_bypass_man_sample/master/app.rb
+wget https://raw.githubusercontent.com/jiikko/procon_bypass_man_sample/master/setting.yml
 sudo gem i bundler
 sudo ruby app.rb
+```
+
+##### 2-2) rbenvでインストールしたrubyを使う場合
+rbenvはrubyのパッケージマネージャーです。  
+
+```
+rbenv install 3.0.1
+sudo apt-get install wget
+wget https://raw.githubusercontent.com/jiikko/procon_bypass_man_sample/master/app.rb
+wget https://raw.githubusercontent.com/jiikko/procon_bypass_man_sample/master/setting.yml
+sudo /home/pi/.rbenv/versions/3.0.1/bin/ruby app.rb
 ```
 
 ## 普段使いをするためのセットアップ
