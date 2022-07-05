@@ -66,11 +66,13 @@ sudo /home/pi/.rbenv/versions/3.0.1/bin/ruby app.rb
 
 #### pbmenvを使わない方法
 
-https://github.com/jiikko/procon_bypass_man_sample にある app.rb と setting.yml を Raspberry Pi にダウンロードし、ruby 3.0.1 をインストールすれば起動することができます。
+https://github.com/jiikko/procon_bypass_man_sample にある app.rb と setting.yml を Raspberry Pi にダウンロードすれば、起動することができます。  
+systemにインストールされているrubyを使うこともできます。
 
 ```
-rbenv install 3.0.1
-sudo /home/pi/.rbenv/versions/3.0.1/bin/ruby app.rb
+sudo apt-get install ruby
+sudo gem i bundler
+sudo ruby app.rb
 ```
 
 ## 普段使いをするためのセットアップ

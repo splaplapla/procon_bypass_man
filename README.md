@@ -33,7 +33,7 @@ Switch <-- (PBM): ZR連打
 * データ通信が可能なUSBケーブル
 
 ## 使うソフトウェア
-* ruby-3.0.x
+* ruby 2.5 以上
 
 ## Usage
 * USBガジェットモードで起動するRaspberry Pi4を用意する
