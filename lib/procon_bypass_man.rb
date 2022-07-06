@@ -72,6 +72,7 @@ module ProconBypassMan
     ProconBypassMan::PrintMessageCommand.execute(text: "PBMを起動しています")
     initialize_pbm
 
+    # 設定ファイルの読み込み
     begin
       ProconBypassMan::ButtonsSettingConfiguration::Loader.load(setting_path: setting_path)
     rescue ProconBypassMan::CouldNotLoadConfigError
@@ -84,6 +85,7 @@ module ProconBypassMan
       return
     end
 
+    # デバイスの接続フェーズ
     begin
       gadget, procon = ProconBypassMan::DeviceConnection::Command.execute!
     rescue ProconBypassMan::DeviceConnection::NotFoundProconError

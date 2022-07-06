@@ -22,7 +22,7 @@ module ProconBypassMan
 
     # アクティブなバケットは1つだけ
     def record(event_name)
-      key = Time.now.strftime("%S").to_i
+      key = generate_bucket_key
       if table[key].nil?
         self.previous_table = table.values.first
         self.table = {}
@@ -47,6 +47,10 @@ module ProconBypassMan
 
     def shutdown
       self.active = false
+    end
+
+    def generate_bucket_key
+      Time.now.strftime("%S").to_i
     end
   end
 

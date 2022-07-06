@@ -61,40 +61,43 @@ class ProconBypassMan::Bypass
   end
 
   def send_procon_to_gadget!
-    monitor.record(:start_function)
-    self.bypass_value = BypassValue.new(nil)
+    ProconBypassMan::Procon::PerformanceMeasurement.measure do |measurement|
+      monitor.record(:start_function) # TODO 消したい
+      self.bypass_value = BypassValue.new(nil)
 
-    run_callbacks(:send_procon_to_gadget) do
-      break if $will_terminate_token
+      run_callbacks(:send_procon_to_gadget) do
+        break if $will_terminate_token
 
-      begin
-        Timeout.timeout(1) do
-          raw_output = self.procon.read(64)
-          self.bypass_value.binary = ProconBypassMan::Domains::InboundProconBinary.new(binary: raw_output)
+        begin
+          Timeout.timeout(1) do
+            raw_output = self.procon.read(64)
+            self.bypass_value.binary = ProconBypassMan::Domains::InboundProconBinary.new(binary: raw_output)
+          end
+        rescue Timeout::Error
+          ProconBypassMan::SendErrorCommand.execute(error: "read timeout! do sleep. by send_procon_to_gadget!")
+          monitor.record(:eagain_wait_readable_on_read)
+          measurement.record(:read_error)
+          retry
+        rescue IO::EAGAINWaitReadable
+          ProconBypassMan.logger.debug { "EAGAINWaitReadable" }
+          monitor.record(:eagain_wait_readable_on_read)
+          measurement.record(:write_error)
+          sleep(0.005)
+          retry
         end
-      rescue Timeout::Error
-        ProconBypassMan.logger.debug { "read timeout! do sleep. by send_procon_to_gadget!" }
-        ProconBypassMan.error_logger.error { "read timeout! do sleep. by send_procon_to_gadget!" }
-        ProconBypassMan::SendErrorCommand.execute(error: "read timeout! do sleep. by send_procon_to_gadget!")
-        monitor.record(:eagain_wait_readable_on_read)
-        retry
-      rescue IO::EAGAINWaitReadable
-        ProconBypassMan.logger.debug { "EAGAINWaitReadable" }
-        monitor.record(:eagain_wait_readable_on_read)
-        sleep(0.005)
-        retry
-      end
 
-      begin
-        self.gadget.write_nonblock(
-          ProconBypassMan::Processor.new(bypass_value.binary).process
-        )
-      rescue IO::EAGAINWaitReadable
-        monitor.record(:eagain_wait_readable_on_write)
-        break
+        begin
+          self.gadget.write_nonblock(
+            ProconBypassMan::Processor.new(bypass_value.binary).process
+          )
+        rescue IO::EAGAINWaitReadable
+          monitor.record(:eagain_wait_readable_on_write)
+          measurement.record(:eagain_wait_readable_on_write)
+          break
+        end
       end
+      monitor.record(:end_function)
     end
-    monitor.record(:end_function)
   end
 
   # @return [void]
