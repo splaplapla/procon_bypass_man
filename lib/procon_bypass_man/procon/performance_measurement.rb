@@ -44,8 +44,8 @@ module ProconBypassMan::Procon::PerformanceMeasurement
     def percentile(sorted_list: , percentile: )
       return 0.0 if sorted_list.empty?
       values_sorted = sorted_list
-      k = (percentile*(values_sorted.length-1)+1).floor - 1
-      f = (percentile*(values_sorted.length-1)+1).modulo(1)
+      k = ((percentile*(values_sorted.length-1))+1).floor - 1
+      f = ((percentile*(values_sorted.length-1))+1).modulo(1)
       return(values_sorted[k] + (f * (values_sorted[k+1] - values_sorted[k]))).floor(3)
     end
   end
@@ -115,12 +115,12 @@ module ProconBypassMan::Procon::PerformanceMeasurement
   # @return [void]
   def self.measure(&block)
     unless ProconBypassMan.config.enable_procon_performance_measurement?
-      yield(Measurement.new)
+      block.call(Measurement.new)
       return
     end
 
     measurement = Measurement.new
-    measurement.time_taken = Benchmark.realtime { yield(measurement) }
+    measurement.time_taken = Benchmark.realtime { block.call(measurement) }
     Bucket.instance.add(measurement: measurement)
   end
 
