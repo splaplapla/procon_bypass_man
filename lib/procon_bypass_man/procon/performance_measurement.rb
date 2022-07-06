@@ -2,23 +2,38 @@ require 'benchmark'
 
 # measureをして、measureの結果をためて提供する、という責務のクラス
 module ProconBypassMan::Procon::PerformanceMeasurement
+  class MeasurementCollection
+    attr_accessor :timestamp_key, :measurements
+    def initialize(timestamp_key: , measurements: )
+      self.timestamp_key = timestamp_key
+      self.measurements = measurements
+    end
+  end
+
   class Bucket
     # gb jobから呼ばれる予定
-    class Compacter
+    class MeasurementsSummarizer
     end
 
     include Singleton
 
     def initialize
-      @current_table = {}
+      @current_table = {} # 1つのスレッドからしか触らないのでlockはいらない
       @mutex = Mutex.new
-      @list  = []
+      @measurement_collection_list = [] # main threadとjob worker threadから触るのでlockが必要
     end
 
     def add(measurement: )
       current_key = generate_bucket_key
       if @current_table[current_key].nil?
-        @mutex.synchronize { @list.push(@current_table) }
+        if not @current_table.empty?
+          timestamp_key = @current_table.keys.first
+          measurements = @current_table.values.first
+          @mutex.synchronize do
+            @measurement_collection_list.push(MeasurementCollection.new(timestamp_key: timestamp_key, measurements: measurements))
+          end
+        end
+
         @current_table = {}
         @current_table[current_key] = []
         @current_table[current_key] << measurement
@@ -27,8 +42,10 @@ module ProconBypassMan::Procon::PerformanceMeasurement
       end
     end
 
-    def pop_buckets
-      @mutex.synchronize { @list.pop }
+    # job workerから呼ばれる
+    # @return [ProconBypassMan::Procon::PerformanceMeasurement::MeasurementCollection]
+    def pop
+      @mutex.synchronize { @measurement_collection_list.pop }
     end
 
     private
@@ -75,7 +92,8 @@ module ProconBypassMan::Procon::PerformanceMeasurement
     Bucket.instance.add(measurement: measurement)
   end
 
-  def self.pop_buckets
-    Bucket.instance.pop_buckets
+  # @return [ProconBypassMan::Procon::PerformanceMeasurement::MeasurementCollection]
+  def self.pop
+    Bucket.instance.pop
   end
 end
