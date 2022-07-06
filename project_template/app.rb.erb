@@ -26,7 +26,8 @@ ProconBypassMan.configure do |config|
   # バイパスするログを全部app.logに流すか
   config.verbose_bypass_log = false
 
-  # webからProconBypassManを操作できるwebサービス
+  # webからProconBypassManを操作できるwebサービスと連携します
+  # 連携中はエラーログ、パフォーマンスに関するメトリクスを送信します
   <%- api_server_config = "config.api_servers = ['https://pbm-cloud.herokuapp.com']" -%>
   <%- if enable_integration_with_pbm_cloud -%>
   <%= api_server_config %>
