@@ -5,7 +5,7 @@ class ProconBypassMan::ReportProconPerformanceMeasurementsJob < ProconBypassMan:
     measurement_collection = ProconBypassMan::Procon::PerformanceMeasurement.pop_measurement_collection
     metrics = ProconBypassMan::Procon::PerformanceMeasurement.summarize(measurements: measurement_collection.measurements)
     body = {
-      timestamp_key: timestamp_key,
+      timestamp: timestamp_key,
       time_taken_max:metrics.time_taken_max,
       time_taken_p50: metrics.time_taken_p50,
       time_taken_p99: metrics.time_taken_p99,

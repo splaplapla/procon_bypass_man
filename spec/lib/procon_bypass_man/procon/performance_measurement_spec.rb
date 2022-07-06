@@ -53,7 +53,7 @@ describe ProconBypassMan::Procon::PerformanceMeasurement do
       it { expect(subject.time_taken_p50).to eq(2.5) }
       it { expect(subject.time_taken_p95).to eq(3.849) }
       it { expect(subject.time_taken_p99).to eq(3.969) }
-      it { expect(subject.max_time_taken).to eq(4) }
+      it { expect(subject.time_taken_max).to eq(4) }
       it { expect(subject.read_error_count).to eq(4) }
       it { expect(subject.write_error_count).to eq(8) }
     end
@@ -64,7 +64,7 @@ describe ProconBypassMan::Procon::PerformanceMeasurement do
       it { expect(subject.time_taken_p50).to eq(0) }
       it { expect(subject.time_taken_p95).to eq(0) }
       it { expect(subject.time_taken_p99).to eq(0) }
-      it { expect(subject.max_time_taken).to eq(0) }
+      it { expect(subject.time_taken_max).to eq(0) }
       it { expect(subject.read_error_count).to eq(0) }
       it { expect(subject.write_error_count).to eq(0) }
     end
