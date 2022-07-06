@@ -12,6 +12,7 @@ class ProconBypassMan::ReportProconPerformanceMeasurementsJob < ProconBypassMan:
       time_taken_p95: metrics.time_taken_p95,
       read_error_count: metrics.read_error_count,
       write_error_count: metrics.write_error_count,
+      load_agv: ProconBypassMan::LoadAgv.new.get,
     }
 
     ProconBypassMan::ReportHttpClient.new(
