@@ -213,6 +213,10 @@ class ProconBypassMan::Configuration
 
   def enable_ws?: () -> bool
 
+  def has_api_server?: () -> bool
+
+  def enable_procon_performance_measurement?: () -> bool
+
   def server_pool: () -> untyped
 
   def internal_server_pool: () -> untyped

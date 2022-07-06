@@ -11,17 +11,17 @@ describe ProconBypassMan::Procon::PerformanceMeasurement do
       Timecop.freeze '2021-11-11 00:00:01' do
         described_class.measure { 1 }
       end
-      collection = described_class.pop
+      collection = described_class.pop_measurement_collection
       expect(collection.timestamp_key).to be_truthy
       expect(collection.measurements).to be_a(Array)
-      expect(described_class.pop).to be_nil
+      expect(described_class.pop_measurement_collection).to be_nil
     end
 
     it 'measureのタイミングがずれないとき' do
       Timecop.freeze '2021-11-11 00:00:01' do
         described_class.measure { 1 }
       end
-      expect(described_class.pop).to be_nil
+      expect(described_class.pop_measurement_collection).to be_nil
     end
   end
 
@@ -32,7 +32,12 @@ describe ProconBypassMan::Procon::PerformanceMeasurement do
         described_class.measure { 1 }
       end
 
-      expect(described_class.pop).to be_nil
+      expect(described_class.pop_measurement_collection).to be_nil
+    end
+  end
+
+  describe '.measurements_summarize' do
+    it do
     end
   end
 end

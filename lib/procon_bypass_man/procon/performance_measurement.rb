@@ -4,17 +4,22 @@ require 'benchmark'
 module ProconBypassMan::Procon::PerformanceMeasurement
   class MeasurementCollection
     attr_accessor :timestamp_key, :measurements
+
     def initialize(timestamp_key: , measurements: )
       self.timestamp_key = timestamp_key
       self.measurements = measurements
     end
   end
 
-  class Bucket
-    # gb jobから呼ばれる予定
-    class MeasurementsSummarizer
-    end
+  class PerformanceMetrics
+    attr_accessor :time_taken_agv, :time_taken_max, :time_taken_p99, :time_taken_p95, :read_error_count, :write_error_count
+  end
 
+  #  jobから呼ばれる予定
+  class MeasurementsSummarizer
+  end
+
+  class Bucket
     include Singleton
 
     def initialize
@@ -44,7 +49,7 @@ module ProconBypassMan::Procon::PerformanceMeasurement
 
     # job workerから呼ばれる
     # @return [ProconBypassMan::Procon::PerformanceMeasurement::MeasurementCollection]
-    def pop
+    def pop_measurement_collection
       @mutex.synchronize { @measurement_collection_list.pop }
     end
 
@@ -93,7 +98,14 @@ module ProconBypassMan::Procon::PerformanceMeasurement
   end
 
   # @return [ProconBypassMan::Procon::PerformanceMeasurement::MeasurementCollection]
-  def self.pop
-    Bucket.instance.pop
+  def self.pop_measurement_collection
+    Bucket.instance.pop_measurement_collection
+  end
+
+  # @param [] measurements
+  # @return [ProconBypassMan::Procon::PerformanceMeasurement::ProconPerformanceMetrics]
+  def self.summarize(measurements: )
+    measurements.reduce()
+    PerformanceMetrics.new()
   end
 end
