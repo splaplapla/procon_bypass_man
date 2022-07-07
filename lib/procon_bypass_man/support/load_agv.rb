@@ -6,9 +6,9 @@ module ProconBypassMan
     def get
       loadavg = get_proc_loadavg
       loadavg =~ /^([0-9.]+)\s([0-9.]+)\s([0-9.]+)/
-      return [$1.to_f, $2.to_f, $3.to_f]
+      return [$1.to_f, $2.to_f, $3.to_f].join("-")
     rescue Errno::ENOENT
-      []
+      ""
     end
 
     private
