@@ -22,6 +22,6 @@ class ProconBypassMan::ReportProconPerformanceMeasurementsJob < ProconBypassMan:
   end
 
   def self.path
-    '/'
+    "/api/devices/#{ProconBypassMan.device_id}/procon_performance_metrics"
   end
 end
