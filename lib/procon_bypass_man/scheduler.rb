@@ -68,13 +68,22 @@ module ProconBypassMan
     end
 
     def self.register_schedules
-      register(
-        schedule: Schedule.new(
-          klass: ProconBypassMan::SyncDeviceStatsJob,
-          args: [->{ ProconBypassMan::DeviceStatus.current }],
-          interval: 60,
+      if ProconBypassMan.config.has_api_server?
+        register(
+          schedule: Schedule.new(
+            klass: ProconBypassMan::SyncDeviceStatsJob,
+            args: [->{ ProconBypassMan::DeviceStatus.current }],
+            interval: 60,
+          )
         )
-      ) if ProconBypassMan.config.has_api_server?
+        register(
+          schedule: Schedule.new(
+            klass: ProconBypassMan::ReportProconPerformanceMeasurementsJob,
+            args: [->{ ProconBypassMan::Procon::PerformanceMeasurement.pop_measurement_collection }],
+            interval: 60,
+          )
+        )
+      end
     end
 
     # @param [Schedule] schedule

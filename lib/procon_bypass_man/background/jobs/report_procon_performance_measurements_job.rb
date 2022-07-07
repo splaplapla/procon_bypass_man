@@ -1,8 +1,10 @@
 class ProconBypassMan::ReportProconPerformanceMeasurementsJob < ProconBypassMan::BaseJob
   extend ProconBypassMan::HasExternalApiSetting
 
-  def self.perform
-    measurement_collection = ProconBypassMan::Procon::PerformanceMeasurement.pop_measurement_collection
+  # @param [ProconBypassMan::Procon::PerformanceMeasurement::MeasurementCollection] measurement_collection
+  def self.perform(measurement_collection)
+    return if measurement_collection.nil?
+
     metrics = ProconBypassMan::Procon::PerformanceMeasurement.summarize(measurements: measurement_collection.measurements)
     body = {
       timestamp: timestamp_key,
