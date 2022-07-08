@@ -17,8 +17,19 @@ describe ProconBypassMan::ReportProconPerformanceMeasurementsJob do
     end
 
     context 'measurement_collectionを与えるとき' do
+      before do
+        Timecop.freeze(Time.new(2011, 11, 11)) do
+          ProconBypassMan::Procon::PerformanceMeasurement.measure() {}
+          ProconBypassMan::Procon::PerformanceMeasurement.measure() {}
+          ProconBypassMan::Procon::PerformanceMeasurement.measure() {}
+        end
+        # 上でセットしたオブジェクトを配列に移動するためにここで呼び出す
+        ProconBypassMan::Procon::PerformanceMeasurement.measure() {} #
+      end
+
       it do
-        pending
+        measurement_collection = ProconBypassMan::Procon::PerformanceMeasurement.pop_measurement_collection
+        expect(described_class.perform(measurement_collection)).to eq(true)
       end
     end
   end

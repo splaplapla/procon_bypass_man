@@ -5,19 +5,21 @@ class ProconBypassMan::ReportProconPerformanceMeasurementsJob < ProconBypassMan:
   def self.perform(measurement_collection)
     return if measurement_collection.nil?
 
-    metrics = ProconBypassMan::Procon::PerformanceMeasurement.summarize(measurements: measurement_collection.measurements)
+    metric = ProconBypassMan::Procon::PerformanceMeasurement.summarize(
+      measurements: measurement_collection.measurements
+    )
     body = {
-      timestamp: timestamp_key,
-      time_taken_max:metrics.time_taken_max,
-      time_taken_p50: metrics.time_taken_p50,
-      time_taken_p99: metrics.time_taken_p99,
-      time_taken_p95: metrics.time_taken_p95,
-      read_error_count: metrics.read_error_count,
-      write_error_count: metrics.write_error_count,
+      timestamp: measurement_collection.timestamp_key,
+      time_taken_max: metric.time_taken_max,
+      time_taken_p50: metric.time_taken_p50,
+      time_taken_p99: metric.time_taken_p99,
+      time_taken_p95: metric.time_taken_p95,
+      read_error_count: metric.read_error_count,
+      write_error_count: metric.write_error_count,
       load_agv: ProconBypassMan::LoadAgv.new.get,
     }
 
-    ProconBypassMan::ReportHttpClient.new(
+    ProconBypassMan::ProconPerformanceHttpClient.new(
       path: path,
       server_pool: server_pool,
     ).post(body: body)

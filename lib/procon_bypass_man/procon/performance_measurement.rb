@@ -93,7 +93,7 @@ module ProconBypassMan::Procon::PerformanceMeasurement
   end
 
   class Measurement
-    attr_writer :time_taken
+    attr_accessor :time_taken
     attr_reader :write_error_count, :read_error_count
 
     def initialize
