@@ -1,40 +1,23 @@
-require 'drb/drb'
-
 class ProconBypassMan::Procon::PerformanceMeasurement::QueueOverProcess
+  extend ProconBypassMan::CanOverProcess
+
   include Singleton
 
-  @@drb_server = nil
-  @@drb_server_thread = nil
+  attr_reader :distributed_queue
 
-  PROTOCOL = "drbunix"
-  SOCKET_FILE_PATH = "/tmp/procon_bypass_man_procon_performance_queue"
-  SOCKET_PATH = "#{PROTOCOL}:#{SOCKET_FILE_PATH}"
-
-  DISTRIBUTED_CLASS = ProconBypassMan::Procon::PerformanceMeasurement::SpanQueue
-
-  def self.start!
-    return unless enable?
-
-    FileUtils.rm_rf(SOCKET_FILE_PATH) if File.exist?(SOCKET_FILE_PATH)
-    begin
-      @@drb_server = DRb.start_service(SOCKET_PATH, DISTRIBUTED_CLASS.new, safe_level: 1)
-    rescue Errno::EADDRINUSE => e
-      ProconBypassMan.logger.error e
-      raise
-    end
-
-    @@drb_server_thread =
-      Thread.new do
-        DRb.thread.join
-      end
+  # @override
+  def self.enable?
+    ProconBypassMan.config.enable_procon_performance_measurement?
   end
 
-  def self.shutdown
-    if @@drb_server
-      @@drb_server_thread.kill
-      @@drb_server_thread = nil
-      @@drb_server.stop_service
-    end
+  # @override
+  def self.distributed_class
+    ProconBypassMan::Procon::PerformanceMeasurement::SpanQueue
+  end
+
+  # @override
+  def self.socket_file_path
+    "/tmp/procon_bypass_man_procon_performance_queue".freeze
   end
 
   def self.push(value)
@@ -49,13 +32,7 @@ class ProconBypassMan::Procon::PerformanceMeasurement::QueueOverProcess
     instance.distributed_queue.pop
   end
 
-  def self.enable?
-    ProconBypassMan.config.enable_procon_performance_measurement?
-  end
-
-  attr_reader :distributed_queue
-
   def initialize
-    @distributed_queue = DRbObject.new_with_uri(SOCKET_PATH)
+    @distributed_queue = DRbObject.new_with_uri(self.class.socket_path)
   end
 end
