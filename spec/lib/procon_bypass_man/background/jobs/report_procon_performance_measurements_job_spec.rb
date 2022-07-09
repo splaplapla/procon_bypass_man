@@ -17,6 +17,12 @@ describe ProconBypassMan::ReportProconPerformanceMeasurementsJob do
     end
 
     context 'measurement_collectionを与えるとき' do
+      around do |example|
+        ProconBypassMan::Procon::PerformanceMeasurement::QueueOverProcess.start!
+        example.run
+        ProconBypassMan::Procon::PerformanceMeasurement::QueueOverProcess.shutdown
+      end
+
       before do
         Timecop.freeze(Time.new(2011, 11, 11)) do
           ProconBypassMan::Procon::PerformanceMeasurement.measure() {}

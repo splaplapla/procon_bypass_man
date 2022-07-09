@@ -144,6 +144,7 @@ module ProconBypassMan
     ProconBypassMan::Background::JobRunner.start!
     ProconBypassMan::Websocket::Client.start!
     ProconBypassMan::QueueOverProcess.start!
+    ProconBypassMan::Procon::PerformanceMeasurement::QueueOverProcess.start!
 
     ProconBypassMan::WriteDeviceIdCommand.execute
     ProconBypassMan::WriteSessionIdCommand.execute

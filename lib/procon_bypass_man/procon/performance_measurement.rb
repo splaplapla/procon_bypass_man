@@ -1,25 +1,17 @@
+module ProconBypassMan::Procon::PerformanceMeasurement; end
+
 require 'benchmark'
+require 'procon_bypass_man/procon/performance_measurement/span_queue'
+require 'procon_bypass_man/procon/performance_measurement/queue_over_process'
 
 module ProconBypassMan::Procon::PerformanceMeasurement
-  class MeasurementCollection
-    # TODO rename from measurements to spans
-    attr_accessor :timestamp_key, :measurements
-
-    def initialize(timestamp_key: , measurements: )
-      self.timestamp_key = timestamp_key
-      self.measurements = measurements
-    end
-  end
-
   class PerformanceMetrics < Struct.new(:time_taken_p50,
                                         :time_taken_p95,
                                         :time_taken_p99,
                                         :time_taken_max,
                                         :read_error_count,
-                                        :write_error_count)
-  end
+                                        :write_error_count); end
 
-  # jobから呼ばれる予定
   class MeasurementsSummarizer
     def initialize(measurements: )
       @measurements = measurements
@@ -48,49 +40,6 @@ module ProconBypassMan::Procon::PerformanceMeasurement
       k = ((percentile*(values_sorted.length-1))+1).floor - 1
       f = ((percentile*(values_sorted.length-1))+1).modulo(1)
       return(values_sorted[k] + (f * (values_sorted[k+1] - values_sorted[k]))).floor(3)
-    end
-  end
-
-  class Bucket
-    include Singleton
-
-    def initialize
-      @current_table = {} # 1つのスレッドからしか触らないのでlockはいらない
-      @mutex = Mutex.new
-      @measurement_collection_list = [] # main threadとjob worker threadから触るのでlockが必要
-    end
-
-    # @param [PerformanceSpan] span
-    def add(span: )
-      current_key = generate_bucket_key
-
-      if @current_table[current_key].nil?
-        if not @current_table.empty?
-          timestamp_key = @current_table.keys.first
-          spans = @current_table.values.first
-          @mutex.synchronize do
-            @measurement_collection_list.push(MeasurementCollection.new(timestamp_key: timestamp_key, measurements: spans))
-          end
-        end
-
-        @current_table = {}
-        @current_table[current_key] = []
-        @current_table[current_key] << span
-      else
-        @current_table[current_key] << span
-      end
-    end
-
-    # job workerから呼ばれる
-    # @return [ProconBypassMan::Procon::PerformanceMeasurement::MeasurementCollection]
-    def pop_measurement_collection
-      @mutex.synchronize { @measurement_collection_list.pop }
-    end
-
-    private
-
-    def generate_bucket_key
-      Time.new.strftime("%Y-%m-%d %H:%M:00%:z")
     end
   end
 
@@ -123,16 +72,18 @@ module ProconBypassMan::Procon::PerformanceMeasurement
 
     span = PerformanceSpan.new
     span.time_taken = Benchmark.realtime { block.call(span) }
-    Bucket.instance.add(span: span)
+    ProconBypassMan::Procon::PerformanceMeasurement::QueueOverProcess.push(span)
   end
 
   # @return [MeasurementCollection, NilClass]
+  # bypassしているプロセスから呼ばれる
   def self.pop_measurement_collection
-    Bucket.instance.pop_measurement_collection
+    ProconBypassMan::Procon::PerformanceMeasurement::QueueOverProcess.pop
   end
 
   # @param [MeasurementCollection] measurements
   # @return [PerformanceMetrics]
+  # jobから呼ばれる予定
   def self.summarize(measurements: )
     MeasurementsSummarizer.new(measurements: measurements).summarize
   end

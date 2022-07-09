@@ -4,6 +4,11 @@ describe ProconBypassMan::Procon::PerformanceMeasurement do
   context 'enable_procon_performance_measurement?がtreuのとき' do
     before do
       allow(ProconBypassMan.config).to receive(:enable_procon_performance_measurement?) { true }
+      ProconBypassMan::Procon::PerformanceMeasurement::QueueOverProcess.start!
+    end
+
+    after do
+      ProconBypassMan::Procon::PerformanceMeasurement::QueueOverProcess.shutdown
     end
 
     it 'measureのタイミングがずるないとき' do
