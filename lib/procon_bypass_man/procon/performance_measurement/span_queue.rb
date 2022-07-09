@@ -21,6 +21,7 @@ class ProconBypassMan::Procon::PerformanceMeasurement::SpanQueue
     current_key = generate_bucket_key
 
     if @current_table[current_key].nil?
+      puts "[${$$}]でキーが変わりました。at SpanQueue"
       if not @current_table.empty?
         timestamp_key = @current_table.keys.first
         spans = @current_table.values.first
@@ -45,6 +46,7 @@ class ProconBypassMan::Procon::PerformanceMeasurement::SpanQueue
 
   private
 
+  # 1分単位で次の値になる
   def generate_bucket_key
     Time.new.strftime("%Y-%m-%d %H:%M:00%:z")
   end
