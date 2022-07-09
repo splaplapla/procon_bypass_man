@@ -35,7 +35,9 @@ module ProconBypassMan::Procon::PerformanceMeasurement
 
     span = PerformanceSpan.new
     span.time_taken = Benchmark.realtime { block.call(span) }
-    ProconBypassMan::Procon::PerformanceMeasurement::QueueOverProcess.push(span)
+
+    # ProconBypassMan::Procon::PerformanceMeasurement::QueueOverProcess.push(span)
+    ProconBypassMan::DelayJob.perform_async(span)
   end
 
   # @return [MeasurementCollection, NilClass]
