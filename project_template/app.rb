@@ -4,7 +4,7 @@ require 'bundler/inline'
 
 retry_count_on_git_command_error = 0
 begin
-  if retry_count_on_git_command_error > 3
+  if retry_count_on_git_command_error > 10
     STDOUT.puts "Stopped the procon_bypass_man program because could not download any source codes."
     exit 1
   end
@@ -15,7 +15,7 @@ begin
     gem 'procon_bypass_man', '0.2.1'
   end
 rescue Bundler::Source::Git::GitCommandError => e
-  retry_count_on_git_command_error =+ 1
+  retry_count_on_git_command_error = retry_count_on_git_command_error + 1
   sleep(5) # サービスの起動順によっては、まだoffline状態なので待機する
 
   # install中に強制終了するとgitの管理ファイルが不正状態になり、次のエラーが起きるので発生したらcache directoryを削除する
