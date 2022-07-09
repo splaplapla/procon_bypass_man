@@ -74,14 +74,16 @@ class ProconBypassMan::Bypass
             self.bypass_value.binary = ProconBypassMan::Domains::InboundProconBinary.new(binary: raw_output)
           end
         rescue Timeout::Error
+          # TODO テストが通っていない
           ProconBypassMan::SendErrorCommand.execute(error: "read timeout! do sleep. by send_procon_to_gadget!")
           monitor.record(:eagain_wait_readable_on_read)
-          measurement.record(:read_error)
+          measurement.record_read_error
           retry
         rescue IO::EAGAINWaitReadable
+          # TODO テストが通っていない
           ProconBypassMan.logger.debug { "EAGAINWaitReadable" }
           monitor.record(:eagain_wait_readable_on_read)
-          measurement.record(:write_error)
+          measurement.record_read_error
           sleep(0.005)
           retry
         end
@@ -91,8 +93,9 @@ class ProconBypassMan::Bypass
             ProconBypassMan::Processor.new(bypass_value.binary).process
           )
         rescue IO::EAGAINWaitReadable
+          # TODO テストが通っていない
           monitor.record(:eagain_wait_readable_on_write)
-          measurement.record(:eagain_wait_readable_on_write)
+          measurement.record_write_error
           break
         end
       end
