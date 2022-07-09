@@ -21,13 +21,13 @@ class ProconBypassMan::Procon::PerformanceMeasurement::SpanQueue
     current_key = generate_bucket_key
 
     if @current_table[current_key].nil?
-      puts "[${$$}]でキーが変わりました。at SpanQueue"
+      puts "[#{$$}]でキーが変わりました。at SpanQueue"
       if not @current_table.empty?
         timestamp_key = @current_table.keys.first
         spans = @current_table.values.first
-        @mutex.synchronize do
+        # @mutex.synchronize do
           @measurement_collection_list.push(MeasurementCollection.new(timestamp_key: timestamp_key, spans: spans))
-        end
+        # end
       end
 
       @current_table = {}
@@ -41,7 +41,8 @@ class ProconBypassMan::Procon::PerformanceMeasurement::SpanQueue
   # job workerから呼ばれる
   # @return [ProconBypassMan::Procon::PerformanceMeasurement::MeasurementCollection]
   def pop
-    @mutex.synchronize { @measurement_collection_list.pop }
+    # @mutex.synchronize { @measurement_collection_list.pop }
+    @measurement_collection_list.pop
   end
 
   private
