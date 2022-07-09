@@ -1,7 +1,7 @@
 class ProconBypassMan::DelayJob
   extend ProconBypassMan::Background::JobPerformable
 
-  def perform(span)
+  def self.perform(span)
     ProconBypassMan::Procon::PerformanceMeasurement::QueueOverProcess.push(span)
   end
 end
