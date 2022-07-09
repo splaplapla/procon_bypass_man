@@ -19,9 +19,9 @@ module ProconBypassMan
           while(item = self.class.queue.pop)
             begin
               JobPerformer.new(klass: item[:reporter_class], args: item[:args]).perform
-              sleep(1)
             rescue => e
               ProconBypassMan.logger.error(e)
+              sleep(1) # busy loopしないように
             end
           end
         end
@@ -34,7 +34,7 @@ module ProconBypassMan
 
       def self.push(hash)
         if queue.size > MAX_QUEUE_SIZE
-          ProconBypassMan.logger.error('Over queue size cap!!')
+          ProconBypassMan.logger.error("Over queue size cap!!(max: #{queue.size})")
           return
         end
 

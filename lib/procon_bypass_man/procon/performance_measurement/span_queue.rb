@@ -16,12 +16,11 @@ class ProconBypassMan::Procon::PerformanceMeasurement::SpanQueue
   end
 
   # @param [PerformanceSpan] span
-  # bypassプロセスから呼ばれる
+  # bypassプロセスから呼ばれる. 実際に実行を行なっているのはmasterプロセス
   def push(span)
     current_key = generate_bucket_key
 
     if @current_table[current_key].nil?
-      puts "[#{$$}]でキーが変わりました。at SpanQueue"
       if not @current_table.empty?
         timestamp_key = @current_table.keys.first
         spans = @current_table.values.first
