@@ -1,6 +1,7 @@
 ## unrelease
 * project_template/app.rbを動的に生成する仕組みを追加しました
 * pbm_webに関する記述を削除しました
+* 起動スクリプト(app.rb) がたまに意図せず /usr/share/pbm/current を削除してしまう不具合を修正しました
 
 ## [0.2.1] - 2022-05-29
 - 入力表示機能を提供するSwitchProconInputViewerに対応しました
