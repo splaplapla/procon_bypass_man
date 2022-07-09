@@ -16,6 +16,7 @@ class ProconBypassMan::Procon::PerformanceMeasurement::SpanQueue
   end
 
   # @param [PerformanceSpan] span
+  # bypassプロセスから呼ばれる
   def push(span)
     current_key = generate_bucket_key
 
