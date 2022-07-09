@@ -1,3 +1,4 @@
+# TODO CanOverProcessをextendする
 class ProconBypassMan::QueueOverProcess
   attr_reader :drb
 

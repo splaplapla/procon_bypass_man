@@ -10,7 +10,7 @@ class ProconBypassMan::Procon::PerformanceMeasurement::MeasurementsSummarizer
     @spans = spans
   end
 
-  # @return [PerformanceMetrics]
+  # @return [PerformanceMetric]
   def summarize
     sorted_time_taken = @spans.map(&:time_taken).sort
     time_taken_p50 = percentile(sorted_list: sorted_time_taken, percentile: 0.50)
@@ -24,7 +24,7 @@ class ProconBypassMan::Procon::PerformanceMeasurement::MeasurementsSummarizer
 
   private
 
-  # @param [Array<any>]
+  # @param [Array<Numeric>] sorted_list
   # @param [Float] percentile
   # @return [Float]
   def percentile(sorted_list: , percentile: )
