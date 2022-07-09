@@ -6,6 +6,8 @@ module ProconBypassMan::CanOverProcess
   @@drb_server = nil
   @@drb_server_thread = nil
 
+  PROTOCOL = "drbunix".freeze
+
   # @return [void]
   def start_distributed_object!
     return unless enable?
@@ -51,12 +53,7 @@ module ProconBypassMan::CanOverProcess
   end
 
   # @return [String]
-  def protocol
-    "drbunix".freeze
-  end
-
-  # @return [String]
   def socket_path
-    "#{protocol}:#{socket_file_path}".freeze
+    "#{PROTOCOL}:#{socket_file_path}".freeze
   end
 end

@@ -141,12 +141,12 @@ module ProconBypassMan
 
   # @return [void]
   def self.initialize_pbm
-    ProconBypassMan::Scheduler.start!
     ProconBypassMan::Background::JobRunner.start!
     ProconBypassMan::Websocket::Client.start!
     # TODO ProconBypassMan::DrbObjects.start_all! みたいな感じで書きたい
     ProconBypassMan::QueueOverProcess.start! # TODO namespace入れる
     ProconBypassMan::Procon::PerformanceMeasurement::QueueOverProcess.start!
+    ProconBypassMan::Scheduler.start!
 
     ProconBypassMan::WriteDeviceIdCommand.execute
     ProconBypassMan::WriteSessionIdCommand.execute
