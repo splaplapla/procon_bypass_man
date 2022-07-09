@@ -3,6 +3,8 @@ module ProconBypassMan::Procon::PerformanceMeasurement; end
 require 'benchmark'
 require 'procon_bypass_man/procon/performance_measurement/measurements_summarizer'
 require 'procon_bypass_man/procon/performance_measurement/span_queue'
+require 'procon_bypass_man/procon/performance_measurement/span_transfer_buffer'
+require 'procon_bypass_man/procon/performance_measurement/measurement_collection'
 require 'procon_bypass_man/procon/performance_measurement/queue_over_process'
 
 module ProconBypassMan::Procon::PerformanceMeasurement
@@ -36,8 +38,14 @@ module ProconBypassMan::Procon::PerformanceMeasurement
     span = PerformanceSpan.new
     span.time_taken = Benchmark.realtime { block.call(span) }
 
-    # ProconBypassMan::Procon::PerformanceMeasurement::QueueOverProcess.push(span)
-    ProconBypassMan::DelayJob.perform_async(span)
+    # measureするたびにperform_asyncしているとjob queueが詰まるのでbufferingしている
+    ProconBypassMan::Procon::PerformanceMeasurement::SpanTransferBuffer.instance.push(span)
+    if ProconBypassMan::Procon::PerformanceMeasurement::SpanTransferBuffer.instance.buffer_over?
+      ProconBypassMan::ProconPerformanceSpanTransferJob.perform_async(
+        ProconBypassMan::Procon::PerformanceMeasurement::SpanTransferBuffer.instance.spans.dup
+      )
+      ProconBypassMan::Procon::PerformanceMeasurement::SpanTransferBuffer.instance.clear
+    end
   end
 
   # @return [MeasurementCollection, NilClass]
