@@ -18,7 +18,7 @@ describe ProconBypassMan::Procon::PerformanceMeasurement do
       end
       collection = described_class.pop_measurement_collection
       expect(collection.timestamp_key).to be_truthy
-      expect(collection.measurements).to be_a(Array)
+      expect(collection.spans).to be_a(Array)
       expect(described_class.pop_measurement_collection).to be_nil
     end
 
@@ -44,10 +44,10 @@ describe ProconBypassMan::Procon::PerformanceMeasurement do
   describe '.summarize' do
     let(:measurement_class) { Struct.new(:time_taken, :read_error_count, :write_error_count) }
 
-    subject { described_class.summarize(measurements: measurements) }
+    subject { described_class.summarize(spans: spans) }
 
     context '値があるとき' do
-      let(:measurements) do
+      let(:spans) do
         [ measurement_class.new(1, 1, 2),
           measurement_class.new(4, 1, 2),
           measurement_class.new(2, 1, 2),
@@ -64,7 +64,7 @@ describe ProconBypassMan::Procon::PerformanceMeasurement do
     end
 
     context '空配列のとき' do
-      let(:measurements) { [] }
+      let(:spans) { [] }
 
       it { expect(subject.time_taken_p50).to eq(0) }
       it { expect(subject.time_taken_p95).to eq(0) }

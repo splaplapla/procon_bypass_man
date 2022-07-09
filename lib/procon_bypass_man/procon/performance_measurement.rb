@@ -44,10 +44,10 @@ module ProconBypassMan::Procon::PerformanceMeasurement
     ProconBypassMan::Procon::PerformanceMeasurement::QueueOverProcess.pop
   end
 
-  # @param [MeasurementCollection] measurements
+  # @param [MeasurementCollection] spans
   # @return [ProconBypassMan::Procon::PerformanceMeasurement::MeasurementsSummarizer::PerformanceMetric]
   # jobから呼ばれる予定
-  def self.summarize(measurements: )
-    ProconBypassMan::Procon::PerformanceMeasurement::MeasurementsSummarizer.new(measurements: measurements).summarize
+  def self.summarize(spans: )
+    ProconBypassMan::Procon::PerformanceMeasurement::MeasurementsSummarizer.new(spans: spans).summarize
   end
 end

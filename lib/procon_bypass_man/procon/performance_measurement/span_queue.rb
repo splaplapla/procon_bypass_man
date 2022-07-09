@@ -1,11 +1,11 @@
 class ProconBypassMan::Procon::PerformanceMeasurement::SpanQueue
   class MeasurementCollection
     # TODO rename from measurements to spans
-    attr_accessor :timestamp_key, :measurements
+    attr_accessor :timestamp_key, :spans
 
-    def initialize(timestamp_key: , measurements: )
+    def initialize(timestamp_key: , spans: )
       self.timestamp_key = timestamp_key
-      self.measurements = measurements
+      self.spans = spans
     end
   end
 
@@ -25,7 +25,7 @@ class ProconBypassMan::Procon::PerformanceMeasurement::SpanQueue
         timestamp_key = @current_table.keys.first
         spans = @current_table.values.first
         @mutex.synchronize do
-          @measurement_collection_list.push(MeasurementCollection.new(timestamp_key: timestamp_key, measurements: spans))
+          @measurement_collection_list.push(MeasurementCollection.new(timestamp_key: timestamp_key, spans: spans))
         end
       end
 

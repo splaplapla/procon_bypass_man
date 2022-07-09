@@ -6,7 +6,7 @@ class ProconBypassMan::ReportProconPerformanceMeasurementsJob < ProconBypassMan:
     return if measurement_collection.nil?
 
     metric = ProconBypassMan::Procon::PerformanceMeasurement.summarize(
-      measurements: measurement_collection.measurements
+      spans: measurement_collection.spans
     )
     body = {
       timestamp: measurement_collection.timestamp_key,
