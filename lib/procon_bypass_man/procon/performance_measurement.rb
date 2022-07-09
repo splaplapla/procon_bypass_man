@@ -2,6 +2,7 @@ require 'benchmark'
 
 module ProconBypassMan::Procon::PerformanceMeasurement
   class MeasurementCollection
+    # TODO rename from measurements to spans
     attr_accessor :timestamp_key, :measurements
 
     def initialize(timestamp_key: , measurements: )
@@ -59,23 +60,24 @@ module ProconBypassMan::Procon::PerformanceMeasurement
       @measurement_collection_list = [] # main threadとjob worker threadから触るのでlockが必要
     end
 
-    # @param [Measurement] measurement
-    def add(measurement: )
+    # @param [PerformanceSpan] span
+    def add(span: )
       current_key = generate_bucket_key
+
       if @current_table[current_key].nil?
         if not @current_table.empty?
           timestamp_key = @current_table.keys.first
-          measurements = @current_table.values.first
+          spans = @current_table.values.first
           @mutex.synchronize do
-            @measurement_collection_list.push(MeasurementCollection.new(timestamp_key: timestamp_key, measurements: measurements))
+            @measurement_collection_list.push(MeasurementCollection.new(timestamp_key: timestamp_key, measurements: spans))
           end
         end
 
         @current_table = {}
         @current_table[current_key] = []
-        @current_table[current_key] << measurement
+        @current_table[current_key] << span
       else
-        @current_table[current_key] << measurement
+        @current_table[current_key] << span
       end
     end
 
@@ -92,7 +94,7 @@ module ProconBypassMan::Procon::PerformanceMeasurement
     end
   end
 
-  class Measurement
+  class PerformanceSpan
     attr_accessor :time_taken
     attr_reader :write_error_count, :read_error_count
 
@@ -115,13 +117,13 @@ module ProconBypassMan::Procon::PerformanceMeasurement
   # @return [void]
   def self.measure(&block)
     unless ProconBypassMan.config.enable_procon_performance_measurement?
-      block.call(Measurement.new)
+      block.call(PerformanceSpan.new)
       return
     end
 
-    measurement = Measurement.new
-    measurement.time_taken = Benchmark.realtime { block.call(measurement) }
-    Bucket.instance.add(measurement: measurement)
+    span = PerformanceSpan.new
+    span.time_taken = Benchmark.realtime { block.call(span) }
+    Bucket.instance.add(span: span)
   end
 
   # @return [MeasurementCollection, NilClass]
