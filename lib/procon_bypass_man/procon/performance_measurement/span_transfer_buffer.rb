@@ -5,6 +5,18 @@ class ProconBypassMan::Procon::PerformanceMeasurement::SpanTransferBuffer
     @buff = []
   end
 
+  # @param [Span]
+  # @return [void]
+  def push_and_run_block_if_buffer_over(value, &block)
+    push(value)
+    return unless buffer_over?
+
+    block.call(spans)
+    clear
+  end
+
+  private
+
   def spans
     @buff
   end

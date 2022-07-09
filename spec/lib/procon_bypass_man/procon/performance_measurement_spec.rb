@@ -1,9 +1,10 @@
 require "spec_helper"
 
 describe ProconBypassMan::Procon::PerformanceMeasurement do
-  context 'enable_procon_performance_measurement?がtreuのとき' do
+  context 'enable_procon_performance_measurement?がtrueのとき' do
     before do
       allow(ProconBypassMan.config).to receive(:enable_procon_performance_measurement?) { true }
+      allow(ProconBypassMan::Procon::PerformanceMeasurement::SpanTransferBuffer.instance).to receive(:buffer_over?) { true }
       ProconBypassMan::Procon::PerformanceMeasurement::QueueOverProcess.start!
     end
 
@@ -13,6 +14,7 @@ describe ProconBypassMan::Procon::PerformanceMeasurement do
 
     it 'measureのタイミングがずるないとき' do
       described_class.measure { 1 }
+      # TODO job inline perfomeする
       Timecop.freeze '2021-11-11 00:00:01' do
         described_class.measure { 1 }
       end

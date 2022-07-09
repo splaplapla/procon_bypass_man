@@ -39,12 +39,8 @@ module ProconBypassMan::Procon::PerformanceMeasurement
     span.time_taken = Benchmark.realtime { block.call(span) }
 
     # measureするたびにperform_asyncしているとjob queueが詰まるのでbufferingしている
-    ProconBypassMan::Procon::PerformanceMeasurement::SpanTransferBuffer.instance.push(span)
-    if ProconBypassMan::Procon::PerformanceMeasurement::SpanTransferBuffer.instance.buffer_over?
-      ProconBypassMan::ProconPerformanceSpanTransferJob.perform_async(
-        ProconBypassMan::Procon::PerformanceMeasurement::SpanTransferBuffer.instance.spans.dup
-      )
-      ProconBypassMan::Procon::PerformanceMeasurement::SpanTransferBuffer.instance.clear
+    ProconBypassMan::Procon::PerformanceMeasurement::SpanTransferBuffer.instance.push_and_run_block_if_buffer_over(span) do |spans|
+      ProconBypassMan::ProconPerformanceSpanTransferJob.perform_async(spans.dup)
     end
   end
 
