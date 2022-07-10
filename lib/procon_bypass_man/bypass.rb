@@ -79,13 +79,6 @@ class ProconBypassMan::Bypass
           monitor.record(:eagain_wait_readable_on_read)
           measurement.record_read_error
           retry
-        rescue IO::EAGAINWaitReadable
-          # TODO テストが通っていない
-          ProconBypassMan.logger.debug { "EAGAINWaitReadable" }
-          monitor.record(:eagain_wait_readable_on_read)
-          measurement.record_read_error
-          sleep(0.005)
-          retry
         end
 
         begin
