@@ -18,6 +18,7 @@ class ProconBypassMan::ReportProconPerformanceMeasurementsJob < ProconBypassMan:
       write_error_count: metric.write_error_count,
       load_agv: ProconBypassMan::LoadAgv.new.get,
     }
+    ProconBypassMan.logger.info(body)
 
     ProconBypassMan::ProconPerformanceHttpClient.new(
       path: path,
