@@ -47,14 +47,13 @@ class ProconBypassMan::Configuration
     def fallback_setting_path
       "/tmp/procon_bypass_man_fallback_setting.yaml"
     end
-
-    def io_monitor_logging
-      config.io_monitor_logging
-    end
   end
 
   attr_accessor :enable_critical_error_logging
-  attr_writer :verbose_bypass_log, :raw_setting, :enable_reporting_pressed_buttons, :never_exit_accidentally, :io_monitor_logging, :enable_home_led_on_connect
+  attr_writer :verbose_bypass_log, :raw_setting, :enable_reporting_pressed_buttons, :never_exit_accidentally, :enable_home_led_on_connect
+
+  # NOTE 非推奨. 削除したいが設定ファイルに残っているときにエラーにしたくないので互換性維持のため残す
+  attr_writer :io_monitor_logging
 
   def root=(path)
     @root = path
@@ -199,11 +198,6 @@ class ProconBypassMan::Configuration
   # @return [Boolean] default false
   def never_exit_accidentally
     @never_exit_accidentally || false
-  end
-
-  # @return [Boolean] default false
-  def io_monitor_logging
-    @io_monitor_logging ||= false
   end
 
   # @return [Boolean] プロコンから「入力にかかっている時間」と「1秒間あたり何回入力できているか」をサーバに送信する

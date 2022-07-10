@@ -1,5 +1,3 @@
-require_relative "io_monitor"
-
 class ProconBypassMan::Runner
   class InterruptForRestart < StandardError; end
 

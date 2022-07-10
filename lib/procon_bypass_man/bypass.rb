@@ -15,17 +15,15 @@ class ProconBypassMan::Bypass
     end
   end
 
-  attr_accessor :gadget, :procon, :monitor, :bypass_value
+  attr_accessor :gadget, :procon, :bypass_value
 
-  def initialize(gadget: , procon: , monitor: )
+  def initialize(gadget: , procon: )
     self.gadget = gadget
     self.procon = procon
-    self.monitor = monitor
   end
 
   # ゆっくりでいい
   def send_gadget_to_procon!
-    monitor.record(:start_function)
     self.bypass_value = BypassValue.new(nil)
 
     run_callbacks(:send_gadget_to_procon) do
@@ -36,7 +34,6 @@ class ProconBypassMan::Bypass
         raw_input = self.gadget.read_nonblock(64)
         self.bypass_value.binary = ProconBypassMan::Domains::InboundProconBinary.new(binary: raw_input)
       rescue IO::EAGAINWaitReadable
-        monitor.record(:eagain_wait_readable_on_read)
       end
 
       if self.bypass_value.binary
@@ -52,18 +49,14 @@ class ProconBypassMan::Bypass
             end
           self.procon.write_nonblock(raw_data)
         rescue IO::EAGAINWaitReadable
-          monitor.record(:eagain_wait_readable_on_write)
           break
         end
       end
     end
-
-    monitor.record(:end_function)
   end
 
   def send_procon_to_gadget!
     ProconBypassMan::Procon::PerformanceMeasurement.measure do |measurement|
-      monitor.record(:start_function) # TODO 消したい
       self.bypass_value = BypassValue.new(nil)
 
       run_callbacks(:send_procon_to_gadget) do
@@ -77,7 +70,6 @@ class ProconBypassMan::Bypass
         rescue Timeout::Error
           # TODO テストが通っていない
           ProconBypassMan::SendErrorCommand.execute(error: "read timeout! do sleep. by send_procon_to_gadget!")
-          monitor.record(:eagain_wait_readable_on_read)
           measurement.record_read_error
           retry
         end
@@ -89,12 +81,9 @@ class ProconBypassMan::Bypass
           )
         rescue IO::EAGAINWaitReadable
           # TODO テストが通っていない
-          monitor.record(:eagain_wait_readable_on_write)
           measurement.record_write_error
         end
       end
-
-      monitor.record(:end_function)
     end
   end
 

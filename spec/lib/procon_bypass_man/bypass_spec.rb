@@ -11,8 +11,7 @@ describe ProconBypassMan::Bypass do
 
   describe '.send_gadget_to_procon!' do
     it do
-      monitor = ProconBypassMan::IOMonitor.new(label: "gadget => procon")
-      bypass = ProconBypassMan::Bypass.new(gadget: dev, procon: dev, monitor: monitor)
+      bypass = ProconBypassMan::Bypass.new(gadget: dev, procon: dev)
       bypass.send_gadget_to_procon!
     end
   end
@@ -25,8 +24,7 @@ describe ProconBypassMan::Bypass do
         expect(processor).to receive(:process)
         expect(ProconBypassMan::Processor).to receive(:new) { processor }
       end
-      monitor = ProconBypassMan::IOMonitor.new(label: "gadget => procon")
-      bypass = ProconBypassMan::Bypass.new(gadget: dev, procon: dev, monitor: monitor)
+      bypass = ProconBypassMan::Bypass.new(gadget: dev, procon: dev)
       bypass.send_procon_to_gadget!
     end
   end
