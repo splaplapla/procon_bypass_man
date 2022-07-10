@@ -12,12 +12,16 @@ describe ProconBypassMan::Procon::PerformanceMeasurement do
       ProconBypassMan::Procon::PerformanceMeasurement::QueueOverProcess.shutdown
     end
 
-    it 'measureのタイミングがずるないとき' do
-      described_class.measure { 1 }
-      # TODO job inline perfomeする
+    it 'measureのタイミングがずれるとき' do
       Timecop.freeze '2021-11-11 00:00:01' do
+        BackgroundJobInlinePerform.run do
+          described_class.measure { 1 }
+        end
+      end
+      BackgroundJobInlinePerform.run do
         described_class.measure { 1 }
       end
+
       collection = described_class.pop_measurement_collection
       expect(collection.timestamp_key).to be_truthy
       expect(collection.spans).to be_a(Array)
