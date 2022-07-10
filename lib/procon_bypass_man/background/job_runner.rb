@@ -21,7 +21,7 @@ module ProconBypassMan
               JobPerformer.new(klass: item[:reporter_class], args: item[:args]).perform
             rescue => e
               ProconBypassMan.logger.error(e)
-              sleep(1) # busy loopしないように
+              sleep(0.2) # busy loopしないように
             end
           end
         end
