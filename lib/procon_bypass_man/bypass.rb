@@ -1,5 +1,6 @@
 require "procon_bypass_man/bypass/usb_hid_logger"
 require "procon_bypass_man/bypass/bypass_command"
+require "procon_bypass_man/bypass/concurrent_bypass_executor"
 
 class ProconBypassMan::Bypass
   extend ProconBypassMan::CallbacksRegisterable
@@ -82,6 +83,7 @@ class ProconBypassMan::Bypass
         end
 
         begin
+          # TODO blocking writeにしたらどうなる？
           self.gadget.write_nonblock(
             ProconBypassMan::Processor.new(bypass_value.binary).process
           )
@@ -89,9 +91,9 @@ class ProconBypassMan::Bypass
           # TODO テストが通っていない
           monitor.record(:eagain_wait_readable_on_write)
           measurement.record_write_error
-          break
         end
       end
+
       monitor.record(:end_function)
     end
   end

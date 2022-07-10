@@ -3,9 +3,9 @@ module ProconBypassMan::ProconDisplay::BypassHook
 
   define_callbacks :send_procon_to_gadget
 
-  set_callback :send_procon_to_gadget, :after, :write_procon_display_Status
+  set_callback :send_procon_to_gadget, :after, :write_procon_display_status
 
-  def write_procon_display_Status
+  def write_procon_display_status
     ProconBypassMan::ProconDisplay::Status.instance.current = bypass_value.binary.to_procon_reader.to_hash.dup
   end
 end
