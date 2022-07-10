@@ -24,14 +24,14 @@ class ProconBypassMan::Runner
 
     loop do
       # NOTE メインプロセスではThreadをいくつか起動しているので念のためパフォーマンスを優先するためにforkしていく
-      child_pid = Kernel.fork {
+      child_pid = Kernel.fork do
         $will_terminate_token = false
         DRb.start_service if defined?(DRb)
         ProconBypassMan::RemoteMacroReceiver.start!
         ProconBypassMan::ProconDisplay::Server.start!
         ProconBypassMan::BypassCommand.new(gadget: @gadget, procon: @procon).execute # ここでblockingする
         next
-      }
+      end
 
       begin
         # TODO 子プロセスが消滅した時に、メインプロセスは生き続けてしまい、何もできなくなる問題がある

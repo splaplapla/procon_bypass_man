@@ -3,6 +3,12 @@ require "spec_helper"
 describe ProconBypassMan::Bypass do
   let(:dev) { double(:dev).as_null_object }
 
+  around do |example|
+    ProconBypassMan::Procon::PerformanceMeasurement::QueueOverProcess.start!
+    example.run
+    ProconBypassMan::Procon::PerformanceMeasurement::QueueOverProcess.shutdown
+  end
+
   describe '.send_gadget_to_procon!' do
     it do
       monitor = ProconBypassMan::IOMonitor.new(label: "gadget => procon")

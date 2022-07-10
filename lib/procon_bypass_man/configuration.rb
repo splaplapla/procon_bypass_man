@@ -130,6 +130,7 @@ class ProconBypassMan::Configuration
     @internal_server_pool ||= ProconBypassMan::ServerPool.new(servers: internal_api_servers)
   end
 
+  # TODO これ消したい。プライマリのサーバが死んだ時にセカンダリのサーバへfailoverしたいと思っていたが、めんどくなった
   # @return [Array<ProconBypassMan::ServerPool>]
   def server_pool
     @server_pool ||= ProconBypassMan::ServerPool.new(servers: api_servers)
@@ -203,6 +204,11 @@ class ProconBypassMan::Configuration
   # @return [Boolean] default false
   def io_monitor_logging
     @io_monitor_logging ||= false
+  end
+
+  # @return [Boolean] プロコンから「入力にかかっている時間」と「1秒間あたり何回入力できているか」をサーバに送信する
+  def enable_procon_performance_measurement?
+    has_api_server?
   end
 
   # @return [Boolean] default true

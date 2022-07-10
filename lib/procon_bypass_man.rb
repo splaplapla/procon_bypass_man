@@ -26,6 +26,7 @@ require_relative "procon_bypass_man/support/yaml_writer"
 require_relative "procon_bypass_man/support/safe_timeout"
 require_relative "procon_bypass_man/support/compress_array"
 require_relative "procon_bypass_man/support/uptime"
+require_relative "procon_bypass_man/support/load_agv"
 require_relative "procon_bypass_man/support/on_memory_cache"
 require_relative "procon_bypass_man/support/http_client"
 require_relative "procon_bypass_man/support/report_http_client"
@@ -33,9 +34,11 @@ require_relative "procon_bypass_man/support/remote_macro_http_client"
 require_relative "procon_bypass_man/support/update_remote_pbm_action_status_http_client"
 require_relative "procon_bypass_man/support/send_device_stats_http_client"
 require_relative "procon_bypass_man/support/server_pool"
+require_relative "procon_bypass_man/support/procon_performance_http_client"
 require_relative "procon_bypass_man/support/analog_stick_hypotenuse_tilting_power_scaler"
 require_relative "procon_bypass_man/support/never_exit_accidentally"
 require_relative "procon_bypass_man/support/cycle_sleep"
+require_relative "procon_bypass_man/support/can_over_process"
 require_relative "procon_bypass_man/procon_display"
 require_relative "procon_bypass_man/background"
 require_relative "procon_bypass_man/commands"
@@ -72,6 +75,7 @@ module ProconBypassMan
     ProconBypassMan::PrintMessageCommand.execute(text: "PBMを起動しています")
     initialize_pbm
 
+    # 設定ファイルの読み込み
     begin
       ProconBypassMan::ButtonsSettingConfiguration::Loader.load(setting_path: setting_path)
     rescue ProconBypassMan::CouldNotLoadConfigError
@@ -84,6 +88,7 @@ module ProconBypassMan
       return
     end
 
+    # デバイスの接続フェーズ
     begin
       gadget, procon = ProconBypassMan::DeviceConnection::Command.execute!
     rescue ProconBypassMan::DeviceConnection::NotFoundProconError
@@ -95,7 +100,7 @@ module ProconBypassMan
       end
       return
     rescue ProconBypassMan::DeviceConnection::TimeoutError
-      ProconBypassMan::SendErrorCommand.execute(error: "接続の見込みがないのでsleepしまくります")
+      ProconBypassMan::SendErrorCommand.execute(error: "接続に失敗しました。プロコンとRaspberry Piのケーブルを差し直して、再実行してください。\n改善しない場合は、app.logの中身を添えて不具合報告をお願いします。")
       ProconBypassMan::DeviceStatus.change_to_connected_but_sleeping!
       %w(TERM INT).each do |sig|
         Kernel.trap(sig) { exit 0 }
@@ -136,10 +141,12 @@ module ProconBypassMan
 
   # @return [void]
   def self.initialize_pbm
-    ProconBypassMan::Scheduler.start!
     ProconBypassMan::Background::JobRunner.start!
     ProconBypassMan::Websocket::Client.start!
-    ProconBypassMan::QueueOverProcess.start!
+    # TODO ProconBypassMan::DrbObjects.start_all! みたいな感じで書きたい
+    ProconBypassMan::QueueOverProcess.start! # TODO namespace入れる
+    ProconBypassMan::Procon::PerformanceMeasurement::QueueOverProcess.start!
+    ProconBypassMan::Scheduler.start!
 
     ProconBypassMan::WriteDeviceIdCommand.execute
     ProconBypassMan::WriteSessionIdCommand.execute
