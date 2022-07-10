@@ -1,3 +1,4 @@
+# Bypassプロセスが収集したパフォーマンスメトリクスを、集計するためにmasterプロセスに転送するためジョブ
 class ProconBypassMan::ProconPerformanceSpanTransferJob
   extend ProconBypassMan::Background::JobPerformable
 
