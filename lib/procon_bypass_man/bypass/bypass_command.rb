@@ -65,21 +65,18 @@ class ProconBypassMan::BypassCommand
     # シビア
     ProconBypassMan.logger.info "Thread2を起動します"
     t2 = Thread.new do
-      bypass = ProconBypassMan::Bypass.new(gadget: @gadget, procon: @procon, monitor: monitor2)
-      loop do
-        if $will_terminate_token
-          if $will_terminate_token == WILL_TERMINATE_TOKEN::TERMINATE
-            bypass.direct_connect_switch_via_bluetooth
-          end
-          break
-        end
-
-        begin
-          ProconBypassMan::Bypass::ConcurrentBypassExecutor.execute(bypass: bypass) do |b|
-            b.send_procon_to_gadget!
+      ProconBypassMan::Bypass::ConcurrentBypassExecutor.execute do
+        loop do
+          bypass = ProconBypassMan::Bypass.new(gadget: @gadget, procon: @procon, monitor: monitor2)
+          if $will_terminate_token
+            if $will_terminate_token == WILL_TERMINATE_TOKEN::TERMINATE
+              # 二重で送っても問題ないか
+              bypass.direct_connect_switch_via_bluetooth
+            end
+            break
           end
 
-          # bypass.send_procon_to_gadget!
+          bypass.send_procon_to_gadget!
         rescue EOFError => e
           ProconBypassMan::SendErrorCommand.execute(error: "Proconが切断されました。終了処理を開始します. #{e.full_message}")
           Process.kill "TERM", Process.ppid
@@ -90,6 +87,7 @@ class ProconBypassMan::BypassCommand
           break
         end
       end
+
       ProconBypassMan.logger.info "Thread2を終了します"
     end
 

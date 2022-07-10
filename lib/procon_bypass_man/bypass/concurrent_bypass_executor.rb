@@ -6,7 +6,7 @@ class ProconBypassMan::Bypass::ConcurrentBypassExecutor
       @thread = Thread.new do
         loop do
           if(task = queue.pop)
-            task[:block].call(task[:bypass])
+            task[:block].call
           else
             break
           end
@@ -25,9 +25,9 @@ class ProconBypassMan::Bypass::ConcurrentBypassExecutor
   TREHAD_SIZE = 3
 
   # TODO Threadで起きた例外をスローしたい
-  def self.execute(bypass: , &block)
+  def self.execute(&block)
     TREHAD_SIZE.times do
-      instance.queue.push(bypass: bypass, block: block)
+      instance.queue.push(block: block)
     end
   end
 end
