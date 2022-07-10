@@ -3,6 +3,7 @@ module ProconBypassMan::Procon::PerformanceMeasurement; end
 require 'benchmark'
 require 'procon_bypass_man/procon/performance_measurement/measurements_summarizer'
 require 'procon_bypass_man/procon/performance_measurement/span_queue'
+require 'procon_bypass_man/procon/performance_measurement/procon_performance_span_transfer_job'
 require 'procon_bypass_man/procon/performance_measurement/span_transfer_buffer'
 require 'procon_bypass_man/procon/performance_measurement/measurement_collection'
 require 'procon_bypass_man/procon/performance_measurement/queue_over_process'
