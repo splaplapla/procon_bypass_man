@@ -10,7 +10,7 @@ end
 
 ProconBypassMan::Web.configure do |config|
   config.root = File.expand_path(__dir__)
-  config.logger = Logger.new("#{ProconBypassMan::Web.root}/web.log", 1, 1024 * 1024 * 10)
+  config.logger = Logger.new("#{ProconBypassMan::Web.root}/web.log", 1, 1024 * 1024 * 1)
 end
 
 ProconBypassMan::Web::Server.start
