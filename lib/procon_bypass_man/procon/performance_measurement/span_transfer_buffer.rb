@@ -30,6 +30,10 @@ class ProconBypassMan::Procon::PerformanceMeasurement::SpanTransferBuffer
   end
 
   def buffer_over?
-    @buff.length > 200
+    @buff.length > max_buffer
+  end
+
+  def max_buffer
+    200
   end
 end
