@@ -70,7 +70,7 @@ class ProconBypassMan::Bypass
         break if $will_terminate_token
 
         begin
-          Timeout.timeout(1) do
+          Timeout.timeout(0.1) do
             raw_output = self.procon.read(64)
             self.bypass_value.binary = ProconBypassMan::Domains::InboundProconBinary.new(binary: raw_output)
           end
