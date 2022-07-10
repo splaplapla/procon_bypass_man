@@ -75,11 +75,11 @@ class ProconBypassMan::BypassCommand
         end
 
         begin
-          # ProconBypassMan::Bypass::ConcurrentBypassExecutor.execute(bypass: bypass) do |b|
-          #   b.send_procon_to_gadget!
-          # end
+          ProconBypassMan::Bypass::ConcurrentBypassExecutor.execute(bypass: bypass) do |b|
+            b.send_procon_to_gadget!
+          end
 
-          bypass.send_procon_to_gadget!
+          # bypass.send_procon_to_gadget!
         rescue EOFError => e
           ProconBypassMan::SendErrorCommand.execute(error: "Proconが切断されました。終了処理を開始します. #{e.full_message}")
           Process.kill "TERM", Process.ppid
