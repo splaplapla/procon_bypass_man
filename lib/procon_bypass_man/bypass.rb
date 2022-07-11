@@ -27,13 +27,14 @@ class ProconBypassMan::Bypass
     self.bypass_value = BypassValue.new(nil)
 
     run_callbacks(:send_gadget_to_procon) do
-      break if $will_terminate_token
+      next if $will_terminate_token
 
       raw_input = nil
       begin
         raw_input = self.gadget.read_nonblock(64)
         self.bypass_value.binary = ProconBypassMan::Domains::InboundProconBinary.new(binary: raw_input)
       rescue IO::EAGAINWaitReadable
+        next
       end
 
       if self.bypass_value.binary
@@ -49,7 +50,7 @@ class ProconBypassMan::Bypass
             end
           self.procon.write_nonblock(raw_data)
         rescue IO::EAGAINWaitReadable
-          break
+          next
         end
       end
     end
