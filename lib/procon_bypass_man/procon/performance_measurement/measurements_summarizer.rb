@@ -13,14 +13,14 @@ class ProconBypassMan::Procon::PerformanceMeasurement::MeasurementsSummarizer
 
   # @return [PerformanceMetric]
   def summarize
-    sorted_time_taken = @spans.map(&:time_taken).sort
+    sorted_time_taken = @spans.select(&:succeed).map(&:time_taken).sort
     time_taken_p50 = percentile(sorted_list: sorted_time_taken, percentile: 0.50)
     time_taken_p95 = percentile(sorted_list: sorted_time_taken, percentile: 0.95)
     time_taken_p99 = percentile(sorted_list: sorted_time_taken, percentile: 0.99)
     time_taken_max = sorted_time_taken.last || 0
     total_read_error_count = @spans.map(&:read_error_count).sum
     total_write_error_count = @spans.map(&:write_error_count).sum
-    succeed_rate = @spans.select(&:succeed).length / @spans.length.to_f
+    succeed_rate = (sorted_time_taken.length / @spans.length.to_f).floor(3)
     PerformanceMetric.new(time_taken_p50, time_taken_p95, time_taken_p99, time_taken_max, total_read_error_count, total_write_error_count, succeed_rate)
   end
 
