@@ -16,6 +16,7 @@ class ProconBypassMan::ReportProconPerformanceMeasurementsJob < ProconBypassMan:
       time_taken_p99: metric.time_taken_p99,
       read_error_count: metric.read_error_count,
       write_error_count: metric.write_error_count,
+      succeed_rate: metric.succeed_rate,
       load_agv: ProconBypassMan::LoadAgv.new.get,
     }
     ProconBypassMan.logger.info(body)
