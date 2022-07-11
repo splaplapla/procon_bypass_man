@@ -75,10 +75,11 @@ class ProconBypassMan::Bypass
         end
 
         begin
-          Timeout.timeout(0.1) do
-            self.gadget.write(ProconBypassMan::Processor.new(bypass_value.binary).process)
-          end
-        rescue Timeout::Error
+          # TODO blocking writeにしたらどうなる？
+          self.gadget.write_nonblock(
+            ProconBypassMan::Processor.new(bypass_value.binary).process
+          )
+        rescue IO::EAGAINWaitReadable
           # TODO テストが通っていない
           measurement.record_write_error
         end
