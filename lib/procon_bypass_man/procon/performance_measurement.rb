@@ -10,7 +10,7 @@ require 'procon_bypass_man/procon/performance_measurement/queue_over_process'
 
 module ProconBypassMan::Procon::PerformanceMeasurement
   class PerformanceSpan
-    attr_accessor :time_taken
+    attr_accessor :time_taken, :succeed
     attr_reader :write_error_count, :read_error_count
 
     def initialize
@@ -37,12 +37,9 @@ module ProconBypassMan::Procon::PerformanceMeasurement
     end
 
     span = PerformanceSpan.new
-    result = nil
-    span.time_taken = Benchmark.realtime do
-      result = block.call(span)
-    end
-    # span.succeed = result
-    ProconBypassMan.logger.info "[ProconBypassMan::Procon::PerformanceMeasurement] result is #{result}"
+    span.time_taken = Benchmark.realtime {
+      span.succeed = block.call(span)
+    }.floor(3)
 
     # measureするたびにperform_asyncしているとjob queueが詰まるのでbufferingしている
     ProconBypassMan::Procon::PerformanceMeasurement::SpanTransferBuffer.instance.push_and_run_block_if_buffer_over(span) do |spans|
