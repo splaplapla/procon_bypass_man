@@ -19,14 +19,14 @@ class ProconBypassMan::Bypass::ConcurrentBypassExecutor
 
   def initialize
     @queue = Queue.new
-    @pool = TREHAD_SIZE.times.map { Executor.new(queue: @queue) }
+    @pool = CONCURRENT.times.map { Executor.new(queue: @queue) }
   end
 
-  TREHAD_SIZE = 2
+  CONCURRENT = 2
 
   # TODO Threadで起きた例外をスローしたい
   def self.execute(&block)
-    TREHAD_SIZE.times do
+    CONCURRENT.times do
       instance.queue.push(block: block)
     end
   end
