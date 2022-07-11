@@ -22,7 +22,7 @@ class ProconBypassMan::Bypass::ConcurrentBypassExecutor
     @pool = TREHAD_SIZE.times.map { Executor.new(queue: @queue) }
   end
 
-  TREHAD_SIZE = 3
+  TREHAD_SIZE = 2
 
   # TODO Threadで起きた例外をスローしたい
   def self.execute(&block)
