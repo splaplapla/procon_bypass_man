@@ -38,9 +38,9 @@ module ProconBypassMan::Procon::PerformanceMeasurement
 
     span = PerformanceSpan.new
     result = nil
-    span.time_taken = Benchmark.realtime {
+    span.time_taken = Benchmark.realtime do
       result = block.call(span)
-    }
+    end
     # span.succeed = result
     ProconBypassMan.logger.info "[ProconBypassMan::Procon::PerformanceMeasurement] result is #{result}"
 

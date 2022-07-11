@@ -59,8 +59,8 @@ class ProconBypassMan::Bypass
     ProconBypassMan::Procon::PerformanceMeasurement.measure do |measurement|
       self.bypass_value = BypassValue.new(nil)
 
-      break(run_callbacks(:send_procon_to_gadget) {
-        break(false) if $will_terminate_token
+      next(run_callbacks(:send_procon_to_gadget) {
+        next(false) if $will_terminate_token
 
         begin
           Timeout.timeout(0.1) do
@@ -69,7 +69,7 @@ class ProconBypassMan::Bypass
           end
         rescue Timeout::Error # TODO テストが通っていない
           measurement.record_read_error
-          break(false)
+          next(false)
         end
 
         begin
@@ -78,10 +78,10 @@ class ProconBypassMan::Bypass
           )
         rescue IO::EAGAINWaitReadable # TODO テストが通っていない
           measurement.record_write_error
-          break(false)
+          next(false)
         end
 
-        break(true)
+        next(true)
       })
     end
   end
