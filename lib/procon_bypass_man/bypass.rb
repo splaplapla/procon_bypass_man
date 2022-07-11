@@ -59,31 +59,30 @@ class ProconBypassMan::Bypass
     ProconBypassMan::Procon::PerformanceMeasurement.measure do |measurement|
       self.bypass_value = BypassValue.new(nil)
 
-      run_callbacks(:send_procon_to_gadget) do
-        break if $will_terminate_token
+      break(run_callbacks(:send_procon_to_gadget) {
+        break(false) if $will_terminate_token
 
         begin
           Timeout.timeout(0.1) do
             raw_output = self.procon.read(64)
             self.bypass_value.binary = ProconBypassMan::Domains::InboundProconBinary.new(binary: raw_output)
           end
-        rescue Timeout::Error
-          # TODO テストが通っていない
-          ProconBypassMan::SendErrorCommand.execute(error: "read timeout! do sleep. by send_procon_to_gadget!")
+        rescue Timeout::Error # TODO テストが通っていない
           measurement.record_read_error
-          retry
+          break(false)
         end
 
         begin
-          # TODO blocking writeにしたらどうなる？
           self.gadget.write_nonblock(
             ProconBypassMan::Processor.new(bypass_value.binary).process
           )
-        rescue IO::EAGAINWaitReadable
-          # TODO テストが通っていない
+        rescue IO::EAGAINWaitReadable # TODO テストが通っていない
           measurement.record_write_error
+          break(false)
         end
-      end
+
+        break(true)
+      })
     end
   end
 
