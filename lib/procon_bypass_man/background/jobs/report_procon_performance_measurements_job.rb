@@ -5,18 +5,23 @@ class ProconBypassMan::ReportProconPerformanceMeasurementsJob < ProconBypassMan:
   def self.perform(measurement_collection)
     return if measurement_collection.nil?
 
+    collected_spans_size = measurement_collection.spans.size
     metric = ProconBypassMan::Procon::PerformanceMeasurement.summarize(
       spans: measurement_collection.spans
     )
     body = {
       timestamp: measurement_collection.timestamp_key,
+      interval_from_previous_succeed_max: metric.interval_from_previous_succeed_max,
+      interval_from_previous_succeed_p50: metric.interval_from_previous_succeed_p50,
       time_taken_max: metric.time_taken_max,
       time_taken_p50: metric.time_taken_p50,
       time_taken_p95: metric.time_taken_p95,
       time_taken_p99: metric.time_taken_p99,
       read_error_count: metric.read_error_count,
       write_error_count: metric.write_error_count,
+      succeed_rate: metric.succeed_rate,
       load_agv: ProconBypassMan::LoadAgv.new.get,
+      collected_spans_size: collected_spans_size,
     }
     ProconBypassMan.logger.info(body)
 

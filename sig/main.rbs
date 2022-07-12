@@ -186,7 +186,6 @@ class ProconBypassMan::Configuration
   attr_reader api_server: untyped
   attr_reader api_servers: untyped
   attr_writer never_exit_accidentally: bool
-  attr_writer io_monitor_logging: bool
 
   attr_accessor enable_critical_error_logging: bool
 
@@ -230,8 +229,6 @@ class ProconBypassMan::Configuration
   def verbose_bypass_log: () -> bool
 
   def never_exit_accidentally: () -> bool
-
-  def io_monitor_logging: () -> bool
 end
 
 
@@ -276,35 +273,6 @@ class ProconBypassMan::DeviceConnector
   def to_bin: (untyped string) -> untyped
 
   def init_devices: () -> untyped
-end
-
-module ProconBypassMan
-  class Counter
-    attr_accessor label: untyped
-
-    attr_accessor table: untyped
-
-    attr_accessor previous_table: untyped
-
-    def initialize: (label: untyped label) -> untyped
-
-    # アクティブなバケットは1つだけ
-    def record: (untyped event_name) -> untyped
-
-    def formated_previous_table: () -> ::String
-  end
-
-  module IOMonitor
-    def self.new: (label: untyped label) -> untyped
-
-    # @return [Array<Counter>]
-    def self.targets: () -> untyped
-
-    # ここで集計する
-    def self.start!: () -> untyped
-
-    def self.reset!: () -> untyped
-  end
 end
 
 class ProconBypassMan::Processor

@@ -10,7 +10,6 @@ class ProconBypassMan::BypassCommand
     @gadget = gadget
     @procon = procon
 
-    ProconBypassMan::IOMonitor.start! if ProconBypassMan.io_monitor_logging
     ProconBypassMan::Background::JobRunner.queue.clear # forkしたときに残留物も移ってしまうため
     ProconBypassMan::Background::JobRunner.start!
   end
@@ -29,8 +28,6 @@ class ProconBypassMan::BypassCommand
 
     # gadget => procon
     # 遅くていい
-    monitor1 = ProconBypassMan::IOMonitor.new(label: "switch -> procon")
-    monitor2 = ProconBypassMan::IOMonitor.new(label: "procon -> switch")
     ProconBypassMan.logger.info "Thread1を起動します"
 
     cycle_sleep = ProconBypassMan::CycleSleep.new(cycle_interval: 1, execution_cycle: ProconBypassMan.config.bypass_mode.gadget_to_procon_interval)
@@ -38,7 +35,6 @@ class ProconBypassMan::BypassCommand
     t1 = Thread.new do
       if ProconBypassMan.config.bypass_mode.mode == ProconBypassMan::BypassMode::TYPE_AGGRESSIVE
         ProconBypassMan.logger.info "TYPE_AGGRESSIVEなのでThread1を終了します"
-        monitor1.shutdown
         next
       end
 
@@ -46,8 +42,8 @@ class ProconBypassMan::BypassCommand
         break if $will_terminate_token
 
         cycle_sleep.sleep_or_execute do
-          bypass = ProconBypassMan::Bypass.new(gadget: @gadget, procon: @procon, monitor: monitor1)
-          bypass.send_gadget_to_procon!
+          bypass = ProconBypassMan::Bypass.new(gadget: @gadget, procon: @procon)
+          bypass.send_gadget_to_procon
         end
       rescue Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError, Errno::ESHUTDOWN => e
         ProconBypassMan::SendErrorCommand.execute(error: "Switchとの切断されました.終了処理を開始します. #{e.full_message}")
@@ -63,18 +59,18 @@ class ProconBypassMan::BypassCommand
 
     # procon => gadget
     # シビア
-    ProconBypassMan.logger.info "Thread2を起動します"
-    t2 = Thread.new do
-      bypass = ProconBypassMan::Bypass.new(gadget: @gadget, procon: @procon, monitor: monitor2)
+    t2s = ProconBypassMan::Bypass::ConcurrentBypassExecutor.execute do
       loop do
+        bypass = ProconBypassMan::Bypass.new(gadget: @gadget, procon: @procon)
         if $will_terminate_token
           if $will_terminate_token == WILL_TERMINATE_TOKEN::TERMINATE
+            # 二重で送っても問題ないか
             bypass.direct_connect_switch_via_bluetooth
           end
           break
         end
 
-        bypass.send_procon_to_gadget!
+        bypass.send_procon_to_gadget
       rescue EOFError => e
         ProconBypassMan::SendErrorCommand.execute(error: "Proconが切断されました。終了処理を開始します. #{e.full_message}")
         Process.kill "TERM", Process.ppid
@@ -84,7 +80,6 @@ class ProconBypassMan::BypassCommand
         Process.kill "TERM", Process.ppid
         break
       end
-      ProconBypassMan.logger.info "Thread2を終了します"
     end
 
     ProconBypassMan.logger.info "子プロセスでgraceful shutdownの準備ができました"
@@ -95,13 +90,15 @@ class ProconBypassMan::BypassCommand
       end
     rescue ProconBypassMan::Runner::InterruptForRestart
       $will_terminate_token = WILL_TERMINATE_TOKEN::RESTART
-      [t1, t2].each(&:join)
+      t2s.each(&:join)
+      t1.join
       @gadget&.close
       @procon&.close
       exit! 1 # child processなのでexitしていい
     rescue Interrupt
       $will_terminate_token = WILL_TERMINATE_TOKEN::TERMINATE
-      [t1, t2].each(&:join)
+      t2s.each(&:join)
+      t1.join
       @gadget&.close
       @procon&.close
       exit! 1 # child processなのでexitしていい

@@ -73,17 +73,18 @@ module ProconBypassMan
     def run_callbacks(kind, &block)
       chains = get_callbacks(kind) or raise("unknown callback")
       if chains.nil? || chains.empty?
-        block.call
-        return
+        return block.call
       end
 
       chains[:before]&.each do |chain|
         send chain.chain_method
       end
-      block.call
+      result = block.call
       chains[:after]&.each do |chain|
         send chain.chain_method
       end
+
+      return result
     end
 
     def get_callbacks(kind) # :nodoc:

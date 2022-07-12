@@ -136,7 +136,6 @@ module ProconBypassMan
     ProconBypassMan::Procon::ModeRegistry.reset!
     ProconBypassMan::Procon.reset!
     ProconBypassMan::ButtonsSettingConfiguration.instance.reset!
-    ProconBypassMan::IOMonitor.reset!
   end
 
   # @return [void]

@@ -1,5 +1,6 @@
 require "procon_bypass_man/bypass/usb_hid_logger"
 require "procon_bypass_man/bypass/bypass_command"
+require "procon_bypass_man/bypass/concurrent_bypass_executor"
 
 class ProconBypassMan::Bypass
   extend ProconBypassMan::CallbacksRegisterable
@@ -14,28 +15,26 @@ class ProconBypassMan::Bypass
     end
   end
 
-  attr_accessor :gadget, :procon, :monitor, :bypass_value
+  attr_accessor :gadget, :procon, :bypass_value
 
-  def initialize(gadget: , procon: , monitor: )
+  def initialize(gadget: , procon: )
     self.gadget = gadget
     self.procon = procon
-    self.monitor = monitor
   end
 
   # ゆっくりでいい
-  def send_gadget_to_procon!
-    monitor.record(:start_function)
+  def send_gadget_to_procon
     self.bypass_value = BypassValue.new(nil)
 
     run_callbacks(:send_gadget_to_procon) do
-      break if $will_terminate_token
+      next if $will_terminate_token
 
       raw_input = nil
       begin
         raw_input = self.gadget.read_nonblock(64)
         self.bypass_value.binary = ProconBypassMan::Domains::InboundProconBinary.new(binary: raw_input)
       rescue IO::EAGAINWaitReadable
-        monitor.record(:eagain_wait_readable_on_read)
+        next
       end
 
       if self.bypass_value.binary
@@ -51,48 +50,40 @@ class ProconBypassMan::Bypass
             end
           self.procon.write_nonblock(raw_data)
         rescue IO::EAGAINWaitReadable
-          monitor.record(:eagain_wait_readable_on_write)
-          break
+          next
         end
       end
     end
-
-    monitor.record(:end_function)
   end
 
-  def send_procon_to_gadget!
+  def send_procon_to_gadget
     ProconBypassMan::Procon::PerformanceMeasurement.measure do |measurement|
-      monitor.record(:start_function) # TODO 消したい
       self.bypass_value = BypassValue.new(nil)
 
-      run_callbacks(:send_procon_to_gadget) do
-        break if $will_terminate_token
+      next(run_callbacks(:send_procon_to_gadget) {
+        next(false) if $will_terminate_token
 
         begin
-          Timeout.timeout(1) do
+          Timeout.timeout(0.1) do
             raw_output = self.procon.read(64)
             self.bypass_value.binary = ProconBypassMan::Domains::InboundProconBinary.new(binary: raw_output)
           end
-        rescue Timeout::Error
-          # TODO テストが通っていない
-          ProconBypassMan::SendErrorCommand.execute(error: "read timeout! do sleep. by send_procon_to_gadget!")
-          monitor.record(:eagain_wait_readable_on_read)
+        rescue Timeout::Error # TODO テストが通っていない
           measurement.record_read_error
-          retry
+          next(false)
         end
 
         begin
           self.gadget.write_nonblock(
             ProconBypassMan::Processor.new(bypass_value.binary).process
           )
-        rescue IO::EAGAINWaitReadable
-          # TODO テストが通っていない
-          monitor.record(:eagain_wait_readable_on_write)
+        rescue IO::EAGAINWaitReadable # TODO テストが通っていない
           measurement.record_write_error
-          break
+          next(false)
         end
-      end
-      monitor.record(:end_function)
+
+        next(true)
+      })
     end
   end
 
