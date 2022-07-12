@@ -59,7 +59,7 @@ class ProconBypassMan::BypassCommand
 
     # procon => gadget
     # シビア
-    t2 = ProconBypassMan::Bypass::ConcurrentBypassExecutor.execute do
+    t2s = ProconBypassMan::Bypass::ConcurrentBypassExecutor.execute do
       loop do
         bypass = ProconBypassMan::Bypass.new(gadget: @gadget, procon: @procon)
         if $will_terminate_token
@@ -90,14 +90,14 @@ class ProconBypassMan::BypassCommand
       end
     rescue ProconBypassMan::Runner::InterruptForRestart
       $will_terminate_token = WILL_TERMINATE_TOKEN::RESTART
-      t2.each(&:join)
+      t2s.each(&:join)
       t1.join
       @gadget&.close
       @procon&.close
       exit! 1 # child processなのでexitしていい
     rescue Interrupt
       $will_terminate_token = WILL_TERMINATE_TOKEN::TERMINATE
-      t2.each(&:join)
+      t2s.each(&:join)
       t1.join
       @gadget&.close
       @procon&.close
