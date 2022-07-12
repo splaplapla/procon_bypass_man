@@ -30,15 +30,15 @@ module ProconBypassMan::Procon::PerformanceMeasurement
 
   # measureをして、measureの結果をためる
   # @return [void]
-  def self.measure(&block)
+  def self.measure(&bypass_process_block)
     unless ProconBypassMan.config.enable_procon_performance_measurement?
-      block.call(PerformanceSpan.new)
+      bypass_process_block.call(PerformanceSpan.new)
       return
     end
 
     span = PerformanceSpan.new
     span.time_taken = Benchmark.realtime {
-      span.succeed = block.call(span)
+      span.succeed = bypass_process_block.call(span)
     }.floor(3)
 
     # measureするたびにperform_asyncしているとjob queueが詰まるのでbufferingしている

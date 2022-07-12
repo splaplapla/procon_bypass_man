@@ -5,6 +5,7 @@ class ProconBypassMan::ReportProconPerformanceMeasurementsJob < ProconBypassMan:
   def self.perform(measurement_collection)
     return if measurement_collection.nil?
 
+    collected_spans_size = measurement_collection.spans.size
     metric = ProconBypassMan::Procon::PerformanceMeasurement.summarize(
       spans: measurement_collection.spans
     )
@@ -18,6 +19,7 @@ class ProconBypassMan::ReportProconPerformanceMeasurementsJob < ProconBypassMan:
       write_error_count: metric.write_error_count,
       succeed_rate: metric.succeed_rate,
       load_agv: ProconBypassMan::LoadAgv.new.get,
+      collected_spans_size: collected_spans_size,
     }
     ProconBypassMan.logger.info(body)
 
