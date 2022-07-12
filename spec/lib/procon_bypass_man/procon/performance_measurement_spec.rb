@@ -48,15 +48,15 @@ describe ProconBypassMan::Procon::PerformanceMeasurement do
   end
 
   describe '.summarize' do
-    let(:span_class) { Struct.new(:time_taken, :read_error_count, :write_error_count, :succeed) }
+    let(:span_class) { Struct.new(:time_taken, :read_error_count, :write_error_count, :succeed, :interval_from_previous_succeed) }
 
     subject { described_class.summarize(spans: spans) }
 
     context '値があるとき' do
       let(:spans) do
-        [ span_class.new(1, 1, 2, true),
-          span_class.new(4, 1, 2, true),
-          span_class.new(2, 1, 2, true),
+        [ span_class.new(1, 1, 2, true, 1),
+          span_class.new(4, 1, 2, true, 2),
+          span_class.new(2, 1, 2, true, 3),
           span_class.new(3, 1, 2, false),
         ]
       end
@@ -68,6 +68,8 @@ describe ProconBypassMan::Procon::PerformanceMeasurement do
       it { expect(subject.read_error_count).to eq(4) }
       it { expect(subject.write_error_count).to eq(8) }
       it { expect(subject.succeed_rate).to eq(3 / 4.0) }
+      it { expect(subject.interval_from_previous_succeed_max).to eq(3) }
+      it { expect(subject.interval_from_previous_succeed_p50).to eq(2.0) }
     end
 
     context '空配列のとき' do
@@ -79,6 +81,8 @@ describe ProconBypassMan::Procon::PerformanceMeasurement do
       it { expect(subject.time_taken_max).to eq(0) }
       it { expect(subject.read_error_count).to eq(0) }
       it { expect(subject.write_error_count).to eq(0) }
+      it { expect(subject.interval_from_previous_succeed_max).to eq(0) }
+      it { expect(subject.interval_from_previous_succeed_p50).to eq(0) }
     end
   end
 end
