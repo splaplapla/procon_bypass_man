@@ -23,7 +23,7 @@ class ProconBypassMan::Bypass
   end
 
   # ゆっくりでいい
-  def send_gadget_to_procon!
+  def send_gadget_to_procon
     self.bypass_value = BypassValue.new(nil)
 
     run_callbacks(:send_gadget_to_procon) do
@@ -56,7 +56,7 @@ class ProconBypassMan::Bypass
     end
   end
 
-  def send_procon_to_gadget!
+  def send_procon_to_gadget
     ProconBypassMan::Procon::PerformanceMeasurement.measure do |measurement|
       self.bypass_value = BypassValue.new(nil)
 

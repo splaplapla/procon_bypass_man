@@ -43,7 +43,7 @@ class ProconBypassMan::BypassCommand
 
         cycle_sleep.sleep_or_execute do
           bypass = ProconBypassMan::Bypass.new(gadget: @gadget, procon: @procon)
-          bypass.send_gadget_to_procon!
+          bypass.send_gadget_to_procon
         end
       rescue Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError, Errno::ESHUTDOWN => e
         ProconBypassMan::SendErrorCommand.execute(error: "Switchとの切断されました.終了処理を開始します. #{e.full_message}")
@@ -70,7 +70,7 @@ class ProconBypassMan::BypassCommand
           break
         end
 
-        bypass.send_procon_to_gadget!
+        bypass.send_procon_to_gadget
       rescue EOFError => e
         ProconBypassMan::SendErrorCommand.execute(error: "Proconが切断されました。終了処理を開始します. #{e.full_message}")
         Process.kill "TERM", Process.ppid
