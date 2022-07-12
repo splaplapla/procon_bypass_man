@@ -61,13 +61,13 @@ describe ProconBypassMan::Procon::PerformanceMeasurement do
         ]
       end
 
-      it { expect(subject.time_taken_p50).to eq(2.5) }
-      it { expect(subject.time_taken_p95).to eq(3.849) }
-      it { expect(subject.time_taken_p99).to eq(3.969) }
+      it { expect(subject.time_taken_p50).to eq(2.0) }
+      it { expect(subject.time_taken_p95).to eq(3.8) }
+      it { expect(subject.time_taken_p99).to eq(3.96) }
       it { expect(subject.time_taken_max).to eq(4) }
       it { expect(subject.read_error_count).to eq(4) }
       it { expect(subject.write_error_count).to eq(8) }
-      it { expect(subject.succeed_rate).to eq(3/4.0) }
+      it { expect(subject.succeed_rate).to eq(3 / 4.0) }
     end
 
     context '空配列のとき' do

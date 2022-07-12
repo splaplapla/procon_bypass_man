@@ -1,7 +1,6 @@
 class ProconBypassMan::Procon::PerformanceMeasurement::SpanQueue
   def initialize
     @current_table = {} # 1つのスレッドからしか触らないのでlockはいらない
-    @mutex = Mutex.new
     @measurement_collection_list = [] # main threadとjob worker threadから触るのでlockが必要
   end
 
@@ -14,11 +13,10 @@ class ProconBypassMan::Procon::PerformanceMeasurement::SpanQueue
       if not @current_table.empty?
         timestamp_key = @current_table.keys.first
         spans = @current_table.values.first
-        # @mutex.synchronize do # パフォーマンスが改善したらアンコメントしたい
-          @measurement_collection_list.push(
-            ProconBypassMan::Procon::PerformanceMeasurement::MeasurementCollection.new(timestamp_key: timestamp_key, spans: spans)
-          )
-        # end
+        # 本当ならmutexでlockする必要があるけど、正確性はいらないのでパフォーマンスを上げるためにlockしない
+        @measurement_collection_list.push(
+          ProconBypassMan::Procon::PerformanceMeasurement::MeasurementCollection.new(timestamp_key: timestamp_key, spans: spans)
+        )
       end
 
       @current_table = {}
@@ -32,7 +30,6 @@ class ProconBypassMan::Procon::PerformanceMeasurement::SpanQueue
   # job workerから呼ばれる
   # @return [ProconBypassMan::Procon::PerformanceMeasurement::MeasurementCollection]
   def pop
-    # @mutex.synchronize { @measurement_collection_list.pop }
     @measurement_collection_list.pop
   end
 

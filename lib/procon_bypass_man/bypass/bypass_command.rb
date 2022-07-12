@@ -59,32 +59,27 @@ class ProconBypassMan::BypassCommand
 
     # procon => gadget
     # シビア
-    ProconBypassMan.logger.info "Thread2を起動します"
-    t2 = Thread.new do
-      ProconBypassMan::Bypass::ConcurrentBypassExecutor.execute do
-        loop do
-          bypass = ProconBypassMan::Bypass.new(gadget: @gadget, procon: @procon)
-          if $will_terminate_token
-            if $will_terminate_token == WILL_TERMINATE_TOKEN::TERMINATE
-              # 二重で送っても問題ないか
-              bypass.direct_connect_switch_via_bluetooth
-            end
-            break
+    t2 = ProconBypassMan::Bypass::ConcurrentBypassExecutor.execute do
+      loop do
+        bypass = ProconBypassMan::Bypass.new(gadget: @gadget, procon: @procon)
+        if $will_terminate_token
+          if $will_terminate_token == WILL_TERMINATE_TOKEN::TERMINATE
+            # 二重で送っても問題ないか
+            bypass.direct_connect_switch_via_bluetooth
           end
-
-          bypass.send_procon_to_gadget!
-        rescue EOFError => e
-          ProconBypassMan::SendErrorCommand.execute(error: "Proconが切断されました。終了処理を開始します. #{e.full_message}")
-          Process.kill "TERM", Process.ppid
-          break
-        rescue Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError, Errno::ESHUTDOWN => e
-          ProconBypassMan::SendErrorCommand.execute(error: "Proconが切断されました。終了処理を開始します2. #{e.full_message}")
-          Process.kill "TERM", Process.ppid
           break
         end
-      end
 
-      ProconBypassMan.logger.info "Thread2を終了します"
+        bypass.send_procon_to_gadget!
+      rescue EOFError => e
+        ProconBypassMan::SendErrorCommand.execute(error: "Proconが切断されました。終了処理を開始します. #{e.full_message}")
+        Process.kill "TERM", Process.ppid
+        break
+      rescue Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError, Errno::ESHUTDOWN => e
+        ProconBypassMan::SendErrorCommand.execute(error: "Proconが切断されました。終了処理を開始します2. #{e.full_message}")
+        Process.kill "TERM", Process.ppid
+        break
+      end
     end
 
     ProconBypassMan.logger.info "子プロセスでgraceful shutdownの準備ができました"
@@ -95,13 +90,15 @@ class ProconBypassMan::BypassCommand
       end
     rescue ProconBypassMan::Runner::InterruptForRestart
       $will_terminate_token = WILL_TERMINATE_TOKEN::RESTART
-      [t1, t2].each(&:join)
+      t2.each(&:join)
+      t1.join
       @gadget&.close
       @procon&.close
       exit! 1 # child processなのでexitしていい
     rescue Interrupt
       $will_terminate_token = WILL_TERMINATE_TOKEN::TERMINATE
-      [t1, t2].each(&:join)
+      t2.each(&:join)
+      t1.join
       @gadget&.close
       @procon&.close
       exit! 1 # child processなのでexitしていい

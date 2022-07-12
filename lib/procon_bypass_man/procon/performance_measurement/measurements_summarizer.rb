@@ -20,7 +20,12 @@ class ProconBypassMan::Procon::PerformanceMeasurement::MeasurementsSummarizer
     time_taken_max = sorted_time_taken.last || 0
     total_read_error_count = @spans.map(&:read_error_count).sum
     total_write_error_count = @spans.map(&:write_error_count).sum
-    succeed_rate = (sorted_time_taken.length / @spans.length.to_f).floor(3)
+    succeed_rate =
+      if @spans.length.zero?
+        0
+      else
+        succeed_rate = (sorted_time_taken.length / @spans.length.to_f).floor(3)
+      end
     PerformanceMetric.new(time_taken_p50, time_taken_p95, time_taken_p99, time_taken_max, total_read_error_count, total_write_error_count, succeed_rate)
   end
 

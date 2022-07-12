@@ -1,33 +1,27 @@
 class ProconBypassMan::Bypass::ConcurrentBypassExecutor
-  include Singleton
+  CONCURRENT = 2
 
-  class Executor
-    def initialize(queue: )
-      @thread = Thread.new do
-        loop do
-          if(task = queue.pop)
-            task[:block].call
-          else
-            break
-          end
-        end
+  attr_accessor :queue, :threads
+
+  def initialize
+    @queue = Queue.new
+    @threads = CONCURRENT.times.map do
+      Thread.new do
+        task = queue.pop
+        task[:block].call
       end
     end
   end
 
-  attr_reader :queue
-
-  def initialize
-    @queue = Queue.new
-    @pool = CONCURRENT.times.map { Executor.new(queue: @queue) }
-  end
-
-  CONCURRENT = 2
-
   # TODO Threadで起きた例外をスローしたい
+  # @return [Thread]
   def self.execute(&block)
+    instance = self.new
+
     CONCURRENT.times do
       instance.queue.push(block: block)
     end
+
+    instance.threads
   end
 end
