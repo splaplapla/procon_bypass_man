@@ -11,6 +11,8 @@ class ProconBypassMan::ReportProconPerformanceMeasurementsJob < ProconBypassMan:
     )
     body = {
       timestamp: measurement_collection.timestamp_key,
+      interval_from_previous_succeed_max: metric.interval_from_previous_succeed_max,
+      interval_from_previous_succeed_p50: metric.interval_from_previous_succeed_p50,
       time_taken_max: metric.time_taken_max,
       time_taken_p50: metric.time_taken_p50,
       time_taken_p95: metric.time_taken_p95,
