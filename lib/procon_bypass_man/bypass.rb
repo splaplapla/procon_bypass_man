@@ -1,7 +1,7 @@
 require "procon_bypass_man/bypass/usb_hid_logger"
 require "procon_bypass_man/bypass/bypass_command"
-require "procon_bypass_man/bypass/concurrent_bypass_executor"
 
+# TODO switch => procon,  procon => procon でクラスを分離する
 class ProconBypassMan::Bypass
   extend ProconBypassMan::CallbacksRegisterable
 
@@ -15,11 +15,13 @@ class ProconBypassMan::Bypass
     end
   end
 
-  attr_accessor :gadget, :procon, :bypass_value
+  attr_accessor :gadget, :procon, :bypass_value, :procon_binary_queue
 
-  def initialize(gadget: , procon: )
+  def initialize(gadget: , procon: , flag: false)
     self.gadget = gadget
     self.procon = procon
+    self.procon_binary_queue = Queue.new
+    start_procon_binary_thread(procon: procon, queue: procon_binary_queue) if flag
   end
 
   # ゆっくりでいい
@@ -56,6 +58,24 @@ class ProconBypassMan::Bypass
     end
   end
 
+  def start_procon_binary_thread(procon: , queue: )
+    Thread.new do
+      loop do
+        begin
+          raw_binady = nil
+          Timeout.timeout(1.0) do
+            raw_binady = procon.read(64)
+          end
+          # 空の時にのみ追加する
+          queue.push(raw_binady) if queue.empty?
+        rescue Timeout::Error # TODO テストが通っていない
+          # no-op
+          ProconBypassMan.logger.debug { "Timeout at dstart_procon_binary_thread!" }
+        end
+      end
+    end
+  end
+
   def send_procon_to_gadget
     ProconBypassMan::Procon::PerformanceMeasurement.measure do |measurement|
       self.bypass_value = BypassValue.new(nil)
@@ -63,15 +83,8 @@ class ProconBypassMan::Bypass
       next(run_callbacks(:send_procon_to_gadget) {
         next(false) if $will_terminate_token
 
-        begin
-          Timeout.timeout(0.1) do
-            raw_output = self.procon.read(64)
-            self.bypass_value.binary = ProconBypassMan::Domains::InboundProconBinary.new(binary: raw_output)
-          end
-        rescue Timeout::Error # TODO テストが通っていない
-          measurement.record_read_error
-          next(false)
-        end
+        raw_output = procon_binary_queue.pop
+        self.bypass_value.binary = ProconBypassMan::Domains::InboundProconBinary.new(binary: raw_output)
 
         begin
           self.gadget.write_nonblock(
@@ -79,7 +92,7 @@ class ProconBypassMan::Bypass
           )
         rescue IO::EAGAINWaitReadable # TODO テストが通っていない
           measurement.record_write_error
-          next(false)
+          next(false) # retryでもいい気がする
         end
 
         next(true)

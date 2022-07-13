@@ -59,9 +59,9 @@ class ProconBypassMan::BypassCommand
 
     # procon => gadget
     # シビア
-    t2s = ProconBypassMan::Bypass::ConcurrentBypassExecutor.execute do
+    t2 = Thread.new do
+      bypass = ProconBypassMan::Bypass.new(gadget: @gadget, procon: @procon, flag: true)
       loop do
-        bypass = ProconBypassMan::Bypass.new(gadget: @gadget, procon: @procon)
         if $will_terminate_token
           if $will_terminate_token == WILL_TERMINATE_TOKEN::TERMINATE
             # 二重で送っても問題ないか
@@ -90,15 +90,13 @@ class ProconBypassMan::BypassCommand
       end
     rescue ProconBypassMan::Runner::InterruptForRestart
       $will_terminate_token = WILL_TERMINATE_TOKEN::RESTART
-      t2s.each(&:join)
-      t1.join
+      [t1, t2].each(&:join)
       @gadget&.close
       @procon&.close
       exit! 1 # child processなのでexitしていい
     rescue Interrupt
       $will_terminate_token = WILL_TERMINATE_TOKEN::TERMINATE
-      t2s.each(&:join)
-      t1.join
+      [t1, t2].each(&:join)
       @gadget&.close
       @procon&.close
       exit! 1 # child processなのでexitしていい
