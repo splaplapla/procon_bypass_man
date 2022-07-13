@@ -1,9 +1,9 @@
 module ProconBypassMan::ProconDisplay::BypassHook
   include ProconBypassMan::Callbacks
 
-  define_callbacks :send_procon_to_gadget
+  define_callbacks :run
 
-  set_callback :send_procon_to_gadget, :after, :write_procon_display_status
+  set_callback :run, :after, :write_procon_display_status
 
   def write_procon_display_status
     return unless bypass_value.binary

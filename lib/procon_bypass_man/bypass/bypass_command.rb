@@ -6,7 +6,7 @@ class ProconBypassMan::BypassCommand
     RESTART = :restart
   end
 
-  def initialize(gadget:, procon:)
+  def initialize(gadget: , procon: )
     @gadget = gadget
     @procon = procon
 
@@ -38,12 +38,12 @@ class ProconBypassMan::BypassCommand
         next
       end
 
+      bypass = ProconBypassMan::Bypass::SwitchToProcon.new(gadget: @gadget, procon: @procon)
       loop do
         break if $will_terminate_token
 
         cycle_sleep.sleep_or_execute do
-          bypass = ProconBypassMan::Bypass.new(gadget: @gadget, procon: @procon)
-          bypass.send_gadget_to_procon
+          bypass.run
         end
       rescue Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError, Errno::ESHUTDOWN => e
         ProconBypassMan::SendErrorCommand.execute(error: "Switchとの切断されました.終了処理を開始します. #{e.full_message}")
@@ -59,18 +59,17 @@ class ProconBypassMan::BypassCommand
 
     # procon => gadget
     # シビア
-    t2s = ProconBypassMan::Bypass::ConcurrentBypassExecutor.execute do
+    t2 = Thread.new do
+      bypass = ProconBypassMan::Bypass::ProconToSwitch.new(gadget: @gadget, procon: @procon)
       loop do
-        bypass = ProconBypassMan::Bypass.new(gadget: @gadget, procon: @procon)
         if $will_terminate_token
           if $will_terminate_token == WILL_TERMINATE_TOKEN::TERMINATE
-            # 二重で送っても問題ないか
             bypass.direct_connect_switch_via_bluetooth
           end
           break
         end
 
-        bypass.send_procon_to_gadget
+        bypass.run
       rescue EOFError => e
         ProconBypassMan::SendErrorCommand.execute(error: "Proconが切断されました。終了処理を開始します. #{e.full_message}")
         Process.kill "TERM", Process.ppid
@@ -90,15 +89,13 @@ class ProconBypassMan::BypassCommand
       end
     rescue ProconBypassMan::Runner::InterruptForRestart
       $will_terminate_token = WILL_TERMINATE_TOKEN::RESTART
-      t2s.each(&:join)
-      t1.join
+      [t1, t2].each(&:join)
       @gadget&.close
       @procon&.close
       exit! 1 # child processなのでexitしていい
     rescue Interrupt
       $will_terminate_token = WILL_TERMINATE_TOKEN::TERMINATE
-      t2s.each(&:join)
-      t1.join
+      [t1, t2].each(&:join)
       @gadget&.close
       @procon&.close
       exit! 1 # child processなのでexitしていい
