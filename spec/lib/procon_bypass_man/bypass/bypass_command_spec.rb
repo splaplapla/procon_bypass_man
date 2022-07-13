@@ -8,7 +8,8 @@ describe ProconBypassMan::BypassCommand do
     ProconBypassMan.config.verbose_bypass_log = false
     procon = StringIO.new(binary)
     gadget = double(:gadget).as_null_object
-    allow(ProconBypassMan::Bypass).to receive(:new) { double(:bypass).as_null_object }
+    allow(ProconBypassMan::Bypass::ProconToSwitch).to receive(:new) { double(:bypass).as_null_object }
+    allow(ProconBypassMan::Bypass::SwitchToProcon).to receive(:new) { double(:bypass).as_null_object }
     command_pid = Kernel.fork { described_class.new(procon: procon, gadget: gadget).execute }
     # signal trapが完了するまで適当にsleepする
     sleep 1
