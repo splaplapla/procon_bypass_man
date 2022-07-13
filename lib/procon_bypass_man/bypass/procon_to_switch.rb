@@ -4,10 +4,10 @@ class ProconBypassMan::Bypass::ProconToSwitch
   extend ProconBypassMan::CallbacksRegisterable
   include ProconBypassMan::Callbacks
 
-  register_callback_module(ProconBypassMan::ProconDisplay::BypassHook)
-
   define_callbacks :run
   set_callback :run, :after, :log_after_run
+
+  register_callback_module(ProconBypassMan::ProconDisplay::BypassHook)
 
   attr_accessor :gadget, :procon, :bypass_value, :procon_binary_queue
 

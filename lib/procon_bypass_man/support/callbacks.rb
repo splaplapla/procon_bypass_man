@@ -89,13 +89,16 @@ module ProconBypassMan
 
     def get_callbacks(kind) # :nodoc:
       # classに直接moduleをincludeしている場合
-      if defined?(self.class.__callbacks)
+      if defined?(self.class.__callbacks) && !self.class.respond_to?(:callbacks)
         return self.class.__callbacks[kind.to_sym]
       end
 
       list = self.class.callbacks.flat_map { |callback_mod|
         callback_mod.__callbacks && callback_mod.__callbacks[kind.to_sym]
       }.compact
+      if(self.class.respond_to?(:__callbacks) && chain = self.class.__callbacks[kind.to_sym])
+        list << chain
+      end
       table = {}
       table[:before] = list.flat_map { |x| x[:before] }.compact
       table[:after] = list.flat_map { |x| x[:after] }.compact
