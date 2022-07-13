@@ -6,7 +6,7 @@ class ProconBypassMan::BypassCommand
     RESTART = :restart
   end
 
-  def initialize(gadget:, procon:)
+  def initialize(gadget: , procon: )
     @gadget = gadget
     @procon = procon
 
@@ -42,8 +42,8 @@ class ProconBypassMan::BypassCommand
         break if $will_terminate_token
 
         cycle_sleep.sleep_or_execute do
-          bypass = ProconBypassMan::Bypass.new(gadget: @gadget, procon: @procon)
-          bypass.send_gadget_to_procon
+          bypass = ProconBypassMan::Bypass::ProconToSwitch.new(gadget: @gadget, procon: @procon)
+          bypass.run
         end
       rescue Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError, Errno::ESHUTDOWN => e
         ProconBypassMan::SendErrorCommand.execute(error: "Switchとの切断されました.終了処理を開始します. #{e.full_message}")
@@ -60,17 +60,16 @@ class ProconBypassMan::BypassCommand
     # procon => gadget
     # シビア
     t2 = Thread.new do
-      bypass = ProconBypassMan::Bypass.new(gadget: @gadget, procon: @procon, flag: true)
+      bypass = ProconBypassMan::Bypass::ProconToSwitch.new(gadget: @gadget, procon: @procon)
       loop do
         if $will_terminate_token
           if $will_terminate_token == WILL_TERMINATE_TOKEN::TERMINATE
-            # 二重で送っても問題ないか
             bypass.direct_connect_switch_via_bluetooth
           end
           break
         end
 
-        bypass.send_procon_to_gadget
+        bypass.run
       rescue EOFError => e
         ProconBypassMan::SendErrorCommand.execute(error: "Proconが切断されました。終了処理を開始します. #{e.full_message}")
         Process.kill "TERM", Process.ppid

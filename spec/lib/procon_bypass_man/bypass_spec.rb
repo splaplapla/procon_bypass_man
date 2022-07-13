@@ -1,31 +1,30 @@
 require "spec_helper"
 
 describe ProconBypassMan::Bypass do
-  let(:dev) { double(:dev).as_null_object }
+  describe ProconBypassMan::Bypass::SwitchToProcon do
+    let(:output) { ["30f28100800078c77448287509550274ff131029001b0022005a0271ff191028001e00210064027cff1410280020002100000000000000000000000000000000"].pack("H*") }
+    let(:dev) { StringIO.new(output) }
 
-  around do |example|
-    ProconBypassMan::Procon::PerformanceMeasurement::QueueOverProcess.start!
-    example.run
-    ProconBypassMan::Procon::PerformanceMeasurement::QueueOverProcess.shutdown
-  end
+    subject { described_class.new(gadget: dev, procon: dev).run }
 
-  describe '.send_gadget_to_procon' do
     it do
-      bypass = ProconBypassMan::Bypass.new(gadget: dev, procon: dev)
-      bypass.send_gadget_to_procon
+      subject
     end
   end
 
-  describe '.send_procon_to_gadget' do
+  describe ProconBypassMan::Bypass::ProconToSwitch do
     let(:output) { ["30f28100800078c77448287509550274ff131029001b0022005a0271ff191028001e00210064027cff1410280020002100000000000000000000000000000000"].pack("H*") }
+    let(:dev) { StringIO.new(output) }
+
+    subject { described_class.new(gadget: dev, procon: dev).run }
+
     it do
-      expect(dev).to receive(:read) { output }
       double(:processor).tap do |processor|
         expect(processor).to receive(:process)
         expect(ProconBypassMan::Processor).to receive(:new) { processor }
       end
-      bypass = ProconBypassMan::Bypass.new(gadget: dev, procon: dev)
-      bypass.send_procon_to_gadget
+
+      subject
     end
   end
 end
