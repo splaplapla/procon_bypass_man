@@ -38,11 +38,11 @@ class ProconBypassMan::BypassCommand
         next
       end
 
+      bypass = ProconBypassMan::Bypass::SwitchToProcon.new(gadget: @gadget, procon: @procon)
       loop do
         break if $will_terminate_token
 
         cycle_sleep.sleep_or_execute do
-          bypass = ProconBypassMan::Bypass::ProconToSwitch.new(gadget: @gadget, procon: @procon)
           bypass.run
         end
       rescue Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError, Errno::ESHUTDOWN => e
