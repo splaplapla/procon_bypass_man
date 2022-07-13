@@ -8,7 +8,7 @@ class ProconBypassMan::Bypass::SwitchToProcon
 
   attr_accessor :gadget, :procon, :bypass_value
 
-  def initialize(gadget: , procon: , flag: false)
+  def initialize(gadget: , procon: )
     self.gadget = gadget
     self.procon = procon
   end
