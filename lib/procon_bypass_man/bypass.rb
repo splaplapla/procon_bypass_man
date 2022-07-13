@@ -70,7 +70,7 @@ class ProconBypassMan::Bypass
           queue.push(raw_binady) if queue.empty?
         rescue Timeout::Error # TODO テストが通っていない
           # no-op
-          ProconBypassMan.logger.debug { "Timeout at dstart_procon_binary_thread!" }
+          ProconBypassMan.logger.error { "プロコンからの読み取りがタイムアウトになりました" }
         end
       end
     end
@@ -92,7 +92,8 @@ class ProconBypassMan::Bypass
           )
         rescue IO::EAGAINWaitReadable # TODO テストが通っていない
           measurement.record_write_error
-          next(false) # retryでもいい気がする
+          # next(false) # retryでもいい気がする
+          retry
         end
 
         next(true)
