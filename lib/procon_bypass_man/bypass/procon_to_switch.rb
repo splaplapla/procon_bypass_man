@@ -68,8 +68,7 @@ class ProconBypassMan::Bypass::ProconToSwitch
           # 空の時にのみ追加する
           queue.push(raw_binady) if queue.empty?
         rescue Timeout::Error # TODO テストが通っていない
-          # no-op
-          ProconBypassMan.logger.error { "プロコンからの読み取りがタイムアウトになりました" }
+          ProconBypassMan::SendErrorCommand.execute(error: "プロコンからの読み取りがタイムアウトになりました")
         end
       end
     end
