@@ -20,6 +20,7 @@ module ProconBypassMan::Procon::PerformanceMeasurement
       @time_taken = 0.0
       @succeed = nil
       @interval_from_previous_succeed = nil
+      @custom_metric = {}
     end
 
     def record_read_error
@@ -28,6 +29,12 @@ module ProconBypassMan::Procon::PerformanceMeasurement
 
     def record_write_error
       @write_error_count += 1
+    end
+
+    def record(key, &block)
+      @custom_metric[key] = Benchmark.realtime do
+        block.call
+      end
     end
   end
 

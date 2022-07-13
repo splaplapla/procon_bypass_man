@@ -25,17 +25,22 @@ class ProconBypassMan::Bypass::ProconToSwitch
       next(run_callbacks(:run) {
         next(false) if $will_terminate_token
 
-        raw_output = self.procon_binary_queue.pop
+        raw_output = nil
+        measurement.record(:read_time) do
+          raw_output = self.procon_binary_queue.pop
+        end
         self.bypass_value.binary = ProconBypassMan::Domains::InboundProconBinary.new(binary: raw_output)
 
-        begin
-          self.gadget.write_nonblock(
-            ProconBypassMan::Processor.new(bypass_value.binary).process
-          )
-        rescue IO::EAGAINWaitReadable # TODO テストが通っていない
-          measurement.record_write_error
-          # next(false) # retryでもいい気がする
-          retry
+        measurement.record(:write_time) do
+          begin
+            self.gadget.write_nonblock(
+              ProconBypassMan::Processor.new(bypass_value.binary).process
+            )
+          rescue IO::EAGAINWaitReadable # TODO テストが通っていない
+            measurement.record_write_error
+            # next(false) # retryでもいい気がする
+            retry
+          end
         end
 
         next(true)
