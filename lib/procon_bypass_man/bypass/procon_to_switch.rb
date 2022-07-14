@@ -26,12 +26,12 @@ class ProconBypassMan::Bypass::ProconToSwitch
         next(false) if $will_terminate_token
 
         raw_output = nil
-        measurement.record(:read_time) do
+        measurement.record_read_time do
           raw_output = self.procon_binary_queue.pop
         end
         self.bypass_value.binary = ProconBypassMan::Domains::InboundProconBinary.new(binary: raw_output)
 
-        measurement.record(:write_time) do
+        measurement.record_write_time do
           begin
             self.gadget.write_nonblock(
               ProconBypassMan::Processor.new(bypass_value.binary).process
