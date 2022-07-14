@@ -66,12 +66,12 @@ class ProconBypassMan::Bypass::ProconToSwitch
     Thread.new do
       loop do
         begin
-          raw_binady = nil
+          raw_binary = nil
           Timeout.timeout(1.0) do
-            raw_binady = procon.read(64)
+            raw_binary = procon.read(64)
           end
           # 空の時にのみ追加する
-          queue.push(raw_binady) if queue.empty?
+          queue.push(raw_binary) if queue.empty?
         rescue Timeout::Error # TODO テストが通っていない
           ProconBypassMan::SendErrorCommand.execute(error: "プロコンからの読み取りがタイムアウトになりました")
         end
