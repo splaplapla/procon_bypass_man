@@ -27,7 +27,7 @@ class ProconBypassMan::Bypass::ProconToSwitch
 
         raw_output = nil
         measurement.record_read_time do
-          raw_output = self.procon_binary_queue.pop
+          raw_output = self.procon_binary_queue.shift
         end
         self.bypass_value.binary = ProconBypassMan::Domains::InboundProconBinary.new(binary: raw_output)
 
@@ -63,6 +63,7 @@ class ProconBypassMan::Bypass::ProconToSwitch
   private
 
   def start_procon_binary_thread(procon: , queue: )
+    max_buffer = 4
     Thread.new do
       loop do
         begin
@@ -70,8 +71,10 @@ class ProconBypassMan::Bypass::ProconToSwitch
           Timeout.timeout(1.0) do
             raw_binary = procon.read(64)
           end
-          # 空の時にのみ追加する
-          queue.push(raw_binary) if queue.empty?
+
+          queue.push(raw_binary)
+          queue.shift if queue.size > max_buffer # 古い入力が溜まったら古いものから捨てる
+
         rescue Timeout::Error # TODO テストが通っていない
           ProconBypassMan::SendErrorCommand.execute(error: "プロコンからの読み取りがタイムアウトになりました")
         end
