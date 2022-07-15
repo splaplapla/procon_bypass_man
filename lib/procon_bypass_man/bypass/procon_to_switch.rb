@@ -25,17 +25,22 @@ class ProconBypassMan::Bypass::ProconToSwitch
       next(run_callbacks(:run) {
         next(false) if $will_terminate_token
 
-        raw_output = self.procon_binary_queue.pop
+        raw_output = nil
+        measurement.record_read_time do
+          raw_output = self.procon_binary_queue.shift
+        end
         self.bypass_value.binary = ProconBypassMan::Domains::InboundProconBinary.new(binary: raw_output)
 
-        begin
-          self.gadget.write_nonblock(
-            ProconBypassMan::Processor.new(bypass_value.binary).process
-          )
-        rescue IO::EAGAINWaitReadable # TODO テストが通っていない
-          measurement.record_write_error
-          # next(false) # retryでもいい気がする
-          retry
+        measurement.record_write_time do
+          begin
+            self.gadget.write_nonblock(
+              ProconBypassMan::Processor.new(bypass_value.binary).process
+            )
+          rescue IO::EAGAINWaitReadable # TODO テストが通っていない
+            measurement.record_write_error
+            # next(false) # retryでもいい気がする
+            retry
+          end
         end
 
         next(true)
@@ -58,15 +63,18 @@ class ProconBypassMan::Bypass::ProconToSwitch
   private
 
   def start_procon_binary_thread(procon: , queue: )
+    buffer_size = 10
     Thread.new do
       loop do
         begin
-          raw_binady = nil
+          raw_binary = nil
           Timeout.timeout(1.0) do
-            raw_binady = procon.read(64)
+            raw_binary = procon.read(64)
           end
-          # 空の時にのみ追加する
-          queue.push(raw_binady) if queue.empty?
+
+          queue.push(raw_binary)
+          queue.shift if queue.size > buffer_size # 古い入力が溜まったら古いものから捨てる
+
         rescue Timeout::Error # TODO テストが通っていない
           ProconBypassMan::SendErrorCommand.execute(error: "プロコンからの読み取りがタイムアウトになりました")
         end

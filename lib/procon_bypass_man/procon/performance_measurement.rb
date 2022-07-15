@@ -12,7 +12,7 @@ require 'procon_bypass_man/procon/performance_measurement/last_bypass_at'
 module ProconBypassMan::Procon::PerformanceMeasurement
   class PerformanceSpan
     attr_accessor :time_taken, :succeed, :interval_from_previous_succeed
-    attr_reader :write_error_count, :read_error_count
+    attr_reader :write_error_count, :read_error_count, :write_time, :read_time
 
     def initialize
       @write_error_count = 0
@@ -20,6 +20,9 @@ module ProconBypassMan::Procon::PerformanceMeasurement
       @time_taken = 0.0
       @succeed = nil
       @interval_from_previous_succeed = nil
+      @custom_metric = {}
+      @write_time = 0.0
+      @read_time = 0.0
     end
 
     def record_read_error
@@ -28,6 +31,14 @@ module ProconBypassMan::Procon::PerformanceMeasurement
 
     def record_write_error
       @write_error_count += 1
+    end
+
+    def record_write_time(&block)
+      @write_time = Benchmark.realtime { block.call }
+    end
+
+    def record_read_time(&block)
+      @read_time = Benchmark.realtime { block.call }
     end
   end
 
