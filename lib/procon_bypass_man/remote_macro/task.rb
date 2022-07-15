@@ -1,6 +1,2 @@
-module ProconBypassMan
-  module RemoteMacro
-    class Task < Struct.new(:name, :uuid, :steps)
-    end
-  end
+class ProconBypassMan::RemoteMacro::Task < ::Struct.new(:name, :uuid, :steps)
 end

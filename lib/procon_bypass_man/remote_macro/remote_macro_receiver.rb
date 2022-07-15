@@ -15,7 +15,7 @@ class ProconBypassMan::RemoteMacroReceiver
   end
 
   def self.run
-    while(task = ProconBypassMan::QueueOverProcess.pop)
+    while(task = ProconBypassMan::RemoteMacro::QueueOverProcess.pop)
       receive(task)
     end
     shutdown

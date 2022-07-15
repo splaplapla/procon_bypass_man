@@ -99,11 +99,11 @@ module ProconBypassMan
       def self.validate_and_run_remote_macro(data: )
         pbm_job_hash = data.dig("message")
         begin
-          remote_macro_object = ProconBypassMan::RemoteMacroObject.new(name: pbm_job_hash["name"],
+          remote_macro_object = ProconBypassMan::RemoteMacro::RemoteMacroObject.new(name: pbm_job_hash["name"],
                                                                        uuid: pbm_job_hash["uuid"],
                                                                        steps: pbm_job_hash["steps"])
           remote_macro_object.validate!
-        rescue ProconBypassMan::RemoteMacroObject::ValidationError => e
+        rescue ProconBypassMan::RemoteMacro::RemoteMacroObject::ValidationError => e
           ProconBypassMan::SendErrorCommand.execute(error: e)
           return
         end

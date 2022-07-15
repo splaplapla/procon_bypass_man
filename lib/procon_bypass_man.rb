@@ -12,8 +12,6 @@ require "resolv-replace"
 require "pbmenv"
 
 require_relative "procon_bypass_man/version"
-require_relative "procon_bypass_man/remote_pbm_action"
-require_relative "procon_bypass_man/remote_macro"
 
 require_relative "procon_bypass_man/device_connection"
 require_relative "procon_bypass_man/support/usb_device_controller"
@@ -59,6 +57,9 @@ require_relative "procon_bypass_man/plugins"
 require_relative "procon_bypass_man/websocket/client"
 require_relative "procon_bypass_man/websocket/watchdog"
 require_relative "procon_bypass_man/websocket/forever"
+
+require_relative "procon_bypass_man/remote_pbm_action"
+require_relative "procon_bypass_man/remote_macro"
 
 STDOUT.sync = true
 Thread.abort_on_exception = true
@@ -143,7 +144,7 @@ module ProconBypassMan
     ProconBypassMan::Background::JobRunner.start!
     ProconBypassMan::Websocket::Client.start!
     # TODO ProconBypassMan::DrbObjects.start_all! みたいな感じで書きたい
-    ProconBypassMan::QueueOverProcess.start! # TODO namespace入れる
+    ProconBypassMan::RemoteMacro::QueueOverProcess.start!
     ProconBypassMan::Procon::PerformanceMeasurement::QueueOverProcess.start!
     ProconBypassMan::Scheduler.start!
 
@@ -163,7 +164,7 @@ module ProconBypassMan
   def self.terminate_pbm
     FileUtils.rm_rf(ProconBypassMan.pid_path)
     FileUtils.rm_rf(ProconBypassMan.digest_path)
-    ProconBypassMan::QueueOverProcess.shutdown
+    ProconBypassMan::RemoteMacro::QueueOverProcess.shutdown
   end
 
   # @return [void]

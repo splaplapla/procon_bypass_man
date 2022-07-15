@@ -53,7 +53,7 @@ describe ProconBypassMan::Websocket::Client do
         let(:data) { { "message" => {"action"=>"remote_action",  "uuid"=>"20f27b6a-f727-4f8e-819b-bb60035d2ebc" } } }
 
         it do
-          expect(ProconBypassMan::SendErrorCommand).to receive(:execute).with(error: ProconBypassMan::RemoteMacroObject::ValidationError)
+          expect(ProconBypassMan::SendErrorCommand).to receive(:execute).with(error: ProconBypassMan::RemoteMacro::RemoteMacroObject::ValidationError)
           subject
         end
       end
@@ -62,7 +62,7 @@ describe ProconBypassMan::Websocket::Client do
         let(:data) { { "message" => {"action"=>"remote_action",  "uuid"=>nil, 'steps'=>[] } } }
 
         it do
-          expect(ProconBypassMan::SendErrorCommand).to receive(:execute).with(error: ProconBypassMan::RemoteMacroObject::MustBeNotNilError)
+          expect(ProconBypassMan::SendErrorCommand).to receive(:execute).with(error: ProconBypassMan::RemoteMacro::RemoteMacroObject::MustBeNotNilError)
           subject
         end
       end

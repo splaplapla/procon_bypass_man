@@ -3,10 +3,11 @@ require 'drb/drb'
 # NOTE マスタープロセスでstart_distributed_object!をコールする必要がある
 #      forkをしたらそのさきでDRb.start_serviceをコールする必要がある
 module ProconBypassMan::CanOverProcess
-  @@drb_server = nil
-  @@drb_server_thread = nil
-
   PROTOCOL = "drbunix".freeze
+
+  def self.extended(mod)
+    mod.singleton_class.attr_accessor :drb_server, :drb_server_thread
+  end
 
   # @return [void]
   def start_distributed_object!
@@ -14,13 +15,13 @@ module ProconBypassMan::CanOverProcess
 
     FileUtils.rm_rf(socket_file_path) if File.exist?(socket_file_path)
     begin
-      @@drb_server = DRb.start_service(socket_path, distributed_class.new, safe_level: 1)
+      self.drb_server = DRb.start_service(socket_path, distributed_class.new, safe_level: 1)
     rescue Errno::EADDRINUSE => e
       ProconBypassMan.logger.error e
       raise
     end
 
-    @@drb_server_thread =
+    self.drb_server_thread =
       Thread.new do
         DRb.thread.join
       end
@@ -29,10 +30,10 @@ module ProconBypassMan::CanOverProcess
 
   # @return [void]
   def shutdown_distributed_object
-    if @@drb_server
-      @@drb_server_thread.kill
-      @@drb_server_thread = nil
-      @@drb_server.stop_service
+    if self.drb_server
+      self.drb_server_thread.kill
+      self.drb_server_thread = nil
+      self.drb_server.stop_service
     end
   end
   alias shutdown shutdown_distributed_object
