@@ -1,5 +1,5 @@
 # TODO CanOverProcessをextendする
-class ProconBypassMan::QueueOverProcess
+class ProconBypassMan::RemoteMacro::QueueOverProcess
   attr_reader :drb
 
   @@drb_server = nil

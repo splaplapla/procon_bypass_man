@@ -4,7 +4,7 @@ describe ProconBypassMan::RemoteMacroReceiver do
   require 'drb/drb'
 
   after do
-    ProconBypassMan::QueueOverProcess.shutdown
+    ProconBypassMan::RemoteMacro::QueueOverProcess.shutdown
   end
 
   describe '.start!' do
@@ -17,12 +17,12 @@ describe ProconBypassMan::RemoteMacroReceiver do
     context 'enable' do
       before do
         allow(ProconBypassMan.config).to receive(:enable_remote_macro?) { true }
-        ProconBypassMan::QueueOverProcess.start!
+        ProconBypassMan::RemoteMacro::QueueOverProcess.start!
       end
 
       it do
-        ProconBypassMan::QueueOverProcess.push(2)
-        ProconBypassMan::QueueOverProcess.push(false)
+        ProconBypassMan::RemoteMacro::QueueOverProcess.push(2)
+        ProconBypassMan::RemoteMacro::QueueOverProcess.push(false)
         expect(described_class).to receive(:receive).with(2)
         expect(described_class).to receive(:shutdown)
         expect { described_class.start_with_foreground! }.not_to raise_error

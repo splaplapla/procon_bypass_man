@@ -143,7 +143,7 @@ module ProconBypassMan
     ProconBypassMan::Background::JobRunner.start!
     ProconBypassMan::Websocket::Client.start!
     # TODO ProconBypassMan::DrbObjects.start_all! みたいな感じで書きたい
-    ProconBypassMan::QueueOverProcess.start! # TODO namespace入れる
+    ProconBypassMan::RemoteMacro::QueueOverProcess.start! # TODO namespace入れる
     ProconBypassMan::Procon::PerformanceMeasurement::QueueOverProcess.start!
     ProconBypassMan::Scheduler.start!
 
@@ -163,7 +163,7 @@ module ProconBypassMan
   def self.terminate_pbm
     FileUtils.rm_rf(ProconBypassMan.pid_path)
     FileUtils.rm_rf(ProconBypassMan.digest_path)
-    ProconBypassMan::QueueOverProcess.shutdown
+    ProconBypassMan::RemoteMacro::QueueOverProcess.shutdown
   end
 
   # @return [void]

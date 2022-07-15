@@ -1,8 +1,8 @@
 require "spec_helper"
 
-describe ProconBypassMan::QueueOverProcess do
+describe ProconBypassMan::RemoteMacro::QueueOverProcess do
   describe '.start!' do
-    subject { ProconBypassMan::QueueOverProcess.start! }
+    subject { ProconBypassMan::RemoteMacro::QueueOverProcess.start! }
 
     context 'when not enable' do
       it do
@@ -17,7 +17,7 @@ describe ProconBypassMan::QueueOverProcess do
       end
 
       after(:each) do
-        ProconBypassMan::QueueOverProcess.shutdown
+        ProconBypassMan::RemoteMacro::QueueOverProcess.shutdown
       end
 
       it do
@@ -29,11 +29,11 @@ describe ProconBypassMan::QueueOverProcess do
   describe 'pop, push' do
     before(:each) do
       allow(ProconBypassMan.config).to receive(:enable_remote_macro?) { true }
-      ProconBypassMan::QueueOverProcess.start!
+      ProconBypassMan::RemoteMacro::QueueOverProcess.start!
     end
 
     after(:each) do
-      ProconBypassMan::QueueOverProcess.shutdown
+      ProconBypassMan::RemoteMacro::QueueOverProcess.shutdown
     end
 
     before do
