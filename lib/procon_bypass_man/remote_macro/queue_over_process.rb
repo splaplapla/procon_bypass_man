@@ -1,63 +1,44 @@
-# TODO CanOverProcessをextendする
 class ProconBypassMan::RemoteMacro::QueueOverProcess
-  attr_reader :drb
+  extend ProconBypassMan::CanOverProcess
 
-  @@drb_server = nil
-  @@drb_server_thread = nil
+  include Singleton
 
-  def self.start!
-    return unless ProconBypassMan.config.enable_remote_macro?
-    require 'drb/drb'
+  attr_reader :distributed_queue
 
-    FileUtils.rm_rf(file_path) if File.exist?(file_path)
-    begin
-      @@drb_server = DRb.start_service(url, Queue.new, safe_level: 1)
-    rescue Errno::EADDRINUSE => e
-      ProconBypassMan.logger.error e
-      raise
-    end
-
-    @@drb_server_thread =
-      Thread.new do
-        DRb.thread.join
-      end
+  # @override
+  def self.enable?
+    true
   end
 
-  def self.shutdown
-    if @@drb_server
-      @@drb_server_thread.kill
-      @@drb_server.stop_service
-    end
+  # @override
+  def self.distributed_class
+    Queue
+  end
+
+  # @override
+  def self.socket_file_path
+    "/tmp/procon_bypass_man_remote_macro_queue".freeze
   end
 
   def self.push(value)
-    return unless ProconBypassMan.config.enable_remote_macro?
+    return unless enable?
 
-    drb.push(value)
+    instance.distributed_queue.push(value)
   end
 
   def self.pop
-    return unless ProconBypassMan.config.enable_remote_macro?
+    return unless enable?
 
-    drb.pop
+    instance.distributed_queue.pop
   end
 
-  def self.drb
-    return unless ProconBypassMan.config.enable_remote_macro?
+  def self.clear
+    return unless enable?
 
-    @@drb ||= new.drb
-  end
-
-  PROTOCOL = "drbunix"
-  def self.url
-    "#{PROTOCOL}:/tmp/procon_bypass_man_queue"
-  end
-
-  def self.file_path
-    url.gsub("#{PROTOCOL}:", "")
+    instance.distributed_queue.clear
   end
 
   def initialize
-    @drb = DRbObject.new_with_uri(self.class.url)
+    @distributed_queue = DRbObject.new_with_uri(self.class.socket_path)
   end
 end

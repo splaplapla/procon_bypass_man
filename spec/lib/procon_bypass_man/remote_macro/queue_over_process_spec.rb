@@ -7,7 +7,8 @@ describe ProconBypassMan::RemoteMacro::QueueOverProcess do
     context 'when not enable' do
       it do
         allow(ProconBypassMan.config).to receive(:enable_remote_macro?) { false }
-        expect(subject).to be_nil
+        expect(subject).to be_a(Thread)
+        ProconBypassMan::RemoteMacro::QueueOverProcess.shutdown
       end
     end
 
@@ -16,12 +17,9 @@ describe ProconBypassMan::RemoteMacro::QueueOverProcess do
         allow(ProconBypassMan.config).to receive(:enable_remote_macro?) { true }
       end
 
-      after(:each) do
-        ProconBypassMan::RemoteMacro::QueueOverProcess.shutdown
-      end
-
       it do
         expect { subject }.not_to raise_error
+        ProconBypassMan::RemoteMacro::QueueOverProcess.shutdown
       end
     end
   end
@@ -38,7 +36,7 @@ describe ProconBypassMan::RemoteMacro::QueueOverProcess do
 
     before do
       require 'drb/drb'
-      described_class.drb.clear
+      described_class.clear
     end
 
     it do
