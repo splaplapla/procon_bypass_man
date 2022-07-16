@@ -41,27 +41,24 @@ class ProconBypassMan::Bypass::ProconReadThrottling
   class AlreadyExecutedError < StandardError; end
 
   def run(&block)
-    begin
-      current_sec  = generate_current_position
-      range_key, current_token = @table.each do |range_key, value|
-        break([range_key, value]) if range_key.include?(current_sec)
-      end
+    current_sec  = generate_current_position
+    range_key, current_token = @table.each do |range_key, value|
+      break([range_key, value]) if range_key.include?(current_sec)
+    end
 
-      list_index = @range_list.index(range_key)
-      next_token_of_table = @table[@range_list[list_index + 1]] or (force_do_call = true)
-      if (current_token == next_token_of_table) || force_do_call
-        block.call
-        @table[range_key] = @token_generator.next
-        wait = range_key.last - current_sec
-        sleep(wait)
-      else
-        wait = range_key.last - current_sec
-        sleep(wait)
-        run(&block)
-        # raise AlreadyExecutedError
-      end
-    rescue AlreadyExecutedError
-      retry
+    list_index = @range_list.index(range_key)
+    next_token_of_table = @table[@range_list[list_index + 1]] or (force_do_call = true)
+    if (current_token == next_token_of_table) || force_do_call
+      block.call
+      @table[range_key] = @token_generator.next
+      wait = range_key.last - current_sec
+      sleep(wait)
+      # puts({current_position: generate_current_position, wait: wait, current_sec})
+    else
+      wait = range_key.last - current_sec
+      sleep(wait)
+      # puts({current_position: generate_current_position, wait: wait, current_sec})
+      run(&block)
     end
   end
 
