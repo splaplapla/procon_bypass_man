@@ -26,7 +26,7 @@ class ProconBypassMan::Bypass::ProconReadThrottling
     end
   end
 
-  ONE_CYCLE = 80
+  ONE_CYCLE = 73
 
   def initialize
     @step = (1.0 / ONE_CYCLE).floor(3) # 0.013
