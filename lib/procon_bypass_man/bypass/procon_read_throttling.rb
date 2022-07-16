@@ -38,7 +38,7 @@ class ProconBypassMan::Bypass::ProconReadThrottling
     @table[(@table.keys.last.last)..1.0 ] = @token_generator.current # 0.936..1.0
     @range_list = @table.keys
   end
-  class AAError < StandardError; end
+  class AlreadyExecutedError < StandardError; end
 
   def run(&block)
     begin
@@ -57,10 +57,9 @@ class ProconBypassMan::Bypass::ProconReadThrottling
       else
         wait = range_key.last - current_sec
         sleep(wait)
-        raise AAError
+        raise AlreadyExecutedError
       end
-    rescue AAError
-      puts "retry"
+    rescue AlreadyExecutedError
       retry
     end
   end

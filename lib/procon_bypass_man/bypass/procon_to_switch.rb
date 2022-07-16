@@ -64,12 +64,16 @@ class ProconBypassMan::Bypass::ProconToSwitch
 
   def start_procon_binary_thread(procon: , queue: )
     buffer_size = 10
+    throttling = ProconBypassMan::Bypass::ProconReadThrottling.new
+
     Thread.new do
       loop do
         begin
           raw_binary = nil
           Timeout.timeout(1.0) do
-            raw_binary = procon.read(64)
+            throttling.run do
+              raw_binary = procon.read(64)
+            end
           end
 
           queue.push(raw_binary)
