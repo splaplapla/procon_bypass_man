@@ -70,9 +70,9 @@ class ProconBypassMan::Bypass::ProconToSwitch
         begin
           raw_binary = nil
           Timeout.timeout(1.0) do
-            throttling.run do
+            # throttling.run do
               raw_binary = procon.read(64)
-            end
+            # end
           end
 
           queue.push(raw_binary) if queue.empty?
