@@ -56,7 +56,7 @@ class ProconBypassMan::Bypass::ProconReadThrottling
       # puts({current_position: generate_current_position, wait: wait, current_sec: current_sec})
     else
       wait = range_key.last - current_sec
-      sleep(wait)
+      # sleep(wait)
       # puts({current_position: generate_current_position, wait: wait, current_sec: current_sec})
       run(&block)
     end
