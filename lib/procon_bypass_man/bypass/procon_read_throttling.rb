@@ -52,12 +52,12 @@ class ProconBypassMan::Bypass::ProconReadThrottling
       block.call
       @table[range_key] = @token_generator.next
       wait = range_key.last - current_sec
-      sleep(wait)
-      # puts({current_position: generate_current_position, wait: wait, current_sec})
+      # sleep(wait)
+      # puts({current_position: generate_current_position, wait: wait, current_sec: current_sec})
     else
       wait = range_key.last - current_sec
       sleep(wait)
-      # puts({current_position: generate_current_position, wait: wait, current_sec})
+      # puts({current_position: generate_current_position, wait: wait, current_sec: current_sec})
       run(&block)
     end
   end
