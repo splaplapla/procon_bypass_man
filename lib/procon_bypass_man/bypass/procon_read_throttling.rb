@@ -57,7 +57,8 @@ class ProconBypassMan::Bypass::ProconReadThrottling
       else
         wait = range_key.last - current_sec
         sleep(wait)
-        raise AlreadyExecutedError
+        run(&block)
+        # raise AlreadyExecutedError
       end
     rescue AlreadyExecutedError
       retry
