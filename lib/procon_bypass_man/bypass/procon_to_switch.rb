@@ -63,7 +63,7 @@ class ProconBypassMan::Bypass::ProconToSwitch
   private
 
   def start_procon_binary_thread(procon: , queue: )
-    buffer_size = 10
+    buffer_size = 4
     Thread.new do
       loop do
         begin
