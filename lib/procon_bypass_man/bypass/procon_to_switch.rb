@@ -63,7 +63,6 @@ class ProconBypassMan::Bypass::ProconToSwitch
   private
 
   def start_procon_binary_thread(procon: , queue: )
-    buffer_size = 4
     Thread.new do
       loop do
         begin
@@ -72,8 +71,9 @@ class ProconBypassMan::Bypass::ProconToSwitch
             raw_binary = procon.read(64)
           end
 
-          queue.push(raw_binary)
-          queue.shift if queue.size > buffer_size # 古い入力が溜まったら古いものから捨てる
+          if queue.empty?
+            queue.push(raw_binary)
+          end
 
         rescue Timeout::Error # TODO テストが通っていない
           ProconBypassMan::SendErrorCommand.execute(error: "プロコンからの読み取りがタイムアウトになりました")
