@@ -49,3 +49,4 @@ sudo ./mitamae-armhf-linux local setup_raspi.mitamae.rb -l debug
 * /boot/config.txt に指定の文字列があること
 * /usr/share/pbm/shared/add_procon_gadget.sh が存在していること
 
+-->
