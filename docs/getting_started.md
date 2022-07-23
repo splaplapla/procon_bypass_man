@@ -18,6 +18,7 @@
 * [設定ファイルの書き方がわからない、エラーが起きるとき](#設定ファイルの書き方がわからない、エラーが起きるとき)
 * [procon_bypass_manのアップグレード方法](#procon_bypass_manのアップグレード方法)
 * [procon_bypass_man_cloudについて](#procon_bypass_man_cloudについて)
+* [最適化について](#最適化について)
 
 ## はじめに
 ### procon_bypass_manで解決したいこと
@@ -229,3 +230,22 @@ procon_bypass_man_cloudとの接続が完了後、Raspberry Piを起動時にpro
 セットアップ方法などでわからないことがあればdiscordで質問してみてください。  
   
 セットアップ方法は https://pbm-cloud.herokuapp.com/faq に書いています。
+
+## 最適化について
+本稿では、Rubyの最適化について書きます。上級者向けです。適用しなくても普通に動きますが、逆に適用したことで何らかのケースで遅くなる場合があるかもしれません。
+
+* jemallocを使う
+  * GCの回数が減る(はずな)ので小さな遅延が減ると考えています。が、違いを測定および体感はできませんでした。
+      * インストール方法と動作確認
+          * sudo apt install libjemalloc-dev
+          * export LD_PRELOAD=/usr/lib/arm-linux-gnueabihf/libjemalloc.so.2
+          * MALLOC_CONF=stats_print:true ruby -e "exit"
+      * 適用方法
+          * `/usr/share/pbm/current/systemd_units/pbm.service` の `ExecStart` 行に `LD_PRELOAD=/usr/lib/arm-linux-gnueabihf/libjemalloc.so.2` を足してください
+          * ex) `ExecStart=/bin/bash -c "LD_PRELOAD=/usr/lib/arm-linux-gnueabihf/libjemalloc.so.2 /home/pi/.rbenv/versions/3.0.1/bin/ruby /usr/share/pbm/current/app.rb"`
+* jitを有効にする
+  * 起動した直後は、コンパイルが走るので遅くなります。しかし、有効にしたところで本プログラムはIOバインドなので効果は薄いようです。
+      * 適用方法
+          * `/usr/share/pbm/current/systemd_units/pbm.service` の `ExecStart` 行に `--jit` を足してください
+          * ex) `ExecStart=/bin/bash -c "/home/pi/.rbenv/versions/3.0.1/bin/ruby --jit /usr/share/pbm/current/app.rb"`
+* ラズベリーパイのGUIをオフにする
