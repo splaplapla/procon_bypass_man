@@ -38,8 +38,11 @@ class ProconBypassMan::Bypass::ProconToSwitch
             )
           rescue IO::EAGAINWaitReadable # TODO テストが通っていない
             measurement.record_write_error
-            # next(false) # retryでもいい気がする
+            next(false) if $will_terminate_token
             retry
+          rescue Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError, Errno::ESHUTDOWN, Errno::ETIMEDOUT => e
+            ProconBypassMan::SendErrorCommand.execute(error: "Switchへの書き込み時にが切断されました。#{e.full_message}")
+            next(false)
           end
         end
 
@@ -65,6 +68,7 @@ class ProconBypassMan::Bypass::ProconToSwitch
   def start_procon_binary_thread(procon: , queue: )
     Thread.new do
       loop do
+        break if $will_terminate_token
         begin
           raw_binary = nil
           Timeout.timeout(1.0) do
@@ -77,6 +81,9 @@ class ProconBypassMan::Bypass::ProconToSwitch
 
         rescue Timeout::Error # TODO テストが通っていない
           ProconBypassMan::SendErrorCommand.execute(error: "プロコンからの読み取りがタイムアウトになりました")
+        rescue Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError, Errno::ESHUTDOWN, Errno::ETIMEDOUT => e
+            ProconBypassMan::SendErrorCommand.execute(error: "プロコンからの読み込み時にが切断されました。  #{e.full_message}")
+          break
         end
       end
     end
