@@ -39,7 +39,8 @@ class ProconBypassMan::Bypass::SwitchToProcon
             else
               self.bypass_value.binary.raw
             end
-          self.procon.write_nonblock(raw_data)
+          # バイブレーションを無効にしているのでおそらく書き込む必要はない
+          # self.procon.write_nonblock(raw_data)
         rescue IO::EAGAINWaitReadable
           next
         end
