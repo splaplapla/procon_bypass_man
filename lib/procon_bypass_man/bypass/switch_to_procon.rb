@@ -32,7 +32,7 @@ class ProconBypassMan::Bypass::SwitchToProcon
         begin
           raw_data =
             case
-            when self.bypass_value.binary.rumble_data?
+            when self.bypass_value.binary.rumble_data? # TODO そもそも無効になっているので消していい
               binary = ProconBypassMan::RumbleBinary.new(binary: self.bypass_value.binary.raw)
               binary.noop!
               binary.raw
