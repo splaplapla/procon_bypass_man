@@ -11,11 +11,12 @@ describe ProconBypassMan::Bypass::ProconToSwitch do
 
     before do
       allow(ProconBypassMan::SendErrorCommand).to receive(:execute)
+      allow(ProconBypassMan::Processor).to receive(:new) { double(:p).as_null_object } # バイナリの加工はしない
     end
 
     before do
       allow(instance).to receive(:start_procon_binary_thread)
-      instance.procon_binary_queue.push(data)
+      allow(instance.procon_binary_queue).to receive(:shift) { binary }
       allow(device).to receive(:write_nonblock)
     end
 
@@ -34,9 +35,7 @@ describe ProconBypassMan::Bypass::ProconToSwitch do
 
       context 'switchへの書き込みが成功するとき' do
         it { expect(subject).to eq(true) }
-        it do
-          expect{ subject}.to change { ProconBypassMan::Procon::PerformanceMeasurement::SpanTransferBuffer.instance.send(:spans).size }.by(1)
-        end
+        it { expect{ subject }.to change { ProconBypassMan::Procon::PerformanceMeasurement::SpanTransferBuffer.instance.send(:spans).size }.by(1) }
       end
 
       context 'switchへの書き込みが失敗するとき(Errno::ETIMEDOUT)' do
