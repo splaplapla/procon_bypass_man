@@ -18,6 +18,8 @@ class ProconBypassMan::Bypass::ProconToSwitch
     start_procon_binary_thread(procon: procon, queue: self.procon_binary_queue)
   end
 
+  # @raise [Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError, Errno::ESHUTDOWN, Errno::ETIMEDOUT]
+  # @return [void]
   def run
     ProconBypassMan::Procon::PerformanceMeasurement.measure do |measurement|
       self.bypass_value = ProconBypassMan::Bypass::BypassValue.new(nil)
@@ -49,8 +51,7 @@ class ProconBypassMan::Bypass::ProconToSwitch
               next(false)
             end
           rescue Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError, Errno::ESHUTDOWN, Errno::ETIMEDOUT => e
-            ProconBypassMan::SendErrorCommand.execute(error: "Switchへの書き込み時にが切断されました。#{e.full_message}")
-            next(false)
+            raise
           end
         end
 
@@ -90,7 +91,7 @@ class ProconBypassMan::Bypass::ProconToSwitch
         rescue Timeout::Error # TODO テストが通っていない
           ProconBypassMan::SendErrorCommand.execute(error: "プロコンからの読み取りがタイムアウトになりました")
         rescue Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError, Errno::ESHUTDOWN, Errno::ETIMEDOUT => e
-            ProconBypassMan::SendErrorCommand.execute(error: "プロコンからの読み込み時にが切断されました。  #{e.full_message}")
+          ProconBypassMan::SendErrorCommand.execute(error: "プロコンからの読み込み時にが切断されました。  #{e.full_message}")
           break
         end
       end

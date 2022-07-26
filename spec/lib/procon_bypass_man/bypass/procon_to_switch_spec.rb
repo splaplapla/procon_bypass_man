@@ -43,7 +43,7 @@ describe ProconBypassMan::Bypass::ProconToSwitch do
           allow(device).to receive(:write_nonblock) { raise Errno::ETIMEDOUT }
         end
 
-        it { expect(subject).to eq(false) }
+        it { expect { subject }.to raise_error(Errno::ETIMEDOUT) }
       end
 
       context 'switchへの書き込みが失敗するとき(IO::EAGAINWaitReadable)' do
