@@ -34,7 +34,9 @@ module ProconBypassMan::Procon::PerformanceMeasurement
     end
 
     def record_write_time(&block)
-      @write_time = Benchmark.realtime { block.call }
+      result = nil
+      @write_time = Benchmark.realtime { result = block.call }
+      return result
     end
 
     def record_read_time(&block)
@@ -43,7 +45,7 @@ module ProconBypassMan::Procon::PerformanceMeasurement
   end
 
   # measureをして、measureの結果をためる
-  # @return [void]
+  # @return [Boolean] 成功したか. テスト時に戻り値を使いたい
   def self.measure(&bypass_process_block)
     unless ProconBypassMan.config.enable_procon_performance_measurement?
       bypass_process_block.call(PerformanceSpan.new)
@@ -65,6 +67,8 @@ module ProconBypassMan::Procon::PerformanceMeasurement
     ProconBypassMan::Procon::PerformanceMeasurement::SpanTransferBuffer.instance.push_and_run_block_if_buffer_over(span) do |spans|
       ProconBypassMan::ProconPerformanceSpanTransferJob.perform_async(spans.dup)
     end
+
+    return span.succeed
   end
 
   # @return [MeasurementCollection, NilClass]

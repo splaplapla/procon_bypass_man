@@ -31,22 +31,30 @@ class ProconBypassMan::Bypass::ProconToSwitch
         end
         self.bypass_value.binary = ProconBypassMan::Domains::InboundProconBinary.new(binary: raw_output)
 
-        measurement.record_write_time do
+        retry_count = 0
+        result = measurement.record_write_time do
           begin
             self.gadget.write_nonblock(
               ProconBypassMan::Processor.new(bypass_value.binary).process
             )
-          rescue IO::EAGAINWaitReadable # TODO テストが通っていない
+            next(true)
+          rescue IO::EAGAINWaitReadable
             measurement.record_write_error
             next(false) if $will_terminate_token
-            retry
+
+            if 5 > retry_count
+              retry_count =  retry_count + 1
+              retry
+            else
+              next(false)
+            end
           rescue Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError, Errno::ESHUTDOWN, Errno::ETIMEDOUT => e
             ProconBypassMan::SendErrorCommand.execute(error: "Switchへの書き込み時にが切断されました。#{e.full_message}")
             next(false)
           end
         end
 
-        next(true)
+        next(result)
       })
     end
   end
