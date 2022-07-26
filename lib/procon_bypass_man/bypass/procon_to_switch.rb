@@ -18,6 +18,8 @@ class ProconBypassMan::Bypass::ProconToSwitch
     start_procon_binary_thread(procon: procon, queue: self.procon_binary_queue)
   end
 
+  # @raise [Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError, Errno::ESHUTDOWN, Errno::ETIMEDOUT]
+  # @return [void]
   def run
     ProconBypassMan::Procon::PerformanceMeasurement.measure do |measurement|
       self.bypass_value = ProconBypassMan::Bypass::BypassValue.new(nil)
@@ -31,19 +33,29 @@ class ProconBypassMan::Bypass::ProconToSwitch
         end
         self.bypass_value.binary = ProconBypassMan::Domains::InboundProconBinary.new(binary: raw_output)
 
-        measurement.record_write_time do
+        retry_count = 0
+        result = measurement.record_write_time do
           begin
             self.gadget.write_nonblock(
               ProconBypassMan::Processor.new(bypass_value.binary).process
             )
-          rescue IO::EAGAINWaitReadable # TODO テストが通っていない
+            next(true)
+          rescue IO::EAGAINWaitReadable
             measurement.record_write_error
-            # next(false) # retryでもいい気がする
-            retry
+            next(false) if $will_terminate_token
+
+            if 5 > retry_count
+              retry_count =  retry_count + 1
+              retry
+            else
+              next(false)
+            end
+          rescue Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError, Errno::ESHUTDOWN, Errno::ETIMEDOUT => e
+            raise
           end
         end
 
-        next(true)
+        next(result)
       })
     end
   end
@@ -65,6 +77,7 @@ class ProconBypassMan::Bypass::ProconToSwitch
   def start_procon_binary_thread(procon: , queue: )
     Thread.new do
       loop do
+        break if $will_terminate_token
         begin
           raw_binary = nil
           Timeout.timeout(1.0) do
@@ -77,6 +90,9 @@ class ProconBypassMan::Bypass::ProconToSwitch
 
         rescue Timeout::Error # TODO テストが通っていない
           ProconBypassMan::SendErrorCommand.execute(error: "プロコンからの読み取りがタイムアウトになりました")
+        rescue Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError, Errno::ESHUTDOWN, Errno::ETIMEDOUT => e
+          ProconBypassMan::SendErrorCommand.execute(error: "プロコンからの読み込み時にが切断されました。  #{e.full_message}")
+          break
         end
       end
     end
