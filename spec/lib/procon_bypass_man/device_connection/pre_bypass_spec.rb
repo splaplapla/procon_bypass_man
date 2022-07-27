@@ -29,9 +29,9 @@ describe ProconBypassMan::DeviceConnection::PreBypass do
     subject { instance.run_once }
 
     before do
-      allow(instance).to receive(:non_blocking_read_switch) { "hoge" }
+      allow(instance).to receive(:non_blocking_read_switch) { "01030000000000000000480000000000000000" }
       allow(instance).to receive(:send_procon)
-      allow(instance).to receive(:non_blocking_read_procon) { "hoge" }
+      allow(instance).to receive(:non_blocking_read_procon) { "01030000000000000000480000000000000000" }
       allow(instance).to receive(:send_switch)
     end
 

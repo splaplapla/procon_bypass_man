@@ -2,17 +2,26 @@ class ProconBypassMan::DeviceConnection::ProconSettingOverrider
   attr_accessor :procon, :output_report_watcher, :output_report_generator
 
   SUB_COMMAND_HOME_LED_ON = "38"
+  SUB_COMMAND_VIBRATION = "48"
+
   SUB_COMMAND_ARG_HOME_LED_ON = "1FF0FF"
+  SUB_COMMAND_ARG_VIBRATION_OFF = "00"
+
+  ALL_SETTINGS = {
+    home_led_on: [SUB_COMMAND_HOME_LED_ON, SUB_COMMAND_ARG_HOME_LED_ON],
+    vibration_off: [SUB_COMMAND_VIBRATION, SUB_COMMAND_ARG_VIBRATION_OFF],
+  }
+
+  # TODO 自動生成する
   SPECIAL_SUB_COMMAND_ARGS =  {
     SUB_COMMAND_HOME_LED_ON => SUB_COMMAND_ARG_HOME_LED_ON,
+    SUB_COMMAND_VIBRATION => SUB_COMMAND_ARG_VIBRATION_OFF,
   }
-  SETTING_HOME_LED_ON = { home_led_on: [SUB_COMMAND_HOME_LED_ON, SUB_COMMAND_ARG_HOME_LED_ON] }
-  ALL_SETTINGS = SETTING_HOME_LED_ON
 
   def initialize(procon: )
     use_steps = {}
     if ProconBypassMan.config.enable_home_led_on_connect
-      use_steps.merge!(SETTING_HOME_LED_ON)
+      use_steps.merge!(ALL_SETTINGS)
     end
 
     @setting_steps = use_steps.keys
