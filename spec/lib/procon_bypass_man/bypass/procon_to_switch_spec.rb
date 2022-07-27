@@ -15,8 +15,9 @@ describe ProconBypassMan::Bypass::ProconToSwitch do
     end
 
     before do
-      allow(instance).to receive(:start_procon_binary_thread)
-      allow(instance.procon_binary_queue).to receive(:shift) { binary }
+      bypass_value = double(:value)
+      allow(bypass_value).to receive(:binary) { ProconBypassMan::Domains::InboundProconBinary.new(binary: binary)  }
+      allow(ProconBypassMan::Bypass::BypassValue).to receive(:new) { bypass_value.as_null_object }
       allow(device).to receive(:write_nonblock)
     end
 
