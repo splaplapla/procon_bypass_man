@@ -78,7 +78,7 @@ describe ProconBypassMan::DeviceConnection::ProconSettingOverrider do
         end
 
         it do
-          expect(instance).to receive(:override_setting_by_step).and_call_original
+          expect(instance).to receive(:override_setting_by_step).and_call_original.exactly(2).times
           expect { instance_run_once }.not_to raise_error
 
           expect(instance).not_to receive(:re_override_setting_by_cmd)
