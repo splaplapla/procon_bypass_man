@@ -27,48 +27,54 @@ class ProconBypassMan::Bypass::ProconToSwitch
 
         raw_output = nil
         retry_count = 0
-        measurement.record_read_time do
-          begin
-            Timeout.timeout(1.0) do
-              raw_output = procon.read(64)
-            end
-          rescue Timeout::Error # TODO テストが通っていない
-            ProconBypassMan::SendErrorCommand.execute(error: "プロコンからの読み取りがタイムアウトになりました")
-            next(false)  if $will_terminate_token
+        ProconBypassMan::GC.stop_gc_in do
+          measurement.record_read_time do
+            begin
+              Timeout.timeout(1.0) do
+                raw_output = procon.read(64)
+              end
+            rescue Timeout::Error # TODO テストが通っていない
+              ProconBypassMan::SendErrorCommand.execute(error: "プロコンからの読み取りがタイムアウトになりました")
+              next(false)  if $will_terminate_token
 
-            if 5 > retry_count
-              retry_count =  retry_count + 1
-              retry
-            else
-              next(false)
+              if 5 > retry_count
+                retry_count =  retry_count + 1
+                retry
+              else
+                next(false)
+              end
+            rescue Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError, Errno::ESHUTDOWN, Errno::ETIMEDOUT => e
+              raise
             end
-          rescue Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError, Errno::ESHUTDOWN, Errno::ETIMEDOUT => e
-            raise
           end
         end
 
         self.bypass_value.binary = ProconBypassMan::Domains::InboundProconBinary.new(binary: raw_output)
 
         retry_count = 0
-        result = measurement.record_write_time do
-          begin
-            self.gadget.write_nonblock(
-              ProconBypassMan::Processor.new(bypass_value.binary).process
-            )
-            next(true)
-          rescue IO::EAGAINWaitReadable
-            measurement.record_write_error
-            next(false) if $will_terminate_token
+        result = ProconBypassMan::GC.stop_gc_in do
+          result = measurement.record_write_time do
+            begin
+              self.gadget.write_nonblock(
+                ProconBypassMan::Processor.new(bypass_value.binary).process
+              )
+              next(true)
+            rescue IO::EAGAINWaitReadable
+              measurement.record_write_error
+              next(false) if $will_terminate_token
 
-            if 5 > retry_count
-              retry_count =  retry_count + 1
-              retry
-            else
-              next(false)
+              if 5 > retry_count
+                retry_count =  retry_count + 1
+                retry
+              else
+                next(false)
+              end
+            rescue Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError, Errno::ESHUTDOWN, Errno::ETIMEDOUT => e
+              raise
             end
-          rescue Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError, Errno::ESHUTDOWN, Errno::ETIMEDOUT => e
-            raise
           end
+
+          next(result)
         end
 
         next(result)
