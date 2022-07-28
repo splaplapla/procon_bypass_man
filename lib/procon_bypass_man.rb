@@ -37,6 +37,7 @@ require_relative "procon_bypass_man/support/analog_stick_hypotenuse_tilting_powe
 require_relative "procon_bypass_man/support/never_exit_accidentally"
 require_relative "procon_bypass_man/support/cycle_sleep"
 require_relative "procon_bypass_man/support/can_over_process"
+require_relative "procon_bypass_man/support/gc"
 require_relative "procon_bypass_man/procon_display"
 require_relative "procon_bypass_man/background"
 require_relative "procon_bypass_man/commands"
