@@ -2,13 +2,14 @@ require "spec_helper"
 
 describe ProconBypassMan::GC  do
   describe '.stop_gc_in' do
-    it do
+    let(:object) do
       object = double(:mock)
-      def object.run; end
-      expect(object).to receive(:run)
+      allow(object).to receive(:run) { 1 }
+      object
+    end
 
-      described_class.stop_gc_in { object.run }
-
+    it do
+      expect(described_class.stop_gc_in { object.run }).to eq(1)
       expect(::GC.enable).to eq(false)
     end
   end
