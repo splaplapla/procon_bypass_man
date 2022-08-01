@@ -25,6 +25,12 @@ class ProconBypassMan::Runner
       child_pid = Kernel.fork do
         $will_terminate_token = false
         DRb.start_service if defined?(DRb)
+        BlueGreenProcess.configure do |config|
+          config.after_fork = -> {
+            DRb.start_service if defined?(DRb)
+            ProconBypassMan::Background::JobRunner.start!
+          }
+        end
         ProconBypassMan::RemoteMacroReceiver.start!
         ProconBypassMan::ProconDisplay::Server.start!
         ProconBypassMan::BypassCommand.new(gadget: @gadget, procon: @procon).execute # ここでblockingする

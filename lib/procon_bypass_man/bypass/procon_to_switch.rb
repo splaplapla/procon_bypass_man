@@ -4,8 +4,8 @@ class ProconBypassMan::Bypass::ProconToSwitch
   extend ProconBypassMan::CallbacksRegisterable
   include ProconBypassMan::Callbacks
 
-  define_callbacks :run
-  set_callback :run, :after, :log_after_run
+  define_callbacks :work
+  set_callback :work, :after, :log_after_run
 
   register_callback_module(ProconBypassMan::ProconDisplay::BypassHook)
 
@@ -18,11 +18,11 @@ class ProconBypassMan::Bypass::ProconToSwitch
 
   # @raise [Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError, Errno::ESHUTDOWN, Errno::ETIMEDOUT]
   # @return [void]
-  def run
+  def work(*)
     ProconBypassMan::Procon::PerformanceMeasurement.measure do |measurement|
       self.bypass_value = ProconBypassMan::Bypass::BypassValue.new(nil)
 
-      next(run_callbacks(:run) {
+      next(run_callbacks(:work) {
         next(false) if $will_terminate_token
 
         raw_output = nil

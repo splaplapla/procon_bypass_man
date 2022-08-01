@@ -61,22 +61,29 @@ class ProconBypassMan::BypassCommand
     # シビア
     t2 = Thread.new do
       bypass = ProconBypassMan::Bypass::ProconToSwitch.new(gadget: @gadget, procon: @procon)
+      process = BlueGreenProcess.new(
+        worker_instance: bypass,
+        max_work: 60 * 71 * 2, # 60秒間に71回くらいバイパスするので2秒くらいで入れ替える
+      )
       loop do
         if $will_terminate_token
           if $will_terminate_token == WILL_TERMINATE_TOKEN::TERMINATE
             bypass.direct_connect_switch_via_bluetooth
+            process.shutdown
           end
           break
         end
 
-        bypass.run
+        process.work
       rescue EOFError => e
         ProconBypassMan::SendErrorCommand.execute(error: "Proconが切断されました。終了処理を開始します. #{e.full_message}")
         Process.kill "TERM", Process.ppid
+        process.shutdown
         break
       rescue Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError, Errno::ESHUTDOWN => e
         ProconBypassMan::SendErrorCommand.execute(error: "Proconが切断されました。終了処理を開始します2. #{e.full_message}")
         Process.kill "TERM", Process.ppid
+        process.shutdown
         break
       end
     end

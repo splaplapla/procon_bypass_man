@@ -17,7 +17,7 @@ describe ProconBypassMan::Bypass do
     let(:dev) { StringIO.new(output) }
     let(:bypass) { described_class.new(gadget: dev, procon: dev) }
 
-    subject { described_class.new(gadget: dev, procon: dev).run }
+    subject { described_class.new(gadget: dev, procon: dev).work }
 
     it do
       double(:processor).tap do |processor|
