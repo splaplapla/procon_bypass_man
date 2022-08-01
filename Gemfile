@@ -13,6 +13,8 @@ gem "rubocop", require: false
 gem "sinatra", require: false
 gem "webrick", require: false
 
+gem "blue_green_process", path: '/Users/koji/src/blue_green_process'
+
 if Gem::Version.new(RUBY_VERSION) > Gem::Version.new("2.6.0")
   gem 'typeprof', require: false
   gem 'rbs', require: false

@@ -6,6 +6,11 @@ PATH
       pbmenv (>= 0.1.9)
       sorted_set
 
+PATH
+  remote: /Users/koji/src/blue_green_process
+  specs:
+    blue_green_process (0.1.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -125,6 +130,7 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
+  blue_green_process!
   procon_bypass_man!
   pry
   rake
