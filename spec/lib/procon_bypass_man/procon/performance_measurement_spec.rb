@@ -48,16 +48,16 @@ describe ProconBypassMan::Procon::PerformanceMeasurement do
   end
 
   describe '.summarize' do
-    let(:span_class) { Struct.new(:time_taken, :read_error_count, :write_error_count, :succeed, :interval_from_previous_succeed, :write_time, :read_time) }
+    let(:span_class) { Struct.new(:time_taken, :read_error_count, :write_error_count, :succeed, :interval_from_previous_succeed, :write_time, :read_time, :gc_count, ) }
 
     subject { described_class.summarize(spans: spans) }
 
     context '値があるとき' do
       let(:spans) do
-        [ span_class.new(1, 1, 2, true, 1, 0.2, 0.2),
-          span_class.new(4, 1, 2, true, 2, 0.1, 0.1),
-          span_class.new(2, 1, 2, true, 3, 0.1, 0.1),
-          span_class.new(3, 1, 2, false, 3, 0.1, 0.1),
+        [ span_class.new(1, 1, 2, true, 1, 0.2, 0.2, 2),
+          span_class.new(4, 1, 2, true, 2, 0.1, 0.1, 1),
+          span_class.new(2, 1, 2, true, 3, 0.1, 0.1 , 1),
+          span_class.new(3, 1, 2, false, 3, 0.1, 0.1, 2),
         ]
       end
 
@@ -72,6 +72,7 @@ describe ProconBypassMan::Procon::PerformanceMeasurement do
       it { expect(subject.interval_from_previous_succeed_p50).to eq(2.0) }
       it { expect(subject.write_time_max).to eq(0.2) }
       it { expect(subject.write_time_p50).to eq(0.1) }
+      it { expect(subject.gc_count).to eq(6) }
     end
 
     context '空配列のとき' do
@@ -87,6 +88,7 @@ describe ProconBypassMan::Procon::PerformanceMeasurement do
       it { expect(subject.interval_from_previous_succeed_p50).to eq(0) }
       it { expect(subject.write_time_max).to eq(0) }
       it { expect(subject.write_time_p50).to eq(0) }
+      it { expect(subject.gc_count).to eq(0) }
     end
   end
 end
