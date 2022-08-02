@@ -11,7 +11,7 @@ require 'procon_bypass_man/procon/performance_measurement/last_bypass_at'
 
 module ProconBypassMan::Procon::PerformanceMeasurement
   class PerformanceSpan
-    attr_accessor :time_taken, :succeed, :interval_from_previous_succeed
+    attr_accessor :time_taken, :succeed, :interval_from_previous_succeed, :gc_count
     attr_reader :write_error_count, :read_error_count, :write_time, :read_time
 
     def initialize
@@ -52,7 +52,9 @@ module ProconBypassMan::Procon::PerformanceMeasurement
       return
     end
 
+    snapshot_gc_count = GC.count
     span = PerformanceSpan.new
+
     span.time_taken = Benchmark.realtime {
       span.succeed = bypass_process_block.call(span)
     }.floor(3)
@@ -63,11 +65,14 @@ module ProconBypassMan::Procon::PerformanceMeasurement
       end
     end
 
+    (GC.count - snapshot_gc_count).tap do |increased_gc_count|
+      span.gc_count = increased_gc_count
+    end
+
     # measureするたびにperform_asyncしているとjob queueが詰まるのでbufferingしている
     ProconBypassMan::Procon::PerformanceMeasurement::SpanTransferBuffer.instance.push_and_run_block_if_buffer_over(span) do |spans|
       ProconBypassMan::ProconPerformanceSpanTransferJob.perform_async(spans.dup)
     end
-
     return span.succeed
   end
 
