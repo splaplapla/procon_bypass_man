@@ -37,6 +37,19 @@ describe ProconBypassMan::Bypass::ProconToSwitch do
       context 'switchへの書き込みが成功するとき' do
         it { expect(subject).to eq(true) }
         it { expect{ subject }.to change { ProconBypassMan::Procon::PerformanceMeasurement::SpanTransferBuffer.instance.send(:spans).size }.by(1) }
+
+        context 'wrap blue green process' do
+          it do
+            BlueGreenProcess.config.logger = ProconBypassMan.logger
+            process = BlueGreenProcess.new(
+              worker_instance: instance,
+              max_work: 4,
+            )
+            process.work
+            process.work
+            process.shutdown
+          end
+        end
       end
 
       context 'switchへの書き込みが失敗するとき(Errno::ETIMEDOUT)' do
