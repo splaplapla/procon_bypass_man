@@ -53,18 +53,19 @@ describe ProconBypassMan::Bypass::ProconToSwitch do
         end
 
         it { expect(subject).to eq(false) }
-      end
 
-      context '終了フラグが立っている時' do
-        before do
-          $will_terminate_token = true
+        # TODO proconからの読み込みで吸収されている.... メソッドを分ける。でも他のブランチと競合するので後でやる
+        context '終了フラグが立っている時' do
+          before do
+            $will_terminate_token = true
+          end
+
+          after do
+            $will_terminate_token = false
+          end
+
+          it { expect(subject).to eq(false) }
         end
-
-        after do
-          $will_terminate_token = false
-        end
-
-        it { expect(subject).to eq(false) }
       end
     end
   end

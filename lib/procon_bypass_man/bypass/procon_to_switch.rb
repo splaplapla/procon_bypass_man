@@ -4,6 +4,9 @@ class ProconBypassMan::Bypass::ProconToSwitch
   extend ProconBypassMan::CallbacksRegisterable
   include ProconBypassMan::Callbacks
 
+  class CouldNotReadFromProconError < StandardError; end
+  class CouldNotWriteToSwitchError < StandardError; end
+
   define_callbacks :run
   set_callback :run, :after, :log_after_run
 
@@ -26,51 +29,55 @@ class ProconBypassMan::Bypass::ProconToSwitch
         next(false) if $will_terminate_token
 
         raw_output = nil
-        retry_count = 0
         ProconBypassMan::GC.stop_gc_in do
           measurement.record_read_time do
             begin
-              Timeout.timeout(1.0) do
-                raw_output = procon.read(64)
+              ProconBypassMan::Retryable.retryable(tries: 5, on_no_retry: [Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError, Errno::ESHUTDOWN, Errno::ETIMEDOUT]) do
+                begin
+                  Timeout.timeout(1.0) do
+                    return(false) if $will_terminate_token
+                    raw_output = procon.read(64)
+                  end
+                rescue Timeout::Error # TODO テストが通っていない
+                  return(false) if $will_terminate_token
+                  ProconBypassMan::SendErrorCommand.execute(error: "プロコンからの読み取りがタイムアウトになりました")
+                  raise CouldNotReadFromProconError
+                rescue Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError, Errno::ESHUTDOWN, Errno::ETIMEDOUT => e
+                  return(false) if $will_terminate_token
+                  raise
+                end
               end
-            rescue Timeout::Error # TODO テストが通っていない
-              ProconBypassMan::SendErrorCommand.execute(error: "プロコンからの読み取りがタイムアウトになりました")
-              next(false)  if $will_terminate_token
-
-              if 5 > retry_count
-                retry_count =  retry_count + 1
-                retry
-              else
-                next(false)
-              end
-            rescue Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError, Errno::ESHUTDOWN, Errno::ETIMEDOUT => e
-              raise
+            # TODO CouldNotReadFromProconErrorによる読み込み失敗は想定しなくてテスト書いていない
+            rescue CouldNotReadFromProconError
+              next(false)
             end
           end
         end
 
         self.bypass_value.binary = ProconBypassMan::Domains::InboundProconBinary.new(binary: raw_output)
 
-        retry_count = 0
         result = ProconBypassMan::GC.stop_gc_in do
           result = measurement.record_write_time do
             begin
-              self.gadget.write_nonblock(
-                ProconBypassMan::Processor.new(bypass_value.binary).process
-              )
-              next(true)
-            rescue IO::EAGAINWaitReadable
-              measurement.record_write_error
-              next(false) if $will_terminate_token
-
-              if 5 > retry_count
-                retry_count =  retry_count + 1
-                retry
-              else
-                next(false)
+              ProconBypassMan::Retryable.retryable(tries: 5, on_no_retry: [Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError, Errno::ESHUTDOWN, Errno::ETIMEDOUT]) do
+                begin
+                  # 終了処理を希望されているのでブロックを無視してメソッドを抜けてOK
+                  return(false) if $will_terminate_token # rubocop:disable Lint/NoReturnInBeginEndBlocks
+                  self.gadget.write_nonblock(
+                    ProconBypassMan::Processor.new(bypass_value.binary).process
+                  )
+                  next(true)
+                rescue IO::EAGAINWaitReadable
+                  return(false) if $will_terminate_token # rubocop:disable Lint/NoReturnInBeginEndBlocks
+                  measurement.record_write_error
+                  raise CouldNotWriteToSwitchError
+                rescue Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError, Errno::ESHUTDOWN, Errno::ETIMEDOUT => e
+                  return(false) if $will_terminate_token # rubocop:disable Lint/NoReturnInBeginEndBlocks
+                  raise
+                end
               end
-            rescue Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError, Errno::ESHUTDOWN, Errno::ETIMEDOUT => e
-              raise
+            rescue CouldNotWriteToSwitchError
+              next(false)
             end
           end
 
