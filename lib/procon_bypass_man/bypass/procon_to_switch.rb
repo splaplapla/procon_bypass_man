@@ -35,6 +35,7 @@ class ProconBypassMan::Bypass::ProconToSwitch
               ProconBypassMan::Retryable.retryable(tries: 5, on_no_retry: [Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError, Errno::ESHUTDOWN, Errno::ETIMEDOUT]) do
                 begin
                   Timeout.timeout(1.0) do
+                    return(false) if $will_terminate_token
                     raw_output = procon.read(64)
                   end
                 rescue Timeout::Error # TODO テストが通っていない
@@ -42,6 +43,7 @@ class ProconBypassMan::Bypass::ProconToSwitch
                   ProconBypassMan::SendErrorCommand.execute(error: "プロコンからの読み取りがタイムアウトになりました")
                   raise CouldNotReadFromProconError
                 rescue Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError, Errno::ESHUTDOWN, Errno::ETIMEDOUT => e
+                  return(false) if $will_terminate_token
                   raise
                 end
               end
@@ -59,16 +61,18 @@ class ProconBypassMan::Bypass::ProconToSwitch
             begin
               ProconBypassMan::Retryable.retryable(tries: 5, on_no_retry: [Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError, Errno::ESHUTDOWN, Errno::ETIMEDOUT]) do
                 begin
+                  # 終了処理を希望されているのでブロックを無視してメソッドを抜けてOK
+                  return(false) if $will_terminate_token # rubocop:disable Lint/NoReturnInBeginEndBlocks
                   self.gadget.write_nonblock(
                     ProconBypassMan::Processor.new(bypass_value.binary).process
                   )
                   next(true)
                 rescue IO::EAGAINWaitReadable
-                  # 終了処理を希望されているのでブロックを無視してメソッドを抜けてOK
                   return(false) if $will_terminate_token # rubocop:disable Lint/NoReturnInBeginEndBlocks
                   measurement.record_write_error
                   raise CouldNotWriteToSwitchError
                 rescue Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError, Errno::ESHUTDOWN, Errno::ETIMEDOUT => e
+                  return(false) if $will_terminate_token # rubocop:disable Lint/NoReturnInBeginEndBlocks
                   raise
                 end
               end
