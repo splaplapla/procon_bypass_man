@@ -160,6 +160,7 @@ module ProconBypassMan
   def self.ready_pbm
     ProconBypassMan::PrintBootMessageCommand.execute
     ProconBypassMan::ReportLoadConfigJob.perform_async(ProconBypassMan.config.raw_setting)
+    BlueGreenProcess.config.logger = ProconBypassMan.logger
   end
 
   # @return [void]
