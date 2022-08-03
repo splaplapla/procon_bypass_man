@@ -74,7 +74,11 @@ class ProconBypassMan::BypassCommand
           break
         end
 
-        process.work
+        process_switching_time = Benchmark.realtime do
+          process.work
+        end
+        ProconBypassMan.logger.info("process_switching_time: #{process_switching_time}")
+
       rescue EOFError => e
         ProconBypassMan::SendErrorCommand.execute(error: "Proconが切断されました。終了処理を開始します. #{e.full_message}")
         Process.kill "TERM", Process.ppid
