@@ -57,14 +57,15 @@ class ProconBypassMan::Bypass::ProconToSwitch
         result = ProconBypassMan::GC.stop_gc_in do
           result = measurement.record_write_time do
             begin
-              ProconBypassMan::Retryable.retryable(tries: 5, on_no_retry: [Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError, Errno::ESHUTDOWN, Errno::ETIMEDOUT]) do |retried|
+              ProconBypassMan::Retryable.retryable(tries: 5, on_no_retry: [Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError, Errno::ESHUTDOWN, Errno::ETIMEDOUT]) do
                 begin
                   self.gadget.write_nonblock(
                     ProconBypassMan::Processor.new(bypass_value.binary).process
                   )
                   next(true)
                 rescue IO::EAGAINWaitReadable
-                  return(false) if $will_terminate_token
+                  # 終了処理を希望されているのでブロックを無視してメソッドを抜けてOK
+                  return(false) if $will_terminate_token # rubocop:disable Lint/NoReturnInBeginEndBlocks
                   measurement.record_write_error
                   raise CouldNotWriteToSwitchError
                 rescue Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError, Errno::ESHUTDOWN, Errno::ETIMEDOUT => e
