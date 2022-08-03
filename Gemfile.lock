@@ -1,3 +1,10 @@
+GIT
+  remote: https://github.com/splaplapla/blue_green_process.git
+  revision: 2c49f48a0bbd05d37474c50d43d80c36256f468e
+  branch: master
+  specs:
+    blue_green_process (0.1.1)
+
 PATH
   remote: .
   specs:
@@ -5,11 +12,6 @@ PATH
       action_cable_client
       pbmenv (>= 0.1.9)
       sorted_set
-
-PATH
-  remote: /Users/koji/src/blue_green_process
-  specs:
-    blue_green_process (0.1.1)
 
 GEM
   remote: https://rubygems.org/

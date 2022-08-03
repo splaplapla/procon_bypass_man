@@ -12,7 +12,7 @@ gem "timecop"
 gem "rubocop", require: false
 gem "sinatra", require: false
 gem "webrick", require: false
-gem "blue_green_process", path: '/Users/koji/src/blue_green_process' # TODO gemspecで管理する
+gem "blue_green_process", github: 'splaplapla/blue_green_process', branch: 'master' # TODO gemspecで管理する
 
 if Gem::Version.new(RUBY_VERSION) > Gem::Version.new("2.6.0")
   gem 'typeprof', require: false
