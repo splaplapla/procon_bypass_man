@@ -9,9 +9,6 @@ class ProconBypassMan::BypassCommand
   def initialize(gadget: , procon: )
     @gadget = gadget
     @procon = procon
-
-    ProconBypassMan::Background::JobRunner.queue.clear # forkしたときに残留物も移ってしまうため
-    ProconBypassMan::Background::JobRunner.start!
   end
 
   def execute
