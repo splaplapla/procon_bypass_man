@@ -162,6 +162,15 @@ module ProconBypassMan
     ProconBypassMan::ReportLoadConfigJob.perform_async(ProconBypassMan.config.raw_setting)
   end
 
+  def self.after_fork_on_bypass_process
+    DRb.start_service if defined?(DRb)
+    ProconBypassMan::RemoteMacroReceiver.start!
+    ProconBypassMan::ProconDisplay::Server.start!
+
+    ProconBypassMan::Background::JobRunner.queue.clear # forkしたときに残留物も移ってしまうため
+    ProconBypassMan::Background::JobRunner.start!
+  end
+
   # @return [void]
   def self.terminate_pbm
     FileUtils.rm_rf(ProconBypassMan.pid_path)
