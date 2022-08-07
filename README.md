@@ -77,6 +77,7 @@ Switch <-- (PBM): ZR連打
 * sshなしで運用は可能ですか？
     * https://pbm-cloud.herokuapp.com を使えば、sshを使わずに運用が可能です
 
+<!--
 ## TODO
 * レコーディング機能(プロコンの入力をマクロとして登録ができる)
 * ドキュメントを書く(doing)
@@ -100,6 +101,7 @@ sudo kill -USR2 `cat ./pbm_pid`
 * CHANGELOG.md に日付を書く
 * be rake release
 * githubのreleaseを作成する
+-->
 
 ## License
 
