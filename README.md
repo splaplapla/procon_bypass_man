@@ -103,10 +103,6 @@ sudo kill -USR2 `cat ./pbm_pid`
 * githubのreleaseを作成する
 -->
 
-## License
-
-The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
-
 ## 開発を支援してくれる人を募集しています
 * https://jiikko.fanbox.cc/
 * procon_bypassの運営・開発・サーバー費用に充てさせていただきます。また、問い合わせに優先して対応します。
@@ -114,3 +110,7 @@ The gem is available as open source under the terms of the [MIT License](https:/
 ## Links
 * https://discord.gg/bEcRNKf4ep
   * 質問などご意見をdiscordでも受け付けています
+
+## License
+
+The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
