@@ -160,6 +160,9 @@ module ProconBypassMan
   def self.ready_pbm
     ProconBypassMan::PrintBootMessageCommand.execute
     ProconBypassMan::ReportLoadConfigJob.perform_async(ProconBypassMan.config.raw_setting)
+    pid = fork do
+      ProconBypassMan::Background::WorkerProcess.run
+    end
   end
 
   def self.after_fork_on_bypass_process
