@@ -7,7 +7,7 @@ class ProconBypassMan::RemoteMacro::QueueOverProcess
 
   # @override
   def self.enable?
-    true
+    ProconBypassMan.config.enable_remote_macro?
   end
 
   # @override

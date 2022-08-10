@@ -15,14 +15,6 @@ describe ProconBypassMan::RemoteMacroSender do
     let(:uuid) { "b" }
     let(:steps) { "c" }
 
-    before do
-      ProconBypassMan::RemoteMacro::QueueOverProcess.start!
-    end
-
-    after do
-      ProconBypassMan::RemoteMacro::QueueOverProcess.shutdown
-    end
-
     subject { described_class.execute(name: name, uuid: uuid, steps: steps) }
 
     it do
