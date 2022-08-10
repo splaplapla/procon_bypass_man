@@ -7,6 +7,7 @@ describe ProconBypassMan::Procon::PerformanceMeasurement do
     before do
       allow(ProconBypassMan.config).to receive(:enable_procon_performance_measurement?) { true }
       allow(ProconBypassMan::Procon::PerformanceMeasurement::SpanTransferBuffer.instance).to receive(:buffer_over?) { true }
+      allow(ProconBypassMan::Procon::PerformanceMeasurement::QueueOverProcess).to receive(:enable?) { true }
       ProconBypassMan::Procon::PerformanceMeasurement::QueueOverProcess.start!
     end
 

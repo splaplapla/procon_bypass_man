@@ -1,6 +1,15 @@
 require "spec_helper"
 
 describe ProconBypassMan::RemoteMacro::QueueOverProcess do
+  before do
+    allow(ProconBypassMan::RemoteMacro::QueueOverProcess).to receive(:enable?) { true }
+    ProconBypassMan::RemoteMacro::QueueOverProcess.start!
+  end
+
+  after do
+    ProconBypassMan::RemoteMacro::QueueOverProcess.shutdown
+  end
+
   describe '.start!' do
     subject { ProconBypassMan::RemoteMacro::QueueOverProcess.start! }
 

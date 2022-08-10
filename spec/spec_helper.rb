@@ -27,8 +27,11 @@ ENV['PBM_ENV'] = 'test'
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 RSpec.configure do |config|
   config.before(:each) do
-    allow(ProconBypassMan::Background::JobQueue).to receive(:enable?) { false }
     allow(ProconBypassMan::Background::WorkerProcess).to receive(:run)
+    allow(ProconBypassMan::Background::JobQueue).to receive(:enable?) { false }
+    allow(ProconBypassMan::RemoteMacro::QueueOverProcess).to receive(:enable?) { false }
+    allow(ProconBypassMan::Procon::PerformanceMeasurement::QueueOverProcess).to receive(:enable?) { false }
+
     allow(ProconBypassMan::HttpClient::HttpRequest::Get).to receive(:new)
     allow(ProconBypassMan::HttpClient::HttpRequest::Post).to receive(:new)
     allow(ProconBypassMan.config).to receive(:internal_server_pool) { ProconBypassMan::ServerPool.new(servers: []) }
