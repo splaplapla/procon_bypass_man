@@ -1,4 +1,4 @@
-class ProconBypassMan::Background::GlobalJobQueue
+class ProconBypassMan::Background::JobQueue
   extend ProconBypassMan::CanOverProcess
 
   include Singleton

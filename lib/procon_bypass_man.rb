@@ -73,6 +73,10 @@ module ProconBypassMan
   class CouldNotLoadConfigError < StandardError; end
   class NotFoundProconError < StandardError; end
 
+  class << self
+    attr_accessor :worker_pid
+  end
+
   # @return [void]
   def self.run(setting_path: nil)
     ProconBypassMan::PrintMessageCommand.execute(text: "PBMを起動しています")
@@ -160,7 +164,7 @@ module ProconBypassMan
   def self.ready_pbm
     ProconBypassMan::PrintBootMessageCommand.execute
     ProconBypassMan::ReportLoadConfigJob.perform_async(ProconBypassMan.config.raw_setting)
-    pid = fork do
+    self.worker_pid = fork do
       ProconBypassMan::Background::WorkerProcess.run
     end
   end
@@ -179,6 +183,7 @@ module ProconBypassMan
     FileUtils.rm_rf(ProconBypassMan.pid_path)
     FileUtils.rm_rf(ProconBypassMan.digest_path)
     ProconBypassMan::RemoteMacro::QueueOverProcess.shutdown
+    Process.kill "TERM", worker_pid if worker_pid
   end
 
   # @return [void]
