@@ -32,6 +32,12 @@ class ProconBypassMan::Background::JobQueue
     instance.distributed_queue.pop
   end
 
+  def self.size
+    return unless enable?
+
+    instance.distributed_queue.size
+  end
+
   def self.clear
     return unless enable?
 

@@ -3,8 +3,8 @@ class BackgroundJobInlinePerform
     yield
 
     loop do
-      break if ProconBypassMan::Background::JobRunner.queue.empty?
-      job = ProconBypassMan::Background::JobRunner.queue.pop
+      break if ProconBypassMan::Background::JobQueue.size == 0
+      job = ProconBypassMan::Background::JobQueue.pop
       job[:reporter_class].perform(*job[:args])
     end
   end

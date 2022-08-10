@@ -6,7 +6,7 @@ module ProconBypassMan
       end
 
       def perform_async(*args)
-        ProconBypassMan::Background::JobRunner.push(
+        ProconBypassMan::Background::JobQueue.push(
           args: args,
           reporter_class: self,
         )

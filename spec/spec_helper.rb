@@ -4,6 +4,7 @@ require "timecop"
 require "bundler/setup"
 require "support/setting"
 require "support/background_job_inline_perform"
+require "support/enable_job_queue_on_drb"
 require "support/ext/procon_bypass_man"
 require "support/ext/procon_user_operation"
 require "support/ext/procon"
@@ -26,8 +27,8 @@ ENV['PBM_ENV'] = 'test'
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 RSpec.configure do |config|
   config.before(:each) do
-    ProconBypassMan::Background::JobRunner.queue.clear
-
+    allow(ProconBypassMan::Background::JobQueue).to receive(:enable?) { false }
+    allow(ProconBypassMan::Background::WorkerProcess).to receive(:run)
     allow(ProconBypassMan::HttpClient::HttpRequest::Get).to receive(:new)
     allow(ProconBypassMan::HttpClient::HttpRequest::Post).to receive(:new)
     allow(ProconBypassMan.config).to receive(:internal_server_pool) { ProconBypassMan::ServerPool.new(servers: []) }

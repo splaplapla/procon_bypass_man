@@ -1,6 +1,4 @@
 class ProconBypassMan::Runner
-  class InterruptForRestart < StandardError; end
-
   include ProconBypassMan::SignalHandler
 
   def initialize(gadget: , procon: )
@@ -35,7 +33,7 @@ class ProconBypassMan::Runner
           signal = readable_io.first[0].gets.strip
           handle_signal(signal)
         end
-      rescue InterruptForRestart
+      rescue ProconBypassMan::InterruptForRestart
         ProconBypassMan::PrintMessageCommand.execute(text: "設定ファイルの再読み込みを開始します")
         Process.kill("USR2", child_pid)
         Process.wait
