@@ -12,7 +12,7 @@ describe ProconBypassMan::SendReloadConfigEventCommand do
       described_class.execute
       if ProconBypassMan::Background::JobQueue.size > 0
         job = ProconBypassMan::Background::JobQueue.pop
-        expect(job).to include(args: instance_of(Array), reporter_class: ProconBypassMan::ReportReloadConfigJob)
+        expect(job).to include(args: instance_of(Array), reporter_class: 'ProconBypassMan::ReportReloadConfigJob')
       else
         raise "おかしい"
       end
