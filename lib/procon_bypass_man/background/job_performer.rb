@@ -6,10 +6,9 @@ module ProconBypassMan
         @args = args
       end
 
+      # @raise [any]
       def perform
         @klass.perform(*@args)
-      rescue => e
-        ProconBypassMan::ReportErrorJob.perform(e)
       end
     end
   end

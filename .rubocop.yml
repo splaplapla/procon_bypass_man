@@ -26,3 +26,5 @@ Lint/ReturnInVoidContext:
     Enabled: false
 Lint/AssignmentInCondition:
     Enabled: false
+Lint/AmbiguousBlockAssociation:
+    Enabled: false

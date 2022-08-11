@@ -37,7 +37,7 @@ module ProconBypassMan
         @thread = Thread.new do
           while(item = ProconBypassMan::Background::JobQueue.pop)
             begin
-              JobPerformer.new(klass: item[:reporter_class], args: item[:args]).perform
+              JobPerformer.new(klass: eval(item[:reporter_class]), args: item[:args]).perform
             rescue => e
               ProconBypassMan.logger.error(e)
               sleep(0.2) # busy loopしないように

@@ -12,7 +12,7 @@ describe ProconBypassMan::BypassCommand do
     allow(ProconBypassMan::Bypass::SwitchToProcon).to receive(:new) { double(:bypass).as_null_object }
     command_pid = Kernel.fork { described_class.new(procon: procon, gadget: gadget).execute }
     # signal trapが完了するまで適当にsleepする
-    sleep 1
+    sleep 0.2
 
     Process.kill('TERM', command_pid)
     result = Process.waitpid2(command_pid)
