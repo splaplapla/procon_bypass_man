@@ -158,7 +158,6 @@ module ProconBypassMan
 
     ProconBypassMan::WriteDeviceIdCommand.execute
     ProconBypassMan::WriteSessionIdCommand.execute
-    `renice -n -20 -p #{$$}`
     File.write(pid_path, $$)
     ProconBypassMan::DeviceStatus.change_to_running!
   end
@@ -180,6 +179,7 @@ module ProconBypassMan
 
   # @return [void]
   def self.after_fork_on_bypass_process
+    `renice -n -20 -p #{$$}`
     DRb.start_service if defined?(DRb)
     ProconBypassMan::RemoteMacroReceiver.start!
     ProconBypassMan::ProconDisplay::Server.start!
