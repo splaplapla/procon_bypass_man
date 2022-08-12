@@ -56,6 +56,7 @@ require_relative "procon_bypass_man/procon/analog_stick_manipulator"
 require_relative "procon_bypass_man/remote_pbm_action/value_objects/remote_pbm_action_object"
 require_relative "procon_bypass_man/scheduler"
 require_relative "procon_bypass_man/plugins"
+require_relative "procon_bypass_man/worker"
 require_relative "procon_bypass_man/websocket/client"
 require_relative "procon_bypass_man/websocket/watchdog"
 require_relative "procon_bypass_man/websocket/forever"
@@ -76,7 +77,7 @@ module ProconBypassMan
   class InterruptForRestart < StandardError; end
 
   class << self
-    attr_accessor :worker_pid
+    attr_accessor :worker
   end
 
   # @return [void]
@@ -166,10 +167,8 @@ module ProconBypassMan
   def self.ready_pbm
     ProconBypassMan::PrintBootMessageCommand.execute
     ProconBypassMan::ReportLoadConfigJob.perform_async(ProconBypassMan.config.raw_setting)
-    self.worker_pid = fork do
-      after_fork_on_worker_process
-      ProconBypassMan::Background::WorkerProcess.run
-    end
+
+    self.worker = ProconBypassMan::Worker.fork
   end
 
   # @return [void]
@@ -192,7 +191,7 @@ module ProconBypassMan
     ProconBypassMan::Background::JobQueue.shutdown
     ProconBypassMan::RemoteMacro::QueueOverProcess.shutdown
     ProconBypassMan::Procon::PerformanceMeasurement::QueueOverProcess.shutdown
-    Process.kill("TERM", worker_pid) if !!worker_pid
+    self.worker&.shutdown
   end
 
   # @return [void]

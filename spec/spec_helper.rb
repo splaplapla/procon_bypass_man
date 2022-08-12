@@ -42,6 +42,8 @@ RSpec.configure do |config|
     allow_any_instance_of(Net::HTTP).to receive(:post) { double(:x).as_null_object }
     allow(ProconBypassMan::UsbDeviceController).to receive(:init)
     allow(ProconBypassMan::UsbDeviceController).to receive(:reset)
+
+    ProconBypassMan.worker = nil
   end
 
   # rspec-expectations config goes here. You can use an alternate
