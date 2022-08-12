@@ -3,7 +3,7 @@ module ProconBypassMan
     attr_accessor :pid
 
     # @param [Numeric] child pid
-    def self.fork
+    def self.run_with_fork
       pid = Kernel.fork do
         ProconBypassMan.after_fork_on_worker_process
         ProconBypassMan::Background::WorkerProcess.run # blocking
@@ -18,7 +18,11 @@ module ProconBypassMan
     end
 
     def shutdown
-      Process.kill("TERM", ProconBypassMan.worker_pid)
+      begin
+        Process.kill("TERM", ProconBypassMan.worker_pid)
+      rescue Errno::ESRCH
+        # no-op
+      end
       FileUtils.rm_rf(ProconBypassMan.worker_pid_path)
     end
 

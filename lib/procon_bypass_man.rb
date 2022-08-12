@@ -168,7 +168,7 @@ module ProconBypassMan
     ProconBypassMan::PrintBootMessageCommand.execute
     ProconBypassMan::ReportLoadConfigJob.perform_async(ProconBypassMan.config.raw_setting)
 
-    self.worker = ProconBypassMan::Worker.fork
+    self.worker = ProconBypassMan::Worker.run_with_fork
   end
 
   # @return [void]
