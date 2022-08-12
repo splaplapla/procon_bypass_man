@@ -190,7 +190,6 @@ module ProconBypassMan
     BlueGreenProcess.configure do |config|
       config.after_fork = -> {
         DRb.start_service if defined?(DRb)
-        ProconBypassMan::Background::JobRunner.start!
       }
     end
   end
