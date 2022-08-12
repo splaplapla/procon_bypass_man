@@ -27,7 +27,7 @@ module ProconBypassMan
         rescue ProconBypassMan::InterruptForRestart
           raise 'InterruptForRestartは想定外'
         rescue Interrupt
-          ProconBypassMan::PrintMessageCommand.execute(text: "workerプロセスを処理を終了します")
+          ProconBypassMan::PrintMessageCommand.execute(text: "workerプロセスを終了します")
         end
       end
 
