@@ -84,7 +84,7 @@ class ProconBypassMan::BypassCommand
         signal = readable_io.first[0].gets.strip
         handle_signal(signal)
       end
-    rescue ProconBypassMan::Runner::InterruptForRestart
+    rescue ProconBypassMan::InterruptForRestart
       $will_terminate_token = WILL_TERMINATE_TOKEN::RESTART
       [t1, t2].each(&:join)
       @gadget&.close

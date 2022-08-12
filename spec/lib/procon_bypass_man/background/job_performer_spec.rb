@@ -2,23 +2,28 @@ require "spec_helper"
 
 describe ProconBypassMan::Background::JobPerformer do
   it do
-    args = [1]
-    ProconBypassMan::Background::JobPerformer.new(
-      klass: ProconBypassMan::ReportPressedButtonsJob,
-      args: args,
-    ).perform
+    expect {
+      ProconBypassMan::Background::JobPerformer.new(
+        klass: ProconBypassMan::ReportPressedButtonsJob,
+        args: [1],
+      ).perform
+    }.not_to raise_error
   end
 
   context 'エラーが起きる時' do
-    TestJob = Class.new do
-      def self.perform
-        raise RuntimeError.new("ううううううううううううううううううううう")
+    let(:test_job) do
+      Class.new do
+        def self.perform
+          raise RuntimeError
+        end
       end
     end
 
     it do
-      expect(ProconBypassMan::ReportErrorJob).to receive(:perform)
-      ProconBypassMan::Background::JobPerformer.new(klass: TestJob, args: []).perform
+      expect(ProconBypassMan::ReportErrorJob).not_to receive(:perform)
+      expect {
+        ProconBypassMan::Background::JobPerformer.new(klass: test_job, args: []).perform
+      }.to raise_error(RuntimeError)
     end
   end
 end

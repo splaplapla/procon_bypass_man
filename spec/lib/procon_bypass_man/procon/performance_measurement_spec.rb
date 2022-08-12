@@ -1,10 +1,13 @@
 require "spec_helper"
 
 describe ProconBypassMan::Procon::PerformanceMeasurement do
+  include_context 'enable_job_queue_on_drb'
+
   context 'enable_procon_performance_measurement?がtrueのとき' do
     before do
       allow(ProconBypassMan.config).to receive(:enable_procon_performance_measurement?) { true }
       allow(ProconBypassMan::Procon::PerformanceMeasurement::SpanTransferBuffer.instance).to receive(:buffer_over?) { true }
+      allow(ProconBypassMan::Procon::PerformanceMeasurement::QueueOverProcess).to receive(:enable?) { true }
       ProconBypassMan::Procon::PerformanceMeasurement::QueueOverProcess.start!
     end
 

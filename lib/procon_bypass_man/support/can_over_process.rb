@@ -31,7 +31,7 @@ module ProconBypassMan::CanOverProcess
   # @return [void]
   def shutdown_distributed_object
     if self.drb_server
-      self.drb_server_thread.kill
+      self.drb_server_thread&.kill
       self.drb_server_thread = nil
       self.drb_server.stop_service
     end
