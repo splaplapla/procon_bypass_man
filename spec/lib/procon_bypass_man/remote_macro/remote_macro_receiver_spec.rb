@@ -1,7 +1,6 @@
 require "spec_helper"
 
 describe ProconBypassMan::RemoteMacroReceiver do
-  require 'drb/drb'
 
   describe '.start!' do
     context 'not enable' do
@@ -13,6 +12,7 @@ describe ProconBypassMan::RemoteMacroReceiver do
     context 'enable' do
       before do
         allow(ProconBypassMan.config).to receive(:enable_remote_macro?) { true }
+        allow(ProconBypassMan::RemoteMacro::QueueOverProcess).to receive(:enable?) { true }
         ProconBypassMan::RemoteMacro::QueueOverProcess.start!
       end
 

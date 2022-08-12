@@ -4,6 +4,7 @@ require "timecop"
 require "bundler/setup"
 require "support/setting"
 require "support/background_job_inline_perform"
+require "support/enable_job_queue_on_drb"
 require "support/ext/procon_bypass_man"
 require "support/ext/procon_user_operation"
 require "support/ext/procon"
@@ -26,7 +27,10 @@ ENV['PBM_ENV'] = 'test'
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 RSpec.configure do |config|
   config.before(:each) do
-    ProconBypassMan::Background::JobRunner.queue.clear
+    allow(ProconBypassMan::Background::WorkerProcess).to receive(:run)
+    allow(ProconBypassMan::Background::JobQueue).to receive(:enable?) { false }
+    allow(ProconBypassMan::RemoteMacro::QueueOverProcess).to receive(:enable?) { false }
+    allow(ProconBypassMan::Procon::PerformanceMeasurement::QueueOverProcess).to receive(:enable?) { false }
 
     allow(ProconBypassMan::HttpClient::HttpRequest::Get).to receive(:new)
     allow(ProconBypassMan::HttpClient::HttpRequest::Post).to receive(:new)
@@ -38,6 +42,8 @@ RSpec.configure do |config|
     allow_any_instance_of(Net::HTTP).to receive(:post) { double(:x).as_null_object }
     allow(ProconBypassMan::UsbDeviceController).to receive(:init)
     allow(ProconBypassMan::UsbDeviceController).to receive(:reset)
+
+    ProconBypassMan.worker = nil
   end
 
   # rspec-expectations config goes here. You can use an alternate

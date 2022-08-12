@@ -1,4 +1,4 @@
-class ProconBypassMan::RemoteMacro::QueueOverProcess
+class ProconBypassMan::Background::JobQueue
   extend ProconBypassMan::CanOverProcess
 
   include Singleton
@@ -7,7 +7,7 @@ class ProconBypassMan::RemoteMacro::QueueOverProcess
 
   # @override
   def self.enable?
-    ProconBypassMan.config.enable_remote_macro?
+    true
   end
 
   # @override
@@ -17,7 +17,7 @@ class ProconBypassMan::RemoteMacro::QueueOverProcess
 
   # @override
   def self.socket_file_path
-    "/tmp/procon_bypass_man_remote_macro_queue".freeze
+    "/tmp/procon_bypass_man_background_job_queue_queue".freeze
   end
 
   def self.push(value)
@@ -30,6 +30,12 @@ class ProconBypassMan::RemoteMacro::QueueOverProcess
     return unless enable?
 
     instance.distributed_queue.pop
+  end
+
+  def self.size
+    return unless enable?
+
+    instance.distributed_queue.size
   end
 
   def self.clear

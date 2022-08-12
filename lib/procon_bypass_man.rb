@@ -57,6 +57,7 @@ require_relative "procon_bypass_man/procon/analog_stick_manipulator"
 require_relative "procon_bypass_man/remote_pbm_action/value_objects/remote_pbm_action_object"
 require_relative "procon_bypass_man/scheduler"
 require_relative "procon_bypass_man/plugins"
+require_relative "procon_bypass_man/worker"
 require_relative "procon_bypass_man/websocket/client"
 require_relative "procon_bypass_man/websocket/watchdog"
 require_relative "procon_bypass_man/websocket/forever"
@@ -73,6 +74,12 @@ module ProconBypassMan
 
   class CouldNotLoadConfigError < StandardError; end
   class NotFoundProconError < StandardError; end
+
+  class InterruptForRestart < StandardError; end
+
+  class << self
+    attr_accessor :worker
+  end
 
   # @return [void]
   def self.run(setting_path: nil)
@@ -144,7 +151,7 @@ module ProconBypassMan
 
   # @return [void]
   def self.initialize_pbm
-    ProconBypassMan::Background::JobRunner.start!
+    ProconBypassMan::Background::JobQueue.start!
     ProconBypassMan::Websocket::Client.start!
     # TODO ProconBypassMan::DrbObjects.start_all! みたいな感じで書きたい
     ProconBypassMan::RemoteMacro::QueueOverProcess.start!
@@ -153,25 +160,31 @@ module ProconBypassMan
 
     ProconBypassMan::WriteDeviceIdCommand.execute
     ProconBypassMan::WriteSessionIdCommand.execute
-    `renice -n -20 -p #{$$}`
     File.write(pid_path, $$)
     ProconBypassMan::DeviceStatus.change_to_running!
   end
 
+  # @return [void]
   def self.ready_pbm
     ProconBypassMan::PrintBootMessageCommand.execute
     ProconBypassMan::ReportLoadConfigJob.perform_async(ProconBypassMan.config.raw_setting)
     BlueGreenProcess.config.logger = ProconBypassMan.logger
+
+    self.worker = ProconBypassMan::Worker.run_with_fork
   end
 
+  # @return [void]
+  def self.after_fork_on_worker_process
+    DRb.start_service if defined?(DRb)
+  end
+
+  # @return [void]
   def self.after_fork_on_bypass_process
+    `renice -n -20 -p #{$$}`
     DRb.start_service if defined?(DRb)
     # GC対策することによって削除した機能
     # ProconBypassMan::RemoteMacroReceiver.start!
     # ProconBypassMan::ProconDisplay::Server.start!
-
-    ProconBypassMan::Background::JobRunner.queue.clear # forkしたときに残留物も移ってしまうため
-    ProconBypassMan::Background::JobRunner.start!
 
     DRb.start_service if defined?(DRb)
     BlueGreenProcess.configure do |config|
@@ -187,6 +200,8 @@ module ProconBypassMan
     FileUtils.rm_rf(ProconBypassMan.pid_path)
     FileUtils.rm_rf(ProconBypassMan.digest_path)
     ProconBypassMan::RemoteMacro::QueueOverProcess.shutdown
+    ProconBypassMan::Procon::PerformanceMeasurement::QueueOverProcess.shutdown
+    self.worker&.shutdown
   end
 
   # @return [void]
