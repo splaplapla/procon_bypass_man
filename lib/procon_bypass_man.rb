@@ -168,12 +168,7 @@ module ProconBypassMan
     ProconBypassMan::PrintBootMessageCommand.execute
     ProconBypassMan::ReportLoadConfigJob.perform_async(ProconBypassMan.config.raw_setting)
 
-    self.worker = ProconBypassMan::Worker.run_with_fork
-  end
-
-  # @return [void]
-  def self.after_fork_on_worker_process
-    DRb.start_service if defined?(DRb)
+    self.worker = ProconBypassMan::Worker.run
   end
 
   # @return [void]
