@@ -63,7 +63,6 @@ describe ProconBypassMan do
       before do
         allow(ProconBypassMan::ButtonsSettingConfiguration::Loader).to receive(:load)
         allow(ProconBypassMan::DeviceConnection::Command).to receive(:execute!)
-        allow(ProconBypassMan::Background::WorkerProcess).to receive(:run)
       end
 
       context 'エラーが起きない' do

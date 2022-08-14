@@ -2,34 +2,31 @@ module ProconBypassMan
   class Worker
     attr_accessor :pid
 
-    # @param [Numeric] child pid
-    def self.run_with_fork
-      pid = Kernel.fork do
-        ProconBypassMan.after_fork_on_worker_process
-        ProconBypassMan::Background::WorkerProcess.run # blocking
+    def self.run
+      new.run
+    end
+
+    # @param [Boolean]
+    def run
+      return self if @thread
+      @thread = Thread.new do
+        while(item = ProconBypassMan::Background::JobQueue.pop)
+          begin
+            # プロセスを越えるので、文字列でenqueueしてくれる前提. evalしてクラスにする
+            ProconBypassMan::Background::JobPerformer.new(klass: eval(item[:reporter_class]), args: item[:args]).perform
+          rescue => e
+            ProconBypassMan.logger.error(e)
+            sleep(0.2) # busy loopしないように
+          end
+        end
       end
 
-      new(pid: pid)
+      return self
     end
 
-    def initialize(pid: )
-      @pid = pid
-      write_pid_file(pid: pid)
-    end
-
+    # 重要な非同期ジョブは存在しないのでqueueが捌けるのを待たずにkill
     def shutdown
-      begin
-        Process.kill("TERM", ProconBypassMan.worker_pid)
-      rescue Errno::ESRCH
-        # no-op
-      end
-      FileUtils.rm_rf(ProconBypassMan.worker_pid_path)
-    end
-
-    private
-
-    def write_pid_file(pid: )
-      File.write(ProconBypassMan.worker_pid_path, pid)
+      @thread&.kill
     end
   end
 end

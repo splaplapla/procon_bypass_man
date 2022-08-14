@@ -16,18 +16,9 @@ class ProconBypassMan::Configuration
       @@pid_path ||= File.expand_path("#{root}/pbm_pid", __dir__).freeze
     end
 
-    def worker_pid_path
-      @@worker_pid_path ||= File.expand_path("#{root}/pbm_worker_pid", __dir__).freeze
-    end
-
     # @return [Integer]
     def pid
       File.read(pid_path).to_i
-    end
-
-    # @return [Integer]
-    def worker_pid
-      File.read(worker_pid_path).to_i
     end
 
     def digest_path
