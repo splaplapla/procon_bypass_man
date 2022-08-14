@@ -6,7 +6,9 @@ module ProconBypassMan
       new.run
     end
 
+    # @param [Boolean]
     def run
+      return false if @thread
       @thread = Thread.new do
         while(item = ProconBypassMan::Background::JobQueue.pop)
           begin
@@ -18,9 +20,13 @@ module ProconBypassMan
           end
         end
       end
+
+      return true
     end
 
+    # 重要な非同期ジョブは存在しないのでqueueが捌けるのを待たずにkill
     def shutdown
+      @thread&.kill
     end
   end
 end

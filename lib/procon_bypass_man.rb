@@ -186,7 +186,7 @@ module ProconBypassMan
     ProconBypassMan::Background::JobQueue.shutdown
     ProconBypassMan::RemoteMacro::QueueOverProcess.shutdown
     ProconBypassMan::Procon::PerformanceMeasurement::QueueOverProcess.shutdown
-    # self.worker&.shutdown
+    self.worker&.shutdown
   end
 
   # @return [void]
