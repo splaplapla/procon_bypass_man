@@ -218,9 +218,9 @@ class ProconBypassMan::Configuration
 
   def enable_procon_performance_measurement?: () -> bool
 
-  def server_pool: () -> untyped
+  def server: () -> untyped
 
-  def internal_server_pool: () -> untyped
+  def internal_server: () -> untyped
 
   def internal_servers: () -> ::Array[string | nil]
 
@@ -572,11 +572,11 @@ end
 
 module ProconBypassMan
   class HttpClient
-    @server_pool: untyped
+    @server: untyped
     @uri: ::URI
     @retry_on_connection_error: false
 
-    def initialize: (path: String, server_pool: untyped, ?retry_on_connection_error: false) -> void
+    def initialize: (path: String, server: untyped, ?retry_on_connection_error: false) -> void
     def get: -> nil
     def post: (request_body: untyped) -> nil
     def put: (request_body: untyped) -> nil
@@ -616,22 +616,6 @@ end
 module ProconBypassMan
   class UpdateRemotePbmActionStatusHttpClient
     def post: (to_status: ::Symbol) -> untyped
-  end
-end
-
-module ProconBypassMan
-  class ServerPool
-    @servers: Array[String]
-    @index: Integer?
-
-    def initialize: (servers: Array[String]) -> void
-    def pick: -> String?
-    def server: -> String?
-    def next!: -> nil
-
-    private
-    def reset: -> Integer
-    def inc_index: -> Integer
   end
 end
 

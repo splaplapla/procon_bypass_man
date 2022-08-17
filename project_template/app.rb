@@ -39,7 +39,7 @@ ProconBypassMan.configure do |config|
 
   # webからProconBypassManを操作できるwebサービスと連携します
   # 連携中はエラーログ、パフォーマンスに関するメトリクスを送信します
-  # config.api_servers = ['https://pbm-cloud.herokuapp.com']
+  # config.api_servers = 'https://pbm-cloud.herokuapp.com'
 
   # エラーが起きたらerror.logに書き込みます
   config.enable_critical_error_logging = true

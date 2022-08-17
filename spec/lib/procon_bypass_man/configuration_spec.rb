@@ -44,6 +44,7 @@ describe ProconBypassMan::Configuration do
   describe '#current_ws_server' do
     let(:config) { described_class.new }
     subject { config.current_ws_server }
+
     context 'http://localhost:3000をセットするとき' do
       it do
         config.api_servers = ["http://localhost:3000"]

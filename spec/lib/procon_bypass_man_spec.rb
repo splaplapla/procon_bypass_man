@@ -13,12 +13,6 @@ describe ProconBypassMan do
     end
   end
 
-  describe 'internal_api_servers' do
-    it do
-      expect(described_class.config.internal_api_servers).to be_a(Array)
-    end
-  end
-
   describe 'class methods' do
     [ :logger,
       :error_logger,

@@ -32,7 +32,7 @@ class ProconBypassMan::ReportProconPerformanceMeasurementsJob < ProconBypassMan:
 
     ProconBypassMan::ProconPerformanceHttpClient.new(
       path: path,
-      server_pool: server_pool,
+      server: api_server,
     ).post(body: body)
   end
 

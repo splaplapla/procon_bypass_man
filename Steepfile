@@ -38,7 +38,6 @@ target :lib do
   check 'lib/procon_bypass_man/support/http_client'
   check 'lib/procon_bypass_man/support/send_device_stats_http_client'
   check 'lib/procon_bypass_man/support/on_memory_cache'
-  check 'lib/procon_bypass_man/support/server_pool'
   check 'lib/procon_bypass_man/support/uptime.rb'
   check 'lib/procon_bypass_man/support/safe_timeout'
   check 'lib/procon_bypass_man/support/update_remote_pbm_action_status_http_client'

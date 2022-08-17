@@ -113,36 +113,14 @@ class ProconBypassMan::Configuration
     "#{root}/.setting_yaml_digest"
   end
 
-  # @return [String] pbm-webの接続先
-  def internal_api_servers
-    if !!ENV["INTERNAL_API_SERVER"]
-      [ENV["INTERNAL_API_SERVER"]]
-    else
-      [ 'http://localhost:9090',
-        'http://localhost:8080',
-      ].compact
-    end
-  end
-
-  # @return [Array<ProconBypassMan::ServerPool>]
-  def internal_server_pool
-    @internal_server_pool ||= ProconBypassMan::ServerPool.new(servers: internal_api_servers)
-  end
-
-  # TODO これ消したい。プライマリのサーバが死んだ時にセカンダリのサーバへfailoverしたいと思っていたが、めんどくなった
-  # @return [Array<ProconBypassMan::ServerPool>]
-  def server_pool
-    @server_pool ||= ProconBypassMan::ServerPool.new(servers: api_servers)
-  end
-
   # @return [String, NilClass]
-  def current_server
-    server_pool.server
+  def api_server
+    api_servers&.first
   end
 
   # @return [String, NilClass]
   def current_ws_server
-    if (uri = URI.parse(server_pool.server))
+    if (uri = URI.parse(api_server))
       if uri.port == 443
         return "ws://#{uri.host}"
       else
@@ -161,7 +139,7 @@ class ProconBypassMan::Configuration
 
   # @return [Boolean]
   def enable_ws?
-    !!current_server
+    !!api_server
   end
 
   # @return [Boolean]
@@ -178,8 +156,9 @@ class ProconBypassMan::Configuration
     end
   end
 
+  # @return [Boolean]
   def has_api_server?
-    not api_servers.length.zero?
+    !!api_server
   end
 
   def verbose_bypass_log

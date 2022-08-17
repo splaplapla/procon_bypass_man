@@ -5,7 +5,7 @@ class ProconBypassMan::PostCompletedRemoteMacroJob < ProconBypassMan::BaseJob
   def self.perform(job_id)
     ProconBypassMan::RemoteMacroHttpClient.new(
       path: path,
-      server_pool: server_pool,
+      server: api_server,
     ).post(job_id: job_id)
   end
 
