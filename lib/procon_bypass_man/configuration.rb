@@ -50,7 +50,9 @@ class ProconBypassMan::Configuration
   end
 
   attr_accessor :enable_critical_error_logging
-  attr_writer :verbose_bypass_log, :raw_setting, :enable_reporting_pressed_buttons, :never_exit_accidentally, :enable_home_led_on_connect
+  attr_writer :verbose_bypass_log, :raw_setting, :never_exit_accidentally, :enable_home_led_on_connect
+  # 削除予定
+  attr_writer :enable_reporting_pressed_buttons
 
   # NOTE 非推奨. 削除したいが設定ファイルに残っているときにエラーにしたくないので互換性維持のため残す
   attr_writer :io_monitor_logging
@@ -167,11 +169,6 @@ class ProconBypassMan::Configuration
 
   def raw_setting
     @raw_setting ||= {}
-  end
-
-  # @return [Boolean] default false
-  def enable_reporting_pressed_buttons
-    @enable_reporting_pressed_buttons ||= false
   end
 
   # @return [Boolean] default false

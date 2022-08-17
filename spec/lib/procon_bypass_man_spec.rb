@@ -39,7 +39,6 @@ describe ProconBypassMan do
       :digest_path,
       :raw_setting,
       :raw_setting=,
-      :enable_reporting_pressed_buttons,
       :enable_reporting_pressed_buttons=,
       :never_exit_accidentally,
       :never_exit_accidentally=,
