@@ -34,7 +34,7 @@ describe ProconBypassMan::PrintBootMessageCommand do
     it do
       described_class.execute
       job = ProconBypassMan::Background::JobQueue.pop
-      expect(job[:reporter_class]).to eq('ProconBypassMan::ReportBootJob')
+      expect(job[:job_class]).to eq('ProconBypassMan::ReportBootJob')
       expect(job[:args]).to be_a(Array)
       expect(job[:args][0]).to be_a(Hash)
     end

@@ -5,7 +5,7 @@ class BackgroundJobInlinePerform
     loop do
       break if ProconBypassMan::Background::JobQueue.size == 0
       job = ProconBypassMan::Background::JobQueue.pop
-      eval(job[:reporter_class]).perform(*job[:args])
+      eval(job[:job_class]).perform(*job[:args])
     end
   end
 end

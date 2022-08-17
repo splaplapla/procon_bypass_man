@@ -8,7 +8,7 @@ module ProconBypassMan
       def perform_async(*args)
         ProconBypassMan::Background::JobQueue.push(
           args: args,
-          reporter_class: self.name, # drb上のQueueに格納するので念の為文字列入れて、取り出すときにevalでクラス化する
+          job_class: self.name, # drb上のQueueに格納するので念の為文字列入れて、取り出すときにevalでクラス化する
         )
       end
     end
