@@ -150,6 +150,7 @@ module ProconBypassMan
 
   # @return [void]
   def self.initialize_pbm
+    `renice -n 20 -p #{$$}`
     ProconBypassMan::Background::JobQueue.start!
     ProconBypassMan::Websocket::Client.start!
     # TODO ProconBypassMan::DrbObjects.start_all! みたいな感じで書きたい
@@ -174,6 +175,7 @@ module ProconBypassMan
   # @return [void]
   def self.after_fork_on_bypass_process
     `renice -n -20 -p #{$$}`
+    ::GC.start
     DRb.start_service if defined?(DRb)
     ProconBypassMan::RemoteMacroReceiver.start!
     ProconBypassMan::ProconDisplay::Server.start!
