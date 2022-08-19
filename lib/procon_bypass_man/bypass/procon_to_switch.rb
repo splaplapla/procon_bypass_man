@@ -34,14 +34,12 @@ class ProconBypassMan::Bypass::ProconToSwitch
             begin
               ProconBypassMan::Retryable.retryable(tries: 5, on_no_retry: [Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError, Errno::ESHUTDOWN, Errno::ETIMEDOUT]) do
                 begin
-                  Timeout.timeout(1.0) do
-                    return(false) if $will_terminate_token
-                    raw_output = procon.read(64)
-                  end
-                rescue Timeout::Error # TODO テストが通っていない
                   return(false) if $will_terminate_token
-                  ProconBypassMan::SendErrorCommand.execute(error: "プロコンからの読み取りがタイムアウトになりました")
-                  raise CouldNotReadFromProconError
+                  raw_output = self.gadget.read_nonblock(64)
+                rescue IO::EAGAINWaitReadable
+                  return(false) if $will_terminate_token
+                  sleep(0.006)
+                  retry
                 rescue Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError, Errno::ESHUTDOWN, Errno::ETIMEDOUT => e
                   return(false) if $will_terminate_token
                   raise
