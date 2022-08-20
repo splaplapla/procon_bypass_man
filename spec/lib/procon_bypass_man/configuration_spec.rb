@@ -44,6 +44,7 @@ describe ProconBypassMan::Configuration do
   describe '#current_ws_server' do
     let(:config) { described_class.new }
     subject { config.current_ws_server }
+
     context 'http://localhost:3000をセットするとき' do
       it do
         config.api_servers = ["http://localhost:3000"]
@@ -56,18 +57,6 @@ describe ProconBypassMan::Configuration do
         config.api_servers = ["https://foo.herokuapp.com"]
         expect(subject).to eq("ws://foo.herokuapp.com")
       end
-    end
-  end
-
-  describe '#enable_reporting_pressed_buttons' do
-    let(:config) { described_class.new }
-    it 'default false' do
-      expect(config.enable_reporting_pressed_buttons).to eq(false)
-    end
-
-    it do
-      config.enable_reporting_pressed_buttons = true
-      expect(config.enable_reporting_pressed_buttons).to eq(true)
     end
   end
 

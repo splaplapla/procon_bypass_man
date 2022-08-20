@@ -1,5 +1,5 @@
 module ProconBypassMan::HasExternalApiSetting
-  def server_pool
-    ProconBypassMan.config.server_pool
+  def api_server
+    ProconBypassMan.config.api_server
   end
 end

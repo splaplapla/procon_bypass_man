@@ -50,7 +50,9 @@ class ProconBypassMan::Configuration
   end
 
   attr_accessor :enable_critical_error_logging
-  attr_writer :verbose_bypass_log, :raw_setting, :enable_reporting_pressed_buttons, :never_exit_accidentally, :enable_home_led_on_connect
+  attr_writer :verbose_bypass_log, :raw_setting, :never_exit_accidentally, :enable_home_led_on_connect
+  # 削除予定
+  attr_writer :enable_reporting_pressed_buttons
 
   # NOTE 非推奨. 削除したいが設定ファイルに残っているときにエラーにしたくないので互換性維持のため残す
   attr_writer :io_monitor_logging
@@ -113,36 +115,14 @@ class ProconBypassMan::Configuration
     "#{root}/.setting_yaml_digest"
   end
 
-  # @return [String] pbm-webの接続先
-  def internal_api_servers
-    if !!ENV["INTERNAL_API_SERVER"]
-      [ENV["INTERNAL_API_SERVER"]]
-    else
-      [ 'http://localhost:9090',
-        'http://localhost:8080',
-      ].compact
-    end
-  end
-
-  # @return [Array<ProconBypassMan::ServerPool>]
-  def internal_server_pool
-    @internal_server_pool ||= ProconBypassMan::ServerPool.new(servers: internal_api_servers)
-  end
-
-  # TODO これ消したい。プライマリのサーバが死んだ時にセカンダリのサーバへfailoverしたいと思っていたが、めんどくなった
-  # @return [Array<ProconBypassMan::ServerPool>]
-  def server_pool
-    @server_pool ||= ProconBypassMan::ServerPool.new(servers: api_servers)
-  end
-
   # @return [String, NilClass]
-  def current_server
-    server_pool.server
+  def api_server
+    api_servers&.first
   end
 
   # @return [String, NilClass]
   def current_ws_server
-    if (uri = URI.parse(server_pool.server))
+    if (uri = URI.parse(api_server))
       if uri.port == 443
         return "ws://#{uri.host}"
       else
@@ -161,7 +141,7 @@ class ProconBypassMan::Configuration
 
   # @return [Boolean]
   def enable_ws?
-    !!current_server
+    !!api_server
   end
 
   # @return [Boolean]
@@ -178,8 +158,9 @@ class ProconBypassMan::Configuration
     end
   end
 
+  # @return [Boolean]
   def has_api_server?
-    not api_servers.length.zero?
+    !!api_server
   end
 
   def verbose_bypass_log
@@ -188,11 +169,6 @@ class ProconBypassMan::Configuration
 
   def raw_setting
     @raw_setting ||= {}
-  end
-
-  # @return [Boolean] default false
-  def enable_reporting_pressed_buttons
-    @enable_reporting_pressed_buttons ||= false
   end
 
   # @return [Boolean] default false
