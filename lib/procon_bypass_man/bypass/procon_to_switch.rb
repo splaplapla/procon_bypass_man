@@ -32,22 +32,14 @@ class ProconBypassMan::Bypass::ProconToSwitch
         ProconBypassMan::GC.stop_gc_in do
           measurement.record_read_time do
             begin
-              ProconBypassMan::Retryable.retryable(tries: 5, on_no_retry: [Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError, Errno::ESHUTDOWN, Errno::ETIMEDOUT]) do
-                begin
-                  return(false) if $will_terminate_token
-                  raw_output = self.gadget.read_nonblock(64)
-                rescue IO::EAGAINWaitReadable
-                  return(false) if $will_terminate_token
-                  sleep(0.006)
-                  retry
-                rescue Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError, Errno::ESHUTDOWN, Errno::ETIMEDOUT => e
-                  return(false) if $will_terminate_token
-                  raise
-                end
-              end
-            # TODO CouldNotReadFromProconErrorによる読み込み失敗は想定しなくてテスト書いていない
-            rescue CouldNotReadFromProconError
-              next(false)
+              return(false) if $will_terminate_token
+              raw_output = self.procon.read_nonblock(64)
+            rescue IO::EAGAINWaitReadable
+              sleep(0.006)
+              retry
+            rescue Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError, Errno::ESHUTDOWN, Errno::ETIMEDOUT => e
+              return(false) if $will_terminate_token
+              raise
             end
           end
         end
