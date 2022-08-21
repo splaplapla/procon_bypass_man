@@ -33,7 +33,7 @@ class ProconBypassMan::Bypass::ProconToSwitch
           measurement.record_read_time do
             begin
               return(false) if $will_terminate_token
-              raw_output = self.gadget.read_nonblock(64)
+              raw_output = self.procon.read_nonblock(64)
             rescue IO::EAGAINWaitReadable
               sleep(0.006)
               retry
