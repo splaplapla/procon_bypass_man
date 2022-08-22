@@ -66,7 +66,9 @@ class ProconBypassMan::BypassCommand
           break
         end
 
-        bypass.run
+        ProconBypassMan::GC.stop_gc_in do
+          bypass.run
+        end
       rescue EOFError => e
         ProconBypassMan::SendErrorCommand.execute(error: "Proconが切断されました。終了処理を開始します. #{e.full_message}")
         Process.kill "TERM", Process.ppid

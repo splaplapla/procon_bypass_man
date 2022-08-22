@@ -29,49 +29,43 @@ class ProconBypassMan::Bypass::ProconToSwitch
         next(false) if $will_terminate_token
 
         raw_output = nil
-        ProconBypassMan::GC.stop_gc_in do
-          measurement.record_read_time do
-            begin
-              return(false) if $will_terminate_token
-              raw_output = self.procon.read_nonblock(64)
-            rescue IO::EAGAINWaitReadable
-              sleep(0.003)
-              retry
-            rescue Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError, Errno::ESHUTDOWN, Errno::ETIMEDOUT => e
-              return(false) if $will_terminate_token
-              raise
-            end
+        measurement.record_read_time do
+          begin
+            return(false) if $will_terminate_token
+            raw_output = self.procon.read_nonblock(64)
+          rescue IO::EAGAINWaitReadable
+            sleep(0.003)
+            retry
+          rescue Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError, Errno::ESHUTDOWN, Errno::ETIMEDOUT => e
+            return(false) if $will_terminate_token
+            raise
           end
         end
 
         self.bypass_value.binary = ProconBypassMan::Domains::InboundProconBinary.new(binary: raw_output)
 
-        result = ProconBypassMan::GC.stop_gc_in do
-          result = measurement.record_write_time do
-            begin
-              ProconBypassMan::Retryable.retryable(tries: 5, on_no_retry: [Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError, Errno::ESHUTDOWN, Errno::ETIMEDOUT]) do
-                begin
-                  # 終了処理を希望されているのでブロックを無視してメソッドを抜けてOK
-                  return(false) if $will_terminate_token # rubocop:disable Lint/NoReturnInBeginEndBlocks
-                  self.gadget.write_nonblock(
-                    ProconBypassMan::Processor.new(bypass_value.binary).process
-                  )
-                  next(true)
-                rescue IO::EAGAINWaitReadable
-                  return(false) if $will_terminate_token # rubocop:disable Lint/NoReturnInBeginEndBlocks
-                  measurement.record_write_error
-                  raise CouldNotWriteToSwitchError
-                rescue Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError, Errno::ESHUTDOWN, Errno::ETIMEDOUT => e
-                  return(false) if $will_terminate_token # rubocop:disable Lint/NoReturnInBeginEndBlocks
-                  raise
-                end
+        result = measurement.record_write_time do
+          begin
+            ProconBypassMan::Retryable.retryable(tries: 5, on_no_retry: [Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError, Errno::ESHUTDOWN, Errno::ETIMEDOUT]) do
+              begin
+                # 終了処理を希望されているのでブロックを無視してメソッドを抜けてOK
+                return(false) if $will_terminate_token # rubocop:disable Lint/NoReturnInBeginEndBlocks
+                self.gadget.write_nonblock(
+                  ProconBypassMan::Processor.new(bypass_value.binary).process
+                )
+                next(true)
+              rescue IO::EAGAINWaitReadable
+                return(false) if $will_terminate_token # rubocop:disable Lint/NoReturnInBeginEndBlocks
+                measurement.record_write_error
+                raise CouldNotWriteToSwitchError
+              rescue Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError, Errno::ESHUTDOWN, Errno::ETIMEDOUT => e
+                return(false) if $will_terminate_token # rubocop:disable Lint/NoReturnInBeginEndBlocks
+                raise
               end
-            rescue CouldNotWriteToSwitchError
-              next(false)
             end
+          rescue CouldNotWriteToSwitchError
+            next(false)
           end
-
-          next(result)
         end
 
         next(result)
