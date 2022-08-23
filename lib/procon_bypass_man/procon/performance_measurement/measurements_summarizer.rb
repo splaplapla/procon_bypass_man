@@ -12,6 +12,7 @@ class ProconBypassMan::Procon::PerformanceMeasurement::MeasurementsSummarizer
                                        :read_error_count,
                                        :write_error_count,
                                        :gc_count,
+                                       :gc_time,
                                        :succeed_rate); end
 
   def initialize(spans: )
@@ -23,6 +24,7 @@ class ProconBypassMan::Procon::PerformanceMeasurement::MeasurementsSummarizer
     sorted_write_time = @spans.map(&:write_time).sort
     sorted_read_time = @spans.map(&:read_time).sort
     gc_count = @spans.map(&:gc_count).sum
+    gc_time = @spans.map(&:gc_time).sum
 
     sorted_time_taken = @spans.select(&:succeed).map(&:time_taken).sort
     sorted_interval_from_previous_succeed = @spans.select(&:succeed).map(&:interval_from_previous_succeed).sort
@@ -63,6 +65,7 @@ class ProconBypassMan::Procon::PerformanceMeasurement::MeasurementsSummarizer
                           total_read_error_count,
                           total_write_error_count,
                           gc_count,
+                          gc_time,
                           succeed_rate)
   end
 
