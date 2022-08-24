@@ -74,7 +74,7 @@ module ProconBypassMan::Procon::PerformanceMeasurement
     end
 
     if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new("3.1.0")
-      (GC.stat(:time) / 1000.0) - snapshot_gc_time.tap do |increased_time|
+      ((GC.stat(:time) / 1000.0) - snapshot_gc_time).tap do |increased_time|
         span.gc_time = increased_time
       end
     end
