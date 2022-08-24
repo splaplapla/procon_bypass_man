@@ -29,18 +29,18 @@ class ProconBypassMan::Bypass::ProconToSwitch
         next(false) if $will_terminate_token
 
         raw_output = nil
-        ProconBypassMan::GC.stop_gc_in do
-          measurement.record_read_time do
-            begin
+        measurement.record_read_time do
+          begin
+            ProconBypassMan::GC.stop_gc_in do
               return(false) if $will_terminate_token
               raw_output = self.procon.read_nonblock(64)
-            rescue IO::EAGAINWaitReadable
-              sleep(0.001)
-              retry
-            rescue Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError, Errno::ESHUTDOWN, Errno::ETIMEDOUT => e
-              return(false) if $will_terminate_token
-              raise
             end
+          rescue IO::EAGAINWaitReadable
+            sleep(0.001)
+            retry
+          rescue Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError, Errno::ESHUTDOWN, Errno::ETIMEDOUT => e
+            return(false) if $will_terminate_token
+            raise
           end
         end
 
