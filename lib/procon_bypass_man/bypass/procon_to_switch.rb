@@ -36,7 +36,7 @@ class ProconBypassMan::Bypass::ProconToSwitch
               raw_output = self.procon.read_nonblock(64)
             end
           rescue IO::EAGAINWaitReadable
-            sleep(0.001)
+            sleep(0.002)
             retry
           rescue Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError, Errno::ESHUTDOWN, Errno::ETIMEDOUT => e
             return(false) if $will_terminate_token
