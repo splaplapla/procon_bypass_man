@@ -99,7 +99,7 @@ class ProconBypassMan::Procon::Macro
 
       if nested_step.over?
         steps.shift # NestedStepを破棄する
-        self.after_callback_block.call if self.after_callback_block
+        self.after_callback_block.call if self.after_callback_block && steps.empty?
         return next_step
       else
         return nested_step.next_step
