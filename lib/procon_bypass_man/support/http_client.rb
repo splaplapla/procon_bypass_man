@@ -93,6 +93,10 @@ module ProconBypassMan
         sleep(10)
         retry
       end
+    rescue Timeout::Error
+      ProconBypassMan.logger.error(e)
+      sleep(10)
+      retry
     rescue => e
       puts e
       ProconBypassMan.logger.error(e)
