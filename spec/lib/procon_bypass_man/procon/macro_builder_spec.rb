@@ -250,6 +250,15 @@ describe ProconBypassMan::Procon::MacroBuilder do
             ]}
           ])
         end
+
+        it do
+          expect(described_class.new([:toggle_b_and_shake_left_stick_and_pressing_r_for_0_06sec]).build).to eq([
+            { continue_for: 0.06, steps: [
+              [:b, :tilt_left_stick_completely_to_left, :r],
+              [:none, :tilt_left_stick_completely_to_right, :r],
+            ]}
+          ])
+        end
       end
     end
   end
