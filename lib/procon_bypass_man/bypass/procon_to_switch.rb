@@ -31,24 +31,14 @@ class ProconBypassMan::Bypass::ProconToSwitch
         raw_output = nil
         measurement.record_read_time do
           begin
-            ProconBypassMan::Retryable.retryable(tries: 5, on_no_retry: [Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError, Errno::ESHUTDOWN, Errno::ETIMEDOUT]) do
-              begin
-                Timeout.timeout(1.0) do
-                  return(false) if $will_terminate_token
-                  raw_output = procon.read(64)
-                end
-              rescue Timeout::Error # TODO テストが通っていない
-                return(false) if $will_terminate_token
-                ProconBypassMan::SendErrorCommand.execute(error: "プロコンからの読み取りがタイムアウトになりました")
-                raise CouldNotReadFromProconError
-              rescue Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError, Errno::ESHUTDOWN, Errno::ETIMEDOUT => e
-                return(false) if $will_terminate_token
-                raise
-              end
-            end
-            # TODO CouldNotReadFromProconErrorによる読み込み失敗は想定しなくてテスト書いていない
-          rescue CouldNotReadFromProconError
-            next(false)
+            return(false) if $will_terminate_token
+            raw_output = self.procon.read_nonblock(64)
+          rescue IO::EAGAINWaitReadable
+            sleep(0.002)
+            retry
+          rescue Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError, Errno::ESHUTDOWN, Errno::ETIMEDOUT => e
+            return(false) if $will_terminate_token
+            raise
           end
         end
 
@@ -105,14 +95,6 @@ class ProconBypassMan::Bypass::ProconToSwitch
     else
       ProconBypassMan.cache.fetch key: 'bypass_log', expires_in: 1 do
         ProconBypassMan.logger.debug { "<<< #{bypass_value.to_text}" }
-      end
-    end
-
-    if ProconBypassMan.config.enable_reporting_pressed_buttons
-      ProconBypassMan.cache.fetch key: 'pressed_buttons_reporter', expires_in: 5 do
-        ProconBypassMan::ReportPressedButtonsJob.perform_async(
-          bypass_value.binary.to_procon_reader.to_hash
-        )
       end
     end
   end

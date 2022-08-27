@@ -26,9 +26,9 @@ module ProconBypassMan
       end
     end
 
-    def initialize(path: , server_pool: , retry_on_connection_error: false)
-      @server_pool = server_pool
-      @uri = URI.parse("#{server_pool.server}#{path}")
+    def initialize(path: , server: , retry_on_connection_error: false)
+      @server = server
+      @uri = URI.parse("#{server}#{path}")
       @retry_on_connection_error = retry_on_connection_error
     end
 
@@ -76,14 +76,13 @@ module ProconBypassMan
           return response.body
         end
       else
-        @server_pool.next!
         ProconBypassMan.logger.error("#{@uri}から200以外(#{response.code})が帰ってきました. #{response.body}")
       end
     end
 
     def handle_request
       raise "need block" unless block_given?
-      if @server_pool.server.nil?
+      if @server.nil?
         ProconBypassMan.logger.info('送信先が未設定なのでスキップしました')
         return
       end
@@ -94,6 +93,10 @@ module ProconBypassMan
         sleep(10)
         retry
       end
+    rescue Timeout::Error
+      ProconBypassMan.logger.error(e)
+      sleep(10)
+      retry
     rescue => e
       puts e
       ProconBypassMan.logger.error(e)
@@ -102,5 +105,5 @@ module ProconBypassMan
 end
 
 if $0 == __FILE__
-  ProconBypassMan::HttpClient.new(path: '/', server_pool: nil, retry_on_connection_error: false).get(response_body: '')
+  ProconBypassMan::HttpClient.new(path: '/', server: nil, retry_on_connection_error: false).get(response_body: '')
 end

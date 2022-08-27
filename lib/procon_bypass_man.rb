@@ -32,7 +32,6 @@ require_relative "procon_bypass_man/support/report_http_client"
 require_relative "procon_bypass_man/support/remote_macro_http_client"
 require_relative "procon_bypass_man/support/update_remote_pbm_action_status_http_client"
 require_relative "procon_bypass_man/support/send_device_stats_http_client"
-require_relative "procon_bypass_man/support/server_pool"
 require_relative "procon_bypass_man/support/procon_performance_http_client"
 require_relative "procon_bypass_man/support/analog_stick_hypotenuse_tilting_power_scaler"
 require_relative "procon_bypass_man/support/never_exit_accidentally"
@@ -151,6 +150,7 @@ module ProconBypassMan
 
   # @return [void]
   def self.initialize_pbm
+    `renice -n 20 -p #{$$}`
     ProconBypassMan::Background::JobQueue.start!
     ProconBypassMan::Websocket::Client.start!
     # TODO ProconBypassMan::DrbObjects.start_all! みたいな感じで書きたい
@@ -176,6 +176,7 @@ module ProconBypassMan
   # @return [void]
   def self.after_fork_on_bypass_process
     `renice -n -20 -p #{$$}`
+    ::GC.start
     DRb.start_service if defined?(DRb)
     # GC対策することによって削除した機能
     # ProconBypassMan::RemoteMacroReceiver.start!

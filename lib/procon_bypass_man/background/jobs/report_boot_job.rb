@@ -5,7 +5,7 @@ class ProconBypassMan::ReportBootJob < ProconBypassMan::ReportEventBaseJob
   def self.perform(body)
     ProconBypassMan::ReportHttpClient.new(
       path: path,
-      server_pool: server_pool,
+      server: api_server,
       retry_on_connection_error: true,
     ).post(body: body, event_type: :boot)
   end

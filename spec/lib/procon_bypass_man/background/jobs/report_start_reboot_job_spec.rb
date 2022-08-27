@@ -28,18 +28,6 @@ describe ProconBypassMan::ReportStartRebootJob do
         expect_any_instance_of(Net::HTTP).to receive(:post) { http_response }
         expect { described_class.perform }.not_to raise_error
       end
-
-      it '送信に失敗したらローテすること' do
-        expect(Net::HTTP).to receive(:new).with("localhost", 3000).and_call_original
-        expect(Net::HTTP).to receive(:new).with("localhost", 4000).and_call_original
-
-        http_response = double(:http_response).as_null_object
-        allow(http_response).to receive(:code) { "300" }
-        allow_any_instance_of(Net::HTTP).to receive(:post) { http_response }
-
-        described_class.perform
-        described_class.perform
-      end
     end
   end
 end

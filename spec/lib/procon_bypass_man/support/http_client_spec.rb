@@ -10,19 +10,19 @@ describe ProconBypassMan::HttpClient do
       end
     end
 
-    context 'server_poolに値があるとき' do
-      let(:pool) { ProconBypassMan::ServerPool.new(servers: ["http://localhost:3000", "http://localhost:4000"]) }
+    context 'serverに値があるとき' do
+      let(:server) { "http://localhost:3000" }
 
       it do
-        expect(described_class.new(path: "/", server_pool: pool).get).to eq("a" => 1)
+        expect(described_class.new(path: "/", server: server).get).to eq("a" => 1)
       end
     end
 
-    context 'server_poolが空のとき' do
-      let(:pool) { ProconBypassMan::ServerPool.new(servers: []) }
+    context 'serverが空のとき' do
+      let(:server) { nil }
 
       it do
-        expect(described_class.new(path: "/", server_pool: pool).get).to eq(nil)
+        expect(described_class.new(path: "/", server: server).get).to eq(nil)
       end
     end
   end
@@ -36,21 +36,21 @@ describe ProconBypassMan::HttpClient do
       end
     end
 
-    context 'server_poolに値があるとき' do
-      let(:pool) { ProconBypassMan::ServerPool.new(servers: ["http://localhost:3000", "http://localhost:4000"]) }
+    context 'serverに値があるとき' do
+      let(:server) { "http://localhost:4000" }
 
       it do
         expect(
-          described_class.new(path: "/", server_pool: pool).post(request_body: {})
+          described_class.new(path: "/", server: server).post(request_body: {})
         ).to eq("a" => 1)
       end
     end
 
-    context 'server_poolが空のとき' do
-      let(:pool) { ProconBypassMan::ServerPool.new(servers: []) }
+    context 'serverが空のとき' do
+      let(:server) { nil }
 
       it do
-        expect(described_class.new(path: "/", server_pool: pool).post(request_body: {})).to eq(nil)
+        expect(described_class.new(path: "/", server: server).post(request_body: {})).to eq(nil)
       end
     end
   end
@@ -64,21 +64,21 @@ describe ProconBypassMan::HttpClient do
       end
     end
 
-    context 'server_poolに値があるとき' do
-      let(:pool) { ProconBypassMan::ServerPool.new(servers: ["http://localhost:3000", "http://localhost:4000"]) }
+    context 'serverに値があるとき' do
+      let(:server) { "http://localhost:4000" }
 
       it do
         expect(
-          described_class.new(path: "/", server_pool: pool).post(request_body: {})
+          described_class.new(path: "/", server: server).post(request_body: {})
         ).to eq("a" => 1)
       end
     end
 
-    context 'server_poolが空のとき' do
-      let(:pool) { ProconBypassMan::ServerPool.new(servers: []) }
+    context 'serverが空のとき' do
+      let(:server) { nil }
 
       it do
-        expect(described_class.new(path: "/", server_pool: pool).post(request_body: {})).to eq(nil)
+        expect(described_class.new(path: "/", server: server).post(request_body: {})).to eq(nil)
       end
     end
   end

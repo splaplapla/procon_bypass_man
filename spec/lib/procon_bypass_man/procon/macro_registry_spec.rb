@@ -99,26 +99,54 @@ describe ProconBypassMan::Procon::MacroRegistry do
     end
 
     context 'macro_type: :remoteで指定するとき' do
-      before do
-        ProconBypassMan::Procon::MacroRegistry.install_plugin("like open_macro", steps: [:x], macro_type: :remote)
-      end
-
-      it do
-        expect(ProconBypassMan::Procon::MacroRegistry.plugins.keys).to eq([:"like open_macro"])
-        expect(ProconBypassMan::Procon::MacroRegistry.plugins.raw_keys).to eq([[:"like open_macro", :remote]])
-      end
-
-      context 'macro_typeを指定する' do
-        it do
-          actual = ProconBypassMan::Procon::MacroRegistry.load(:"like open_macro", macro_type: :remote)
-          expect(actual.steps).to eq([:x])
-          expect(actual.name).to eq(:"like open_macro")
+      context 'one step' do
+        before do
+          ProconBypassMan::Procon::MacroRegistry.install_plugin("like open_macro", steps: [:x], macro_type: :remote)
         end
 
         it do
-          actual = ProconBypassMan::Procon::MacroRegistry.load(:"like open_macro", macro_type: :normal)
-          expect(actual.steps).to eq([])
-          expect(actual.name).to eq(:null)
+          expect(ProconBypassMan::Procon::MacroRegistry.plugins.keys).to eq([:"like open_macro"])
+          expect(ProconBypassMan::Procon::MacroRegistry.plugins.raw_keys).to eq([[:"like open_macro", :remote]])
+        end
+
+        context 'macro_typeを指定する' do
+          it do
+            actual = ProconBypassMan::Procon::MacroRegistry.load(:"like open_macro", macro_type: :remote)
+            expect(actual.steps).to eq([:x])
+            expect(actual.name).to eq(:"like open_macro")
+          end
+
+          it do
+            actual = ProconBypassMan::Procon::MacroRegistry.load(:"like open_macro", macro_type: :normal)
+            expect(actual.steps).to eq([])
+            expect(actual.name).to eq(:null)
+          end
+        end
+      end
+
+      context '2 steps with remote' do
+        before do
+          ProconBypassMan::Procon::MacroRegistry.install_plugin("like open_macro", steps: [:toggle_thumbr_and_toggle_zr_for_1sec, :toggle_thumbr_and_toggle_zr_for_1sec], macro_type: :remote)
+        end
+
+        context 'macro_typeを指定する' do
+          it do
+            mock = double(:o)
+            expect(mock).to receive(:execute).once
+            macro = ProconBypassMan::Procon::MacroRegistry.load(:"like open_macro", macro_type: :remote) do
+              mock.execute
+            end
+
+            Timecop.freeze(Time.now) do
+              macro.next_step
+            end
+            Timecop.freeze(Time.now + 2) do
+              macro.next_step
+            end
+            Timecop.freeze(Time.now + 4) do
+              macro.next_step
+            end
+          end
         end
       end
 

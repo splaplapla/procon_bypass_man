@@ -4,7 +4,11 @@ describe ProconBypassMan::Bypass::ProconToSwitch do
   describe '.work' do
     let(:binary) { [data].pack("H*") }
     let(:data) { "30778105800099277344e86b0a7909f4f5a8f4b500c5ff8dff6c09cdf5b8f49a00c5ff92ff6a0979f5eef46500d5ff9bff000000000000000000000000000000" }
-    let(:device) { File.open("/dev/null") }
+    let(:device) {
+      file = File.open("/dev/null")
+      allow(file).to receive(:read_nonblock) { "" }
+      file
+    }
     let(:instance) { described_class.new(gadget: device, procon: device) }
 
     subject { instance.work }

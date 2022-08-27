@@ -12,7 +12,7 @@ begin
   gemfile do
     source 'https://rubygems.org'
     git_source(:github) {|repo_name| "https://github.com/#{repo_name}" }
-    gem 'procon_bypass_man', '0.2.2'
+    gem 'procon_bypass_man', '0.2.3'
   end
 rescue Bundler::Source::Git::GitCommandError => e
   retry_count_on_git_command_error = retry_count_on_git_command_error + 1
@@ -39,7 +39,7 @@ ProconBypassMan.configure do |config|
 
   # webからProconBypassManを操作できるwebサービスと連携します
   # 連携中はエラーログ、パフォーマンスに関するメトリクスを送信します
-  # config.api_servers = ['https://pbm-cloud.herokuapp.com']
+  # config.api_servers = 'https://pbm-cloud.herokuapp.com'
 
   # エラーが起きたらerror.logに書き込みます
   config.enable_critical_error_logging = true

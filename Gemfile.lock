@@ -8,7 +8,7 @@ GIT
 PATH
   remote: .
   specs:
-    procon_bypass_man (0.2.2)
+    procon_bypass_man (0.2.3)
       action_cable_client
       pbmenv (>= 0.1.9)
       sorted_set

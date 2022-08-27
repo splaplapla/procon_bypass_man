@@ -24,6 +24,7 @@ class ProconBypassMan::ReportProconPerformanceMeasurementsJob < ProconBypassMan:
       read_error_count: metric.read_error_count,
       write_error_count: metric.write_error_count,
       gc_count: metric.gc_count,
+      gc_time: metric.gc_time,
       succeed_rate: metric.succeed_rate,
       load_agv: ProconBypassMan::LoadAgv.new.get,
       collected_spans_size: collected_spans_size,
@@ -32,7 +33,7 @@ class ProconBypassMan::ReportProconPerformanceMeasurementsJob < ProconBypassMan:
 
     ProconBypassMan::ProconPerformanceHttpClient.new(
       path: path,
-      server_pool: server_pool,
+      server: api_server,
     ).post(body: body)
   end
 

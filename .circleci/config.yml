@@ -15,7 +15,7 @@ executors:
       BUNDLE_JOBS: 4
     working_directory: ~/app
 
-commands: &commands
+commands:
   bundle_install:
     parameters:
       ruby-version:
