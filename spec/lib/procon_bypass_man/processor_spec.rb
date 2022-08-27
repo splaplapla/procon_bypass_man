@@ -3,6 +3,10 @@ require "spec_helper"
 describe ProconBypassMan::Processor do
   let(:binary) { [data].pack("H*") }
 
+  before(:each) do
+    ProconBypassMan::Procon.reset!
+  end
+
   describe '#process' do
     context 'not binaryがボタン入力の時' do
       let(:data) { "20778105800099277344e86b0a7909f4f5a8f4b500c5ff8dff6c09cdf5b8f49a00c5ff92ff6a0979f5eef46500d5ff9bff000000000000000000000000000000" }

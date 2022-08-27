@@ -25,11 +25,11 @@ class ProconBypassMan::Procon
 
   def self.reset!
     @@status = {
-      buttons: {},
-      current_layer_key: :up,
       ongoing_macro: MacroRegistry.load(:null),
-      ongoing_mode: ModeRegistry.load(:manual),
+      ongoing_mode: ModeRegistry.load(:manual), # 削除予定
     }
+    BlueGreenProcess::SharedVariable.instance.data["buttons"] = {}
+    BlueGreenProcess::SharedVariable.instance.data["current_layer_key"] = :up
     @@left_stick_tilting_power_scaler = ProconBypassMan::AnalogStickTiltingPowerScaler.new
   end
   reset!
@@ -41,10 +41,20 @@ class ProconBypassMan::Procon
     )
   end
 
-  def status; @@status[:buttons]; end
+  def status
+    BlueGreenProcess::SharedVariable.instance.data["buttons"]
+  end
+
+  def current_layer_key
+    BlueGreenProcess::SharedVariable.instance.data["current_layer_key"].to_sym
+  end
+
+  def current_layer_key=(layer)
+    BlueGreenProcess::SharedVariable.instance.data["current_layer_key"] = layer
+  end
+
   def ongoing_macro; @@status[:ongoing_macro]; end
   def ongoing_mode; @@status[:ongoing_mode]; end
-  def current_layer_key; @@status[:current_layer_key]; end
 
   def current_layer
     ProconBypassMan::ButtonsSettingConfiguration.instance.layers[current_layer_key]
@@ -54,7 +64,7 @@ class ProconBypassMan::Procon
   def apply!
     layer_changer = ProconBypassMan::Procon::LayerChanger.new(binary: user_operation.binary)
     if layer_changer.change_layer?
-      @@status[:current_layer_key] = layer_changer.next_layer_key if layer_changer.pressed_next_layer?
+      self.current_layer_key = layer_changer.next_layer_key if layer_changer.pressed_next_layer?
       user_operation.set_no_action!
       return
     end

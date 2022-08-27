@@ -187,6 +187,7 @@ module ProconBypassMan
       config.after_fork = -> {
         DRb.start_service if defined?(DRb)
       }
+      config.shared_variables = [:buttons, :current_layer_key]
     end
   end
 
