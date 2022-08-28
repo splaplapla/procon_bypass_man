@@ -3,9 +3,7 @@
 
 [![Ruby](https://github.com/splaplapla/procon_bypass_man/actions/workflows/ruby.yml/badge.svg?branch=master)](https://github.com/splaplapla/procon_bypass_man/actions/workflows/ruby.yml)
 
-* Switchに繋いだプロコンを連射機にしたり、ボタンのリマップをしたり、マクロを実行できる、Raspberry Pi上で動かすツールです
-    * 設定ファイルはrubyスクリプトで記述します
-* 特定のタイトルに特化した振る舞いにしたい時は各プラグインを使ってください
+* Nintendo Switch Proコントローラーを連射機などにするRaspberry Pi上で動かすコンバータです
 * ドキュメントは [getting_started.md](docs/getting_started.md) にまとめています
 * https://pbm-cloud.herokuapp.com を使うと、webだけで運用が可能です
 
