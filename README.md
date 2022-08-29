@@ -80,6 +80,13 @@ sudo kill -USR2 `cat ./pbm_pid`
 * githubのreleaseを作成する
 -->
 
+## Raspberry Pi4のセットアップを代行します
+* Raspberry Pi4を開発者である私の家に配送してくれれば、セットアップを代行します。セットアップが終わり次第送り返します
+* 使い方に関しては、https://pbm-cloud.herokuapp.com ですべて完結するので、Linuxの知識は不要です
+* 何か問題が起きた時はリモートログインでサポート可能です
+* 希望者はDiscordの `kawagu#7684` にDMを送ってください
+* お金はかかりません
+
 ## 開発を支援してくれる人を募集しています
 * https://jiikko.fanbox.cc/
 * procon_bypassの運営・開発・サーバー費用に充てさせていただきます。また、問い合わせに優先して対応します。

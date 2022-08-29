@@ -3,6 +3,7 @@
 * [はじめに](#はじめに)
     * [procon_bypass_manで解決したいこと](#procon_bypass_manで解決したいこと)
     * [procon_bypass_manでできること](#procon_bypass_manでできること)
+* [セットアップを代行できます](#セットアップを代行できます)
 * [セットアップ](#セットアップ)
   * [ラズベリーパイのセットアップ](#ラズベリーパイのセットアップ)
   * [procon_bypass_manのインストール](#procon_bypass_manのインストール)
@@ -44,6 +45,13 @@
 * ボタンリマップ
 * 入力表示
   * https://github.com/splaplapla/switch-procon-input-viewer
+
+## セットアップを代行できます
+* Raspberry Pi4を開発者である私の家に配送してくれれば、セットアップを代行します。セットアップが終わり次第送り返します
+* 使い方に関しては、https://pbm-cloud.herokuapp.com ですべて完結するので、Linuxの知識は不要です
+* 何か問題が起きた時はリモートログインでサポート可能です
+* 希望者はDiscordの `kawagu#7684` にDMを送ってください
+* お金はかかりません
 
 ## セットアップ
 ### ラズベリーパイのセットアップ
