@@ -107,6 +107,7 @@ class ProconBypassMan::Procon
 
     # remote macro
     if task = ProconBypassMan::RemoteMacro::TaskQueueInProcess.non_blocking_shift
+      BlueGreenProcess::SharedVariable.extend_run_on_this_process = true
       ProconBypassMan::Procon::MacroRegistry.cleanup_remote_macros!
       macro_name = task.name || "RemoteMacro-#{task.steps.join}".to_sym
       ProconBypassMan::Procon::MacroRegistry.install_plugin(macro_name, steps: task.steps, macro_type: :remote)
@@ -156,6 +157,7 @@ class ProconBypassMan::Procon
     end
 
     if ongoing_macro.ongoing? && (step = ongoing_macro.next_step)
+      BlueGreenProcess::SharedVariable.extend_run_on_this_process = true
       ongoing_macro.force_neutral_buttons&.each do |force_neutral_button|
         user_operation.unpress_button(force_neutral_button)
       end

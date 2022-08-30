@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/splaplapla/blue_green_process.git
-  revision: 9d13b07e75a402081b6ed0359a8279901b6f633b
+  revision: 9b579b0eb7e0f65e79f3566c090c4fe91e71d7f3
   branch: master
   specs:
     blue_green_process (0.1.1)
