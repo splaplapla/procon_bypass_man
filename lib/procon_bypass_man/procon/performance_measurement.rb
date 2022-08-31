@@ -79,11 +79,9 @@ module ProconBypassMan::Procon::PerformanceMeasurement
       end
     end
 
-    ProconBypassMan::GC.stop_gc_in do
-      # measureするたびにperform_asyncしているとjob queueが詰まるのでbufferingしている
-      ProconBypassMan::Procon::PerformanceMeasurement::SpanTransferBuffer.instance.push_and_run_block_if_buffer_over(span) do |spans|
-        ProconBypassMan::ProconPerformanceSpanTransferJob.perform_async(spans)
-      end
+    # measureするたびにperform_asyncしているとjob queueが詰まるのでbufferingしている
+    ProconBypassMan::Procon::PerformanceMeasurement::SpanTransferBuffer.instance.push_and_run_block_if_buffer_over(span) do |spans|
+      ProconBypassMan::ProconPerformanceSpanTransferJob.perform_async(spans)
     end
     return span.succeed
   end
