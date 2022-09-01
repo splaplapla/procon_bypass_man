@@ -9,6 +9,8 @@ describe ProconBypassMan::Procon::PerformanceMeasurement do
       allow(ProconBypassMan::Procon::PerformanceMeasurement::SpanTransferBuffer.instance).to receive(:buffer_over?) { true }
       allow(ProconBypassMan::Procon::PerformanceMeasurement::QueueOverProcess).to receive(:enable?) { true }
       ProconBypassMan::Procon::PerformanceMeasurement::QueueOverProcess.start!
+
+      allow(ProconBypassMan::Procon::PerformanceMeasurement).to receive(:is_crush_with_random_or_if_slow) { false }
     end
 
     after do

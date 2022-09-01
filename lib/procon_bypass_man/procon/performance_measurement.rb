@@ -45,6 +45,11 @@ module ProconBypassMan::Procon::PerformanceMeasurement
     end
   end
 
+  # 全部送ると負荷になるので適当にまびく
+  def self.is_crush_with_random_or_if_slow(span: )
+    0.05 > span.time_taken || rand(4) == 0
+  end
+
   # measureをして、measureの結果をためる
   # @return [Boolean] 成功したか. テスト時に戻り値を使いたい
   def self.measure(&bypass_process_block)
@@ -62,6 +67,8 @@ module ProconBypassMan::Procon::PerformanceMeasurement
     span.time_taken = Benchmark.realtime {
       span.succeed = bypass_process_block.call(span)
     }.floor(3)
+
+    return if is_crush_with_random_or_if_slow(span: span)
 
     if span.succeed
       ProconBypassMan::Procon::PerformanceMeasurement::LastBypassAt.touch do |interval_from_previous_succeed|
