@@ -178,7 +178,6 @@ module ProconBypassMan
     `renice -n -20 -p #{$$}`
     ::GC.start
     DRb.start_service if defined?(DRb)
-    ProconBypassMan::RemoteMacroReceiver.start!
     # GC対策することによって一時的に削除した機能
     # ProconBypassMan::ProconDisplay::Server.start!
 
@@ -186,6 +185,7 @@ module ProconBypassMan
     BlueGreenProcess.configure do |config|
       config.after_fork = -> {
         DRb.start_service if defined?(DRb)
+        ProconBypassMan::RemoteMacroReceiver.start!
       }
       config.shared_variables = [:buttons, :current_layer_key]
     end
