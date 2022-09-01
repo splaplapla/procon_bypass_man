@@ -178,8 +178,8 @@ module ProconBypassMan
     `renice -n -20 -p #{$$}`
     ::GC.start
     DRb.start_service if defined?(DRb)
-    # GC対策することによって削除した機能
-    # ProconBypassMan::RemoteMacroReceiver.start!
+    ProconBypassMan::RemoteMacroReceiver.start!
+    # GC対策することによって一時的に削除した機能
     # ProconBypassMan::ProconDisplay::Server.start!
 
     DRb.start_service if defined?(DRb)
