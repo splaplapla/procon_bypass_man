@@ -16,9 +16,8 @@ describe ProconBypassMan::Bypass::ProconToSwitch do
     before do
       allow(ProconBypassMan::SendErrorCommand).to receive(:execute)
       allow(ProconBypassMan::Processor).to receive(:new) { double(:p).as_null_object } # バイナリの加工はしない
-    end
+      allow(ProconBypassMan::Procon::PerformanceMeasurement).to receive(:is_crush_with_random_or_if_slow) { false }
 
-    before do
       bypass_value = double(:value)
       allow(bypass_value).to receive(:binary) { ProconBypassMan::Domains::InboundProconBinary.new(binary: binary)  }
       allow(ProconBypassMan::Bypass::BypassValue).to receive(:new) { bypass_value.as_null_object }
