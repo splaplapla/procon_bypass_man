@@ -48,7 +48,7 @@ module ProconBypassMan::Procon::PerformanceMeasurement
   # 全部送ると負荷になるので適当にまびく
   def self.is_not_measure_with_random_or_if_fast(span: )
     return false if span.time_taken > 0.1
-    return true if rand(2) == 0
+    return true if rand(6) == 0
     return false
   end
 
