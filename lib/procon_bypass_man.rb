@@ -169,7 +169,6 @@ module ProconBypassMan
   def self.ready_pbm
     ProconBypassMan::PrintBootMessageCommand.execute
     ProconBypassMan::ReportLoadConfigJob.perform_async(ProconBypassMan.config.raw_setting)
-    BlueGreenProcess.config.logger = ProconBypassMan.logger
 
     self.worker = ProconBypassMan::Worker.run
   end
@@ -187,6 +186,7 @@ module ProconBypassMan
       config.after_fork = -> {
         DRb.start_service if defined?(DRb)
         ProconBypassMan::RemoteMacroReceiver.start!
+        BlueGreenProcess.config.logger = ProconBypassMan.logger
       }
       config.shared_variables = [:buttons, :current_layer_key]
     end
