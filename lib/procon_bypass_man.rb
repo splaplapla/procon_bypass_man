@@ -39,6 +39,7 @@ require_relative "procon_bypass_man/support/cycle_sleep"
 require_relative "procon_bypass_man/support/can_over_process"
 require_relative "procon_bypass_man/support/gc"
 require_relative "procon_bypass_man/support/retryable"
+require_relative "procon_bypass_man/support/renice_command"
 require_relative "procon_bypass_man/procon_display"
 require_relative "procon_bypass_man/background"
 require_relative "procon_bypass_man/commands"
@@ -150,7 +151,7 @@ module ProconBypassMan
 
   # @return [void]
   def self.initialize_pbm
-    `renice -n 20 -p #{$$}`
+    ProconBypassMan::ReniceCommand.change_priority(to: :low, pid: $$)
     ProconBypassMan::Background::JobQueue.start!
     ProconBypassMan::Websocket::Client.start!
     # TODO ProconBypassMan::DrbObjects.start_all! みたいな感じで書きたい
@@ -175,7 +176,7 @@ module ProconBypassMan
 
   # @return [void]
   def self.after_fork_on_bypass_process
-    `renice -n -20 -p #{$$}`
+    ProconBypassMan::ReniceCommand.change_priority(to: :high, pid: $$)
     ::GC.start
     DRb.start_service if defined?(DRb)
     # GC対策することによって一時的に削除した機能
