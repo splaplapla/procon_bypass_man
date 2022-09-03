@@ -30,11 +30,6 @@ class ProconBypassMan::BypassCommand
     cycle_sleep = ProconBypassMan::CycleSleep.new(cycle_interval: 1, execution_cycle: ProconBypassMan.config.bypass_mode.gadget_to_procon_interval)
 
     t1 = Thread.new do
-      if ProconBypassMan.config.bypass_mode.mode == ProconBypassMan::BypassMode::TYPE_AGGRESSIVE
-        ProconBypassMan.logger.info "TYPE_AGGRESSIVEなのでThread1を終了します"
-        next
-      end
-
       bypass = ProconBypassMan::Bypass::SwitchToProcon.new(gadget: @gadget, procon: @procon)
       loop do
         break if $will_terminate_token

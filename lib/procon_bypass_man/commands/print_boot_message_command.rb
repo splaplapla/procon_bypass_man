@@ -13,7 +13,6 @@ class ProconBypassMan::PrintBootMessageCommand
       @table[:use_pbmenv] = !(!!`which pbmenv`.empty?)
       @table[:session_id] = ProconBypassMan.session_id
       @table[:device_id] = ProconBypassMan.device_id
-      @table[:bypass_mode] = ProconBypassMan.config.bypass_mode.to_s
       @table[:never_exit_accidentally] = ProconBypassMan.config.never_exit_accidentally
       @table[:uname] = `uname -a`.chomp
 
@@ -43,7 +42,6 @@ class ProconBypassMan::PrintBootMessageCommand
       use_pbmenv: #{@table[:use_pbmenv]}
       session_id: #{ProconBypassMan.session_id}
       device_id: #{ProconBypassMan.device_id.gsub(/.{25}$/, "*"*25)}
-      bypass_mode: #{ProconBypassMan.config.bypass_mode}
       ----
       EOF
     end

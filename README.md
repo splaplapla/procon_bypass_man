@@ -3,9 +3,7 @@
 
 [![Ruby](https://github.com/splaplapla/procon_bypass_man/actions/workflows/ruby.yml/badge.svg?branch=master)](https://github.com/splaplapla/procon_bypass_man/actions/workflows/ruby.yml)
 
-* Switchに繋いだプロコンを連射機にしたり、ボタンのリマップをしたり、マクロを実行できる、Raspberry Pi上で動かすツールです
-    * 設定ファイルはrubyスクリプトで記述します
-* 特定のタイトルに特化した振る舞いにしたい時は各プラグインを使ってください
+* Nintendo Switch Proコントローラーを連射機などにするRaspberry Pi上で動かすコンバータです
 * ドキュメントは [getting_started.md](docs/getting_started.md) にまとめています
 * https://pbm-cloud.herokuapp.com を使うと、webだけで運用が可能です
 
@@ -14,44 +12,17 @@
 
 https://user-images.githubusercontent.com/1664497/171327108-f12f56a5-fc36-48da-95a5-65e976553a20.mov
 
-<!--
-![image](https://user-images.githubusercontent.com/1664497/123414210-942f6980-d5ee-11eb-8192-955bd9e37e0b.png)
-```
-@startuml
-ProController \-\-> (PBM): ZR押しっぱなし
-Switch <-- (PBM): ZR連打
-@enduml
-```
--->
-
 ## 使うハードウェア
-* プロコン
+* Nintendo Switch Proコントローラー
 * Switch本体とドック
-* Raspberry Pi4 Model B/4GB(Raspberry Pi OS (32-bit))
+* Raspberry Pi4 (Raspberry Pi OS)
     * 他のシリーズは未確認です
-        * zeroは非対応
 * データ通信が可能なUSBケーブル
 
 ## 使うソフトウェア
 * ruby 2.5 以上
 
-## Usage
-* USBガジェットモードで起動するRaspberry Pi4を用意する
-  * https://github.com/splaplapla/procon_bypass_man/blob/master/docs/setup_raspi.md
-* Raspberry Pi4 でprocon_bypass_manを実行するための準備
-  * rubyのインストール
-    * sudo apt-get install rbenv
-    * git clone https://github.com/rbenv/ruby-build.git "$(rbenv root)"/plugins/ruby-build
-    * rbenv install 3.0.1
-  * gem install pbmenv
-  * sudo [pbmenv](https://github.com/splaplapla/pbmenv) install latest
-* Raspberry Pi4 でprocon_bypass_manを実行する
-  * cd /usr/share/pbm/current
-  * sudo /home/pi/.rbenv/versions/3.0.1/bin/ruby app.rb
-  * 動いたのを確認したらserviceとして登録にするなどしてください
-    * [serviceとして登録する方法](https://github.com/splaplapla/procon_bypass_man/tree/master/project_template#systemd%E3%82%92%E4%BD%BF%E3%81%A3%E3%81%A6%E3%82%B5%E3%83%BC%E3%83%93%E3%82%B9%E3%81%AB%E7%99%BB%E9%8C%B2%E3%81%99%E3%82%8B%E6%96%B9%E6%B3%95)
-
-## Plugins
+## プラグイン
 * https://github.com/splaplapla/procon_bypass_man-splatoon2
 
 ## FAQ
@@ -108,6 +79,13 @@ sudo kill -USR2 `cat ./pbm_pid`
 * be rake release
 * githubのreleaseを作成する
 -->
+
+## Raspberry Pi4のセットアップを代行します
+* Raspberry Pi4を開発者である私の家に配送してくれれば、セットアップを代行します。セットアップが終わり次第送り返します
+* 使い方に関しては、https://pbm-cloud.herokuapp.com ですべて完結するので、Linuxの知識は不要です
+* 何か問題が起きた時はリモートログインでサポート可能です
+* 希望者はDiscordの `kawagu#7684` にDMを送ってください
+* お金はかかりません
 
 ## 開発を支援してくれる人を募集しています
 * https://jiikko.fanbox.cc/
