@@ -34,6 +34,7 @@ module ProconBypassMan
 
     def get
       handle_request do
+        ProconBypassMan.logger.info "[HTTP] GET #{@uri}"
         response = HttpRequest::Get.request!(
           uri: @uri,
         )
@@ -44,6 +45,7 @@ module ProconBypassMan
     def post(request_body: )
       handle_request do
         body = {}.merge!(request_body)
+        ProconBypassMan.logger.info "[HTTP] POST #{@uri}"
         response = HttpRequest::Post.request!(
           uri: @uri,
           request_body: body,
@@ -57,6 +59,7 @@ module ProconBypassMan
         body = {
           hostname: `hostname`.chomp,
         }.merge!(request_body)
+        ProconBypassMan.logger.info "[HTTP] PUT #{@uri}"
         response = HttpRequest::Put.request!(
           uri: @uri,
           request_body: body,
