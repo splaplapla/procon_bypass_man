@@ -34,6 +34,6 @@ class ProconBypassMan::Procon::PerformanceMeasurement::SpanTransferBuffer
   end
 
   def max_buffer
-    100
+    50
   end
 end
