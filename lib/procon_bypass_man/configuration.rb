@@ -70,6 +70,7 @@ class ProconBypassMan::Configuration
     end
   end
 
+  # NOTE 不具合の原因は修正済みなので可変である必要は無くなった。削除したいが各端末内の設定ファイルに存在している場合があるのでしばらく残す
   def bypass_mode=(value)
     @bypass_mode = ProconBypassMan::BypassMode.new(
       mode: value[:mode],

@@ -38,7 +38,6 @@ sudo /home/pi/.rbenv/versions/3.0.1/bin/ruby app.rb
  use_pbmenv: true
  session_id: s_c6f36422-c20f-4a04-a446-b4a235c2face
  device_id: d_8b0c90d8-90*************************
- bypass_mode: normal(5)
  ----
 ```
 
