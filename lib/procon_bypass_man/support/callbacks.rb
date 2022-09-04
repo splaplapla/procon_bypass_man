@@ -93,6 +93,10 @@ module ProconBypassMan
         return self.class.__callbacks[kind.to_sym]
       end
 
+      if self.class.callbacks.nil?
+        return []
+      end
+
       list = self.class.callbacks.flat_map { |callback_mod|
         callback_mod.__callbacks && callback_mod.__callbacks[kind.to_sym]
       }.compact
