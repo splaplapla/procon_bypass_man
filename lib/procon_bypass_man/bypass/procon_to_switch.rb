@@ -40,9 +40,9 @@ class ProconBypassMan::Bypass::ProconToSwitch
             return(false) if $will_terminate_token
             raise
           end
-        end
 
-        self.bypass_value.binary = ProconBypassMan::Domains::InboundProconBinary.new(binary: raw_output)
+          self.bypass_value.binary = ProconBypassMan::Domains::InboundProconBinary.new(binary: raw_output)
+        end
 
         result = measurement.record_write_time do
           begin
