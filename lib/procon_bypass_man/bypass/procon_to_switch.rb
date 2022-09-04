@@ -10,9 +10,10 @@ class ProconBypassMan::Bypass::ProconToSwitch
   define_callbacks :work
   set_callback :work, :after, :log_after_run
 
-  register_callback_module(ProconBypassMan::ProconDisplay::BypassHook)
+  # マルチプロセス化したので一旦無効にする
+  # register_callback_module(ProconBypassMan::ProconDisplay::BypassHook)
 
-  attr_accessor :gadget, :procon, :bypass_value, :procon_binary_queue
+  attr_accessor :gadget, :procon, :bypass_value
 
   def initialize(gadget: , procon: )
     self.gadget = gadget
