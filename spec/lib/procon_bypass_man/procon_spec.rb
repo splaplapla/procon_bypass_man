@@ -389,6 +389,11 @@ describe ProconBypassMan::Procon do
             procon.apply!
             expect(procon.to_binary).to be_a(String)
           end
+          Timecop.freeze(Time.now + 10) do
+            procon = ProconBypassMan::Procon.new(procon.to_binary)
+            procon.apply!
+            expect(procon.to_binary).to be_a(String)
+          end
         end
       end
     end
