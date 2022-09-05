@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "procon_bypass_man/procon/macro_plugin_map"
 
 class ProconBypassMan::Procon
