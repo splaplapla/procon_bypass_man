@@ -115,6 +115,7 @@ class ProconBypassMan::Procon
       ProconBypassMan::Procon::MacroRegistry.install_plugin(macro_name, steps: task.steps, macro_type: :remote)
       @@status[:ongoing_macro] = MacroRegistry.load(macro_name, macro_type: :remote) do
         ProconBypassMan::PostCompletedRemoteMacroJob.perform_async(task.uuid)
+        GC.start # NOTE: extend_run_on_this_process = true するとGCされなくなるので手動で呼び出す
       end
     end
 
