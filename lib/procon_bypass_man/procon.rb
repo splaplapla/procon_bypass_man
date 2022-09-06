@@ -126,6 +126,7 @@ class ProconBypassMan::Procon
       @@status[:ongoing_mode] = ModeRegistry.load(:manual)
       current_layer.flip_buttons.each do |button, options|
         if !options[:if_pressed]
+          # FIXME マルチプロセス化したので、クラス変数に状態を保持するFlipCacheは意図した挙動にならない. BlueGreenProcess.shared_variables を使って状態をプロセス間で共有すれば動く
           FlipCache.fetch(key: button, expires_in: options[:flip_interval]) do
             status[button] = !status[button]
           end
