@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "procon_bypass_man/bypass/bypass_command"
 
 class ProconBypassMan::Bypass::ProconToSwitch

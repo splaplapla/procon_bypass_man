@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ProconBypassMan::Procon::AnalogStick
   attr_accessor :neutral_position
   attr_writer :bin_x, :bin_y

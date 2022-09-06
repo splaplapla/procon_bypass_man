@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ProconBypassMan
   module RemoteMacro
     require "procon_bypass_man/remote_macro/remote_macro_object"
