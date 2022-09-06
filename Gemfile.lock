@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    procon_bypass_man (0.2.3)
+    procon_bypass_man (0.3.0)
       action_cable_client
       blue_green_process
       pbmenv (>= 0.1.9)
@@ -80,7 +80,7 @@ GEM
       parser (>= 3.0.1.1)
     ruby-progressbar (1.11.0)
     ruby2_keywords (0.0.5)
-    set (1.0.2)
+    set (1.0.3)
     sinatra (2.2.0)
       mustermann (~> 1.0)
       rack (~> 2.2)
