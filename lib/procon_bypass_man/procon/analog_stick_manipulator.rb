@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ProconBypassMan::Procon::AnalogStickManipulator
   attr_accessor :manipulated_abs_x, :manipulated_abs_y
 

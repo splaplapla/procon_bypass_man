@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ProconBypassMan::Procon::MacroBuilder
   class SubjectMerger
     def self.merge(subjects)

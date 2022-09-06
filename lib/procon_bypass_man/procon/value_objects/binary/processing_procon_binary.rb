@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # バイナリの書き換えのみをする
 class ProconBypassMan::Domains::ProcessingProconBinary < ProconBypassMan::Domains::Binary::Base
   include ProconBypassMan::Domains::HasMutableBinary

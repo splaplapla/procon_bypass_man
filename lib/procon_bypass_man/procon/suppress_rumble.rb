@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ProconBypassMan::SuppressRumble
   # @param [String] binary
   def initialize(binary: )

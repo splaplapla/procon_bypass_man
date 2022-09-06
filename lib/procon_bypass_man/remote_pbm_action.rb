@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ProconBypassMan
   module RemotePbmAction
     require "procon_bypass_man/remote_pbm_action/base_action"

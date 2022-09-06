@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ProconBypassMan::Procon::Macro
   class BaseNestedStep
     def initialize(value)

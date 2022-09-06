@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # ボタンを押しているか判断するクラス。バイナリの書き換えはしない
 class ProconBypassMan::Procon::UserOperation
   attr_reader :binary

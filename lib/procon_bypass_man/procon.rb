@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "procon_bypass_man/procon/macro_plugin_map"
 
 class ProconBypassMan::Procon
@@ -25,11 +27,11 @@ class ProconBypassMan::Procon
 
   def self.reset!
     @@status = {
-      buttons: {},
-      current_layer_key: :up,
       ongoing_macro: MacroRegistry.load(:null),
-      ongoing_mode: ModeRegistry.load(:manual),
+      ongoing_mode: ModeRegistry.load(:manual), # 削除予定
     }
+    BlueGreenProcess::SharedVariable.instance.data["buttons"] = {}
+    BlueGreenProcess::SharedVariable.instance.data["current_layer_key"] = :up
     @@left_stick_tilting_power_scaler = ProconBypassMan::AnalogStickTiltingPowerScaler.new
   end
   reset!
@@ -41,10 +43,20 @@ class ProconBypassMan::Procon
     )
   end
 
-  def status; @@status[:buttons]; end
+  def status
+    BlueGreenProcess::SharedVariable.instance.data["buttons"]
+  end
+
+  def current_layer_key
+    BlueGreenProcess::SharedVariable.instance.data["current_layer_key"].to_sym
+  end
+
+  def current_layer_key=(layer)
+    BlueGreenProcess::SharedVariable.instance.data["current_layer_key"] = layer
+  end
+
   def ongoing_macro; @@status[:ongoing_macro]; end
   def ongoing_mode; @@status[:ongoing_mode]; end
-  def current_layer_key; @@status[:current_layer_key]; end
 
   def current_layer
     ProconBypassMan::ButtonsSettingConfiguration.instance.layers[current_layer_key]
@@ -54,7 +66,7 @@ class ProconBypassMan::Procon
   def apply!
     layer_changer = ProconBypassMan::Procon::LayerChanger.new(binary: user_operation.binary)
     if layer_changer.change_layer?
-      @@status[:current_layer_key] = layer_changer.next_layer_key if layer_changer.pressed_next_layer?
+      self.current_layer_key = layer_changer.next_layer_key if layer_changer.pressed_next_layer?
       user_operation.set_no_action!
       return
     end
@@ -97,10 +109,14 @@ class ProconBypassMan::Procon
 
     # remote macro
     if task = ProconBypassMan::RemoteMacro::TaskQueueInProcess.non_blocking_shift
+      no_op_step = :wait_for_0_3 # マクロの最後に固まって最後の入力をし続けるので、無の状態を最後に注入する
+      BlueGreenProcess::SharedVariable.extend_run_on_this_process = true
       ProconBypassMan::Procon::MacroRegistry.cleanup_remote_macros!
       macro_name = task.name || "RemoteMacro-#{task.steps.join}".to_sym
+      task.steps << no_op_step
       ProconBypassMan::Procon::MacroRegistry.install_plugin(macro_name, steps: task.steps, macro_type: :remote)
       @@status[:ongoing_macro] = MacroRegistry.load(macro_name, macro_type: :remote) do
+        GC.start # NOTE: extend_run_on_this_process = true するとGCされなくなるので手動で呼び出す
         ProconBypassMan::PostCompletedRemoteMacroJob.perform_async(task.uuid)
       end
     end
@@ -110,6 +126,7 @@ class ProconBypassMan::Procon
       @@status[:ongoing_mode] = ModeRegistry.load(:manual)
       current_layer.flip_buttons.each do |button, options|
         if !options[:if_pressed]
+          # FIXME マルチプロセス化したので、クラス変数に状態を保持するFlipCacheは意図した挙動にならない. BlueGreenProcess.shared_variables を使って状態をプロセス間で共有すれば動く
           FlipCache.fetch(key: button, expires_in: options[:flip_interval]) do
             status[button] = !status[button]
           end
@@ -146,6 +163,7 @@ class ProconBypassMan::Procon
     end
 
     if ongoing_macro.ongoing? && (step = ongoing_macro.next_step)
+      BlueGreenProcess::SharedVariable.extend_run_on_this_process = true
       ongoing_macro.force_neutral_buttons&.each do |force_neutral_button|
         user_operation.unpress_button(force_neutral_button)
       end
