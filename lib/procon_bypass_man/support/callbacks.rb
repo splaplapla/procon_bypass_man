@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ProconBypassMan
   module CallbacksRegisterable
     attr_accessor :callbacks
