@@ -53,9 +53,19 @@ class ProconBypassMan::Bypass::ProconToSwitch
               begin
                 # 終了処理を希望されているのでブロックを無視してメソッドを抜けてOK
                 return(false) if $will_terminate_token # rubocop:disable Lint/NoReturnInBeginEndBlocks
-                self.gadget.write_nonblock(
+                binary = ::ProconBypassMan::Procon::Rumbler.monitor do
                   ProconBypassMan::Processor.new(bypass_value.binary).process
-                )
+                end
+                self.gadget.write_nonblock(binary)
+
+                if ProconBypassMan::Procon::Rumbler.must_rumble?
+                  begin
+                    self.procon.write_nonblock(ProconBypassMan::Procon::Rumbler.binary)
+                  rescue => e
+                    ProconBypassMan::SendErrorCommand.execute(error: e)
+                  end
+                end
+
                 next(true)
               rescue IO::EAGAINWaitReadable
                 return(false) if $will_terminate_token # rubocop:disable Lint/NoReturnInBeginEndBlocks
