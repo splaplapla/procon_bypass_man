@@ -61,6 +61,7 @@ class ProconBypassMan::Bypass::ProconToSwitch
                 if ProconBypassMan::Procon::Rumbler.must_rumble?
                   begin
                     self.procon.write_nonblock(ProconBypassMan::Procon::Rumbler.binary)
+                    ProconBypassMan.logger.debug { ProconBypassMan::Procon::Rumbler.binary.unpack('H*').first }
                   rescue => e
                     ProconBypassMan::SendErrorCommand.execute(error: e)
                   end

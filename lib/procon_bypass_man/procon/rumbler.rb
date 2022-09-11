@@ -12,8 +12,7 @@ class ProconBypassMan::Procon::Rumbler
     @@must_rumble
   end
 
-  # TODO
   def self.binary
-    ""
+    ["100c00000000" + "00001010"].pack("H*")
   end
 end
