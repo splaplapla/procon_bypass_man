@@ -23,7 +23,10 @@ https://github.com/splaplapla/procon_bypass_man/blob/master/docs/setup_raspi_by_
   * sudo reboot
 * cd ~ && mkdir -p src && cd ~/src && git clone https://github.com/jiikko/procon_bypass_man_sample && cd procon_bypass_man_sample
 
-おわり. 起動する時は都度 `sudo /home/pi/.rbenv/versions/3.0.1/bin/ruby app.rb` を実行する
+おわりです.  
+  
+起動する時は「ラズパイとSwitch」と「ラズパイとプロコン」を **データ通信可能なケーブル** で接続した状態で、  
+毎回 `sudo /home/pi/.rbenv/versions/3.0.1/bin/ruby app.rb` を実行してください。
 
 ## 参考
 * https://mtosak-tech.hatenablog.jp/entry/2020/08/22/114622
