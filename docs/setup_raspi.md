@@ -29,10 +29,7 @@ https://github.com/splaplapla/procon_bypass_man/blob/master/docs/setup_raspi_by_
   * echo "dwc2" | sudo tee -a /etc/modules
   * echo "libcomposite" | sudo tee -a /etc/modules
   * sudo cat /etc/modules
-  * cd ~ && wget https://gist.githubusercontent.com/jiikko/3f9fb3194c0cc7685e31fbfcb5b5f9ff/raw/23ddee29d94350be80b79d290ac3c8ce8400bd88/add_procon_gadget.sh
-  * chmod 755 ~/add_procon_gadget.sh
   * sudo reboot
-  * sudo sh ~/add_procon_gadget.sh の実行に成功させる
 * cd ~ && mkdir -p src && cd ~/src && git clone https://github.com/jiikko/procon_bypass_man_sample && cd procon_bypass_man_sample
 
 おわり. 起動する時は都度 sudo ruby app.rb を実行する
