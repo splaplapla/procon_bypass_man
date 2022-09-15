@@ -7,7 +7,7 @@ https://github.com/splaplapla/procon_bypass_man/blob/master/docs/setup_raspi_by_
   * 無線LANに接続する
   * sshdを許可する
 * macからsshする
-　　　　* sudo apt-get update
+  * sudo apt-get update
   * sudo apt-get dist-upgrade
   * sudo apt-get install vim rbenv git -y
   * rbenvでrubyを入れる
