@@ -23,7 +23,7 @@ https://github.com/splaplapla/procon_bypass_man/blob/master/docs/setup_raspi_by_
   * sudo reboot
 * cd ~ && mkdir -p src && cd ~/src && git clone https://github.com/jiikko/procon_bypass_man_sample && cd procon_bypass_man_sample
 
-おわり. 起動する時は都度 sudo ruby app.rb を実行する
+おわり. 起動する時は都度 `sudo /home/pi/.rbenv/versions/3.0.1/bin/ruby app.rb` を実行する
 
 ## 参考
 * https://mtosak-tech.hatenablog.jp/entry/2020/08/22/114622
