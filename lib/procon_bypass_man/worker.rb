@@ -13,9 +13,14 @@ module ProconBypassMan
         while(item = ProconBypassMan::Background::JobQueue.pop)
           begin
             # プロセスを越えるので、文字列でenqueueしてくれる前提. evalしてクラスにする
-            ProconBypassMan::Background::JobPerformer.new(klass: eval(item[:job_class]), args: item[:args]).perform
+            job_class = eval(item[:job_class])
+            ProconBypassMan::Background::JobPerformer.new(klass: job_class, args: item[:args]).perform
           rescue => e
             ProconBypassMan.logger.error(e)
+            if job_class.respond_to?(:re_enqueue_if_failed) && job_class.re_enqueue_if_failed
+              job_class.perform_async(item[:args])
+            end
+
             sleep(0.2) # busy loopしないように
           end
         end

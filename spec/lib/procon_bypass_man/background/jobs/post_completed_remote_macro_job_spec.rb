@@ -1,6 +1,12 @@
 require "spec_helper"
 
 describe ProconBypassMan::PostCompletedRemoteMacroJob do
+  describe '.re_enqueue_if_failed' do
+    it do
+      expect(described_class.re_enqueue_if_failed).to be(true)
+    end
+  end
+
   describe '.perform' do
     before do
       ProconBypassMan.configure do |config|
