@@ -11,8 +11,8 @@ module ProconBypassMan
       return self if @thread
       @thread = Thread.new do
         while(item = ProconBypassMan::Background::JobQueue.pop)
-          job_class = eval(item[:job_class])
-          work(job_class: job_class, args: item[:args])
+          # プロセスを越えるので文字列になっている. evalしてクラスにする
+          work(job_class: eval(item[:job_class]), args: item[:args])
           sleep(0.2) # busy loopしないように
         end
       end
@@ -22,7 +22,6 @@ module ProconBypassMan
 
     def work(job_class: , args: )
       begin
-        # プロセスを越えるので、文字列でenqueueしてくれる前提. evalしてクラスにする
         job_class.perform(*args)
       rescue => e
         ProconBypassMan.logger.error(e)
