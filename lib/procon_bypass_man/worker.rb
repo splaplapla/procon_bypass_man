@@ -27,6 +27,7 @@ module ProconBypassMan
         ProconBypassMan.logger.error(e)
         if job_class.respond_to?(:re_enqueue_if_failed) && job_class.re_enqueue_if_failed
           job_class.perform_async(args)
+          ProconBypassMan.logger.error("エラーが起きたので#{job_class}を積み直しました。")
         end
       end
     end
