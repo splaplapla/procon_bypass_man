@@ -20,6 +20,17 @@ describe ProconBypassMan::PostCompletedRemoteMacroJob do
       expect_any_instance_of(Net::HTTP).to receive(:post) { http_response }
       expect { described_class.perform({}) }.not_to raise_error
     end
+
+    context 'エラーが起きる時' do
+      before do
+        allow(ProconBypassMan).to receive(:logger) { double(:logger).as_null_object }
+      end
+
+      it do
+        allow(ProconBypassMan::HttpClient::HttpRequest::Post).to receive(:request!) { raise "hoge" }
+        expect { described_class.perform({}) }.to raise_error(RuntimeError)
+      end
+    end
   end
 end
 

@@ -102,7 +102,6 @@ module ProconBypassMan
       sleep(10)
       raise if respond_to?(:raise_if_failed) && raise_if_failed
     rescue => e
-      puts e
       ProconBypassMan.logger.error(e)
       raise if respond_to?(:raise_if_failed) && raise_if_failed
     end
