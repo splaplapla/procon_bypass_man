@@ -79,6 +79,25 @@ describe ProconBypassMan::Configuration do
     end
   end
 
+  describe '#enable_rumble_on_layer_change' do
+    let(:config) { described_class.new }
+    subject { config.enable_rumble_on_layer_change }
+
+    it 'default nil' do
+      expect(subject).to eq(nil)
+    end
+
+    it do
+      config.enable_rumble_on_layer_change = true
+      expect(subject).to eq(true)
+    end
+
+    it do
+      config.enable_rumble_on_layer_change = false
+      expect(subject).to eq(false)
+    end
+  end
+
   describe '#has_api_server?' do
     let(:config) { described_class.new }
     context 'when has api_server' do

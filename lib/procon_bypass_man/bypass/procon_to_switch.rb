@@ -58,7 +58,7 @@ class ProconBypassMan::Bypass::ProconToSwitch
                 end
                 self.gadget.write_nonblock(binary)
 
-                if ProconBypassMan::Procon::Rumbler.must_rumble?
+                if ProconBypassMan.config.enable_rumble_on_layer_change && ProconBypassMan::Procon::Rumbler.must_rumble?
                   begin
                     self.procon.write_nonblock(ProconBypassMan::Procon::Rumbler.binary)
                     ProconBypassMan.logger.debug { ProconBypassMan::Procon::Rumbler.binary.unpack('H*').first }
