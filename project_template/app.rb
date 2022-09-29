@@ -49,6 +49,9 @@ ProconBypassMan.configure do |config|
 
   # 接続に成功したらコントローラーのHOME LEDを光らせるか
   config.enable_home_led_on_connect = true
+
+  # レイヤー変更時にコントローラーが振動します。有効にすると稀に数秒間固まることがあります。
+  config.enable_rumble_on_layer_change = false
 end
 
 ProconBypassMan.run(setting_path: "/usr/share/pbm/current/setting.yml")

@@ -22,6 +22,7 @@ class ProconBypassMan::Procon
   require "procon_bypass_man/procon/flip_cache"
   require "procon_bypass_man/procon/press_button_aware"
   require "procon_bypass_man/procon/suppress_rumble"
+  require "procon_bypass_man/procon/rumbler"
 
   attr_accessor :user_operation
 
@@ -66,7 +67,10 @@ class ProconBypassMan::Procon
   def apply!
     layer_changer = ProconBypassMan::Procon::LayerChanger.new(binary: user_operation.binary)
     if layer_changer.change_layer?
-      self.current_layer_key = layer_changer.next_layer_key if layer_changer.pressed_next_layer?
+      if layer_changer.pressed_next_layer?
+        self.current_layer_key = layer_changer.next_layer_key
+        ProconBypassMan::Procon::Rumbler.rumble!
+      end
       user_operation.set_no_action!
       return
     end
