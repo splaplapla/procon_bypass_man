@@ -8,6 +8,37 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
 
   describe 'Loader' do
     describe '.load' do
+      context 'with enable_setting' do
+        context '想定していないキーを与えるとき' do
+          let(:setting_content) do
+            <<~EOH
+          version: 1.0
+          setting: |-
+            enable_setting(:hogehoge)
+
+            prefix_keys_for_changing_layer [:zr, :r, :zl, :l]
+            EOH
+          end
+          it do
+            ProconBypassMan::ButtonsSettingConfiguration::Loader.load(setting_path: setting.path)
+          end
+        end
+        context '想定しているキーを与えるとき' do
+          let(:setting_content) do
+            <<~EOH
+          version: 1.0
+          setting: |-
+            enable_setting(:rumble_on_layer_change)
+
+            prefix_keys_for_changing_layer [:zr, :r, :zl, :l]
+            EOH
+          end
+          it do
+            ProconBypassMan::ButtonsSettingConfiguration::Loader.load(setting_path: setting.path)
+          end
+        end
+      end
+
       context 'with neutral_position' do
         let(:setting_content) do
           <<~EOH

@@ -98,6 +98,11 @@ module ProconBypassMan
       @prefix_keys_for_changing_layer
     end
 
+    # @param [Symbol, String] setting_name
+    # @return [void]
+    def enable_setting(setting_name)
+    end
+
     def reset!
       @prefix_keys_for_changing_layer = []
       self.mode_plugins = {}
