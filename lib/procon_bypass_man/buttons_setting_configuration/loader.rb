@@ -21,7 +21,7 @@ module ProconBypassMan
         rescue SyntaxError
           fallback_setting_if_has_backup(current_setting_path: setting_path)
           raise ProconBypassMan::CouldNotLoadConfigError, "Rubyスクリプトのシンタックスエラーです"
-        rescue NoMethodError
+        rescue NameError
           fallback_setting_if_has_backup(current_setting_path: setting_path)
           raise ProconBypassMan::CouldNotLoadConfigError, "Rubyスクリプトに未定義の定数・変数があります"
         rescue Psych::SyntaxError
