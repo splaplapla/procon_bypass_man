@@ -25,8 +25,14 @@ https://github.com/splaplapla/procon_bypass_man/blob/master/docs/setup_raspi_by_
 
 おわりです.  
   
-起動する時は「ラズパイとSwitch」と「ラズパイとプロコン」を **データ通信可能なケーブル** で接続した状態で、  
-毎回 `sudo /home/pi/.rbenv/versions/3.0.1/bin/ruby app.rb` を実行してください。
+起動する時は下記を確認の上、`sudo /home/pi/.rbenv/versions/3.0.1/bin/ruby app.rb` を実行してください。
+
+* 「ラズパイとSwitch」と「ラズパイとプロコン」を **データ通信可能なケーブル** で接続する
+* **Proコントローラーの有線通信** をONにする
+
+
+![image](https://user-images.githubusercontent.com/1664497/193258615-1da27049-6d1f-4bfc-af1d-2f894f9c610e.png)
+
 
 ## 参考
 * https://mtosak-tech.hatenablog.jp/entry/2020/08/22/114622
