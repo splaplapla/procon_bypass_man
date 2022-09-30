@@ -851,6 +851,24 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
       end
     end
 
+    context 'NameErrorが起きるとき' do
+      it 'ProconBypassMan::CouldNotLoadConfigErrorエラーを投げること' do
+        setting_content = <<~EOH
+          version: 1.0
+          setting: |-
+            ProconBypassMan::Splatoon2::Macro::Foo
+            prefix_keys_for_changing_layer [:zr, :r, :zl, :l]
+            set_neutral_position 1000, 1000
+        EOH
+        ProconBypassMan::ButtonsSettingConfiguration.instance.setting_path = nil
+        setting = Setting.new(setting_content).to_file
+
+        expect {
+          ProconBypassMan::ButtonsSettingConfiguration::Loader.load(setting_path: setting.path)
+        }.to raise_error(ProconBypassMan::CouldNotLoadConfigError)
+      end
+    end
+
     context 'シンタックスエラーが起きるとき' do
       context '初回で失敗する' do
         it 'setting.pathは保存すること' do
