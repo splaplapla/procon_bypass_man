@@ -100,7 +100,6 @@ module ProconBypassMan
 
     # @param [Symbol, String] setting_name
     # @return [void]
-    # TODO: 設定ファイルの再読み込みをしたときに、一度trueにするとtrueになりっぱなしになる
     def enable(setting_name)
       case setting_name.to_sym
       when :rumble_on_layer_change
