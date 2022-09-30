@@ -52,6 +52,7 @@ module ProconBypassMan
       end
 
       def self.reload_setting
+        ProconBypassMan.ephemeral_config.reset!
         self.load(setting_path: ProconBypassMan::ButtonsSettingConfiguration.instance.setting_path)
       end
 

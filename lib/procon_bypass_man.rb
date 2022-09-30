@@ -50,6 +50,7 @@ require_relative "procon_bypass_man/device_status"
 require_relative "procon_bypass_man/runner"
 require_relative "procon_bypass_man/processor"
 require_relative "procon_bypass_man/configuration"
+require_relative "procon_bypass_man/ephemeral_configuration"
 require_relative "procon_bypass_man/buttons_setting_configuration"
 require_relative "procon_bypass_man/procon"
 require_relative "procon_bypass_man/device_model"
@@ -141,6 +142,11 @@ module ProconBypassMan
   # @return [ProconBypassMan::Configuration]
   def self.config
     @@configuration ||= ProconBypassMan::Configuration.new
+  end
+
+  # @return [ProconBypassMan::EphemeralConfiguration]
+  def self.ephemeral_config
+    @@ephemeral_configuration ||= ProconBypassMan::EphemeralConfiguration.new
   end
 
   # @return [void]

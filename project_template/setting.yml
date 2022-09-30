@@ -1,5 +1,8 @@
 version: 1.0
 setting: |-
+  # レイヤー変更時にコントローラーが振動する。有効にすると稀に、コントローラーが数秒間固まることがあります。
+  # enable(:rumble_on_layer_change)
+
   prefix_keys_for_changing_layer [:zr, :zl, :l]
 
   layer :up do
