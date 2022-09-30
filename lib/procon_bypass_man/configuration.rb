@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# app.rbから設定される値。プロセスを起動してから不変
 class ProconBypassMan::Configuration
   module ClassMethods
     def root
@@ -52,7 +53,6 @@ class ProconBypassMan::Configuration
   end
 
   attr_accessor :enable_critical_error_logging
-  attr_accessor :enable_rumble_on_layer_change # NOTE: setting.yamlでenable(:rumble_on_layer_change)を書くとtrueがセットされる
   attr_writer :verbose_bypass_log, :raw_setting, :never_exit_accidentally, :enable_home_led_on_connect
   # 削除予定
   attr_writer :enable_reporting_pressed_buttons

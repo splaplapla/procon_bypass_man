@@ -19,7 +19,6 @@ class ProconBypassMan::Runner
     end
 
     loop do
-      # NOTE メインプロセスではThreadをいくつか起動しているので念のためパフォーマンスを優先するためにforkしていく
       child_pid = Kernel.fork do
         $will_terminate_token = false
         ProconBypassMan.after_fork_on_bypass_process

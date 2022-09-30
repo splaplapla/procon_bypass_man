@@ -34,11 +34,11 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
             EOH
           end
           before do
-            ProconBypassMan.config.enable_rumble_on_layer_change = false
+            ProconBypassMan.ephemeral_config.enable_rumble_on_layer_change = false
           end
           it do
             ProconBypassMan::ButtonsSettingConfiguration::Loader.load(setting_path: setting.path)
-            expect(ProconBypassMan.config.enable_rumble_on_layer_change).to eq(true)
+            expect(ProconBypassMan.ephemeral_config.enable_rumble_on_layer_change).to eq(true)
           end
         end
       end

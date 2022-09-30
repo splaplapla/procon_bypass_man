@@ -104,7 +104,7 @@ module ProconBypassMan
     def enable(setting_name)
       case setting_name.to_sym
       when :rumble_on_layer_change
-        ProconBypassMan.config.enable_rumble_on_layer_change = true
+        ProconBypassMan.ephemeral_config.enable_rumble_on_layer_change = true
       else
         warn "存在しないenable(#{setting_name.to_sym})が呼び出されました。"
       end
