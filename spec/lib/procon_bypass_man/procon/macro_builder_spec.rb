@@ -34,7 +34,9 @@ describe ProconBypassMan::Procon::MacroBuilder do
 
       describe 'toggle' do
         it do
-          expect(described_class.new([:toggle_a]).build).to eq([:a, :none])
+          expect(described_class.new([:toggle_a]).build).to eq([
+            :a, :none
+          ])
         end
         it do
           expect(described_class.new([:toggle_a, :toggle_b]).build).to eq([:a, :none, :b, :none])
@@ -210,6 +212,19 @@ describe ProconBypassMan::Procon::MacroBuilder do
               :none,
             ] }]
           )
+        end
+      end
+
+      describe 'rotate_left_stick_for_forward_ikarole' do
+        it do
+          expect(described_class.new([:rotate_left_stick_for_forward_ikarole, :pressing_b_for_0_03sec, :wait_for_0_02sec]).build).to eq([
+             :tilt_left_stick_90deg,
+             :tilt_left_stick_180deg,
+             :tilt_left_stick_270deg,
+             :tilt_left_stick_0deg,
+             { continue_for: 0.03, steps: [:b, :b] },
+             {:continue_for=>0.02, :steps=>[:none] },
+          ])
         end
       end
 

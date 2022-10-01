@@ -94,6 +94,15 @@ class ProconBypassMan::Procon::MacroBuilder
       ]
     end
 
+    if /rotate_left_stick_for_forward_ikarole/ =~ step
+      return [
+        :tilt_left_stick_90deg,
+        :tilt_left_stick_180deg,
+        :tilt_left_stick_270deg,
+        :tilt_left_stick_0deg,
+      ]
+    end
+
     if %r!^(pressing_|toggle_|shake_left_stick_)! =~ step && (subjects = step.scan(%r!pressing_[^_]+|shake_left_stick|toggle_[^_]+!)) && (match = step.match(%r!_for_([\d_]+)(sec)?\z!))
       if sec = match[1]
         return {

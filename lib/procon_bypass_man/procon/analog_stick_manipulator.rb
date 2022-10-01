@@ -20,11 +20,17 @@ class ProconBypassMan::Procon::AnalogStickManipulator
         self.manipulated_abs_x = 3400
         self.manipulated_abs_y = 1808
       end
-    else
-      warn "error stick manipulator"
-      self.manipulated_abs_x = analog_stick.abs_x
-      self.manipulated_abs_y = analog_stick.abs_y
+
+      return
     end
+
+    if method =~ /tilt_left_stick_(completely)_to_rad(\d+)/
+      return
+    end
+
+    warn "error stick manipulator"
+    self.manipulated_abs_x = analog_stick.abs_x
+    self.manipulated_abs_y = analog_stick.abs_y
   end
 
 
