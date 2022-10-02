@@ -99,7 +99,7 @@ class ProconBypassMan::Procon::MacroBuilder
       # NOTE: 0degはx: 1, y: 0, 90degはx: 0, y: 1, 180degはx: -1, y: 0.
       # NOTE: スティックを前方に倒している状態で270度回転させる
       for_forward_ikarole_steps = 90.upto(359).map.with_index { |x, index|
-        ["tilt_left_stick_completely_to_#{x}deg".to_sym, :zl] if(index % 30 == 0)
+        ["tilt_left_stick_completely_to_#{x}deg".to_sym, :zl] if(index % 60 == 0)
       }.compact
       for_forward_ikarole_steps << [:tilt_left_stick_completely_to_0deg, :b, :zl]
       return { steps: for_forward_ikarole_steps }
