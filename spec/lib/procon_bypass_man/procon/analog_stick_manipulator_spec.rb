@@ -24,22 +24,26 @@ describe ProconBypassMan::Procon::AnalogStickManipulator do
   end
 
   describe 'method: tilt_left_stick_completely_to_(\d+)deg' do
+    before do
+      allow(ProconBypassMan::ButtonsSettingConfiguration.instance).to receive(:neutral_position) { OpenStruct.new(x: 2124, y: 1808) }
+    end
+
     it do
       manipulator = ProconBypassMan::Procon::AnalogStickManipulator.new(binary, method: :tilt_left_stick_completely_to_90deg)
-      expect(manipulator.manipulated_abs_x).to eq(0)
-      expect(manipulator.manipulated_abs_y).to eq(3400)
+      expect(manipulator.manipulated_abs_x).to eq(-2124)
+      expect(manipulator.manipulated_abs_y).to eq(-8)
     end
 
     it do
       manipulator = ProconBypassMan::Procon::AnalogStickManipulator.new(binary, method: :tilt_left_stick_completely_to_0deg)
-      expect(manipulator.manipulated_abs_x).to eq(3400)
-      expect(manipulator.manipulated_abs_y).to eq(0)
+      expect(manipulator.manipulated_abs_x).to eq(-324)
+      expect(manipulator.manipulated_abs_y).to eq(-1808)
     end
 
     it do
       manipulator = ProconBypassMan::Procon::AnalogStickManipulator.new(binary, method: :tilt_left_stick_completely_to_10deg)
-      expect(manipulator.manipulated_abs_x).to eq(3348.32)
-      expect(manipulator.manipulated_abs_y).to eq(590.24)
+      expect(manipulator.manipulated_abs_x).to eq(-352)
+      expect(manipulator.manipulated_abs_y).to eq(-1496)
     end
   end
 end

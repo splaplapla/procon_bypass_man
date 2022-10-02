@@ -217,13 +217,24 @@ describe ProconBypassMan::Procon::MacroBuilder do
 
       describe 'rotate_left_stick_for_forward_ikarole' do
         it do
-          expect(described_class.new([:rotate_left_stick_for_forward_ikarole, :pressing_b_for_0_03sec, :wait_for_0_02sec]).build).to eq([
-             :tilt_left_stick_completely_to_90deg,
-             :tilt_left_stick_completely_to_180deg,
-             :tilt_left_stick_completely_to_270deg,
-             :tilt_left_stick_completely_to_0deg,
-             { continue_for: 0.03, steps: [:b, :b] },
-             {:continue_for=>0.02, :steps=>[:none] },
+          expect(described_class.new([:rotate_left_stick_for_forward_ikarole]).build).to eq([
+            { steps: [
+              [:tilt_left_stick_completely_to_90deg, :zl],
+              [:tilt_left_stick_completely_to_110deg, :zl],
+              [:tilt_left_stick_completely_to_130deg, :zl],
+              [:tilt_left_stick_completely_to_150deg, :zl],
+              [:tilt_left_stick_completely_to_170deg, :zl],
+              [:tilt_left_stick_completely_to_190deg, :zl],
+              [:tilt_left_stick_completely_to_210deg, :zl],
+              [:tilt_left_stick_completely_to_230deg, :zl],
+              [:tilt_left_stick_completely_to_250deg, :zl],
+              [:tilt_left_stick_completely_to_270deg, :zl],
+              [:tilt_left_stick_completely_to_290deg, :zl],
+              [:tilt_left_stick_completely_to_310deg, :zl],
+              [:tilt_left_stick_completely_to_330deg, :zl],
+              [:tilt_left_stick_completely_to_350deg, :zl],
+              [:tilt_left_stick_completely_to_0deg, :b, :zl]
+            ]}
           ])
         end
       end

@@ -27,9 +27,10 @@ class ProconBypassMan::Procon::AnalogStickManipulator
     if method =~ /tilt_left_stick_(completely)_to_(\d+)deg/
       power_level = $1
       arc_degree = $2.to_i
-      syahen = 3400 # 最大まで片けた状態
-      self.manipulated_abs_x = syahen * Math.cos(arc_degree * Math::PI / 180).abs.floor(4)
-      self.manipulated_abs_y = syahen * Math.sin(arc_degree * Math::PI / 180).abs.floor(4)
+      syahen = 1800 # 最大まで傾けた状態
+      neutral_position = ProconBypassMan::ButtonsSettingConfiguration.instance.neutral_position
+      self.manipulated_abs_x = (syahen * Math.cos(arc_degree * Math::PI / 180)).to_i - neutral_position.x
+      self.manipulated_abs_y = (syahen * Math.sin(arc_degree * Math::PI / 180)).to_i - neutral_position.y
       return
     end
 
