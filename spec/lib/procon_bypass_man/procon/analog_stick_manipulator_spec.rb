@@ -22,4 +22,24 @@ describe ProconBypassMan::Procon::AnalogStickManipulator do
       expect(manipulator.to_binary).to be_a(String)
     end
   end
+
+  describe 'method: tilt_left_stick_completely_to_(\d+)deg' do
+    it do
+      manipulator = ProconBypassMan::Procon::AnalogStickManipulator.new(binary, method: :tilt_left_stick_completely_to_90deg)
+      expect(manipulator.manipulated_abs_x).to eq(0)
+      expect(manipulator.manipulated_abs_y).to eq(3400)
+    end
+
+    it do
+      manipulator = ProconBypassMan::Procon::AnalogStickManipulator.new(binary, method: :tilt_left_stick_completely_to_0deg)
+      expect(manipulator.manipulated_abs_x).to eq(3400)
+      expect(manipulator.manipulated_abs_y).to eq(0)
+    end
+
+    it do
+      manipulator = ProconBypassMan::Procon::AnalogStickManipulator.new(binary, method: :tilt_left_stick_completely_to_10deg)
+      expect(manipulator.manipulated_abs_x).to eq(3348.32)
+      expect(manipulator.manipulated_abs_y).to eq(590.24)
+    end
+  end
 end

@@ -218,10 +218,10 @@ describe ProconBypassMan::Procon::MacroBuilder do
       describe 'rotate_left_stick_for_forward_ikarole' do
         it do
           expect(described_class.new([:rotate_left_stick_for_forward_ikarole, :pressing_b_for_0_03sec, :wait_for_0_02sec]).build).to eq([
-             :tilt_left_stick_90deg,
-             :tilt_left_stick_180deg,
-             :tilt_left_stick_270deg,
-             :tilt_left_stick_0deg,
+             :tilt_left_stick_completely_to_90deg,
+             :tilt_left_stick_completely_to_180deg,
+             :tilt_left_stick_completely_to_270deg,
+             :tilt_left_stick_completely_to_0deg,
              { continue_for: 0.03, steps: [:b, :b] },
              {:continue_for=>0.02, :steps=>[:none] },
           ])

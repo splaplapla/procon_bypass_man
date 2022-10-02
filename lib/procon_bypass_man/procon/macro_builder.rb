@@ -96,10 +96,10 @@ class ProconBypassMan::Procon::MacroBuilder
 
     if /rotate_left_stick_for_forward_ikarole/ =~ step
       return [
-        :tilt_left_stick_90deg,
-        :tilt_left_stick_180deg,
-        :tilt_left_stick_270deg,
-        :tilt_left_stick_0deg,
+        :tilt_left_stick_completely_to_90deg,
+        :tilt_left_stick_completely_to_180deg,
+        :tilt_left_stick_completely_to_270deg,
+        :tilt_left_stick_completely_to_0deg,
       ]
     end
 
