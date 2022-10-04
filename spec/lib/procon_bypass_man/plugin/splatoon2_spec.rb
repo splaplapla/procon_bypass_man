@@ -36,4 +36,13 @@ describe ProconBypassMan::Plugin::Splatoon2 do
       ])
     end
   end
+
+  describe 'ikarole' do
+    it do
+      expect(ProconBypassMan::Plugin::Splatoon2::Macro::ForwardIkarole.name).to eq('ProconBypassMan::Plugin::Splatoon2::Macro::ForwardIkarole')
+      expect(ProconBypassMan::Plugin::Splatoon2::Macro::ForwardIkarole.steps).to eq([
+        :forward_ikarole1,
+      ])
+    end
+  end
 end
