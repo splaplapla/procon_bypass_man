@@ -38,7 +38,7 @@ class ProconBypassMan::Procon::UserOperation
   # @param [Symbol, Array<Symbol>] macro_step
   def press_button_only_or_tilt_sticks(macro_step)
     macro_step = [macro_step] if not macro_step.is_a?(Array)
-    # スティック操作の時はボタン入力を通す
+    # スティック操作を含む時はボタン入力を通す
     binary.set_no_action! if is_button?(macro_step)
 
     macro_step.uniq.each do |ms|
