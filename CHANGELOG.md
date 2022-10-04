@@ -1,6 +1,8 @@
 ## unrelease
 * オプションで、レイヤーを変更しているときにコントローラーを振動できるようになりました
     * setting.yml で `enable(:rumble_on_layer_change)` と記述してください
+* イカロールをするマクロを追加しました
+    * 詳しい設定方法については docs/splatoon2_macro_forward_ikarole.md を参照してください
 
 ## [0.3.0] - 2022-9-9
 * 表示入力機能を一時的に削除しました #185
