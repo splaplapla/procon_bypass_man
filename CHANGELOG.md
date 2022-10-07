@@ -3,6 +3,7 @@
     * setting.yml で `enable(:rumble_on_layer_change)` と記述してください
 * イカロールをするマクロを追加しました
     * 詳しい設定方法については docs/setting/splatoon2_macro_forward_ikarole.md を参照してください
+* スプラ2専用マクロ、惰性キャンセルを削除しました
 
 ## [0.3.0] - 2022-9-9
 * 表示入力機能を一時的に削除しました #185
