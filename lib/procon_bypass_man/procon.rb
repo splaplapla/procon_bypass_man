@@ -33,7 +33,6 @@ class ProconBypassMan::Procon
     }
     BlueGreenProcess::SharedVariable.instance.data["buttons"] = {}
     BlueGreenProcess::SharedVariable.instance.data["current_layer_key"] = :up
-    @@left_stick_tilting_power_scaler = ProconBypassMan::AnalogStickTiltingPowerScaler.new
   end
   reset!
 
@@ -76,7 +75,6 @@ class ProconBypassMan::Procon
     end
 
     analog_stick = ProconBypassMan::Procon::AnalogStick.new(binary: user_operation.binary.raw)
-    dumped_tilting_power = @@left_stick_tilting_power_scaler.add_sample(analog_stick.relative_hypotenuse)
 
     enable_all_macro = true
     enable_macro_map = Hash.new {|h,k| h[k] = true }
@@ -93,16 +91,6 @@ class ProconBypassMan::Procon
     if ongoing_macro.finished? && enable_all_macro
       current_layer.macros.each do |macro_name, options|
         next unless enable_macro_map[macro_name]
-
-        if(if_tilted_left_stick_value = options[:if_tilted_left_stick])
-          threshold = (if_tilted_left_stick_value.is_a?(Hash) && if_tilted_left_stick_value[:threshold]) || ProconBypassMan::AnalogStickTiltingPowerScaler::DEFAULT_THRESHOLD
-          if dumped_tilting_power&.tilting?(threshold: threshold, current_position_x: analog_stick.relative_x, current_position_y: analog_stick.relative_y) && user_operation.pressing_all_buttons?(options[:if_pressed])
-            @@status[:ongoing_macro] = MacroRegistry.load(macro_name)
-            break
-          end
-
-          next
-        end
 
         if user_operation.pressing_all_buttons?(options[:if_pressed])
           @@status[:ongoing_macro] = MacroRegistry.load(macro_name, force_neutral_buttons: options[:force_neutral])
