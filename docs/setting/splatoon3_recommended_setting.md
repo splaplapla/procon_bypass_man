@@ -17,7 +17,7 @@ Aボタンを連打にします。復帰してから最速で前線復帰がで�
 
 ### 1.4 最速スーパージャンプ
 
-```
+```ruby
 install_macro_plugin ProconBypassMan::Plugin::Splatoon3::Macro::FastReturn
 install_macro_plugin ProconBypassMan::Plugin::Splatoon3::Macro::JumpToUpKey
 install_macro_plugin ProconBypassMan::Plugin::Splatoon3::Macro::JumpToRightKey
@@ -35,7 +35,7 @@ end
 * このマクロは、右から上へ高速にスティックを入れることでイカロールを行います
 * 後述の設定例では、左スティックを押し込むことでイカロールを発動してます
 
-```
+```ruby
 layer :up do
   open_macro :forward_ikarole, steps: [:forward_ikarole1], if_pressed: [:thumbl], force_neutral: []
 end
