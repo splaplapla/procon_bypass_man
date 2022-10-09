@@ -42,6 +42,10 @@ describe ProconBypassMan::Worker do
               raise RuntimeError, nil
             end
 
+            def self.name
+              "TheJobClass"
+            end
+
             def self.re_enqueue_if_failed
               true
             end
