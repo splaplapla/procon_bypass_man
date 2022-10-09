@@ -1,6 +1,4 @@
 # スプラトゥーン3: おすすめの設定
-TODO イカロールについて言及する
-
 ## 1 全般
 ### 1.1 デスしてから最速スパジャンのためのAボタン連打
 
@@ -33,6 +31,16 @@ layer :up do
 end
 ```
 
+### 1.5 イカロール
+* このマクロは、右から上へ高速にスティックを入れることでイカロールを行います
+* 後述の設定例では、左スティックを押し込むことでイカロールを発動してます
+
+```
+layer :up do
+  open_macro :forward_ikarole, steps: [:forward_ikarole1], if_pressed: [:thumbl], force_neutral: []
+end
+```
+
 マップを開かずにジャンプができます。トリガーは自由に設定できます。
 
 ## 2 武器に特化した設定
@@ -40,11 +48,6 @@ end
 
 `flip :zr, if_pressed: :zr, force_neutral: :zl`  
 zrを連打にします。`force_neutral: :zl` というオプションをつけることで、ZRを押している間はZLを押しても無視されるようになります。パブロでは意味がありませんが、シューターだと煽りのような動作を抑制することができます。
-
-### 2.2 ボトルガイザー(フォイル)向け
-
-バブル即割のマクロがあります。
-[設定方法](/docs/setting/splatoon2_macro_sokuwari_bubble.md)
 
 ## 3 設定例
 ### 3.1 シンプルなパブロ向け
@@ -54,6 +57,7 @@ zrを連打にします。`force_neutral: :zl` というオプションをつけ
 * 復帰から最速ジャンプのためにAボタンを連打
 * 筆を振るためにZRボタンを連打
 * 筆ダッシュをするためにLボタンをZRボタンに変更
+* イカロール
 
 ```yaml
 version: 1.0
@@ -65,6 +69,7 @@ setting: |-
     flip :a, if_pressed: [:a]
     flip :down, if_pressed: :down
     remap :l, to: :zr
+    open_macro :forward_ikarole, steps: [:forward_ikarole1], if_pressed: [:thumbl], force_neutral: []
   end
 
   layer :right do
@@ -90,6 +95,7 @@ setting: |-
 * ZLボタンと十字キーの右ボタンを同時に、バブル即割を発動
 * 筆ダッシュをするためにLボタンをZRボタンに変更
 * ZLボタンとAボタンを同時に押したときに移動するとスニーキング
+* イカロール
 
 ```yaml
 version: 1.0
@@ -116,6 +122,8 @@ setting: |-
 
     remap :l, to: :zr
     left_analog_stick_cap cap: 1100, if_pressed: [:zl, :a], force_neutral: :a
+
+    open_macro :forward_ikarole, steps: [:forward_ikarole1], if_pressed: [:thumbl], force_neutral: []
   end
 
   layer :right do
