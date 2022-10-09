@@ -29,6 +29,6 @@ setting: |-
   install_macro_plugin(ProconBypassMan::Plugin::Splatoon2::Macro::ForwardIkarole)
 
   layer :up do
-    macro ProconBypassMan::Plugin::Splatoon2::Macro::ForwardIkarole, if_pressed: [:thumbl], force_neutral: []
+    macro ProconBypassMan::Plugin::Splatoon3::Macro::ForwardIkarole, if_pressed: [:thumbl], force_neutral: []
   end
 ```

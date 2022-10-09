@@ -7,7 +7,6 @@
 * ドキュメントは [getting_started.md](docs/getting_started.md) にまとめています
 * https://pbm-cloud.herokuapp.com を使うと、webだけで運用が可能です
 
-
 <img width="880" alt="スクリーンショット 2022-04-02 9 10 38" src="https://user-images.githubusercontent.com/1664497/161356057-71e4bc2a-0217-4434-9bf1-0002b9fb261a.png">
 
 https://user-images.githubusercontent.com/1664497/171327108-f12f56a5-fc36-48da-95a5-65e976553a20.mov
@@ -24,6 +23,7 @@ https://user-images.githubusercontent.com/1664497/171327108-f12f56a5-fc36-48da-9
 
 ## プラグイン
 * https://github.com/splaplapla/procon_bypass_man-splatoon2
+* [スプラトゥーン3](docs/setting/splatoon3_recommended_setting.md)
 
 ## FAQ
 * どうやって動かすの?

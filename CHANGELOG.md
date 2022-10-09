@@ -1,3 +1,7 @@
+## unrelease
+* スプラトゥーン3向けに対応したプラグインを追加しました
+    * 詳しい設定方法については docs/setting/splatoon3_recommended_setting.md を参照してください
+
 ## [0.3.1] - 2022-10-07
 * レイヤーを変更しているときにコントローラーを振動できるようになりました
     * setting.yml で `enable(:rumble_on_layer_change)` と記述してください
