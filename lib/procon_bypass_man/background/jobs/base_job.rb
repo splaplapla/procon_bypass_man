@@ -1,7 +1,8 @@
 class ProconBypassMan::BaseJob
   extend ProconBypassMan::Background::JobPerformable
 
-  def self.servers
-    raise NotImplementedError
+  # @return [Boolean]
+  def self.re_enqueue_if_failed
+    false
   end
 end

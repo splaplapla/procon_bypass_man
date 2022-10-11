@@ -5,5 +5,9 @@ module ProconBypassMan
         job_id: job_id,
       })
     end
+
+    def raise_if_failed
+      true
+    end
   end
 end

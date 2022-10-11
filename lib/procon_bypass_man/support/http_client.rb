@@ -96,13 +96,14 @@ module ProconBypassMan
         sleep(10)
         retry
       end
+      raise if respond_to?(:raise_if_failed) && raise_if_failed
     rescue Timeout::Error
       ProconBypassMan.logger.error(e)
       sleep(10)
-      retry
+      raise if respond_to?(:raise_if_failed) && raise_if_failed
     rescue => e
-      puts e
       ProconBypassMan.logger.error(e)
+      raise if respond_to?(:raise_if_failed) && raise_if_failed
     end
   end
 end
