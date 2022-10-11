@@ -13,5 +13,9 @@ class ProconBypassMan::PostCompletedRemoteMacroJob < ProconBypassMan::BaseJob
     device_id = ProconBypassMan.device_id
     "/api/devices/#{ProconBypassMan.device_id}/completed_pbm_remote_macro_jobs"
   end
+
+  def self.re_enqueue_if_failed
+    true
+  end
 end
 
