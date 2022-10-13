@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    procon_bypass_man (0.3.1)
+    procon_bypass_man (0.3.2)
       action_cable_client
       blue_green_process
       pbmenv (>= 0.1.9)
