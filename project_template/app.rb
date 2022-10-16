@@ -49,6 +49,9 @@ ProconBypassMan.configure do |config|
 
   # 接続に成功したらコントローラーのHOME LEDを光らせるか
   config.enable_home_led_on_connect = true
+
+  # プロコンと接続せずに起動します. 自動ドット打ち用途
+  config.procon_less_mode = false
 end
 
 ProconBypassMan.run(setting_path: "/usr/share/pbm/current/setting.yml")

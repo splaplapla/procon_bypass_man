@@ -16,6 +16,17 @@ describe ProconBypassMan::Configuration do
     end
   end
 
+  describe '#procon_less_mode' do
+    it do
+      expect(described_class.new.procon_less_mode).to eq(nil)
+    end
+    it do
+      config = described_class.new
+      config.procon_less_mode = true
+      expect(config.procon_less_mode).to eq(true)
+    end
+  end
+
   describe '#verbose_bypass_log' do
     it do
       expect(described_class.new.verbose_bypass_log).to eq(false)
