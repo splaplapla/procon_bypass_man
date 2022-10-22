@@ -91,7 +91,6 @@ setting: |-
 * YボタンとBボタンと十字キーの左を同時に押したときに、マップ開いた時の←に設定されている味方にスーパージャンプ
 * YボタンとBボタンと十字キーの右を同時に押したときに、マップ開いた時の→に設定されている味方にスーパージャンプ
 * YボタンとBボタンと十字キーの下を同時に押したときに、リスポーンにスーパージャンプ
-* ZLボタンと十字キーの右ボタンを同時に、バブル即割を発動
 * 筆ダッシュをするためにLボタンをZRボタンに変更
 * ZLボタンとAボタンを同時に押したときに移動するとスニーキング
 * イカロール
@@ -103,7 +102,6 @@ setting: |-
   install_macro_plugin ProconBypassMan::Plugin::Splatoon3::Macro::JumpToUpKey
   install_macro_plugin ProconBypassMan::Plugin::Splatoon3::Macro::JumpToRightKey
   install_macro_plugin ProconBypassMan::Plugin::Splatoon3::Macro::JumpToLeftKey
-  install_macro_plugin ProconBypassMan::Plugin::Splatoon3::Macro::SokuwariForSplashBomb
 
   prefix_keys_for_changing_layer [:zr, :zl, :l]
   set_neutral_position 2100, 2000
@@ -117,7 +115,6 @@ setting: |-
     macro ProconBypassMan::Plugin::Splatoon3::Macro::JumpToUpKey, if_pressed: [:y, :b, :up]
     macro ProconBypassMan::Plugin::Splatoon3::Macro::JumpToRightKey, if_pressed: [:y, :b, :right]
     macro ProconBypassMan::Plugin::Splatoon3::Macro::JumpToLeftKey, if_pressed: [:y, :b, :left]
-    macro ProconBypassMan::Plugin::Splatoon3::Macro::SokuwariForSplashBomb, if_pressed: [:zl, :right]
 
     remap :l, to: :zr
     left_analog_stick_cap cap: 1100, if_pressed: [:zl, :a], force_neutral: :a

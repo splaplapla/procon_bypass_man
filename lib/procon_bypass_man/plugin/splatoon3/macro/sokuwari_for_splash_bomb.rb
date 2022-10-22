@@ -1,3 +1,4 @@
+# 3にはないので削除予定
 module ProconBypassMan
   module Plugin
     module Splatoon3
