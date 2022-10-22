@@ -53,7 +53,7 @@ class ProconBypassMan::BypassCommand
     # シビア
     t2 = Thread.new do
       bypass = ProconBypassMan::Bypass::ProconToSwitch.new(gadget: @gadget, procon: @procon)
-      process = BlueGreenProcess.new(worker_instance: bypass, max_work: 400)
+      process = BlueGreenProcess.new(worker_instance: bypass, max_work: 550)
       loop do
         if $will_terminate_token
           if $will_terminate_token == WILL_TERMINATE_TOKEN::TERMINATE
