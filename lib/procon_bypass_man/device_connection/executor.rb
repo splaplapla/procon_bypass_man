@@ -108,6 +108,13 @@ class ProconBypassMan::DeviceConnection::Executer
           debug_log_buffer << "NG(expected: #{value}, got: #{raw_data.unpack("H*")}) from: #{item.read_from}"
           raise ProconBypassMan::DeviceConnection::BytesMismatchError.new(debug_log_buffer) if @throw_error_if_mismatch
         end
+
+        if to_device(item) == switch
+          ProconBypassMan.logger.info "<<< #{raw_data.unpack("H*").first}"
+        else
+          ProconBypassMan.logger.info ">>> #{raw_data.unpack("H*").first}"
+        end
+
         to_device(item).write_nonblock(raw_data)
       end
     end
