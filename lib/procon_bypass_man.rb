@@ -102,7 +102,11 @@ module ProconBypassMan
 
     # デバイスの接続フェーズ
     begin
-      gadget, procon = ProconBypassMan::DeviceConnection::Command.execute!
+      if ProconBypassMan.config.procon_less_mode
+        gadget, procon = ProconBypassMan::DeviceConnection::ProconLess::Command.execute!
+      else
+        gadget, procon = ProconBypassMan::DeviceConnection::Command.execute!
+      end
     rescue ProconBypassMan::DeviceConnection::NotFoundProconError
       ProconBypassMan::SendErrorCommand.execute(error: "プロコンが見つかりませんでした。")
       ProconBypassMan::DeviceStatus.change_to_procon_not_found_error!
