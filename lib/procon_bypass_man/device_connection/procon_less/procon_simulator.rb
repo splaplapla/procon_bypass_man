@@ -2,6 +2,15 @@ class ProconBypassMan::DeviceConnection::ProconLess::ProconSimulator
   class ResponseBuilder
   end
 
+  class ReportWatcher
+    def intialize(watch_target)
+    end
+
+    # @return [Boolean]
+    def complete?
+    end
+  end
+
   class ReportNegotiator
     def initialize
       @response_builder = ResponseBuilder.new
@@ -11,9 +20,9 @@ class ProconBypassMan::DeviceConnection::ProconLess::ProconSimulator
     def execute
       loop do
         raw_data = read_from_gadget
-        report_marker.mark(raw_data: raw_data)
+        report_watcher.mark(raw_data: raw_data)
         write_to_gadget(@response_builder.build(raw_data: raw_data))
-        break if report_marker.complete?
+        break if report_watcher.complete?
       end
     end
   end
@@ -31,7 +40,7 @@ class ProconBypassMan::DeviceConnection::ProconLess::ProconSimulator
   private
 
   def pre_bypass_first
-    report_marker = ReportMarker.new([
+    report_watcher = ReportWatcher.new([
       /^0000/,
       /^0000/,
       /^8005/,
@@ -41,12 +50,12 @@ class ProconBypassMan::DeviceConnection::ProconLess::ProconSimulator
       /^01000000000000000000033/,
       /^8004/,
     ])
-    negotiator = ReportNegotiator.new(report_marker: report_marker)
+    negotiator = ReportNegotiator.new(report_watcher: report_watcher)
     negotiator.execute
   end
 
   def pre_bypass
-    report_marker = ReportMarker.new([
+    report_watcher = ReportWatcher.new([
       "01-04",
       "02-",
       "04-00",
@@ -60,7 +69,7 @@ class ProconBypassMan::DeviceConnection::ProconLess::ProconSimulator
       "40-",
       "48-",
     ])
-    negotiator = ReportNegotiator.new(report_marker: report_marker)
+    negotiator = ReportNegotiator.new(report_watcher: report_watcher)
     negotiator.execute
   end
 end
