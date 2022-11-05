@@ -1,9 +1,9 @@
 module ProconBypassMan::DeviceConnection::ProconLess
   class OutputReportParser
     def self.parse(raw_data: )
-      first_data_part = raw_data[0].unpack("H*").first
-      return if first_data_part == "10" && raw_data.size == 10
-      case first_data_part
+      command = raw_data[0].unpack("H*").first
+      return if command == "10" && raw_data.size == 10
+      case command
       when "00", "80"
         data = raw_data.unpack("H*").first
         case data
@@ -16,14 +16,15 @@ module ProconBypassMan::DeviceConnection::ProconLess
         sub_command = raw_data[10].unpack("H*").first
         case sub_command
         when "01" # Bluetooth manual pairing
-          return OutputReport.new(command: "01", sub_command: "01", sub_command_arg: nil)
+          return OutputReport.new(command: command, sub_command: sub_command, sub_command_arg: nil)
         when "02" # Request device info
-          return OutputReport.new(command: "01", sub_command: "02", sub_command_arg: nil)
+          return OutputReport.new(command: command, sub_command: sub_command, sub_command_arg: nil)
         when "03", "08", "30", "38", "40", "48" # 01-03, 01-8, 01-30, 01-38, 01-40, 01-48
-          return OutputReport.new(command: "01", sub_command: sub_command, sub_command_arg: nil)
+          return OutputReport.new(command: command, sub_command: sub_command, sub_command_arg: nil)
         when "04" # Trigger buttons elapsed time
-          return OutputReport.new(command: "01", sub_command: "04", sub_command_arg: nil)
+          return OutputReport.new(command: command, sub_command: sub_command, sub_command_arg: nil)
         when "21" # Set NFC/IR MCU configuration
+          return OutputReport.new(command: command, sub_command: sub_command, sub_command_arg: nil)
         when "10"
           arg = raw_data[11..12].unpack("H*").first
           case arg
@@ -42,7 +43,7 @@ module ProconBypassMan::DeviceConnection::ProconLess
           when "2880" # User 6-Axis Motion Sensor calibration
             spi_response(arg, 'beff3e00f001004000400040fefffeff0800e73be73be73b')
           else
-            puts "#{first_data_part}-#{sub_command}-#{arg} is unknown!!!!!!(2)"
+            puts "#{command}-#{sub_command}-#{arg} is unknown!!!!!!(2)"
           end
         end
       else
