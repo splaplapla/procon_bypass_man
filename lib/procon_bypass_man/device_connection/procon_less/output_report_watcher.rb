@@ -11,11 +11,11 @@ module ProconBypassMan::DeviceConnection::ProconLess
     # @return [void]
     def mark(raw_data: )
       output_report = OutputReportParser.parse(raw_data: raw_data)
-      output_report.hid_command?
-      output_report.hid_sub_command?
-      output_report.command
-      output_report.command_arg
       @watching_table.dup.each do |watching_command, _value|
+        if watching_command =~ output_report.to_s
+          @watching_table[watching_command] = true
+          break
+        end
       end
     end
 

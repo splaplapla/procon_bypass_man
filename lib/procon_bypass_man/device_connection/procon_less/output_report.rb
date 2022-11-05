@@ -7,5 +7,10 @@ module ProconBypassMan::DeviceConnection::ProconLess
       @sub_command = sub_command
       @sub_command_arg = sub_command_arg
     end
+
+    # @return [String]
+    def to_s
+      "#{@command}-#{@sub_command}-#{@sub_command_arg}"
+    end
   end
 end
