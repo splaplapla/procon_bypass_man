@@ -1,4 +1,3 @@
 module ProconBypassMan::DeviceConnection
-  module ProconLess
-  end
+  module ProconLess; end
 end

@@ -1,10 +1,7 @@
 class ProconBypassMan::DeviceConnection::ProconLess::ProconSimulator
-  class ResponseBuilder
-  end
-
   class ReportNegotiator
     def initialize(output_report_watcher: )
-      @response_builder = ResponseBuilder.new
+      @input_report_builder = InputReportBuilder.new
       @gadget = gadget
       @output_report_watcher = output_report_watcher
     end
@@ -13,7 +10,7 @@ class ProconBypassMan::DeviceConnection::ProconLess::ProconSimulator
       loop do
         raw_data = read_from_gadget
         @output_report_watcher.mark(raw_data: raw_data)
-        write_to_gadget(@response_builder.build(raw_data: raw_data))
+        write_to_gadget(@input_report_builder.build(raw_data: raw_data))
         break if @output_report_watcher.complete?
       end
     end
