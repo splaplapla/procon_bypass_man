@@ -5,7 +5,7 @@
 
 * Nintendo Switch Proコントローラーを連射機などにするRaspberry Pi上で動かすコンバータです
 * ドキュメントは [getting_started.md](docs/getting_started.md) にまとめています
-* https://pbm-cloud.herokuapp.com を使うと、webだけで運用が可能です
+* https://pbm-cloud.jiikko.com を使うと、webだけで運用が可能です
 
 <img width="880" alt="スクリーンショット 2022-04-02 9 10 38" src="https://user-images.githubusercontent.com/1664497/161356057-71e4bc2a-0217-4434-9bf1-0002b9fb261a.png">
 
@@ -46,7 +46,7 @@ https://user-images.githubusercontent.com/1664497/171327108-f12f56a5-fc36-48da-9
 * 市販されているサードパーティ製連射機との違いは？
     * サードパーティ製のコントローラーは、設定方法や形状が特殊で買い換えるたびに学習・設定コストが発生します。本ツールを使えば、設定内容はテキストで管理することができ、使い慣れたプロコンで同等のことができます
 * sshなしで運用は可能ですか？
-    * https://pbm-cloud.herokuapp.com を使えば、sshを使わずに運用が可能です
+    * https://pbm-cloud.jiikko.com を使えば、sshを使わずに運用が可能です
 
 ## 仕様・制約
 * 日を跨ぐ24時ちょうどになった瞬間はLinuxのcronが起動などがするようで、この時間は数秒間バイパスが激しく遅延します
@@ -82,7 +82,7 @@ sudo kill -USR2 `cat ./pbm_pid`
 
 ## Raspberry Pi4のセットアップを代行します
 * Raspberry Pi4を開発者である私の家に配送してくれれば、セットアップを代行します。セットアップが終わり次第送り返します
-* 使い方に関しては、https://pbm-cloud.herokuapp.com ですべて完結するので、Linuxの知識は不要です
+* 使い方に関しては、https://pbm-cloud.jiikko.com ですべて完結するので、Linuxの知識は不要です
 * 何か問題が起きた時はリモートログインでサポート可能です
 * 希望者はDiscordの `kawagu#7684` にDMを送ってください
 * お金はかかりません

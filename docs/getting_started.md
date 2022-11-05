@@ -48,7 +48,7 @@
 
 ## セットアップを代行できます
 * Raspberry Pi4を開発者である私の家に配送してくれれば、セットアップを代行します。セットアップが終わり次第送り返します
-* 使い方に関しては、https://pbm-cloud.herokuapp.com ですべて完結するので、Linuxの知識は不要です
+* 使い方に関しては、https://pbm-cloud.jiikko.com ですべて完結するので、Linuxの知識は不要です
 * 何か問題が起きた時はリモートログインでサポート可能です
 * 希望者はDiscordの `kawagu#7684` にDMを送ってください
 * お金はかかりません
@@ -60,7 +60,7 @@
 
 ### procon_bypass_manのインストール
 
-pbmenvを使うと https://pbm-cloud.herokuapp.com と連携ができるのでおすすめですが、pbmenvを使わなくてもprocon_bypass_manをインストールすることは可能です。  
+pbmenvを使うと https://pbm-cloud.jiikko.com と連携ができるのでおすすめですが、pbmenvを使わなくてもprocon_bypass_manをインストールすることは可能です。  
 次の4つからインストール方法を1つ選んでください。
 
 * pbmenvを使う方法
@@ -239,13 +239,13 @@ discordで質問してみてください。
 [procon_bypass_manのアップグレード方法](/docs/upgrade_pbm.md)
 
 ## procon_bypass_man_cloudについて
-https://pbm-cloud.herokuapp.com/  
+https://pbm-cloud.jiikko.com/  
 procon_bypass_man_cloudの運用をWEBで完結できるようになる無料のWEBサービスです。  
   
 procon_bypass_man_cloudとの接続が完了後、Raspberry Piを起動時にprocon_bypass_manが自動で立ち上がるように設定すれば、Raspberry Piへのログインが不要で設定ファイルの変更やprocon_bypass_man自体のアップグレードができます。  
 セットアップ方法などでわからないことがあればdiscordで質問してみてください。  
   
-セットアップ方法は https://pbm-cloud.herokuapp.com/faq に書いています。
+セットアップ方法は https://pbm-cloud.jiikko.com/faq に書いています。
 
 ## 最適化について
 本稿では、Rubyの最適化について書きます。上級者向けです。適用しなくても普通に動きますが、逆に適用したことで何らかのケースで遅くなる場合があるかもしれません。
