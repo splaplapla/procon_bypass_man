@@ -71,6 +71,14 @@ describe ProconBypassMan::DeviceConnection::ProconLess::OutputReportParser do
           expect(subject).to have_attributes(command: "01", sub_command: "08", sub_command_arg: nil)
         end
       end
+
+      context 'and sub_command and arg is `10-3d60`' do
+        let(:data) { "010c0000000000000000103d60000019000000000000000000000000000000000000000000000000000000000000000000" }
+        it do
+          expect(subject).to have_attributes(command: "01", sub_command: "10", sub_command_arg: "3d60")
+        end
+      end
+
     end
   end
 end
