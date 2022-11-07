@@ -195,7 +195,7 @@ module ProconBypassMan
         ProconBypassMan::RemoteMacroReceiver.start!
         BlueGreenProcess.config.logger = ProconBypassMan.logger
       }
-      config.shared_variables = [:buttons, :current_layer_key]
+      config.shared_variables = [:buttons, :current_layer_key, :recent_left_stick_positions]
     end
   end
 
