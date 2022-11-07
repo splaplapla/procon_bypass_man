@@ -15,7 +15,7 @@ class AppGenerator
   def generate
     erb = File.read(template_path)
     enable_integration_with_pbm_cloud = @enable_integration_with_pbm_cloud
-    app_rb = ERB.new(erb, nil, '-').result(binding)
+    app_rb = ERB.new(erb, trim_mode: '-').result(binding)
     File.write(output_path, app_rb)
   end
 
