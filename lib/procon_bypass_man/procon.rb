@@ -33,6 +33,7 @@ class ProconBypassMan::Procon
     }
     BlueGreenProcess::SharedVariable.instance.data["buttons"] = {}
     BlueGreenProcess::SharedVariable.instance.data["current_layer_key"] = :up
+    BlueGreenProcess::SharedVariable.instance.data["recent_left_stick_positions"] = []
   end
   reset!
 
@@ -55,6 +56,14 @@ class ProconBypassMan::Procon
     BlueGreenProcess::SharedVariable.instance.data["current_layer_key"] = layer
   end
 
+  def add_recent_left_stick_positions(left_stick_position)
+    BlueGreenProcess::SharedVariable.instance.data["recent_left_stick_positions"] << left_stick_position
+  end
+
+  def recent_left_stick_positions
+    BlueGreenProcess::SharedVariable.instance.data["recent_left_stick_positions"]
+  end
+
   def ongoing_macro; @@status[:ongoing_macro]; end
   def ongoing_mode; @@status[:ongoing_mode]; end
 
@@ -64,6 +73,8 @@ class ProconBypassMan::Procon
 
   # 内部ステータスを書き換えるフェーズ
   def apply!
+    add_recent_left_stick_positions(user_operation.binary)
+
     layer_changer = ProconBypassMan::Procon::LayerChanger.new(binary: user_operation.binary)
     if layer_changer.change_layer?
       if layer_changer.pressed_next_layer?
