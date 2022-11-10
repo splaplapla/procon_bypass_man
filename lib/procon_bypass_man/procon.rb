@@ -73,7 +73,10 @@ class ProconBypassMan::Procon
 
   # 内部ステータスを書き換えるフェーズ
   def apply!
-    add_recent_left_stick_positions(user_operation.binary)
+    # TODO: 100超えたらカットする
+    add_recent_left_stick_positions(
+      ProconBypassMan::Procon::AnalogStick.new(binary: user_operation.binary.raw).to_a
+    )
 
     layer_changer = ProconBypassMan::Procon::LayerChanger.new(binary: user_operation.binary)
     if layer_changer.change_layer?

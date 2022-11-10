@@ -33,4 +33,9 @@ class ProconBypassMan::Procon::AnalogStick
   def relative_hypotenuse
     Math.sqrt((relative_x**2) + (relative_y**2)).floor(6)
   end
+
+  # @return [Array<Integer>] 相対的なx, yの座標
+  def to_a
+    [relative_x, relative_y]
+  end
 end
