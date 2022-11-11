@@ -56,7 +56,11 @@ class ProconBypassMan::Procon
     BlueGreenProcess::SharedVariable.instance.data["current_layer_key"] = layer
   end
 
+  RECENT_LEFT_STICK_POSITIONS_LIMIT = 130
   def add_recent_left_stick_positions(left_stick_position)
+    if (overflowed_size = BlueGreenProcess::SharedVariable.instance.data["recent_left_stick_positions"].size - RECENT_LEFT_STICK_POSITIONS_LIMIT)
+      overflowed_size.times { BlueGreenProcess::SharedVariable.instance.data["recent_left_stick_positions"].shift }
+    end
     BlueGreenProcess::SharedVariable.instance.data["recent_left_stick_positions"] << left_stick_position
   end
 
