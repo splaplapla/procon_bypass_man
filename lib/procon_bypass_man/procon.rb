@@ -58,13 +58,13 @@ class ProconBypassMan::Procon
   end
 
   RECENT_LEFT_STICK_POSITIONS_LIMIT = 5
-  # @param [Float] left_stick_position
+  # @param [Float] left_stick_hypotenuses
   # @return [void]
-  def add_recent_left_stick_hypotenuses(left_stick_position)
-    if (overflowed_size = BlueGreenProcess::SharedVariable.instance.data["recent_left_stick_hypotenuses"].size - RECENT_LEFT_STICK_POSITIONS_LIMIT)
-      overflowed_size.times { BlueGreenProcess::SharedVariable.instance.data["recent_left_stick_hypotenuses"].shift }
+  def add_recent_left_stick_hypotenuses(left_stick_hypotenuses)
+    if (overflowed_size = recent_left_stick_hypotenuses.size - RECENT_LEFT_STICK_POSITIONS_LIMIT)
+      overflowed_size.times { recent_left_stick_hypotenuses.shift }
     end
-    BlueGreenProcess::SharedVariable.instance.data["recent_left_stick_hypotenuses"] << left_stick_position
+    recent_left_stick_hypotenuses << left_stick_hypotenuses
   end
 
   def recent_left_stick_hypotenuses

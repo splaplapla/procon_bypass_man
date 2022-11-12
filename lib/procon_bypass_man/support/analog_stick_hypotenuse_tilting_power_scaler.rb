@@ -2,16 +2,17 @@ class ProconBypassMan::AnalogStickTiltingPowerScaler
   DEFAULT_THRESHOLD = 500
 
   class PowerChunk
-    def initialize(list)
-      @list = list
+    def initialize(hypotenuses)
+      @hypotenuses = hypotenuses
     end
 
     def moving_power
-      max = @list.max
-      min = @list.min
+      max = @hypotenuses.max
+      min = @hypotenuses.min
       moving_power = (max - min).abs
     end
 
+    # @return [Boolean]
     def tilting?(threshold: DEFAULT_THRESHOLD, current_position_x: , current_position_y: )
       # スティックがニュートラルな時
       if (-200..200).include?(current_position_x) && (-200..200).include?(current_position_y)
