@@ -42,6 +42,7 @@ class ProconBypassMan::Procon
     self.user_operation = ProconBypassMan::Procon::UserOperation.new(
       binary.dup
     )
+    @left_stick_tilting_power_scaler = ProconBypassMan::AnalogStickTiltingPowerScaler.new
   end
 
   def status
@@ -56,7 +57,9 @@ class ProconBypassMan::Procon
     BlueGreenProcess::SharedVariable.instance.data["current_layer_key"] = layer
   end
 
-  RECENT_LEFT_STICK_POSITIONS_LIMIT = 130
+  RECENT_LEFT_STICK_POSITIONS_LIMIT = 20
+  # @param [Float] left_stick_position
+  # @return [void]
   def add_recent_left_stick_hypotenuses(left_stick_position)
     if (overflowed_size = BlueGreenProcess::SharedVariable.instance.data["recent_left_stick_hypotenuses"].size - RECENT_LEFT_STICK_POSITIONS_LIMIT)
       overflowed_size.times { BlueGreenProcess::SharedVariable.instance.data["recent_left_stick_hypotenuses"].shift }
@@ -88,9 +91,8 @@ class ProconBypassMan::Procon
     end
 
     analog_stick = ProconBypassMan::Procon::AnalogStick.new(binary: user_operation.binary.raw)
-    add_recent_left_stick_hypotenuses(
-      ProconBypassMan::Procon::AnalogStick.new(binary: user_operation.binary.raw).relative_hypotenuse
-    )
+    add_recent_left_stick_hypotenuses(analog_stick.relative_hypotenuse)
+    dumped_tilting_power = @left_stick_tilting_power_scaler.calculate(recent_left_stick_hypotenuses)
 
     enable_all_macro = true
     enable_macro_map = Hash.new {|h,k| h[k] = true }
@@ -107,6 +109,16 @@ class ProconBypassMan::Procon
     if ongoing_macro.finished? && enable_all_macro
       current_layer.macros.each do |macro_name, options|
         next unless enable_macro_map[macro_name]
+
+        if(if_tilted_left_stick_value = options[:if_tilted_left_stick])
+          threshold = (if_tilted_left_stick_value.is_a?(Hash) && if_tilted_left_stick_value[:threshold]) || ProconBypassMan::AnalogStickTiltingPowerScaler::DEFAULT_THRESHOLD
+          if dumped_tilting_power.tilting?(threshold: threshold, current_position_x: analog_stick.relative_x, current_position_y: analog_stick.relative_y) && user_operation.pressing_all_buttons?(options[:if_pressed])
+            @@status[:ongoing_macro] = MacroRegistry.load(macro_name)
+            break
+          end
+
+          next
+        end
 
         if user_operation.pressing_all_buttons?(options[:if_pressed])
           @@status[:ongoing_macro] = MacroRegistry.load(macro_name, force_neutral_buttons: options[:force_neutral])

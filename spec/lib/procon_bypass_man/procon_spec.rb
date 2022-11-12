@@ -26,7 +26,7 @@ describe ProconBypassMan::Procon do
       150.times do
         ProconBypassMan::Procon.new(binary).apply!
       end
-      expect(BlueGreenProcess::SharedVariable.instance.data["recent_left_stick_hypotenuses"].size).to eq(131)
+      expect(BlueGreenProcess::SharedVariable.instance.data["recent_left_stick_hypotenuses"].size).to eq(21)
     end
   end
 
@@ -792,6 +792,53 @@ describe ProconBypassMan::Procon do
       context 'zr押している' do
         let(:data) { "3012818a8000b0377246f8750988f5c70bfb011400e9ff180083f5d00bf9011100ecff190088f5d10bf9011000f1ff1c00000000000000000000000000000000" }
         it { expect(subject).to eq(false) }
+      end
+    end
+
+    context 'if_tilted_left_stick option' do
+      context 'provide true' do
+        let(:data) { "30778105800099277344e86b0a7909f4f5a8f4b500c5ff8dff6c09cdf5b8f49a00c5ff92ff6a0979f5eef46500d5ff9bff000000000000000000000000000000" }
+        before do
+          ProconBypassMan.buttons_setting_configure do
+            prefix_keys_for_changing_layer [:zr]
+            layer :up do
+              open_macro :the_macro, steps: [:pressing_thumbr_and_toggle_zr_for_2sec], if_pressed: [:y, :b], if_tilted_left_stick: true
+            end
+          end
+        end
+        it do
+          procon = ProconBypassMan::Procon.new(binary)
+          expect(procon.pressed_y?).to eq(true)
+          expect(procon.pressed_b?).to eq(true)
+          expect(procon.pressed_thumbr?).to eq(false)
+          procon.apply!
+
+          procon = ProconBypassMan::Procon.new(procon.to_binary)
+          expect(procon.pressed_thumbr?).to eq(false)
+          expect(procon.pressed_zr?).to eq(false)
+        end
+      end
+      context 'provide Hash' do
+        let(:data) { "30778105800099277344e86b0a7909f4f5a8f4b500c5ff8dff6c09cdf5b8f49a00c5ff92ff6a0979f5eef46500d5ff9bff000000000000000000000000000000" }
+        before do
+          ProconBypassMan.buttons_setting_configure do
+            prefix_keys_for_changing_layer [:zr]
+            layer :up do
+              open_macro :the_macro, steps: [:pressing_thumbr_and_toggle_zr_for_2sec], if_pressed: [:y, :b], if_tilted_left_stick: { threshold: 601 }
+            end
+          end
+        end
+        it do
+          procon = ProconBypassMan::Procon.new(binary)
+          expect(procon.pressed_y?).to eq(true)
+          expect(procon.pressed_b?).to eq(true)
+          expect(procon.pressed_thumbr?).to eq(false)
+          procon.apply!
+
+          procon = ProconBypassMan::Procon.new(procon.to_binary)
+          expect(procon.pressed_thumbr?).to eq(false)
+          expect(procon.pressed_zr?).to eq(false)
+        end
       end
     end
 

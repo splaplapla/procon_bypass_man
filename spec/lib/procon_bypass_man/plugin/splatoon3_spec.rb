@@ -44,4 +44,13 @@ describe ProconBypassMan::Plugin::Splatoon3 do
       ])
     end
   end
+
+  describe 'dasei_cancel' do
+    it do
+      expect(ProconBypassMan::Plugin::Splatoon3::Macro::DaseiCancel.name).to eq('ProconBypassMan::Plugin::Splatoon3::Macro::DaseiCancel')
+      expect(ProconBypassMan::Plugin::Splatoon3::Macro::DaseiCancel.steps).to eq([
+        :pressing_r_for_0_03sec, :pressing_r_and_pressing_zl_for_0_2sec,
+      ])
+    end
+  end
 end

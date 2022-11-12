@@ -53,7 +53,7 @@ module ProconBypassMan
       end
 
       # @param [String, Class] プラグインのclass
-      # @param [Hash, NilClass] if_tilted_left_stick 非推奨
+      # @param [Hash, NilClass] if_tilted_left_stick
       def macro(name, if_pressed: nil, if_tilted_left_stick: nil, force_neutral: nil)
         case if_tilted_left_stick
         when Integer, String, Symbol, Array
