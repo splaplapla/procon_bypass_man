@@ -57,7 +57,7 @@ class ProconBypassMan::Procon
     BlueGreenProcess::SharedVariable.instance.data["current_layer_key"] = layer
   end
 
-  RECENT_LEFT_STICK_POSITIONS_LIMIT = 20
+  RECENT_LEFT_STICK_POSITIONS_LIMIT = 5
   # @param [Float] left_stick_position
   # @return [void]
   def add_recent_left_stick_hypotenuses(left_stick_position)
