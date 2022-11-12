@@ -33,7 +33,7 @@ class ProconBypassMan::Procon
     }
     BlueGreenProcess::SharedVariable.instance.data["buttons"] = {}
     BlueGreenProcess::SharedVariable.instance.data["current_layer_key"] = :up
-    BlueGreenProcess::SharedVariable.instance.data["recent_left_stick_positions"] = []
+    BlueGreenProcess::SharedVariable.instance.data["recent_left_stick_hypotenuses"] = []
   end
   reset!
 
@@ -57,15 +57,15 @@ class ProconBypassMan::Procon
   end
 
   RECENT_LEFT_STICK_POSITIONS_LIMIT = 130
-  def add_recent_left_stick_positions(left_stick_position)
-    if (overflowed_size = BlueGreenProcess::SharedVariable.instance.data["recent_left_stick_positions"].size - RECENT_LEFT_STICK_POSITIONS_LIMIT)
-      overflowed_size.times { BlueGreenProcess::SharedVariable.instance.data["recent_left_stick_positions"].shift }
+  def add_recent_left_stick_hypotenuses(left_stick_position)
+    if (overflowed_size = BlueGreenProcess::SharedVariable.instance.data["recent_left_stick_hypotenuses"].size - RECENT_LEFT_STICK_POSITIONS_LIMIT)
+      overflowed_size.times { BlueGreenProcess::SharedVariable.instance.data["recent_left_stick_hypotenuses"].shift }
     end
-    BlueGreenProcess::SharedVariable.instance.data["recent_left_stick_positions"] << left_stick_position
+    BlueGreenProcess::SharedVariable.instance.data["recent_left_stick_hypotenuses"] << left_stick_position
   end
 
-  def recent_left_stick_positions
-    BlueGreenProcess::SharedVariable.instance.data["recent_left_stick_positions"]
+  def recent_left_stick_hypotenuses
+    BlueGreenProcess::SharedVariable.instance.data["recent_left_stick_hypotenuses"]
   end
 
   def ongoing_macro; @@status[:ongoing_macro]; end
@@ -77,11 +77,6 @@ class ProconBypassMan::Procon
 
   # 内部ステータスを書き換えるフェーズ
   def apply!
-    # TODO: 100超えたらカットする
-    add_recent_left_stick_positions(
-      ProconBypassMan::Procon::AnalogStick.new(binary: user_operation.binary.raw).to_a
-    )
-
     layer_changer = ProconBypassMan::Procon::LayerChanger.new(binary: user_operation.binary)
     if layer_changer.change_layer?
       if layer_changer.pressed_next_layer?
@@ -93,6 +88,9 @@ class ProconBypassMan::Procon
     end
 
     analog_stick = ProconBypassMan::Procon::AnalogStick.new(binary: user_operation.binary.raw)
+    add_recent_left_stick_hypotenuses(
+      ProconBypassMan::Procon::AnalogStick.new(binary: user_operation.binary.raw).relative_hypotenuse
+    )
 
     enable_all_macro = true
     enable_macro_map = Hash.new {|h,k| h[k] = true }
