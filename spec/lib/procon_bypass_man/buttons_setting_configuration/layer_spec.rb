@@ -164,6 +164,10 @@ describe ProconBypassMan::ButtonsSettingConfiguration::Layer do
             expect(ProconBypassMan::Procon::MacroRegistry.plugins[:TheMacro].call).not_to be_nil
           end
         end
+        context 'is hash' do
+          let(:subject_value) { { a: 1 } }
+          it { expect(subject).to eq({TheMacro: {:if_pressed=>[:x], if_tilted_left_stick: { a: 1 }} }) }
+        end
       end
 
       context 'valid if_pressed && force_neutral' do
@@ -322,6 +326,10 @@ describe ProconBypassMan::ButtonsSettingConfiguration::Layer do
           context 'is array' do
             let(:subject_value) { ['y', 'y'] }
             it { expect(subject).to eq({"name" => {:if_pressed=>[:x] } }) }
+          end
+          context 'is hash' do
+            let(:subject_value) { { a: 1 } }
+            it { expect(subject).to eq({"name" => {:if_pressed=>[:x], if_tilted_left_stick: { a: 1 }} }) }
           end
         end
 
