@@ -26,7 +26,7 @@ describe ProconBypassMan::Procon do
       150.times do
         ProconBypassMan::Procon.new(binary).apply!
       end
-      expect(BlueGreenProcess::SharedVariable.instance.data["recent_left_stick_hypotenuses"].size).to eq(21)
+      expect(BlueGreenProcess::SharedVariable.instance.data["recent_left_stick_hypotenuses"].size).to eq(6)
     end
   end
 
