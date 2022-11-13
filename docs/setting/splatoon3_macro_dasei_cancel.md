@@ -1,7 +1,7 @@
 # スプラトゥーン3: 惰性キャンセル マクロの設定方法
 
 * 本マクロは実験段階で、オプション名などの仕様が変更される可能性が高いです
-* procon_bypass_man: 0.3.2以上が必要です
+* procon_bypass_man: 0.3.3以上が必要です
 
 ## 1. install_macro_pluginでマクロを有効化します
 * `setting.yml` に`install_macro_plugin ProconBypassMan::Plugin::Splatoon3::Macro::DaseiCancel` と書きます
