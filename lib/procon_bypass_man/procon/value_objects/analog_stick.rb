@@ -30,6 +30,7 @@ class ProconBypassMan::Procon::AnalogStick
     @bin_y.to_i(2) - neutral_position.y
   end
 
+  # @return [Float]
   def relative_hypotenuse
     Math.sqrt((relative_x**2) + (relative_y**2)).floor(6)
   end

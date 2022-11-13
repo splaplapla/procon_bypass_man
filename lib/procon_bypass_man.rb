@@ -35,6 +35,7 @@ require_relative "procon_bypass_man/support/remote_macro_http_client"
 require_relative "procon_bypass_man/support/update_remote_pbm_action_status_http_client"
 require_relative "procon_bypass_man/support/send_device_stats_http_client"
 require_relative "procon_bypass_man/support/procon_performance_http_client"
+require_relative "procon_bypass_man/support/analog_stick_hypotenuse_tilting_power_scaler"
 require_relative "procon_bypass_man/support/never_exit_accidentally"
 require_relative "procon_bypass_man/support/cycle_sleep"
 require_relative "procon_bypass_man/support/can_over_process"
@@ -195,7 +196,7 @@ module ProconBypassMan
         ProconBypassMan::RemoteMacroReceiver.start!
         BlueGreenProcess.config.logger = ProconBypassMan.logger
       }
-      config.shared_variables = [:buttons, :current_layer_key]
+      config.shared_variables = [:buttons, :current_layer_key, :recent_left_stick_hypotenuses]
     end
   end
 
