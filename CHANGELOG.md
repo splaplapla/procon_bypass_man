@@ -1,3 +1,7 @@
+## [0.3.3] - 2022-11-13
+* 以前に削除した「スプラ用マクロ、惰性キャンセル」を使えるようにしました
+    * docs/setting/splatoon2_macro_dasei_cancel.md, docs/setting/splatoon3_macro_dasei_cancel.md を参照してください
+
 ## [0.3.2] - 2022-10-13
 * スプラトゥーン3に対応したプラグインを追加しました
     * 詳しい設定方法については docs/setting/splatoon3_recommended_setting.md を参照してください
