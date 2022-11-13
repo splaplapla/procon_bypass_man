@@ -53,7 +53,7 @@ module ProconBypassMan
       end
 
       # @param [String, Class] プラグインのclass
-      # @param [Hash, NilClass] if_tilted_left_stick
+      # @param [Hash, Boolean, NilClass] if_tilted_left_stick
       def macro(name, if_pressed: nil, if_tilted_left_stick: nil, force_neutral: nil)
         case if_tilted_left_stick
         when Integer, String, Symbol, Array
@@ -91,6 +91,7 @@ module ProconBypassMan
       end
 
       # 設定ファイルに直接マクロを打ち込める
+      # @param [Hash, Boolean, NilClass] if_tilted_left_stick
       # @param [String, Class] macroの識別子
       # @paramh[Array<Symbol>] macroの本体. ボタンの配列
       def open_macro(name, steps: [], if_pressed: nil, if_tilted_left_stick: nil, force_neutral: nil)

@@ -1,3 +1,6 @@
+## [0.3.3.1] - 2022-11-13
+* setting.ymlにmacroを使って「スプラ用マクロ、惰性キャンセル」の閾値を設定できない不具合を修正しました
+
 ## [0.3.3] - 2022-11-13
 * 以前に削除した「スプラ用マクロ、惰性キャンセル」を使えるようにしました
     * docs/setting/splatoon2_macro_dasei_cancel.md, docs/setting/splatoon3_macro_dasei_cancel.md を参照してください
