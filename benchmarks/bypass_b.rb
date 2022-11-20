@@ -44,6 +44,7 @@ setting.write(setting_content)
 setting.rewind
 ProconBypassMan::ButtonsSettingConfiguration::Loader.load(setting_path: setting.path)
 
+# TODO: 設定ファイルがブランクと大盛りの時に違いがあるか
 Benchmark.ips do |x|
   raw_binary_of_no_action = ["30f28100800078c77448287509550274ff131029001b0022005a0271ff191028001e00210064027cff1410280020002100000000000000000000000000000000"].pack("H*")
   binary = ProconBypassMan::Domains::InboundProconBinary.new(binary: raw_binary_of_no_action)
