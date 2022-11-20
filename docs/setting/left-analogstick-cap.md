@@ -54,7 +54,7 @@ setting: |-
   prefix_keys_for_changing_layer [:zr, :zl, :l]
   set_neutral_position 2100, 2000
 
-  layer :up, mode: :manual do
+  layer :up do
     left_analog_stick_cap cap: 1100, if_pressed: [:zl, :a], force_neutral: :a
   end
 ```
