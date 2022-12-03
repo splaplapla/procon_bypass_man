@@ -1,3 +1,7 @@
+## [0.3.4] - 202
+* 左スティックを1回転するマクロを追加しました
+    * 詳しい設定方法については docs/setting/splatoon3_rotation_forward_stick.md を参照してください
+
 ## [0.3.3.1] - 2022-11-13
 * setting.ymlにmacroを使って「スプラ用マクロ、惰性キャンセル」の閾値を設定できない不具合を修正しました
 
@@ -14,7 +18,7 @@
 * レイヤーを変更しているときにコントローラーを振動できるようになりました
     * setting.yml で `enable(:rumble_on_layer_change)` と記述してください
 * イカロールをするマクロを追加しました
-    * 詳しい設定方法については docs/setting/splatoon2_macro_forward_ikarole.md を参照してください
+    * 詳しい設定方法については docs/setting/splatoon3_macro_forward_ikarole.md を参照してください
 * スプラ用マクロ、惰性キャンセルを削除しました
 
 ## [0.3.0] - 2022-9-9
