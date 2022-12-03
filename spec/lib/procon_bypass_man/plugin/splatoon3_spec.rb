@@ -53,4 +53,13 @@ describe ProconBypassMan::Plugin::Splatoon3 do
       ])
     end
   end
+
+  describe 'rolling_left_stick' do
+    it do
+      expect(ProconBypassMan::Plugin::Splatoon3::Macro::RollingLeftStick.name).to eq('ProconBypassMan::Plugin::Splatoon3::Macro::RollingLeftStick')
+      expect(ProconBypassMan::Plugin::Splatoon3::Macro::RollingLeftStick.steps).to eq([
+        :rolling_left_stick,
+      ])
+    end
+  end
 end
