@@ -18,6 +18,7 @@ require_relative "plugin/splatoon3/macro/sokuwari_for_splash_bomb"
 require_relative "plugin/splatoon3/macro/forward_ikarole"
 require_relative "plugin/splatoon3/macro/charge_tansan_bomb"
 require_relative "plugin/splatoon3/macro/dasei_cancel"
+require_relative "plugin/splatoon3/macro/rotation_left_stick"
 require_relative "plugin/splatoon3/mode/guruguru"
 
 module ProconBypassMan

@@ -53,4 +53,13 @@ describe ProconBypassMan::Plugin::Splatoon3 do
       ])
     end
   end
+
+  describe 'rotation_left_stick' do
+    it do
+      expect(ProconBypassMan::Plugin::Splatoon3::Macro::RotationLeftStick.name).to eq('ProconBypassMan::Plugin::Splatoon3::Macro::RotationLeftStick')
+      expect(ProconBypassMan::Plugin::Splatoon3::Macro::RotationLeftStick.steps).to eq([
+        :rotation_left_stick,
+      ])
+    end
+  end
 end

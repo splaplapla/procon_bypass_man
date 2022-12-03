@@ -95,7 +95,7 @@ class ProconBypassMan::Procon::MacroBuilder
     end
 
     # NOTE: マクロ構文で生成したいけど、スティックとボタン同時押しの構文が思いつかないので、ハードコードする
-    if /forward_ikarole1/ =~ step
+    if /^forward_ikarole1/ =~ step
       # NOTE: 0degはx: 1, y: 0, 90degはx: 0, y: 1, 180degはx: -1, y: 0.
       # NOTE: スティックを前方に倒している状態で270度回転させる
       for_forward_ikarole_steps = [
@@ -103,6 +103,11 @@ class ProconBypassMan::Procon::MacroBuilder
         [:tilt_left_stick_completely_to_90deg],
       ]
       return { steps: for_forward_ikarole_steps }
+    end
+
+    if /^rotation_left_stick/ =~ step
+      roll_left_stick_steps = 0.step(359, 17).map { |x| ["tilt_left_stick_completely_to_#{x}deg".to_sym] }
+      return { steps: roll_left_stick_steps }
     end
 
     if %r!^(pressing_|toggle_|shake_left_stick_)! =~ step && (subjects = step.scan(%r!pressing_[^_]+|shake_left_stick|toggle_[^_]+!)) && (match = step.match(%r!_for_([\d_]+)(sec)?\z!))
