@@ -105,7 +105,7 @@ class ProconBypassMan::Procon::MacroBuilder
       return { steps: for_forward_ikarole_steps }
     end
 
-    if /^rolling_left_stick/ =~ step
+    if /^rotation_left_stick/ =~ step
       roll_left_stick_steps = 0.step(359, 17).map { |x| ["tilt_left_stick_completely_to_#{x}deg".to_sym] }
       return { steps: roll_left_stick_steps }
     end

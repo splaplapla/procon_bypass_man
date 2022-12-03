@@ -26,7 +26,7 @@ version: 1.0
 setting: |-
   prefix_keys_for_changing_layer [:zr, :zl, :l]
 
-  install_macro_plugin(ProconBypassMan::Plugin::Splatoon2::Macro::ForwardIkarole)
+  install_macro_plugin(ProconBypassMan::Plugin::Splatoon3::Macro::ForwardIkarole)
 
   layer :up do
     macro ProconBypassMan::Plugin::Splatoon3::Macro::ForwardIkarole, if_pressed: [:thumbl], force_neutral: []
