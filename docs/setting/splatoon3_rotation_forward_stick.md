@@ -8,9 +8,9 @@
 version: 1.0
 setting: |-
   prefix_keys_for_changing_layer [:zr, :zl, :l]
-  install_macro_plugin(ProconBypassMan::Plugin::Splatoon2::Macro::ForwardIkarole)
+  install_macro_plugin(ProconBypassMan::Plugin::Splatoon2::Macro::RotationLeftStick)
 
   layer :up do
-    macro ProconBypassMan::Plugin::Splatoon3::Macro::ForwardIkarole, if_pressed: [:left]
+    macro ProconBypassMan::Plugin::Splatoon3::Macro::RotationLeftStick, if_pressed: [:left]
   end
 ```
