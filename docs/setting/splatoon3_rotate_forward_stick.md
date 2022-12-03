@@ -3,6 +3,10 @@
 * procon_bypass_man: 0.3.4以上が必要です
 * このマクロは、左スティックを高速に1回転をします
 
+
+https://user-images.githubusercontent.com/1664497/205416889-d458668e-ab46-4867-890c-ce32ff467128.mp4
+
+
 ## 設定例
 ```yaml
 version: 1.0
