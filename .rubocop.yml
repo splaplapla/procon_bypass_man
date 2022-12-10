@@ -30,3 +30,5 @@ Lint/AmbiguousBlockAssociation:
     Enabled: false
 Security/Eval:
     Enabled: false
+Style/TrailingWhitespace:
+    Enabled: true

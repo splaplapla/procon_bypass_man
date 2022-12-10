@@ -8,7 +8,7 @@ describe ProconBypassMan::Procon::Rumbler do
         expect(ProconBypassMan::Procon::Rumbler.must_rumble?).to eq(false)
       end
     end
-    
+
     context 'ブロックの中でrumble!を呼び出すとき' do
       it do
         ProconBypassMan::Procon::Rumbler.monitor {

@@ -1,7 +1,31 @@
 class ProconBypassMan::DeviceConnection::ProconLess::Command
+  attr_accessor :gadget
+
   # @return [void]
   def self.execute
-    new.execute
+    gadget = self.initialize_gadget
+    new(gadget: gadget).execute
+  end
+
+  # @return [File] gadget
+  def self.initialize_gadget
+    ProconBypassMan::UsbDeviceController.init
+    ProconBypassMan::UsbDeviceController.reset
+
+    # TODO: ProconBypassMan::DeviceConnection::Executer#init_devicesと同じことを書いているのでこの手続きを切り出したい
+    begin
+      return File.open('/dev/hidg0', "w+b")
+    rescue Errno::ENXIO => e
+      # /dev/hidg0 をopenできないときがある
+      ProconBypassMan::SendErrorCommand.execute(error: "Errno::ENXIOが起きたのでresetします.\n #{e.full_message}", stdout: false)
+      ProconBypassMan::UsbDeviceController.reset
+      retry
+    end
+  end
+
+  # @param [File] gadget
+  def initialize(gadget: )
+    @gadget = gadget
   end
 
   # @return [void]
@@ -24,7 +48,7 @@ class ProconBypassMan::DeviceConnection::ProconLess::Command
       /^01000000000000000000033/,
       /^8004/,
     ])
-    negotiator = ReportNegotiator.new(output_report_watcher: output_report_watcher)
+    negotiator = ReportNegotiator.new(gadget: gadget, output_report_watcher: output_report_watcher)
     negotiator.execute
   end
 
@@ -43,7 +67,7 @@ class ProconBypassMan::DeviceConnection::ProconLess::Command
       "40-",
       "48-",
     ])
-    negotiator = ReportNegotiator.new(output_report_watcher: output_report_watcher)
+    negotiator = ReportNegotiator.new(gadget: gadget, output_report_watcher: output_report_watcher)
     negotiator.execute
   end
 end

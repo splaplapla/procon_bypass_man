@@ -16,6 +16,8 @@ class ProconBypassMan::DeviceConnection::Executer
     new(throw_error_if_timeout: true)
   end
 
+  # @raise [ProconBypassMan::DeviceConnection::NotFoundProconError]
+  # @raise [ProconBypassMan::DeviceConnection::TimeoutErrorInConditionalRoute]
   def self.execute!
     s = new_with_default_args
     s.add(expected_to_receive: [
@@ -63,6 +65,7 @@ class ProconBypassMan::DeviceConnection::Executer
     @queue << Value.new(values: values, read_from: read_from, call_block_if_receive: call_block_if_receive, &block)
   end
 
+  # @raise [ProconBypassMan::DeviceConnection::NotFoundProconError]
   def drain_all
     debug_log_buffer = []
     unless @initialized_devices
@@ -156,6 +159,7 @@ class ProconBypassMan::DeviceConnection::Executer
     @procon
   end
 
+  # @raise [ProconBypassMan::DeviceConnection::NotFoundProconError]
   def init_devices
     if @initialized_devices
       return
@@ -163,11 +167,11 @@ class ProconBypassMan::DeviceConnection::Executer
     ProconBypassMan::UsbDeviceController.init
     ProconBypassMan::UsbDeviceController.reset
 
-    if path = ProconBypassMan::DeviceProconFinder.find
-      @procon = File.open(path, "w+b")
-      ProconBypassMan.logger.info "proconのデバイスファイルは#{path}を使います"
+    if(procon_path = ProconBypassMan::DeviceProconFinder.find)
+      @procon = File.open(procon_path, "w+b")
+      ProconBypassMan.logger.info "proconのデバイスファイルは#{procon_path}を使います"
     else
-      raise(ProconBypassMan::DeviceConnection::NotFoundProconError)
+      raise(ProconBypassMan::DeviceConnection::NotFoundProconError, 'プロコンが見つかりませんでした。')
     end
 
     begin

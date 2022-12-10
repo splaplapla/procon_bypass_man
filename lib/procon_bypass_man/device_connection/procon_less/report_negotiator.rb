@@ -1,6 +1,6 @@
 module ProconBypassMan::DeviceConnection::ProconLess
   class ReportNegotiator
-    def initialize(output_report_watcher: )
+    def initialize(gadget: , output_report_watcher: )
       @input_report_builder = InputReportBuilder.new
       @gadget = gadget
       @output_report_watcher = output_report_watcher
@@ -13,6 +13,11 @@ module ProconBypassMan::DeviceConnection::ProconLess
         write_to_gadget(@input_report_builder.build(raw_data: raw_data))
         break if @output_report_watcher.complete?
       end
+    end
+
+    private
+
+    def read_from_gadget
     end
   end
 end
