@@ -67,7 +67,7 @@ class ProconBypassMan::BypassCommand
 
         process_switching_time_before_work = BlueGreenProcess.performance.process_switching_time_before_work
         if process_switching_time_before_work > 0.1
-          ProconBypassMan.logger.info("slow process_switching_time_before_work: #{process_switching_time_before_work}")
+          ProconBypassMan::PrintMessageCommand.execute(text: "slow process_switching_time_before_work: #{process_switching_time_before_work}")
         end
 
       rescue EOFError => e
