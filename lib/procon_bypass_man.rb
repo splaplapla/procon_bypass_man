@@ -182,7 +182,7 @@ module ProconBypassMan
   end
 
   # @return [void]
-  def self.after_fork_on_bypass_process
+  def self.run_on_after_fork_of_bypass_process
     ProconBypassMan::ReniceCommand.change_priority(to: :high, pid: $$)
     ::GC.start
     DRb.start_service if defined?(DRb)

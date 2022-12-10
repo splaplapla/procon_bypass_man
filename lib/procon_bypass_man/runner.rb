@@ -21,7 +21,7 @@ class ProconBypassMan::Runner
     loop do
       child_pid = Kernel.fork do
         $will_terminate_token = false
-        ProconBypassMan.after_fork_on_bypass_process
+        ProconBypassMan.run_on_after_fork_of_bypass_process
         ProconBypassMan::BypassCommand.new(gadget: @gadget, procon: @procon).execute # ここでblockingする
         next
       end
