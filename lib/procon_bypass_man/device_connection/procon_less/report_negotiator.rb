@@ -1,4 +1,4 @@
-class ProconBypassMan::DeviceConnection::ProconLess
+module ProconBypassMan::DeviceConnection::ProconLess
   class ReportNegotiator
     def initialize(output_report_watcher: )
       @input_report_builder = InputReportBuilder.new
