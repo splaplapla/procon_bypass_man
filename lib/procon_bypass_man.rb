@@ -185,11 +185,10 @@ module ProconBypassMan
   def self.run_on_after_fork_of_bypass_process
     ProconBypassMan::ReniceCommand.change_priority(to: :high, pid: $$)
     ::GC.start
-    DRb.start_service if defined?(DRb)
-    # GC対策することによって一時的に削除した機能
+    # GC対策することによって一時的に削除した機能. 後で有効にしたい
     # ProconBypassMan::ProconDisplay::Server.start!
-
     DRb.start_service if defined?(DRb)
+
     BlueGreenProcess.configure do |config|
       config.after_fork = -> {
         DRb.start_service if defined?(DRb)
