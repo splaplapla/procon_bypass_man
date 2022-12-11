@@ -29,18 +29,18 @@ class ProconBypassMan::Bypass::ProconToSwitch
       self.bypass_value = ProconBypassMan::Bypass::BypassValue.new(nil)
 
       next(run_callbacks(:work) {
-        next(false) if $will_terminate_token
+        next(false) if will_terminate?
 
         raw_output = nil
         measurement.record_read_time do
           begin
-            return(false) if $will_terminate_token
+            return(false) if will_terminate?
             raw_output = self.procon.read_nonblock(64)
           rescue IO::EAGAINWaitReadable
             sleep(0.002)
             retry
           rescue Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError, Errno::ESHUTDOWN, Errno::ETIMEDOUT => e
-            return(false) if $will_terminate_token
+            return(false) if will_terminate?
             raise
           end
 
@@ -52,7 +52,7 @@ class ProconBypassMan::Bypass::ProconToSwitch
             ProconBypassMan::Retryable.retryable(tries: 5, on_no_retry: [Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError, Errno::ESHUTDOWN, Errno::ETIMEDOUT]) do
               begin
                 # 終了処理を希望されているのでブロックを無視してメソッドを抜けてOK
-                return(false) if $will_terminate_token # rubocop:disable Lint/NoReturnInBeginEndBlocks
+                return(false) if will_terminate? # rubocop:disable Lint/NoReturnInBeginEndBlocks
                 binary = ::ProconBypassMan::Procon::Rumbler.monitor do
                   ProconBypassMan::Processor.new(bypass_value.binary).process
                 end
@@ -69,11 +69,11 @@ class ProconBypassMan::Bypass::ProconToSwitch
 
                 next(true)
               rescue IO::EAGAINWaitReadable
-                return(false) if $will_terminate_token # rubocop:disable Lint/NoReturnInBeginEndBlocks
+                return(false) if will_terminate? # rubocop:disable Lint/NoReturnInBeginEndBlocks
                 measurement.record_write_error
                 raise CouldNotWriteToSwitchError
               rescue Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError, Errno::ESHUTDOWN, Errno::ETIMEDOUT => e
-                return(false) if $will_terminate_token # rubocop:disable Lint/NoReturnInBeginEndBlocks
+                return(false) if will_terminate? # rubocop:disable Lint/NoReturnInBeginEndBlocks
                 raise
               end
             end
@@ -106,5 +106,10 @@ class ProconBypassMan::Bypass::ProconToSwitch
     return unless bypass_value.to_text
 
     ProconBypassMan.logger.debug { "<<< #{bypass_value.to_text}" }
+  end
+
+  # @return [Boolean]
+  def will_terminate?
+    $will_terminate_token
   end
 end
