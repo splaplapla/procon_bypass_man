@@ -1,9 +1,15 @@
+GIT
+  remote: https://github.com/splaplapla/blue_green_process.git
+  revision: acf5cca8ca925cdafe8b52585351db05222f2ff7
+  branch: handle-signal
+  specs:
+    blue_green_process (0.1.3)
+
 PATH
   remote: .
   specs:
     procon_bypass_man (0.3.3.1)
       action_cable_client
-      blue_green_process
       pbmenv (>= 0.1.9)
       sorted_set
 
@@ -19,7 +25,6 @@ GEM
       tzinfo (~> 2.0)
       zeitwerk (~> 2.3)
     ast (2.4.2)
-    blue_green_process (0.1.3)
     coderay (1.1.3)
     concurrent-ruby (1.1.9)
     diff-lcs (1.4.4)
@@ -128,6 +133,7 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
+  blue_green_process!
   procon_bypass_man!
   pry
   rake
