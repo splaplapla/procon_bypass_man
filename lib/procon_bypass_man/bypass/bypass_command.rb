@@ -67,7 +67,7 @@ class ProconBypassMan::BypassCommand
 
         process_switching_time_before_work = BlueGreenProcess.performance.process_switching_time_before_work
         if process_switching_time_before_work > 0.1
-          ProconBypassMan.logger.info("slow process_switching_time_before_work: #{process_switching_time_before_work}")
+          ProconBypassMan::PrintMessageCommand.execute(text: "slow process_switching_time_before_work: #{process_switching_time_before_work}")
         end
 
       rescue EOFError => e
@@ -91,12 +91,14 @@ class ProconBypassMan::BypassCommand
       end
     rescue ProconBypassMan::InterruptForRestart
       $will_terminate_token = WILL_TERMINATE_TOKEN::RESTART
+      BlueGreenProcess.terminate_workers_immediately
       [t1, t2].each(&:join)
       @gadget&.close
       @procon&.close
       exit! 1 # child processなのでexitしていい
     rescue Interrupt
       $will_terminate_token = WILL_TERMINATE_TOKEN::TERMINATE
+      BlueGreenProcess.terminate_workers_immediately
       [t1, t2].each(&:join)
       @gadget&.close
       @procon&.close
