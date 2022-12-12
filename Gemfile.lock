@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/splaplapla/blue_green_process.git
-  revision: acf5cca8ca925cdafe8b52585351db05222f2ff7
+  revision: aa3abbef8b47cb9e6c82e70ba36c52541e113cb3
   branch: handle-signal
   specs:
     blue_green_process (0.1.3)
