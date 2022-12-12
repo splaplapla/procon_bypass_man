@@ -91,17 +91,17 @@ class ProconBypassMan::BypassCommand
       end
     rescue ProconBypassMan::InterruptForRestart
       $will_terminate_token = WILL_TERMINATE_TOKEN::RESTART
+      BlueGreenProcess.terminate_workers_immediately
       [t1, t2].each(&:join)
       @gadget&.close
       @procon&.close
-      BlueGreenProcess.terminate_workers_immediately
       exit! 1 # child processなのでexitしていい
     rescue Interrupt
       $will_terminate_token = WILL_TERMINATE_TOKEN::TERMINATE
+      BlueGreenProcess.terminate_workers_immediately
       [t1, t2].each(&:join)
       @gadget&.close
       @procon&.close
-      BlueGreenProcess.terminate_workers_immediately
       exit! 1 # child processなのでexitしていい
     end
   end
