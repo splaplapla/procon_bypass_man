@@ -53,7 +53,7 @@ class ProconBypassMan::BypassCommand
     # シビア
     t2 = Thread.new do
       bypass = ProconBypassMan::Bypass::ProconToSwitch.new(gadget: @gadget, procon: @procon)
-      process = BlueGreenProcess.new(worker_instance: bypass, max_work: 550)
+      process = BlueGreenProcess.new(worker_instance: bypass, max_work: 1000)
       loop do
         if $will_terminate_token
           if $will_terminate_token == WILL_TERMINATE_TOKEN::TERMINATE
@@ -89,21 +89,31 @@ class ProconBypassMan::BypassCommand
         signal = readable_io.first[0].gets.strip
         handle_signal(signal)
       end
-    rescue ProconBypassMan::InterruptForRestart
+    rescue ProconBypassMan::InterruptForRestart # USR2を受け取ったとき
+      ProconBypassMan.logger.debug 'ProconBypassMan::InterruptForRestart例外を受け取りました'
       $will_terminate_token = WILL_TERMINATE_TOKEN::RESTART
+      ProconBypassMan.logger.debug "BlueGreenProcess.terminate_workers_immediatelyを実行します"
       BlueGreenProcess.terminate_workers_immediately
+      ProconBypassMan.logger.debug "BlueGreenProcess.terminate_workers_immediatelyを実行しました"
       [t1, t2].each(&:join)
+      ProconBypassMan.logger.debug "[t1, t2].each(&:join)を実行しました"
       @gadget&.close
       @procon&.close
       DRb.stop_service
+      ProconBypassMan.logger.debug "DRb.stop_serviceを実行しました"
       exit! 1 # child processなのでexitしていい
-    rescue Interrupt
+    rescue Interrupt # TERMを受け取ったとき
+      ProconBypassMan.logger.debug 'Interrupt例外を受け取りました'
       $will_terminate_token = WILL_TERMINATE_TOKEN::TERMINATE
+      ProconBypassMan.logger.debug "BlueGreenProcess.terminate_workers_immediatelyを実行します"
       BlueGreenProcess.terminate_workers_immediately
+      ProconBypassMan.logger.debug "BlueGreenProcess.terminate_workers_immediatelyを実行しました"
       [t1, t2].each(&:join)
+      ProconBypassMan.logger.debug "[t1, t2].each(&:join)を実行しました"
       @gadget&.close
       @procon&.close
       DRb.stop_service
+      ProconBypassMan.logger.debug "DRb.stop_serviceを実行しました"
       exit! 1 # child processなのでexitしていい
     end
   end
