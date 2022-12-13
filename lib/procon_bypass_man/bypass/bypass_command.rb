@@ -95,6 +95,7 @@ class ProconBypassMan::BypassCommand
       [t1, t2].each(&:join)
       @gadget&.close
       @procon&.close
+      DRb.stop_service
       exit! 1 # child processなのでexitしていい
     rescue Interrupt
       $will_terminate_token = WILL_TERMINATE_TOKEN::TERMINATE
@@ -102,6 +103,7 @@ class ProconBypassMan::BypassCommand
       [t1, t2].each(&:join)
       @gadget&.close
       @procon&.close
+      DRb.stop_service
       exit! 1 # child processなのでexitしていい
     end
   end
