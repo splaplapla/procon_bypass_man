@@ -20,15 +20,15 @@ module ProconBypassMan
           )
 
           client.connected {
-            ProconBypassMan.logger.info('websocket client: successfully connected in ProconBypassMan::Websocket::Client')
+            ProconBypassMan.logger.info('[websocket client] successfully connected in ProconBypassMan::Websocket::Client')
           }
           client.subscribed { |msg|
-            ProconBypassMan.logger.info("websocket client: subscribed(#{msg})")
+            ProconBypassMan.logger.info("[websocket client] subscribed(#{msg})")
             ProconBypassMan::SyncDeviceStatsJob.perform(ProconBypassMan::DeviceStatus.current)
           }
 
           client.received do |data|
-            ProconBypassMan.logger.info('websocket client: received!!')
+            ProconBypassMan.logger.info('[websocket client] received!!')
             ProconBypassMan.logger.info(data)
 
             dispatch(data: data, client: client)
@@ -37,12 +37,12 @@ module ProconBypassMan
           end
 
           client.disconnected {
-            ProconBypassMan.logger.info('websocket client: disconnected!!')
+            ProconBypassMan.logger.info('[websocket client] disconnected!!')
             client.reconnect!
             sleep 2
           }
           client.errored { |msg|
-            ProconBypassMan.logger.error("websocket client: errored!!, #{msg}")
+            ProconBypassMan.logger.error("[websocket client] errored!!, #{msg}")
             client.reconnect!
             sleep 2
           }
@@ -50,8 +50,8 @@ module ProconBypassMan
             Watchdog.active!
 
             ProconBypassMan.cache.fetch key: 'ws_pinged', expires_in: 10 do
-              ProconBypassMan.logger.info('websocket client: pinged!!')
-              ProconBypassMan.logger.info(msg)
+              ProconBypassMan.logger.info('[websocket client] pinged!!')
+              ProconBypassMan.logger.info("[websocket client] #{msg}")
             end
           }
         end
