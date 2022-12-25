@@ -89,7 +89,7 @@ class ProconBypassMan::Bypass::ProconToSwitch
 
   # @return [void]
   def direct_connect_switch_via_bluetooth
-    ProconBypassMan.logger.debug { "direct_connect_switch_via_bluetooth!" }
+    ProconBypassMan.logger.debug { "[BYPASS] プロコンとSwitchを無線接続へ切り替えます" }
     self.procon.write_nonblock(["010500000000000000003800"].pack("H*")) # home led off
     self.procon.write_nonblock(["010600000000000000003800"].pack("H*")) # home led off
     self.procon.write_nonblock(["010700000000000000003800"].pack("H*")) # home led off

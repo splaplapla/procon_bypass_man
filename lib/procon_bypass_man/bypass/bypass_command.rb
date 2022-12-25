@@ -45,7 +45,7 @@ class ProconBypassMan::BypassCommand
         Process.kill "TERM", Process.ppid
       end
 
-      ProconBypassMan.logger.info "Thread1を終了します"
+      ProconBypassMan.logger.info "[BYPASS] Thread1を終了します"
     end
 
     # procon => gadget
@@ -80,38 +80,47 @@ class ProconBypassMan::BypassCommand
         process.shutdown
         break
       end
+
+      ProconBypassMan.logger.info "[BYPASS] Thread2を終了します"
     end
 
-    ProconBypassMan.logger.info "子プロセスでgraceful shutdownの準備ができました"
+    ProconBypassMan.logger.info "BYPASSプロセスでgraceful shutdownの準備ができました"
     begin
+      # TODO 本当はいらないんだけど、なぜか反映されないのでここで設定する
       BlueGreenProcess.config.logger = ProconBypassMan.logger
 
       while(readable_io = IO.select([self_read]))
         signal = readable_io.first[0].gets.strip
         case signal
         when 'USR2'
-          ProconBypassMan.logger.warn "子プロセスでUSR2シグナルを受け取りました"
+          ProconBypassMan.logger.debug "[BYPASS] BYPASSプロセスでUSR2シグナルを受け取りました"
           raise ProconBypassMan::InterruptForRestart
         when 'TERM'
-          ProconBypassMan.logger.warn "子プロセスでTERMシグナルを受け取りました"
+          ProconBypassMan.logger.debug "[BYPASS] BYPASSプロセスでTERMシグナルを受け取りました"
           raise Interrupt
         when 'INT'
-          ProconBypassMan.logger.warn "子プロセスでINTシグナルを無視します"
+          ProconBypassMan.logger.debug "[BYPASS] BYPASSプロセスでINTシグナルを無視します"
         end
       end
     rescue ProconBypassMan::InterruptForRestart
+      ProconBypassMan.logger.info "[BYPASS] BYPASSプロセスの終了処理を開始します"
       $will_terminate_token = WILL_TERMINATE_TOKEN::RESTART
       BlueGreenProcess.terminate_workers_immediately
       [t1, t2].each(&:join)
+      ProconBypassMan.logger.info "[BYPASS] BYPASSプロセス内のThreadsが停止しました"
       @gadget&.close
       @procon&.close
+      ProconBypassMan.logger.info "[BYPASS] BYPASSプロセスを終了します"
       exit! 1 # child processなのでexitしていい
     rescue Interrupt
+      ProconBypassMan.logger.info "[BYPASS] BYPASSプロセスの終了処理を開始します"
       $will_terminate_token = WILL_TERMINATE_TOKEN::TERMINATE
       BlueGreenProcess.terminate_workers_immediately
       [t1, t2].each(&:join)
+      ProconBypassMan.logger.info "[BYPASS] BYPASSプロセス内のThreadsが停止しました"
       @gadget&.close
       @procon&.close
+      ProconBypassMan.logger.info "[BYPASS] BYPASSプロセスを終了します"
       exit! 1 # child processなのでexitしていい
     end
   end

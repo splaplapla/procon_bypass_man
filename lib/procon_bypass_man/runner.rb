@@ -29,6 +29,7 @@ class ProconBypassMan::Runner
         # TODO 子プロセスが消滅した時に、メインプロセスは生き続けてしまい、何もできなくなる問題がある
         while(readable_io = IO.select([self_read]))
           signal = readable_io.first[0].gets.strip
+          ProconBypassMan.logger.debug "[BYPASS] MASTERプロセスで#{signal}シグナルを受け取りました"
           case signal
           when 'USR2'
             raise ProconBypassMan::InterruptForRestart
@@ -50,11 +51,14 @@ class ProconBypassMan::Runner
         ProconBypassMan::PrintMessageCommand.execute(text: "バイパス処理を再開します")
       rescue Interrupt
         puts
-        ProconBypassMan::PrintMessageCommand.execute(text: "メインプロセスを終了します")
+        ProconBypassMan::PrintMessageCommand.execute(text: "[MASTER] BYPASSプロセスにTERMシグナルを送信します")
         Process.kill("TERM", child_pid)
+        ProconBypassMan::PrintMessageCommand.execute(text: "[MASTER] BYPASSプロセスの終了を待ちます")
         Process.wait
         break
       end
     end
+
+    ProconBypassMan::PrintMessageCommand.execute(text: "[MASTER] メインプロセスを終了します")
   end
 end
