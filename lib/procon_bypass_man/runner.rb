@@ -1,6 +1,5 @@
+# フォアグラウンドのプロセスで実行する
 class ProconBypassMan::Runner
-  include ProconBypassMan::SignalHandler
-
   def initialize(gadget: , procon: )
     @gadget = gadget
     @procon = procon
@@ -30,7 +29,12 @@ class ProconBypassMan::Runner
         # TODO 子プロセスが消滅した時に、メインプロセスは生き続けてしまい、何もできなくなる問題がある
         while(readable_io = IO.select([self_read]))
           signal = readable_io.first[0].gets.strip
-          handle_signal(signal)
+          case signal
+          when 'USR2'
+            raise ProconBypassMan::InterruptForRestart
+          when 'INT', 'TERM'
+            raise Interrupt
+          end
         end
       rescue ProconBypassMan::InterruptForRestart
         ProconBypassMan::PrintMessageCommand.execute(text: "設定ファイルの再読み込みを開始します")

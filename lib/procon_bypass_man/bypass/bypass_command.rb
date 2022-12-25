@@ -1,6 +1,5 @@
+# 子プロセスで実行する
 class ProconBypassMan::BypassCommand
-  include ProconBypassMan::SignalHandler
-
   module WILL_TERMINATE_TOKEN
     TERMINATE = :terminate
     RESTART = :restart
@@ -87,7 +86,14 @@ class ProconBypassMan::BypassCommand
     begin
       while(readable_io = IO.select([self_read]))
         signal = readable_io.first[0].gets.strip
-        handle_signal(signal)
+        case signal
+        when 'USR2'
+          raise ProconBypassMan::InterruptForRestart
+        when 'TERM'
+          raise Interrupt
+        when 'INT'
+          ProconBypassMan.logger.warn "子プロセスでINTシグナルを無視します"
+        end
       end
     rescue ProconBypassMan::InterruptForRestart
       $will_terminate_token = WILL_TERMINATE_TOKEN::RESTART
