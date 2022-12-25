@@ -19,6 +19,7 @@ class ProconBypassMan::Runner
 
     loop do
       child_pid = Kernel.fork do
+        ProconBypassMan.logger.info "[BYPASS] BYPASSプロセスを起動します"
         $will_terminate_token = false
         ProconBypassMan.run_on_after_fork_of_bypass_process
         ProconBypassMan::BypassCommand.new(gadget: @gadget, procon: @procon).execute # ここでblockingする
@@ -45,10 +46,10 @@ class ProconBypassMan::Runner
           ProconBypassMan::ButtonsSettingConfiguration::Loader.reload_setting
           ProconBypassMan::SendReloadConfigEventCommand.execute
         rescue ProconBypassMan::CouldNotLoadConfigError => error
-          ProconBypassMan::SendErrorCommand.execute(error: "設定ファイルが不正です。再読み込みができませんでした")
+          ProconBypassMan::SendErrorCommand.execute(error: "[MASTER] 設定ファイルが不正です。再読み込みができませんでした")
           ProconBypassMan::ReportErrorReloadConfigJob.perform_async(error.message)
         end
-        ProconBypassMan::PrintMessageCommand.execute(text: "バイパス処理を再開します")
+        ProconBypassMan::PrintMessageCommand.execute(text: "[MASTER] バイパス処理を再開します")
       rescue Interrupt
         puts
         ProconBypassMan::PrintMessageCommand.execute(text: "[MASTER] BYPASSプロセスにTERMシグナルを送信します")

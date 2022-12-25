@@ -24,7 +24,7 @@ class ProconBypassMan::BypassCommand
 
     # gadget => procon
     # 遅くていい
-    ProconBypassMan.logger.info "Thread1を起動します"
+    ProconBypassMan.logger.info "[BYPASS] Thread1を起動します"
 
     cycle_sleep = ProconBypassMan::CycleSleep.new(cycle_interval: 1, execution_cycle: ProconBypassMan.config.bypass_mode.gadget_to_procon_interval)
 
@@ -86,7 +86,7 @@ class ProconBypassMan::BypassCommand
 
     ProconBypassMan.logger.info "BYPASSプロセスでgraceful shutdownの準備ができました"
     begin
-      # TODO 本当はいらないんだけど、なぜか反映されないのでここで設定する
+      # TODO: 本当はいらないんだけど、なぜか反映されないのでここでも設定する
       BlueGreenProcess.config.logger = ProconBypassMan.logger
 
       while(readable_io = IO.select([self_read]))
@@ -111,6 +111,7 @@ class ProconBypassMan::BypassCommand
       @gadget&.close
       @procon&.close
       ProconBypassMan.logger.info "[BYPASS] BYPASSプロセスを終了します"
+      DRb.stop_service if defined?(DRb)
       exit! 1 # child processなのでexitしていい
     rescue Interrupt
       ProconBypassMan.logger.info "[BYPASS] BYPASSプロセスの終了処理を開始します"
@@ -121,6 +122,7 @@ class ProconBypassMan::BypassCommand
       @gadget&.close
       @procon&.close
       ProconBypassMan.logger.info "[BYPASS] BYPASSプロセスを終了します"
+      DRb.stop_service if defined?(DRb)
       exit! 1 # child processなのでexitしていい
     end
   end
