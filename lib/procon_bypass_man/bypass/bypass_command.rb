@@ -1,6 +1,5 @@
+# 子プロセスで実行する
 class ProconBypassMan::BypassCommand
-  include ProconBypassMan::SignalHandler
-
   module WILL_TERMINATE_TOKEN
     TERMINATE = :terminate
     RESTART = :restart
@@ -25,7 +24,7 @@ class ProconBypassMan::BypassCommand
 
     # gadget => procon
     # 遅くていい
-    ProconBypassMan.logger.info "Thread1を起動します"
+    ProconBypassMan.logger.info "[BYPASS] Thread1を起動します"
 
     cycle_sleep = ProconBypassMan::CycleSleep.new(cycle_interval: 1, execution_cycle: ProconBypassMan.config.bypass_mode.gadget_to_procon_interval)
 
@@ -46,14 +45,14 @@ class ProconBypassMan::BypassCommand
         Process.kill "TERM", Process.ppid
       end
 
-      ProconBypassMan.logger.info "Thread1を終了します"
+      ProconBypassMan.logger.info "[BYPASS] Thread1を終了します"
     end
 
     # procon => gadget
     # シビア
     t2 = Thread.new do
       bypass = ProconBypassMan::Bypass::ProconToSwitch.new(gadget: @gadget, procon: @procon)
-      process = BlueGreenProcess.new(worker_instance: bypass, max_work: 550)
+      process = BlueGreenProcess.new(worker_instance: bypass, max_work: 1000)
       loop do
         if $will_terminate_token
           if $will_terminate_token == WILL_TERMINATE_TOKEN::TERMINATE
@@ -81,27 +80,49 @@ class ProconBypassMan::BypassCommand
         process.shutdown
         break
       end
+
+      ProconBypassMan.logger.info "[BYPASS] Thread2を終了します"
     end
 
-    ProconBypassMan.logger.info "子プロセスでgraceful shutdownの準備ができました"
+    ProconBypassMan.logger.info "BYPASSプロセスでgraceful shutdownの準備ができました"
     begin
+      # TODO: 本当はいらないんだけど、なぜか反映されないのでここでも設定する
+      BlueGreenProcess.config.logger = ProconBypassMan.logger
+
       while(readable_io = IO.select([self_read]))
         signal = readable_io.first[0].gets.strip
-        handle_signal(signal)
+        case signal
+        when 'USR2'
+          ProconBypassMan.logger.debug "[BYPASS] BYPASSプロセスでUSR2シグナルを受け取りました"
+          raise ProconBypassMan::InterruptForRestart
+        when 'TERM'
+          ProconBypassMan.logger.debug "[BYPASS] BYPASSプロセスでTERMシグナルを受け取りました"
+          raise Interrupt
+        when 'INT'
+          ProconBypassMan.logger.debug "[BYPASS] BYPASSプロセスでINTシグナルを無視します"
+        end
       end
     rescue ProconBypassMan::InterruptForRestart
+      ProconBypassMan.logger.info "[BYPASS] BYPASSプロセスの終了処理を開始します"
       $will_terminate_token = WILL_TERMINATE_TOKEN::RESTART
       BlueGreenProcess.terminate_workers_immediately
       [t1, t2].each(&:join)
+      ProconBypassMan.logger.info "[BYPASS] BYPASSプロセス内のThreadsが停止しました"
       @gadget&.close
       @procon&.close
+      ProconBypassMan.logger.info "[BYPASS] BYPASSプロセスを終了します"
+      DRb.stop_service if defined?(DRb)
       exit! 1 # child processなのでexitしていい
     rescue Interrupt
+      ProconBypassMan.logger.info "[BYPASS] BYPASSプロセスの終了処理を開始します"
       $will_terminate_token = WILL_TERMINATE_TOKEN::TERMINATE
       BlueGreenProcess.terminate_workers_immediately
       [t1, t2].each(&:join)
+      ProconBypassMan.logger.info "[BYPASS] BYPASSプロセス内のThreadsが停止しました"
       @gadget&.close
       @procon&.close
+      ProconBypassMan.logger.info "[BYPASS] BYPASSプロセスを終了します"
+      DRb.stop_service if defined?(DRb)
       exit! 1 # child processなのでexitしていい
     end
   end

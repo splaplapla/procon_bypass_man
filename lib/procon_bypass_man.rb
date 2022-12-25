@@ -20,7 +20,6 @@ require_relative "procon_bypass_man/device_connection"
 require_relative "procon_bypass_man/support/usb_device_controller"
 require_relative "procon_bypass_man/support/device_procon_finder"
 require_relative "procon_bypass_man/support/device_mouse_finder"
-require_relative "procon_bypass_man/support/signal_handler"
 require_relative "procon_bypass_man/support/callbacks"
 require_relative "procon_bypass_man/support/yaml_loader"
 require_relative "procon_bypass_man/support/yaml_writer"
@@ -39,7 +38,6 @@ require_relative "procon_bypass_man/support/analog_stick_hypotenuse_tilting_powe
 require_relative "procon_bypass_man/support/never_exit_accidentally"
 require_relative "procon_bypass_man/support/cycle_sleep"
 require_relative "procon_bypass_man/support/can_over_process"
-require_relative "procon_bypass_man/support/gc"
 require_relative "procon_bypass_man/support/retryable"
 require_relative "procon_bypass_man/support/renice_command"
 require_relative "procon_bypass_man/procon_display"
@@ -188,6 +186,9 @@ module ProconBypassMan
     # GC対策することによって一時的に削除した機能. 後で有効にしたい
     # ProconBypassMan::ProconDisplay::Server.start!
     DRb.start_service if defined?(DRb)
+
+    # for libs setting
+    BlueGreenProcess.config.logger = ProconBypassMan.logger
 
     BlueGreenProcess.configure do |config|
       config.after_fork = -> {

@@ -58,9 +58,9 @@ class ProconBypassMan::Bypass::SwitchToProcon
     if ProconBypassMan.config.verbose_bypass_log
       ProconBypassMan.logger.debug { ">>> #{bypass_value.to_text}" }
     else
-      ProconBypassMan.cache.fetch key: 'bypass_log', expires_in: 1 do
-        ProconBypassMan.logger.debug { ">>> #{bypass_value.to_text}" }
-      end
+      # ProconBypassMan.cache.fetch key: 'bypass_log', expires_in: 1 do
+      #   ProconBypassMan.logger.debug { ">>> #{bypass_value.to_text}" }
+      # end
     end
   end
 end

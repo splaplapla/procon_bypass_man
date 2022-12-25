@@ -31,7 +31,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency "pbmenv", ">= 0.1.9" # enable_pbm_cloud連携機能でPbmenv.installを使っている.
   spec.add_dependency "action_cable_client"
   spec.add_dependency "sorted_set"
-  spec.add_dependency "blue_green_process", '>= 0.1.4'
+  spec.add_dependency "blue_green_process", '0.1.4.2'
 
   # For more information and examples about making a new gem, checkout our
   # guide at: https://bundler.io/guides/creating_gem.html

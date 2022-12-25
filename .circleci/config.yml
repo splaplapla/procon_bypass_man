@@ -27,7 +27,8 @@ commands:
             - gem-cache-v1-<< parameters.ruby-version >>-{{ arch }}-{{ .Branch }}-{{ checksum "Gemfile.lock" }}
             - gem-cache-v1-<< parameters.ruby-version >>-{{ arch }}-{{ .Branch }}
             - gem-cache-v1
-      - run: gem i bundler && bundle install --path vendor/bundle --jobs 100 && bundle clean
+      # NOTE: ruby2.5だとbundler2.4系に対応していないのでバージョンを固定する
+      - run: gem i bundler -v 2.3.26 && bundle install --path vendor/bundle --jobs 100 && bundle clean
       - save_cache:
           key: gem-cache-v1-<< parameters.ruby-version >>-{{ arch }}-{{ .Branch }}-{{ checksum "Gemfile.lock" }}
           paths:

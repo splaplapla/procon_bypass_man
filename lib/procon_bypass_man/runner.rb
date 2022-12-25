@@ -1,6 +1,5 @@
+# フォアグラウンドで実行する
 class ProconBypassMan::Runner
-  include ProconBypassMan::SignalHandler
-
   def initialize(gadget: , procon: )
     @gadget = gadget
     @procon = procon
@@ -20,6 +19,7 @@ class ProconBypassMan::Runner
 
     loop do
       child_pid = Kernel.fork do
+        ProconBypassMan.logger.info "[BYPASS] BYPASSプロセスを起動します"
         $will_terminate_token = false
         ProconBypassMan.run_on_after_fork_of_bypass_process
         ProconBypassMan::BypassCommand.new(gadget: @gadget, procon: @procon).execute # ここでblockingする
@@ -30,7 +30,13 @@ class ProconBypassMan::Runner
         # TODO 子プロセスが消滅した時に、メインプロセスは生き続けてしまい、何もできなくなる問題がある
         while(readable_io = IO.select([self_read]))
           signal = readable_io.first[0].gets.strip
-          handle_signal(signal)
+          ProconBypassMan.logger.debug "[BYPASS] MASTERプロセスで#{signal}シグナルを受け取りました"
+          case signal
+          when 'USR2'
+            raise ProconBypassMan::InterruptForRestart
+          when 'INT', 'TERM'
+            raise Interrupt
+          end
         end
       rescue ProconBypassMan::InterruptForRestart
         ProconBypassMan::PrintMessageCommand.execute(text: "設定ファイルの再読み込みを開始します")
@@ -40,17 +46,20 @@ class ProconBypassMan::Runner
           ProconBypassMan::ButtonsSettingConfiguration::Loader.reload_setting
           ProconBypassMan::SendReloadConfigEventCommand.execute
         rescue ProconBypassMan::CouldNotLoadConfigError => error
-          ProconBypassMan::SendErrorCommand.execute(error: "設定ファイルが不正です。再読み込みができませんでした")
+          ProconBypassMan::SendErrorCommand.execute(error: "[MASTER] 設定ファイルが不正です。再読み込みができませんでした")
           ProconBypassMan::ReportErrorReloadConfigJob.perform_async(error.message)
         end
-        ProconBypassMan::PrintMessageCommand.execute(text: "バイパス処理を再開します")
+        ProconBypassMan::PrintMessageCommand.execute(text: "[MASTER] バイパス処理を再開します")
       rescue Interrupt
         puts
-        ProconBypassMan::PrintMessageCommand.execute(text: "処理を終了します")
+        ProconBypassMan::PrintMessageCommand.execute(text: "[MASTER] BYPASSプロセスにTERMシグナルを送信します")
         Process.kill("TERM", child_pid)
+        ProconBypassMan::PrintMessageCommand.execute(text: "[MASTER] BYPASSプロセスの終了を待ちます")
         Process.wait
         break
       end
     end
+
+    ProconBypassMan::PrintMessageCommand.execute(text: "[MASTER] メインプロセスを終了します")
   end
 end
