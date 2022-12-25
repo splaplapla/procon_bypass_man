@@ -3,7 +3,7 @@ PATH
   specs:
     procon_bypass_man (0.3.3.1)
       action_cable_client
-      blue_green_process (>= 0.1.4)
+      blue_green_process (= 0.1.4.2)
       pbmenv (>= 0.1.9)
       sorted_set
 
@@ -19,7 +19,7 @@ GEM
       tzinfo (~> 2.0)
       zeitwerk (~> 2.3)
     ast (2.4.2)
-    blue_green_process (0.1.4)
+    blue_green_process (0.1.4.2)
     coderay (1.1.3)
     concurrent-ruby (1.1.9)
     diff-lcs (1.4.4)
