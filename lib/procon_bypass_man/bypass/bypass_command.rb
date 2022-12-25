@@ -84,6 +84,8 @@ class ProconBypassMan::BypassCommand
 
     ProconBypassMan.logger.info "子プロセスでgraceful shutdownの準備ができました"
     begin
+      BlueGreenProcess.config.logger = ProconBypassMan.logger
+
       while(readable_io = IO.select([self_read]))
         signal = readable_io.first[0].gets.strip
         case signal
