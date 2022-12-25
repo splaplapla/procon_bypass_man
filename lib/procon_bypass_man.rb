@@ -188,6 +188,9 @@ module ProconBypassMan
     # ProconBypassMan::ProconDisplay::Server.start!
     DRb.start_service if defined?(DRb)
 
+    # for libs setting
+    BlueGreenProcess.config.logger = ProconBypassMan.logger
+
     BlueGreenProcess.configure do |config|
       config.after_fork = -> {
         DRb.start_service if defined?(DRb)

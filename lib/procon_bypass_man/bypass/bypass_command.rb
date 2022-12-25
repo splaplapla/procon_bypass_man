@@ -88,8 +88,10 @@ class ProconBypassMan::BypassCommand
         signal = readable_io.first[0].gets.strip
         case signal
         when 'USR2'
+          ProconBypassMan.logger.warn "子プロセスでUSR2シグナルを受け取りました"
           raise ProconBypassMan::InterruptForRestart
         when 'TERM'
+          ProconBypassMan.logger.warn "子プロセスでTERMシグナルを受け取りました"
           raise Interrupt
         when 'INT'
           ProconBypassMan.logger.warn "子プロセスでINTシグナルを無視します"

@@ -1,4 +1,4 @@
-# フォアグラウンドのプロセスで実行する
+# フォアグラウンドで実行する
 class ProconBypassMan::Runner
   def initialize(gadget: , procon: )
     @gadget = gadget
@@ -50,7 +50,7 @@ class ProconBypassMan::Runner
         ProconBypassMan::PrintMessageCommand.execute(text: "バイパス処理を再開します")
       rescue Interrupt
         puts
-        ProconBypassMan::PrintMessageCommand.execute(text: "処理を終了します")
+        ProconBypassMan::PrintMessageCommand.execute(text: "メインプロセスを終了します")
         Process.kill("TERM", child_pid)
         Process.wait
         break
