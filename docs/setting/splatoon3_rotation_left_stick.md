@@ -12,7 +12,7 @@ https://user-images.githubusercontent.com/1664497/205416889-d458668e-ab46-4867-8
 version: 1.0
 setting: |-
   prefix_keys_for_changing_layer [:zr, :zl, :l]
-  install_macro_plugin(ProconBypassMan::Plugin::Splatoon2::Macro::RotationLeftStick)
+  install_macro_plugin(ProconBypassMan::Plugin::Splatoon3::Macro::RotationLeftStick)
 
   layer :up do
     macro ProconBypassMan::Plugin::Splatoon3::Macro::RotationLeftStick, if_pressed: [:left]
