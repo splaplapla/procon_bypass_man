@@ -1,6 +1,6 @@
 ## [0.3.4] - 2022-12-26
 * 左スティックを1回転するマクロを追加しました
-    * 詳しい設定方法については docs/setting/splatoon3_rotation_forward_stick.md を参照してください
+    * 詳しい設定方法については docs/setting/splatoon3_rotation_left_stick.md を参照してください
 * プログラムの停止時・再読み込み時に時間がかかってた不具合を修正しました
 
 ## [0.3.3.1] - 2022-11-13
