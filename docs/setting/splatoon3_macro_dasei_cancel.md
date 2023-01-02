@@ -3,6 +3,13 @@
 * 本マクロは実験段階で、オプション名などの仕様が変更される可能性が高いです
 * procon_bypass_man: 0.3.3以上が必要です
 
+
+
+https://user-images.githubusercontent.com/1664497/210229394-493a7ad4-b4cf-4dfd-87da-2398494e00fd.mp4
+
+
+
+
 ## 1. install_macro_pluginでマクロを有効化します
 * `setting.yml` に`install_macro_plugin ProconBypassMan::Plugin::Splatoon3::Macro::DaseiCancel` と書きます
 * これを記述することで、layer内でmacroを呼び出せるようになります
