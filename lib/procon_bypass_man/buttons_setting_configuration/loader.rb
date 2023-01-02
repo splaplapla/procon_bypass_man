@@ -1,4 +1,5 @@
 require "procon_bypass_man/buttons_setting_configuration/param_normalizer"
+require "procon_bypass_man/buttons_setting_configuration/metadata_loader"
 
 module ProconBypassMan
   class ButtonsSettingConfiguration
@@ -8,6 +9,11 @@ module ProconBypassMan
       # @return [ProconBypassMan::ButtonsSettingConfiguration]
       def self.load(setting_path: )
         ProconBypassMan::ButtonsSettingConfiguration.instance.setting_path = setting_path
+
+        metadata_loader = ProconBypassMan::ButtonsSettingConfiguration::MetadataLoader.load(setting_path: setting_path)
+        if(Gem::Version.new(metadata_loader.required_pbm_version) >= Gem::Version.new(ProconBypassMan::VERSION))
+          ProconBypassMan::SendErrorCommand.execute(error: '起動中のPBMが設定ファイルのバージョンを満たしていません。設定ファイルが意図した通り動かない可能性があります。PBMのバージョンをあげてください。')
+        end
 
         ProconBypassMan::ButtonsSettingConfiguration.switch_new_context(:validation) do |new_instance|
           yaml = YAML.load_file(setting_path) or raise "読み込みに失敗しました"
