@@ -9,6 +9,7 @@
   * [procon_bypass_manのインストール](#procon_bypass_manのインストール)
       * [pbmenvを使う方法](#pbmenvを使う方法)
       * [pbmenvを使わない方法](#pbmenvを使わない方法)
+* [RaspberryPiの給電について](#RaspberryPiの給電について)
 * [普段使いをするためのセットアップ](#普段使いをするためのセットアップ)
 * [レイヤー](#レイヤー)
 * [マクロ](#マクロ)
@@ -122,6 +123,14 @@ wget https://raw.githubusercontent.com/jiikko/procon_bypass_man_sample/master/ap
 wget https://raw.githubusercontent.com/jiikko/procon_bypass_man_sample/master/setting.yml
 sudo /home/pi/.rbenv/versions/3.0.1/bin/ruby app.rb
 ```
+
+## RaspberryPiの給電について
+Raspberry Piの状態によっては、Switchと接続しているときに、Raspberry Piが電力不足になるようで動作が不安定になることがあります。  
+不安定になるようであれば、Switch以外からも給電してみてください。詳細には言及しませんが、主な給電方法には、以下があります。
+
+* GPIO端子
+* セルフパワーUSBハブ
+* PoE
 
 ## 普段使いをするためのセットアップ
 
