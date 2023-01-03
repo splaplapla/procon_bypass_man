@@ -9,11 +9,11 @@
   * [procon_bypass_manのインストール](#procon_bypass_manのインストール)
       * [pbmenvを使う方法](#pbmenvを使う方法)
       * [pbmenvを使わない方法](#pbmenvを使わない方法)
+* [RaspberryPiの給電について](#RaspberryPiの給電について)
 * [普段使いをするためのセットアップ](#普段使いをするためのセットアップ)
 * [レイヤー](#レイヤー)
 * [マクロ](#マクロ)
 * [左スティックの感度調整](#左スティックの感度調整)
-* [入力表示](#入力表示)
 * [設定ファイルの書き方](#設定ファイルの書き方)
 * プラグインの書き方
 * [設定ファイルの書き方がわからない、エラーが起きるとき](#設定ファイルの書き方がわからない、エラーが起きるとき)
@@ -43,8 +43,10 @@
   * [設定方法](/docs/setting/left-analogstick-cap.md)
 * WEBから設定状態の閲覧・反映
 * ボタンリマップ
+<!--
 * 入力表示
   * https://github.com/splaplapla/switch-procon-input-viewer
+-->
 
 ## セットアップを代行できます
 * Raspberry Pi4を開発者である私の家に配送してくれれば、セットアップを代行します。セットアップが終わり次第送り返します
@@ -122,6 +124,14 @@ wget https://raw.githubusercontent.com/jiikko/procon_bypass_man_sample/master/ap
 wget https://raw.githubusercontent.com/jiikko/procon_bypass_man_sample/master/setting.yml
 sudo /home/pi/.rbenv/versions/3.0.1/bin/ruby app.rb
 ```
+
+## RaspberryPiの給電について
+Raspberry Piの状態によっては、Switchと接続しているときに、Raspberry Piが電力不足になるようで動作が不安定になることがあります。  
+不安定になるようであれば、Switch以外からも給電してみてください。詳細には言及しませんが、主な給電方法には、以下があります。
+
+* GPIO端子
+* セルフパワーUSBハブ
+* PoE
 
 ## 普段使いをするためのセットアップ
 
@@ -215,9 +225,11 @@ open_macro :sokuwari, steps: [:toggle_r_for_0_2sec, :toggle_thumbr_for_0_14sec, 
 ## 左スティックの感度調整
 [左スティックの感度調整](/docs/setting/left-analogstick-cap.md)
 
+<!--
 ## 入力表示
 * 使い方は https://github.com/splaplapla/switch-procon-input-viewer を参照してください。
 * https://zenn.dev/jiikko/articles/2ef0ccbdfe0fe7 に技術的な解説を書きました
+-->
 
 ## 設定ファイルの書き方
 設定ファイルは、ymlフォーマットに埋め込まれたRubyスクリプトで記述します。  
