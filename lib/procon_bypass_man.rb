@@ -101,31 +101,32 @@ module ProconBypassMan
     end
 
     # デバイスの接続フェーズ
-    begin
-      if ProconBypassMan.config.procon_less_mode
-        gadget, procon = ProconBypassMan::DeviceConnection::ProconLess::Command.execute!
-      else
+    if ProconBypassMan.config.procon_less_mode
+      gadget, procon = ProconBypassMan::DeviceConnection::ProconLess::Command.execute!
+    else
+      gadget, procon = nil, nil
+      begin
         gadget, procon = ProconBypassMan::DeviceConnection::Command.execute!
+      rescue ProconBypassMan::DeviceConnection::NotFoundProconError
+        ProconBypassMan::SendErrorCommand.execute(error: "プロコンが見つかりませんでした。")
+        ProconBypassMan::DeviceStatus.change_to_procon_not_found_error!
+        # TODO シグナルトラップをしていないので以下の状態に、USR2を送ったときにプロセスが停止してしまう
+        ProconBypassMan::NeverExitAccidentally.exit_if_allow_at_config do
+          terminate_pbm
+        end
+        return
+      rescue ProconBypassMan::DeviceConnection::TimeoutError
+        ProconBypassMan::SendErrorCommand.execute(error: "接続に失敗しました。プロコンとRaspberry Piのケーブルを差し直して、再実行してください。\n改善しない場合は、app.logの中身を添えて不具合報告をお願いします。")
+        ProconBypassMan::DeviceStatus.change_to_connected_but_sleeping!
+        %w(TERM INT).each do |sig|
+          Kernel.trap(sig) { exit 0 }
+        end
+        Kernel.trap :USR2 do
+          exit 0 # TODO retryする
+        end
+        eternal_sleep
+        return
       end
-    rescue ProconBypassMan::DeviceConnection::NotFoundProconError
-      ProconBypassMan::SendErrorCommand.execute(error: "プロコンが見つかりませんでした。")
-      ProconBypassMan::DeviceStatus.change_to_procon_not_found_error!
-      # TODO シグナルトラップをしていないので以下の状態に、USR2を送ったときにプロセスが停止してしまう
-      ProconBypassMan::NeverExitAccidentally.exit_if_allow_at_config do
-        terminate_pbm
-      end
-      return
-    rescue ProconBypassMan::DeviceConnection::TimeoutError
-      ProconBypassMan::SendErrorCommand.execute(error: "接続に失敗しました。プロコンとRaspberry Piのケーブルを差し直して、再実行してください。\n改善しない場合は、app.logの中身を添えて不具合報告をお願いします。")
-      ProconBypassMan::DeviceStatus.change_to_connected_but_sleeping!
-      %w(TERM INT).each do |sig|
-        Kernel.trap(sig) { exit 0 }
-      end
-      Kernel.trap :USR2 do
-        exit 0 # TODO retryする
-      end
-      eternal_sleep
-      return
     end
 
     ready_pbm
