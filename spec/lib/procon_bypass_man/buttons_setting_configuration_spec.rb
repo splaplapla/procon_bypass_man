@@ -345,7 +345,7 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
           )
         end
       end
-      context '設定内容が不正のとき' do
+      context 'prefix_keys_for_changing_layerが空欄のとき' do
         let(:setting_content) do
           <<~EOH
           version: 1.0
@@ -359,9 +359,7 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
         it do
           expect {
             ProconBypassMan::ButtonsSettingConfiguration::Loader.load(setting_path: setting.path)
-          }.to raise_error(
-            ProconBypassMan::CouldNotLoadConfigError
-          )
+          }.not_to raise_error
         end
       end
 
