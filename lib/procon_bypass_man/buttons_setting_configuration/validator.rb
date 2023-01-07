@@ -12,7 +12,7 @@ module ProconBypassMan
       def valid?
         @errors = Hash.new {|h,k| h[k] = [] }
 
-        validate_require_prefix_keys
+        warn_blank_prefix_keys
         validate_config_of_button_lonely
         validate_verify_button_existence
         validate_flip_and_remap_are_hate_each_other
@@ -56,10 +56,10 @@ module ProconBypassMan
         end
       end
 
-      def validate_require_prefix_keys
+      # @return [void]
+      def warn_blank_prefix_keys
         if @prefix_keys.empty?
-          @errors[:prefix_keys] ||= []
-          @errors[:prefix_keys] << "prefix_keys_for_changing_layerに値が入っていません。"
+          ProconBypassMan.logger.warn "prefix_keys_for_changing_layerに値が入っていません。"
         end
       end
 
