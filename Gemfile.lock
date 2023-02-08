@@ -4,7 +4,7 @@ PATH
     procon_bypass_man (0.3.4)
       action_cable_client
       blue_green_process (= 0.1.4.2)
-      pbmenv (>= 0.1.9)
+      pbmenv (>= 0.1.11)
       sorted_set
 
 GEM
@@ -38,7 +38,7 @@ GEM
     parallel (1.21.0)
     parser (3.0.3.2)
       ast (~> 2.4.1)
-    pbmenv (0.1.10)
+    pbmenv (0.1.11)
     pry (0.14.1)
       coderay (~> 1.1)
       method_source (~> 1.0)

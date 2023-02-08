@@ -9,6 +9,7 @@ module ProconBypassMan
         Pbmenv.uninstall(pbm_version) # 途中でシャットダウンしてしまった、とか状態が途中の状態かもしれないので一旦消す
         Pbmenv.install(pbm_version, enable_pbm_cloud: true)
         Pbmenv.use(pbm_version)
+        Pbmenv.clean(10)
         ProconBypassMan.logger.info "#{pbm_version}へアップグレードしました"
         ProconBypassMan::ReportCompletedUpgradePbmJob.perform
         `reboot` # symlinkの参照先が変わるのでrebootする必要がある

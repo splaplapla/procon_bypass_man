@@ -1,6 +1,8 @@
 ## unrelease
 * 設定ファイルに起動な必要なPBMのバージョンを表記できるようになりました
   * https://github.com/splaplapla/procon_bypass_man/pull/238
+* レイヤー変更ボタン(prefix_keys_for_changing_layer)が空欄の時に設定ファイルをエラーにしないようになりました
+* PBM-CloudからPBMをアップグレードするときに、古いバージョンを削除するようにしました
 
 ## [0.3.4] - 2022-12-26
 * 左スティックを1回転するマクロを追加しました
