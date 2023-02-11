@@ -11,7 +11,6 @@ class ProconBypassMan::Bypass::ProconToSwitch
 
   define_callbacks :work
   set_callback :work, :after, :log_after_run
-  set_callback :work, :after, :write_procon_display_status
 
   # マルチプロセス化したので一旦無効にする
   # register_callback_module(ProconBypassMan::ProconDisplay::BypassHook)
@@ -47,6 +46,9 @@ class ProconBypassMan::Bypass::ProconToSwitch
 
           self.bypass_value.binary = ProconBypassMan::Domains::InboundProconBinary.new(binary: raw_output)
         end
+
+        # 後続処理で入力値を取得できるように詰めておく
+        ProconBypassMan::ProconDisplay::Status.instance.current = bypass_value.binary.to_procon_reader.to_hash.dup
 
         result = measurement.record_write_time do
           begin
@@ -112,10 +114,5 @@ class ProconBypassMan::Bypass::ProconToSwitch
   # @return [Boolean]
   def will_terminate?
     $will_terminate_token
-  end
-
-  def write_procon_display_status
-    return unless bypass_value.binary
-    ProconBypassMan::ProconDisplay::Status.instance.current = bypass_value.binary.to_procon_reader.to_hash.dup
   end
 end
