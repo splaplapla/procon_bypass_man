@@ -12,7 +12,7 @@ module ProconBypassMan
       private
 
       def before_action_callback
-        be_processed
+        be_in_progress
       end
 
       def after_action_callback

@@ -30,7 +30,6 @@ module ProconBypassMan
       ACTION_REPORT_PORCON_STATUS,
     ]
 
-
     STATUS_FAILED = :failed
     STATUS_IN_PROGRESS = :in_progress
     STATUS_PROCESSED = :processed
