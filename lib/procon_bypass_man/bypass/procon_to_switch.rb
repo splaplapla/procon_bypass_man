@@ -48,7 +48,7 @@ class ProconBypassMan::Bypass::ProconToSwitch
         end
 
         # 後続処理で入力値を取得できるように詰めておく
-        ProconBypassMan::ProconDisplay::Status.instance.current = bypass_value.binary.to_procon_reader.to_hash.dup
+        ProconBypassMan::ProconDisplay::Status.instance.current = bypass_value.binary.to_procon_reader.to_hash
 
         result = measurement.record_write_time do
           begin

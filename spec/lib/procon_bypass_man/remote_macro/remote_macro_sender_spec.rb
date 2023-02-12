@@ -15,7 +15,7 @@ describe ProconBypassMan::RemoteMacroSender do
     let(:uuid) { "b" }
     let(:steps) { "c" }
 
-    subject { described_class.execute(name: name, uuid: uuid, steps: steps) }
+    subject { described_class.execute(name: name, uuid: uuid, steps: steps, type: nil) }
 
     it do
       subject

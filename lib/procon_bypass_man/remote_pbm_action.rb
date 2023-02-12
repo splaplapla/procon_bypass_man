@@ -6,7 +6,8 @@ module ProconBypassMan
     require "procon_bypass_man/remote_pbm_action/change_pbm_version_action"
     require "procon_bypass_man/remote_pbm_action/reboot_os_action"
     require "procon_bypass_man/remote_pbm_action/stop_pbm_action"
-    require "procon_bypass_man/remote_pbm_action/restore_pbm_setting.rb"
+    require "procon_bypass_man/remote_pbm_action/restore_pbm_setting"
+    require "procon_bypass_man/remote_pbm_action/report_procon_status"
     require "procon_bypass_man/remote_pbm_action/commands/update_remote_pbm_action_status_command"
     require "procon_bypass_man/remote_pbm_action/commands/run_remote_pbm_action_dispatch_command"
     require "procon_bypass_man/remote_pbm_action/value_objects/remote_pbm_action_object"
@@ -22,6 +23,13 @@ module ProconBypassMan
       ACTION_STOP_PBM,
       ACTION_RESTORE_SETTING,
     ]
+
+    ACTION_REPORT_PORCON_STATUS = 'report_porcon_status'
+
+    ACTIONS_IN_BYPASS_PROCESS = [
+      ACTION_REPORT_PORCON_STATUS,
+    ]
+
 
     STATUS_FAILED = :failed
     STATUS_IN_PROGRESS = :in_progress

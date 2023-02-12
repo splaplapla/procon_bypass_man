@@ -385,7 +385,7 @@ describe ProconBypassMan::Procon do
             prefix_keys_for_changing_layer [:zr]
           end
           ProconBypassMan::RemoteMacro::TaskQueueInProcess.push(
-            ProconBypassMan::RemoteMacro::Task.new("yeah", "uuid-death", [:toggle_zr_for_3sec])
+            ProconBypassMan::RemoteMacro::Task.new("yeah", "uuid-death", [:toggle_zr_for_3sec], ProconBypassMan::RemoteMacro::Task::TYPE_MACRO)
           )
         end
         it do

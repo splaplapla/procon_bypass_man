@@ -43,7 +43,7 @@ describe ProconBypassMan::Websocket::Client do
       let(:data) { { "message" => {"name"=>"a", "uuid"=>"c", "steps"=>[] } } }
 
       it do
-        expect(ProconBypassMan::RemoteMacroSender).to receive(:execute).with(name: "a", uuid: "c", steps: [])
+        expect(ProconBypassMan::RemoteMacroSender).to receive(:execute).with(name: "a", uuid: "c", steps: [], type: 'macro')
         subject
       end
     end
@@ -70,55 +70,74 @@ describe ProconBypassMan::Websocket::Client do
   end
 
   describe '.validate_and_run_remote_pbm_action' do
-    subject { described_class.validate_and_run_remote_pbm_action(data: data) }
+    subject { described_class.validate_and_run_remote_pbm_action(data: data, process_to_execute: param_process_to_execute) }
 
-    context 'invalid' do
-      context '知らないaction' do
-        let(:data) { { "message" => {"action"=>"unknown", "status"=>"queued", "uuid"=>"20f27b6a-f727-4f8e-819b-bb60035d2ebc", "created_at"=>"2021-11-25T00:40:21.705+09:00"} } }
+    context 'process_to_execute is master' do
+      let(:param_process_to_execute) { :master }
 
-        it do
-          expect(ProconBypassMan::RunRemotePbmActionDispatchCommand).not_to receive(:execute)
-          expect(ProconBypassMan::SendErrorCommand).to receive(:execute).with(error: ProconBypassMan::RemotePbmActionObject::NonSupportAction)
-          subject
+      context 'invalid' do
+        context '知らないaction' do
+          let(:data) { { "message" => {"action"=>"unknown", "status"=>"queued", "uuid"=>"20f27b6a-f727-4f8e-819b-bb60035d2ebc", "created_at"=>"2021-11-25T00:40:21.705+09:00"} } }
+
+          it do
+            expect(ProconBypassMan::RunRemotePbmActionDispatchCommand).not_to receive(:execute)
+            expect(ProconBypassMan::SendErrorCommand).to receive(:execute).with(error: ProconBypassMan::RemotePbmActionObject::NonSupportAction)
+            subject
+          end
+        end
+
+        context 'uuidがnil' do
+          let(:data) { { "message" => {"action"=>"unknown", "status"=>"queued", "uuid"=>nil, "created_at"=>"2021-11-25T00:40:21.705+09:00"} } }
+
+          it do
+            expect(ProconBypassMan::RunRemotePbmActionDispatchCommand).not_to receive(:execute)
+            expect(ProconBypassMan::SendErrorCommand).to receive(:execute).with(error: ProconBypassMan::RemotePbmActionObject::MustBeNotNilError)
+            subject
+          end
         end
       end
 
-      context 'uuidがnil' do
-        let(:data) { { "message" => {"action"=>"unknown", "status"=>"queued", "uuid"=>nil, "created_at"=>"2021-11-25T00:40:21.705+09:00"} } }
+      context 'valid' do
+        context 'action is reboot_os' do
+          let(:data) { { "message" => {"action"=>"reboot_os", "status"=>"queued", "uuid"=>"20f27b6a-f727-4f8e-819b-bb60035d2ebc", "created_at"=>"2021-11-25T00:40:21.705+09:00"} } }
 
-        it do
-          expect(ProconBypassMan::RunRemotePbmActionDispatchCommand).not_to receive(:execute)
-          expect(ProconBypassMan::SendErrorCommand).to receive(:execute).with(error: ProconBypassMan::RemotePbmActionObject::MustBeNotNilError)
-          subject
+          it do
+            expect(ProconBypassMan::RunRemotePbmActionDispatchCommand).to receive(:execute)
+            subject
+          end
+        end
+
+        context 'action is change_pbm_version' do
+          let(:data) { { "message" => {"action"=>"change_pbm_version", "status"=>"queued", "uuid"=>"20f27b6a-f727-4f8e-819b-bb60035d2ebc", "created_at"=>"2021-11-25T00:40:21.705+09:00"} } }
+
+          it do
+            expect(ProconBypassMan::RunRemotePbmActionDispatchCommand).to receive(:execute)
+            subject
+          end
+        end
+
+        context 'action is restore_pbm_setting' do
+          let(:data) { { "message" => {"action"=>"restore_pbm_setting", "status"=>"queued", "uuid"=>"20f27b6a-f727-4f8e-819b-bb60035d2ebc", "created_at"=>"2021-11-25T00:40:21.705+09:00"} } }
+
+          it do
+            expect(ProconBypassMan::RunRemotePbmActionDispatchCommand).to receive(:execute)
+            subject
+          end
         end
       end
     end
 
-    context 'valid' do
-      context 'action is reboot_os' do
-        let(:data) { { "message" => {"action"=>"reboot_os", "status"=>"queued", "uuid"=>"20f27b6a-f727-4f8e-819b-bb60035d2ebc", "created_at"=>"2021-11-25T00:40:21.705+09:00"} } }
+    context 'process_to_execute is bypass' do
+      let(:param_process_to_execute) { :bypass }
 
-        it do
-          expect(ProconBypassMan::RunRemotePbmActionDispatchCommand).to receive(:execute)
-          subject
-        end
-      end
+      context 'valid' do
+        context 'action is reboot_os' do
+          let(:data) { { "message" => {"action"=>"reboot_os", "status"=>"queued", "uuid"=>"20f27b6a-f727-4f8e-819b-bb60035d2ebc", "created_at"=>"2021-11-25T00:40:21.705+09:00"} } }
 
-      context 'action is change_pbm_version' do
-        let(:data) { { "message" => {"action"=>"change_pbm_version", "status"=>"queued", "uuid"=>"20f27b6a-f727-4f8e-819b-bb60035d2ebc", "created_at"=>"2021-11-25T00:40:21.705+09:00"} } }
-
-        it do
-          expect(ProconBypassMan::RunRemotePbmActionDispatchCommand).to receive(:execute)
-          subject
-        end
-      end
-
-      context 'action is restore_pbm_setting' do
-        let(:data) { { "message" => {"action"=>"restore_pbm_setting", "status"=>"queued", "uuid"=>"20f27b6a-f727-4f8e-819b-bb60035d2ebc", "created_at"=>"2021-11-25T00:40:21.705+09:00"} } }
-
-        it do
-          expect(ProconBypassMan::RunRemotePbmActionDispatchCommand).to receive(:execute)
-          subject
+          it do
+            expect(ProconBypassMan::RunRemotePbmActionDispatchCommand).not_to receive(:execute)
+            subject
+          end
         end
       end
     end
