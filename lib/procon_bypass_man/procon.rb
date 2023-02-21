@@ -141,7 +141,7 @@ class ProconBypassMan::Procon
           GC.start # NOTE: extend_run_on_this_process = true するとGCされなくなるので手動で呼び出す
           ProconBypassMan::PostCompletedRemoteMacroJob.perform_async(task.uuid)
         end
-      when ProconBypassMan::RemoteMacro::Task::TYPE_PBM_ACTION
+      when ProconBypassMan::RemoteMacro::Task::TYPE_ACTION
         ProconBypassMan::RunRemotePbmActionDispatchCommand.execute(
           action: task.action,
           uuid: task.uuid,

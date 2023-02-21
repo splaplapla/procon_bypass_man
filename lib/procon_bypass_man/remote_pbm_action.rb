@@ -16,19 +16,18 @@ module ProconBypassMan
     ACTION_REBOOT_OS = "reboot_os"
     ACTION_STOP_PBM = "stop_pbm"
     ACTION_RESTORE_SETTING = "restore_pbm_setting"
+    ACTION_REPORT_PORCON_STATUS = 'report_porcon_status'
 
-    ACTIONS = [
+    ACTIONS_IN_MASTER_PROCESS = [
       ACTION_CHANGE_PBM_VERSION,
       ACTION_REBOOT_OS,
       ACTION_STOP_PBM,
       ACTION_RESTORE_SETTING,
     ]
-
-    ACTION_REPORT_PORCON_STATUS = 'report_porcon_status'
-
     ACTIONS_IN_BYPASS_PROCESS = [
       ACTION_REPORT_PORCON_STATUS,
     ]
+    ACTIONS = ACTIONS_IN_MASTER_PROCESS + ACTIONS_IN_BYPASS_PROCESS
 
     STATUS_FAILED = :failed
     STATUS_IN_PROGRESS = :in_progress

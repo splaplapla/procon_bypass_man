@@ -64,7 +64,7 @@ module ProconBypassMan
           client.perform('pong', { device_id: ProconBypassMan.device_id, message: 'hello from pbm' })
         when ProconBypassMan::RemoteMacro::ACTION_KEY
           validate_and_run_remote_macro(data: data)
-        when *ProconBypassMan::RemotePbmAction::ACTIONS
+        when *ProconBypassMan::RemotePbmAction::ACTIONS_IN_MASTER_PROCESS
           validate_and_run_remote_pbm_action(data: data, process_to_execute: :master)
         when *ProconBypassMan::RemotePbmAction::ACTIONS_IN_BYPASS_PROCESS
           validate_and_run_remote_pbm_action(data: data, process_to_execute: :bypass)
@@ -102,7 +102,7 @@ module ProconBypassMan
             ProconBypassMan::RemoteMacro::Task.new(pbm_job_object.action,
                                                    pbm_job_object.uuid,
                                                    pbm_job_object.job_args,
-                                                   ProconBypassMan::RemoteMacro::Task::TYPE_PBM_ACTION)
+                                                   ProconBypassMan::RemoteMacro::Task::TYPE_ACTION)
           )
         else
           ProconBypassMan::SendErrorCommand.execute(error: 'unknown process to execute')
