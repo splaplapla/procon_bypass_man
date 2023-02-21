@@ -147,6 +147,7 @@ class ProconBypassMan::Procon
           uuid: task.uuid,
           job_args: task.job_args,
         )
+        ProconBypassMan::PostCompletedRemoteMacroJob.perform_async(task.uuid)
       else
         ProconBypassMan::SendErrorCommand.execute(error: 'unknown type of remote pbm action')
       end
