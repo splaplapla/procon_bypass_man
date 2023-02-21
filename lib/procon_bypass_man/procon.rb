@@ -145,7 +145,7 @@ class ProconBypassMan::Procon
         ProconBypassMan::RunRemotePbmActionDispatchCommand.execute(
           action: task.action,
           uuid: task.uuid,
-          job_args: task.job_args
+          job_args: task.job_args,
         )
       else
         ProconBypassMan::SendErrorCommand.execute(error: 'unknown type of remote pbm action')

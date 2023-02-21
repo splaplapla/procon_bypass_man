@@ -9,7 +9,7 @@ class ProconBypassMan::RemoteMacro::Task < ::Struct.new(:name, :uuid, :steps, :t
     name
   end
 
-  def args
+  def job_args
     steps
   end
 end
