@@ -385,7 +385,7 @@ describe ProconBypassMan::Procon do
             prefix_keys_for_changing_layer [:zr]
           end
           ProconBypassMan::RemoteMacro::TaskQueueInProcess.push(
-            ProconBypassMan::RemoteMacro::Task.new("yeah", "uuid-death", [:toggle_zr_for_3sec])
+            ProconBypassMan::RemoteMacro::Task.new("yeah", "uuid-death", [:toggle_zr_for_3sec], ProconBypassMan::RemoteMacro::Task::TYPE_MACRO)
           )
         end
         it do
@@ -407,6 +407,32 @@ describe ProconBypassMan::Procon do
             procon.apply!
             expect(procon.to_binary).to be_a(String)
           end
+        end
+      end
+
+      context 'remote action' do
+        let(:data) { "30778105800099277344e86b0a7909f4f5a8f4b500c5ff8dff6c09cdf5b8f49a00c5ff92ff6a0979f5eef46500d5ff9bff000000000000000000000000000000" }
+        before do
+          ProconBypassMan.buttons_setting_configure do
+            prefix_keys_for_changing_layer [:zr]
+          end
+          ProconBypassMan::RemoteMacro::TaskQueueInProcess.push(
+            ProconBypassMan::RemoteMacro::Task.new(ProconBypassMan::RemotePbmAction::ACTION_REPORT_PORCON_STATUS,
+                                                   "uuid-death",
+                                                   {},
+                                                   ProconBypassMan::RemoteMacro::Task::TYPE_ACTION)
+          )
+        end
+
+        it do
+          procon = ProconBypassMan::Procon.new(binary)
+          expect(ProconBypassMan::RunRemotePbmActionDispatchCommand).to receive(:execute).with(
+            action: ProconBypassMan::RemotePbmAction::ACTION_REPORT_PORCON_STATUS,
+            uuid: "uuid-death",
+            job_args: {},
+          )
+          procon.apply!
+          expect(procon.to_binary).to be_a(String)
         end
       end
     end

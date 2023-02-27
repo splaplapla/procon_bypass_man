@@ -47,6 +47,9 @@ class ProconBypassMan::Bypass::ProconToSwitch
           self.bypass_value.binary = ProconBypassMan::Domains::InboundProconBinary.new(binary: raw_output)
         end
 
+        # 後続処理で入力値を取得できるように詰めておく
+        ProconBypassMan::ProconDisplay::Status.instance.current = bypass_value.binary.to_procon_reader.to_hash
+
         result = measurement.record_write_time do
           begin
             ProconBypassMan::Retryable.retryable(tries: 5, on_no_retry: [Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError, Errno::ESHUTDOWN, Errno::ETIMEDOUT]) do

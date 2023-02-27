@@ -1,3 +1,4 @@
+# FIXME: BypassProcessSenderみたいにする
 class ProconBypassMan::RemoteMacroReceiver
   # forkしたプロセスで動かすクラス。sock経由で命令を受け取ってmacoのキューに積んでいく
   def self.start_with_foreground!
@@ -26,7 +27,7 @@ class ProconBypassMan::RemoteMacroReceiver
 
   # @param [ProconBypassMan::RemoteMacro::Task] task
   def self.receive(task)
-    ProconBypassMan.logger.info "[remote macro][receiver] name: #{task.name}, uuid: #{task.uuid}, steps: #{task.steps}"
+    ProconBypassMan.logger.info "[remote macro][receiver] name: #{task.name}, uuid: #{task.uuid}, steps: #{task.steps}, type: #{task.type}"
     ProconBypassMan::RemoteMacro::TaskQueueInProcess.push(task)
     true
   end

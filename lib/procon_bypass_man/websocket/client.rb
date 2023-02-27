@@ -59,23 +59,24 @@ module ProconBypassMan
 
       # @param [Hash] data
       def self.dispatch(data: , client: )
-        pbm_job_hash = data.dig("message")
-        case pbm_job_hash['action']
+        case data.dig("message")['action']
         when "ping"
           client.perform('pong', { device_id: ProconBypassMan.device_id, message: 'hello from pbm' })
         when ProconBypassMan::RemoteMacro::ACTION_KEY
           validate_and_run_remote_macro(data: data)
-        when *ProconBypassMan::RemotePbmAction::ACTIONS
-          validate_and_run_remote_pbm_action(data: data)
+        when *ProconBypassMan::RemotePbmAction::ACTIONS_IN_MASTER_PROCESS
+          validate_and_run_remote_pbm_action(data: data, process_to_execute: :master)
+        when *ProconBypassMan::RemotePbmAction::ACTIONS_IN_BYPASS_PROCESS
+          validate_and_run_remote_pbm_action(data: data, process_to_execute: :bypass)
         else
-          ProconBypassMan.logger.error "unknown action"
+          ProconBypassMan::SendErrorCommand.execute(error: 'unknown remote pbm action')
         end
       end
 
       # @raise [ProconBypassMan::RemotePbmActionObject::ValidationError]
       # @param [Hash] data
       # @return [Void]
-      def self.validate_and_run_remote_pbm_action(data: )
+      def self.validate_and_run_remote_pbm_action(data: , process_to_execute: )
         pbm_job_hash = data.dig("message")
         begin
           pbm_job_object = ProconBypassMan::RemotePbmActionObject.new(action: pbm_job_hash["action"],
@@ -89,19 +90,31 @@ module ProconBypassMan
           return
         end
 
-        ProconBypassMan::RunRemotePbmActionDispatchCommand.execute(
-          action: pbm_job_object.action,
-          uuid: pbm_job_object.uuid,
-          job_args: pbm_job_object.job_args
-        )
+        case process_to_execute
+        when :master
+          ProconBypassMan::RunRemotePbmActionDispatchCommand.execute(
+            action: pbm_job_object.action,
+            uuid: pbm_job_object.uuid,
+            job_args: pbm_job_object.job_args
+          )
+        when :bypass
+          ProconBypassMan::RemoteMacro::QueueOverProcess.push(
+            ProconBypassMan::RemoteMacro::Task.new(pbm_job_object.action,
+                                                   pbm_job_object.uuid,
+                                                   pbm_job_object.job_args,
+                                                   ProconBypassMan::RemoteMacro::Task::TYPE_ACTION)
+          )
+        else
+          ProconBypassMan::SendErrorCommand.execute(error: 'unknown process to execute')
+        end
       end
 
       def self.validate_and_run_remote_macro(data: )
         pbm_job_hash = data.dig("message")
         begin
           remote_macro_object = ProconBypassMan::RemoteMacro::RemoteMacroObject.new(name: pbm_job_hash["name"],
-                                                                       uuid: pbm_job_hash["uuid"],
-                                                                       steps: pbm_job_hash["steps"])
+                                                                                    uuid: pbm_job_hash["uuid"],
+                                                                                    steps: pbm_job_hash["steps"])
           remote_macro_object.validate!
         rescue ProconBypassMan::RemoteMacro::RemoteMacroObject::ValidationError => e
           ProconBypassMan::SendErrorCommand.execute(error: e)
@@ -112,6 +125,7 @@ module ProconBypassMan
           name: remote_macro_object.name,
           uuid: remote_macro_object.uuid,
           steps: remote_macro_object.steps,
+          type: ProconBypassMan::RemoteMacro::Task::TYPE_MACRO,
         )
       end
     end

@@ -24,6 +24,7 @@ module ProconBypassMan
         RUBY
       end
 
+      # TODO: 存在しないメソッドへのcallbackを登録したらエラーにする
       def set_callback(kind, filter, chain_method, &block)
         self.__callbacks ||= {}
         self.__callbacks[kind] ||= CallbackChain.new

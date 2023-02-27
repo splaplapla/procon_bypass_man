@@ -127,17 +127,29 @@ class ProconBypassMan::Procon
       end
     end
 
-    # remote macro
+    # remote macro or pbm action
     if task = ProconBypassMan::RemoteMacro::TaskQueueInProcess.non_blocking_shift
-      no_op_step = :wait_for_0_3 # マクロの最後に固まって最後の入力をし続けるので、無の状態を最後に注入する
-      BlueGreenProcess::SharedVariable.extend_run_on_this_process = true
-      ProconBypassMan::Procon::MacroRegistry.cleanup_remote_macros!
-      macro_name = task.name || "RemoteMacro-#{task.steps.join}".to_sym
-      task.steps << no_op_step
-      ProconBypassMan::Procon::MacroRegistry.install_plugin(macro_name, steps: task.steps, macro_type: :remote)
-      @@status[:ongoing_macro] = MacroRegistry.load(macro_name, macro_type: :remote) do
-        GC.start # NOTE: extend_run_on_this_process = true するとGCされなくなるので手動で呼び出す
+      case task.type
+      when ProconBypassMan::RemoteMacro::Task::TYPE_MACRO
+        no_op_step = :wait_for_0_3 # マクロの最後に固まって最後の入力をし続けるので、無の状態を最後に注入する
+        BlueGreenProcess::SharedVariable.extend_run_on_this_process = true
+        ProconBypassMan::Procon::MacroRegistry.cleanup_remote_macros!
+        macro_name = task.name || "RemoteMacro-#{task.steps.join}".to_sym
+        task.steps << no_op_step
+        ProconBypassMan::Procon::MacroRegistry.install_plugin(macro_name, steps: task.steps, macro_type: :remote)
+        @@status[:ongoing_macro] = MacroRegistry.load(macro_name, macro_type: :remote) do
+          GC.start # NOTE: extend_run_on_this_process = true するとGCされなくなるので手動で呼び出す
+          ProconBypassMan::PostCompletedRemoteMacroJob.perform_async(task.uuid)
+        end
+      when ProconBypassMan::RemoteMacro::Task::TYPE_ACTION
+        ProconBypassMan::RunRemotePbmActionDispatchCommand.execute(
+          action: task.action,
+          uuid: task.uuid,
+          job_args: task.job_args,
+        )
         ProconBypassMan::PostCompletedRemoteMacroJob.perform_async(task.uuid)
+      else
+        ProconBypassMan::SendErrorCommand.execute(error: 'unknown type of remote pbm action')
       end
     end
 

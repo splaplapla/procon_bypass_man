@@ -10,6 +10,7 @@ class ProconBypassMan::ProconDisplay::Status
 
   # @return [void]
   # @param [Hash] value
+  # NOTE: valueには参照が入ってくるので変更する時はdupすること
   def current=(value)
     if value.is_a?(Hash)
       @current = value

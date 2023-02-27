@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# FIXME: RemotePbmActionInBypassProcessという名前にする
 module ProconBypassMan
   module RemoteMacro
     require "procon_bypass_man/remote_macro/remote_macro_object"
