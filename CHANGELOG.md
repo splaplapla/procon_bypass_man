@@ -1,4 +1,7 @@
-## [0.3.5] - 2022-2-9
+## [unrelease] 2023
+- プロコンの入力状態をpbm-cloudサーバに送信できるようになりました
+
+## [0.3.5] - 2023-2-9
 * 設定ファイルに起動に必要なPBMのバージョンを表記できるようになりました
   * https://github.com/splaplapla/procon_bypass_man/pull/238
 * レイヤー変更ボタン(prefix_keys_for_changing_layer)が空欄の時に設定ファイルをエラーが起きないようにしました
