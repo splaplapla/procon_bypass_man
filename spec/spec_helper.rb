@@ -29,13 +29,13 @@ RSpec.configure do |config|
   config.before(:each) do
     allow(ProconBypassMan::Worker).to receive(:run)
     allow(ProconBypassMan::Background::JobQueue).to receive(:enable?) { false }
-    allow(ProconBypassMan::RemoteMacro::QueueOverProcess).to receive(:enable?) { false }
+    allow(ProconBypassMan::RemoteAction::QueueOverProcess).to receive(:enable?) { false }
     allow(ProconBypassMan::Procon::PerformanceMeasurement::QueueOverProcess).to receive(:enable?) { false }
 
     allow(ProconBypassMan::HttpClient::HttpRequest::Get).to receive(:new)
     allow(ProconBypassMan::HttpClient::HttpRequest::Post).to receive(:new)
     allow(ProconBypassMan.config).to receive(:api_servers) { nil }
-    allow(ProconBypassMan.config).to receive(:enable_remote_macro?) { false }
+    allow(ProconBypassMan.config).to receive(:enable_remote_action?) { false }
     allow_any_instance_of(Net::HTTP).to receive(:get) { double(:x).as_null_object }
     allow_any_instance_of(Net::HTTP).to receive(:put) { double(:x).as_null_object }
     allow_any_instance_of(Net::HTTP).to receive(:post) { double(:x).as_null_object }

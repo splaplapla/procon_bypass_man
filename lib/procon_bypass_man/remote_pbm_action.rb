@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module ProconBypassMan
+  # TODO: RemoteJobって名前にする
   module RemotePbmAction
     require "procon_bypass_man/remote_pbm_action/base_action"
     require "procon_bypass_man/remote_pbm_action/change_pbm_version_action"

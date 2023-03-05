@@ -1,4 +1,4 @@
-class ProconBypassMan::RemoteMacro::RemoteMacroObject
+class ProconBypassMan::RemoteAction::RemoteActionObject
   # valueobjectがvalidatorの責務も持っている. 今度分離する
   class ValidationError < StandardError; end
   class MustBeNotNilError < ValidationError; end

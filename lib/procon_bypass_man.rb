@@ -64,7 +64,7 @@ require_relative "procon_bypass_man/websocket/watchdog"
 require_relative "procon_bypass_man/websocket/forever"
 
 require_relative "procon_bypass_man/remote_pbm_action"
-require_relative "procon_bypass_man/remote_macro"
+require_relative "procon_bypass_man/remote_action"
 
 STDOUT.sync = true
 Thread.abort_on_exception = true
@@ -161,7 +161,7 @@ module ProconBypassMan
     ProconBypassMan::Background::JobQueue.start!
     ProconBypassMan::Websocket::Client.start!
     # TODO ProconBypassMan::DrbObjects.start_all! みたいな感じで書きたい
-    ProconBypassMan::RemoteMacro::QueueOverProcess.start!
+    ProconBypassMan::RemoteAction::QueueOverProcess.start!
     ProconBypassMan::Procon::PerformanceMeasurement::QueueOverProcess.start!
     ProconBypassMan::Scheduler.start!
 
@@ -193,7 +193,7 @@ module ProconBypassMan
     BlueGreenProcess.configure do |config|
       config.after_fork = -> {
         DRb.start_service if defined?(DRb)
-        ProconBypassMan::RemoteMacroReceiver.start!
+        ProconBypassMan::RemoteActionReceiver.start!
         BlueGreenProcess.config.logger = ProconBypassMan.logger
       }
       config.shared_variables = [:buttons, :current_layer_key, :recent_left_stick_hypotenuses]
@@ -204,7 +204,7 @@ module ProconBypassMan
   def self.terminate_pbm
     FileUtils.rm_rf(ProconBypassMan.pid_path)
     FileUtils.rm_rf(ProconBypassMan.digest_path)
-    ProconBypassMan::RemoteMacro::QueueOverProcess.shutdown
+    ProconBypassMan::RemoteAction::QueueOverProcess.shutdown
     ProconBypassMan::Procon::PerformanceMeasurement::QueueOverProcess.shutdown
     self.worker&.shutdown
   end

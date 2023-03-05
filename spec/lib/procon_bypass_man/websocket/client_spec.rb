@@ -10,10 +10,10 @@ describe ProconBypassMan::Websocket::Client do
   describe '.dispatch' do
     subject { described_class.dispatch(data: data, client: nil) }
 
-    context 'when remote_macro action' do
+    context 'when remote_action' do
       let(:data) { { "message" => { "action"=>"remote_macro" } } }
       it do
-        expect(described_class).to receive(:validate_and_run_remote_macro)
+        expect(described_class).to receive(:run_remote_macro)
         subject
       end
     end
@@ -21,7 +21,7 @@ describe ProconBypassMan::Websocket::Client do
     context 'when restore_pbm_setting action' do
       let(:data) { { "message" => { "action"=>"restore_pbm_setting" } } }
       it do
-        expect(described_class).to receive(:validate_and_run_remote_pbm_action)
+        expect(described_class).to receive(:run_remote_pbm_job)
         subject
       end
     end
@@ -29,21 +29,21 @@ describe ProconBypassMan::Websocket::Client do
     context 'when not found action' do
       let(:data) { { "message" => { "action"=>"not_found" } } }
       it do
-        expect(described_class).not_to receive(:validate_and_run_remote_pbm_action)
-        expect(described_class).not_to receive(:validate_and_run_remote_macro)
+        expect(described_class).not_to receive(:run_remote_pbm_job)
+        expect(described_class).not_to receive(:run_remote_macro)
         subject
       end
     end
   end
 
-  describe '.validate_and_run_remote_macro' do
-    subject { described_class.validate_and_run_remote_macro(data: data) }
+  describe '.run_remote_macro' do
+    subject { described_class.run_remote_macro(data: data) }
 
     context 'valid' do
       let(:data) { { "message" => {"name"=>"a", "uuid"=>"c", "steps"=>[] } } }
 
       it do
-        expect(ProconBypassMan::RemoteMacroSender).to receive(:execute).with(name: "a", uuid: "c", steps: [], type: 'macro')
+        expect(ProconBypassMan::RemoteActionSender).to receive(:execute).with(name: "a", uuid: "c", steps: [], type: 'macro')
         subject
       end
     end
@@ -53,7 +53,7 @@ describe ProconBypassMan::Websocket::Client do
         let(:data) { { "message" => {"action"=>"remote_action",  "uuid"=>"20f27b6a-f727-4f8e-819b-bb60035d2ebc" } } }
 
         it do
-          expect(ProconBypassMan::SendErrorCommand).to receive(:execute).with(error: ProconBypassMan::RemoteMacro::RemoteMacroObject::ValidationError)
+          expect(ProconBypassMan::SendErrorCommand).to receive(:execute).with(error: ProconBypassMan::RemoteAction::RemoteActionObject::ValidationError)
           subject
         end
       end
@@ -62,15 +62,15 @@ describe ProconBypassMan::Websocket::Client do
         let(:data) { { "message" => {"action"=>"remote_action",  "uuid"=>nil, 'steps'=>[] } } }
 
         it do
-          expect(ProconBypassMan::SendErrorCommand).to receive(:execute).with(error: ProconBypassMan::RemoteMacro::RemoteMacroObject::MustBeNotNilError)
+          expect(ProconBypassMan::SendErrorCommand).to receive(:execute).with(error: ProconBypassMan::RemoteAction::RemoteActionObject::MustBeNotNilError)
           subject
         end
       end
     end
   end
 
-  describe '.validate_and_run_remote_pbm_action' do
-    subject { described_class.validate_and_run_remote_pbm_action(data: data, process_to_execute: param_process_to_execute) }
+  describe '.run_remote_pbm_job' do
+    subject { described_class.run_remote_pbm_job(data: data, process_to_execute: param_process_to_execute) }
 
     context 'process_to_execute is master' do
       let(:param_process_to_execute) { :master }

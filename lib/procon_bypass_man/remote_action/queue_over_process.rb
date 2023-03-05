@@ -1,4 +1,4 @@
-class ProconBypassMan::RemoteMacro::QueueOverProcess
+class ProconBypassMan::RemoteAction::QueueOverProcess
   extend ProconBypassMan::CanOverProcess
 
   include Singleton

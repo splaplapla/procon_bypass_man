@@ -1,36 +1,36 @@
 require "spec_helper"
 
-describe ProconBypassMan::RemoteMacro::QueueOverProcess do
+describe ProconBypassMan::RemoteAction::QueueOverProcess do
   describe '.start!' do
-    subject { ProconBypassMan::RemoteMacro::QueueOverProcess.start! }
+    subject { ProconBypassMan::RemoteAction::QueueOverProcess.start! }
 
     context 'when not enable' do
       it do
-        allow(ProconBypassMan.config).to receive(:enable_remote_macro?) { false }
+        allow(ProconBypassMan.config).to receive(:enable_remote_action?) { false }
         expect { subject }.not_to change { Thread.list.size }
       end
     end
 
     context 'when enable' do
       before(:each) do
-        allow(ProconBypassMan.config).to receive(:enable_remote_macro?) { true }
+        allow(ProconBypassMan.config).to receive(:enable_remote_action?) { true }
       end
 
       it do
         expect { subject }.not_to raise_error
-        ProconBypassMan::RemoteMacro::QueueOverProcess.shutdown
+        ProconBypassMan::RemoteAction::QueueOverProcess.shutdown
       end
     end
   end
 
   describe 'pop, push' do
     before do
-      allow(ProconBypassMan::RemoteMacro::QueueOverProcess).to receive(:enable?) { true }
-      ProconBypassMan::RemoteMacro::QueueOverProcess.start!
+      allow(ProconBypassMan::RemoteAction::QueueOverProcess).to receive(:enable?) { true }
+      ProconBypassMan::RemoteAction::QueueOverProcess.start!
     end
 
     after do
-      ProconBypassMan::RemoteMacro::QueueOverProcess.shutdown
+      ProconBypassMan::RemoteAction::QueueOverProcess.shutdown
     end
 
     before do
