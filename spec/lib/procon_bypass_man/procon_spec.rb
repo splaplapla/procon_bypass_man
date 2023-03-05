@@ -417,7 +417,7 @@ describe ProconBypassMan::Procon do
             prefix_keys_for_changing_layer [:zr]
           end
           ProconBypassMan::RemoteAction::TaskQueueInProcess.push(
-            ProconBypassMan::RemoteAction::Task.new(ProconBypassMan::RemotePbmAction::ACTION_REPORT_PORCON_STATUS,
+            ProconBypassMan::RemoteAction::Task.new(ProconBypassMan::RemoteAction::RemotePbmJob::ACTION_REPORT_PORCON_STATUS,
                                                    "uuid-death",
                                                    {},
                                                    ProconBypassMan::RemoteAction::Task::TYPE_ACTION)
@@ -426,8 +426,8 @@ describe ProconBypassMan::Procon do
 
         it do
           procon = ProconBypassMan::Procon.new(binary)
-          expect(ProconBypassMan::RunRemotePbmActionDispatchCommand).to receive(:execute).with(
-            action: ProconBypassMan::RemotePbmAction::ACTION_REPORT_PORCON_STATUS,
+          expect(ProconBypassMan::RemoteAction::RemotePbmJob::RunRemotePbmJobDispatchCommand).to receive(:execute).with(
+            action: ProconBypassMan::RemoteAction::RemotePbmJob::ACTION_REPORT_PORCON_STATUS,
             uuid: "uuid-death",
             job_args: {},
           )

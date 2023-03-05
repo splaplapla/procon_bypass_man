@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe ProconBypassMan::RunRemotePbmActionDispatchCommand do
+describe ProconBypassMan::RemoteAction::RemotePbmJob::RunRemotePbmJobDispatchCommand do
   describe '.execute' do
     subject { described_class.execute(action: action, uuid: "a", job_args: {}) }
 
@@ -14,38 +14,38 @@ describe ProconBypassMan::RunRemotePbmActionDispatchCommand do
       end
     end
 
-    context ProconBypassMan::RemotePbmAction::ACTION_CHANGE_PBM_VERSION do
-      let(:action) { ProconBypassMan::RemotePbmAction::ACTION_CHANGE_PBM_VERSION }
+    context ProconBypassMan::RemoteAction::RemotePbmJob::ACTION_CHANGE_PBM_VERSION do
+      let(:action) { ProconBypassMan::RemoteAction::RemotePbmJob::ACTION_CHANGE_PBM_VERSION }
 
       it do
-        expect(ProconBypassMan::RemotePbmAction::ChangePbmVersionAction).to receive(:new) { double(:o).as_null_object }
+        expect(ProconBypassMan::RemoteAction::RemotePbmJob::ChangePbmVersionAction).to receive(:new) { double(:o).as_null_object }
         subject
       end
     end
 
-    context ProconBypassMan::RemotePbmAction::ACTION_STOP_PBM do
-      let(:action) { ProconBypassMan::RemotePbmAction::ACTION_STOP_PBM }
+    context ProconBypassMan::RemoteAction::RemotePbmJob::ACTION_STOP_PBM do
+      let(:action) { ProconBypassMan::RemoteAction::RemotePbmJob::ACTION_STOP_PBM }
 
       it do
-        expect(ProconBypassMan::RemotePbmAction::StopPbmAction).to receive(:new) { double(:o).as_null_object }
+        expect(ProconBypassMan::RemoteAction::RemotePbmJob::StopPbmJob).to receive(:new) { double(:o).as_null_object }
         subject
       end
     end
 
-    context ProconBypassMan::RemotePbmAction::ACTION_REBOOT_OS do
-      let(:action) { ProconBypassMan::RemotePbmAction::ACTION_REBOOT_OS }
+    context ProconBypassMan::RemoteAction::RemotePbmJob::ACTION_REBOOT_OS do
+      let(:action) { ProconBypassMan::RemoteAction::RemotePbmJob::ACTION_REBOOT_OS }
 
       it do
-        expect(ProconBypassMan::RemotePbmAction::RebootOsAction).to receive(:new) { double(:o).as_null_object }
+        expect(ProconBypassMan::RemoteAction::RemotePbmJob::RebootOsAction).to receive(:new) { double(:o).as_null_object }
         subject
       end
     end
 
     context 'when to raise ActionUnexpectedError' do
-      let(:action) { ProconBypassMan::RemotePbmAction::ACTION_REBOOT_OS }
+      let(:action) { ProconBypassMan::RemoteAction::RemotePbmJob::ACTION_REBOOT_OS }
 
       it do
-        expect(ProconBypassMan::RemotePbmAction::RebootOsAction).to receive(:new) { raise ProconBypassMan::RemotePbmAction::ActionUnexpectedError }
+        expect(ProconBypassMan::RemoteAction::RemotePbmJob::RebootOsAction).to receive(:new) { raise ProconBypassMan::RemoteAction::RemotePbmJob::ActionUnexpectedError }
         expect(ProconBypassMan::SendErrorCommand).to receive(:execute)
         subject
       end

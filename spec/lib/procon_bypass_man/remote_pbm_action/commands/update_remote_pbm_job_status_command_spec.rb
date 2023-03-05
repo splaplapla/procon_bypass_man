@@ -1,7 +1,6 @@
 require "spec_helper"
 
-
-describe ProconBypassMan::UpdateRemotePbmActionStatusCommand do
+describe ProconBypassMan::UpdateRemotePbmJobStatusCommand do
   describe '.execute!' do
     let(:post_body) { "hoge" }
 

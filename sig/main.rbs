@@ -614,12 +614,6 @@ module ProconBypassMan
 end
 
 module ProconBypassMan
-  class UpdateRemotePbmActionStatusHttpClient
-    def post: (to_status: ::Symbol) -> untyped
-  end
-end
-
-module ProconBypassMan
   class CompressArray
     @array: [String]
 

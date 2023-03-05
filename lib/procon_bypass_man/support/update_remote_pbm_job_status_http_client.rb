@@ -1,5 +1,5 @@
 module ProconBypassMan
-  class UpdateRemotePbmActionStatusHttpClient < HttpClient
+  class UpdateRemotePbmJobStatusHttpClient < HttpClient
     def put(to_status: )
       super(request_body: {
         body: { status: to_status },

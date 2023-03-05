@@ -1,8 +1,10 @@
 # frozen_string_literal: true
 
-# FIXME: RemotePbmActionInBypassProcessという名前にする
 module ProconBypassMan
   module RemoteAction
+    # NOTE: RemoteActionは「具体的な処理を行うジョブ」と「マクロ」を内包する
+    require "procon_bypass_man/remote_action/remote_pbm_job"
+
     require "procon_bypass_man/remote_action/remote_action_object"
     require "procon_bypass_man/remote_action/remote_action_receiver"
     require "procon_bypass_man/remote_action/remote_action_sender"

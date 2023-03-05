@@ -1,5 +1,5 @@
 module ProconBypassMan
-  class RemotePbmActionObject
+  class RemotePbmJobObject
     # valueobjectがvalidatorの責務も持っている. 今度分離する
     class ValidationError < StandardError; end
     class MustBeNotNilError < ValidationError; end
@@ -30,7 +30,7 @@ module ProconBypassMan
       self.status or raise MustBeNotNilError, "statusは値が必須です"
       self.uuid or raise MustBeNotNilError, "uuidは値が必須です"
 
-      unless ProconBypassMan::RemotePbmAction::ACTIONS.include?(action)
+      unless ProconBypassMan::RemoteAction::RemotePbmJob::ACTIONS.include?(action)
         raise NonSupportAction, "知らないアクションです"
       end
     end

@@ -80,8 +80,8 @@ describe ProconBypassMan::Websocket::Client do
           let(:data) { { "message" => {"action"=>"unknown", "status"=>"queued", "uuid"=>"20f27b6a-f727-4f8e-819b-bb60035d2ebc", "created_at"=>"2021-11-25T00:40:21.705+09:00"} } }
 
           it do
-            expect(ProconBypassMan::RunRemotePbmActionDispatchCommand).not_to receive(:execute)
-            expect(ProconBypassMan::SendErrorCommand).to receive(:execute).with(error: ProconBypassMan::RemotePbmActionObject::NonSupportAction)
+            expect(ProconBypassMan::RemoteAction::RemotePbmJob::RunRemotePbmJobDispatchCommand).not_to receive(:execute)
+            expect(ProconBypassMan::SendErrorCommand).to receive(:execute).with(error: ProconBypassMan::RemotePbmJobObject::NonSupportAction)
             subject
           end
         end
@@ -90,8 +90,8 @@ describe ProconBypassMan::Websocket::Client do
           let(:data) { { "message" => {"action"=>"unknown", "status"=>"queued", "uuid"=>nil, "created_at"=>"2021-11-25T00:40:21.705+09:00"} } }
 
           it do
-            expect(ProconBypassMan::RunRemotePbmActionDispatchCommand).not_to receive(:execute)
-            expect(ProconBypassMan::SendErrorCommand).to receive(:execute).with(error: ProconBypassMan::RemotePbmActionObject::MustBeNotNilError)
+            expect(ProconBypassMan::RemoteAction::RemotePbmJob::RunRemotePbmJobDispatchCommand).not_to receive(:execute)
+            expect(ProconBypassMan::SendErrorCommand).to receive(:execute).with(error: ProconBypassMan::RemotePbmJobObject::MustBeNotNilError)
             subject
           end
         end
@@ -102,7 +102,7 @@ describe ProconBypassMan::Websocket::Client do
           let(:data) { { "message" => {"action"=>"reboot_os", "status"=>"queued", "uuid"=>"20f27b6a-f727-4f8e-819b-bb60035d2ebc", "created_at"=>"2021-11-25T00:40:21.705+09:00"} } }
 
           it do
-            expect(ProconBypassMan::RunRemotePbmActionDispatchCommand).to receive(:execute)
+            expect(ProconBypassMan::RemoteAction::RemotePbmJob::RunRemotePbmJobDispatchCommand).to receive(:execute)
             subject
           end
         end
@@ -111,7 +111,7 @@ describe ProconBypassMan::Websocket::Client do
           let(:data) { { "message" => {"action"=>"change_pbm_version", "status"=>"queued", "uuid"=>"20f27b6a-f727-4f8e-819b-bb60035d2ebc", "created_at"=>"2021-11-25T00:40:21.705+09:00"} } }
 
           it do
-            expect(ProconBypassMan::RunRemotePbmActionDispatchCommand).to receive(:execute)
+            expect(ProconBypassMan::RemoteAction::RemotePbmJob::RunRemotePbmJobDispatchCommand).to receive(:execute)
             subject
           end
         end
@@ -120,7 +120,7 @@ describe ProconBypassMan::Websocket::Client do
           let(:data) { { "message" => {"action"=>"restore_pbm_setting", "status"=>"queued", "uuid"=>"20f27b6a-f727-4f8e-819b-bb60035d2ebc", "created_at"=>"2021-11-25T00:40:21.705+09:00"} } }
 
           it do
-            expect(ProconBypassMan::RunRemotePbmActionDispatchCommand).to receive(:execute)
+            expect(ProconBypassMan::RemoteAction::RemotePbmJob::RunRemotePbmJobDispatchCommand).to receive(:execute)
             subject
           end
         end
@@ -135,7 +135,7 @@ describe ProconBypassMan::Websocket::Client do
           let(:data) { { "message" => {"action"=>"reboot_os", "status"=>"queued", "uuid"=>"20f27b6a-f727-4f8e-819b-bb60035d2ebc", "created_at"=>"2021-11-25T00:40:21.705+09:00"} } }
 
           it do
-            expect(ProconBypassMan::RunRemotePbmActionDispatchCommand).not_to receive(:execute)
+            expect(ProconBypassMan::RemoteAction::RemotePbmJob::RunRemotePbmJobDispatchCommand).not_to receive(:execute)
             subject
           end
         end

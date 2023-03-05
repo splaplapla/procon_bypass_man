@@ -142,7 +142,7 @@ class ProconBypassMan::Procon
           ProconBypassMan::PostCompletedRemoteMacroJob.perform_async(task.uuid)
         end
       when ProconBypassMan::RemoteAction::Task::TYPE_ACTION
-        ProconBypassMan::RunRemotePbmActionDispatchCommand.execute(
+        ProconBypassMan::RemoteAction::RemotePbmJob::RunRemotePbmJobDispatchCommand.execute(
           action: task.action,
           uuid: task.uuid,
           job_args: task.job_args,

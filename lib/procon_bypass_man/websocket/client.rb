@@ -64,36 +64,36 @@ module ProconBypassMan
           client.perform('pong', { device_id: ProconBypassMan.device_id, message: 'hello from pbm' })
         when ProconBypassMan::RemoteAction::ACTION_MACRO
           run_remote_macro(data: data)
-        when *ProconBypassMan::RemotePbmAction::ACTIONS_IN_MASTER_PROCESS
+        when *ProconBypassMan::RemoteAction::RemotePbmJob::ACTIONS_IN_MASTER_PROCESS
           run_remote_pbm_job(data: data, process_to_execute: :master)
-        when *ProconBypassMan::RemotePbmAction::ACTIONS_IN_BYPASS_PROCESS
+        when *ProconBypassMan::RemoteAction::RemotePbmJob::ACTIONS_IN_BYPASS_PROCESS
           run_remote_pbm_job(data: data, process_to_execute: :bypass)
         else
           ProconBypassMan::SendErrorCommand.execute(error: 'unknown remote pbm action')
         end
       end
 
-      # @raise [ProconBypassMan::RemotePbmActionObject::ValidationError]
+      # @raise [ProconBypassMan::RemotePbmJobObject::ValidationError]
       # @param [Hash] data
       # @param [Symbol] process_to_execute どのプロセスで実行するか
       # @return [Void]
       def self.run_remote_pbm_job(data: , process_to_execute: )
         pbm_job_hash = data.dig("message")
         begin
-          pbm_job_object = ProconBypassMan::RemotePbmActionObject.new(action: pbm_job_hash["action"],
+          pbm_job_object = ProconBypassMan::RemotePbmJobObject.new(action: pbm_job_hash["action"],
                                                                       status: pbm_job_hash["status"],
                                                                       uuid: pbm_job_hash["uuid"],
                                                                       created_at: pbm_job_hash["created_at"],
                                                                       job_args: pbm_job_hash["args"])
           pbm_job_object.validate!
-        rescue ProconBypassMan::RemotePbmActionObject::ValidationError => e
+        rescue ProconBypassMan::RemotePbmJobObject::ValidationError => e
           ProconBypassMan::SendErrorCommand.execute(error: e)
           return
         end
 
         case process_to_execute
         when :master
-          ProconBypassMan::RunRemotePbmActionDispatchCommand.execute(
+          ProconBypassMan::RemoteAction::RemotePbmJob::RunRemotePbmJobDispatchCommand.execute(
             action: pbm_job_object.action,
             uuid: pbm_job_object.uuid,
             job_args: pbm_job_object.job_args
