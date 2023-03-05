@@ -128,9 +128,9 @@ class ProconBypassMan::Procon
     end
 
     # remote macro or pbm action
-    if task = ProconBypassMan::RemoteMacro::TaskQueueInProcess.non_blocking_shift
+    if task = ProconBypassMan::RemoteAction::TaskQueueInProcess.non_blocking_shift
       case task.type
-      when ProconBypassMan::RemoteMacro::Task::TYPE_MACRO
+      when ProconBypassMan::RemoteAction::Task::TYPE_MACRO
         no_op_step = :wait_for_0_3 # マクロの最後に固まって最後の入力をし続けるので、無の状態を最後に注入する
         BlueGreenProcess::SharedVariable.extend_run_on_this_process = true
         ProconBypassMan::Procon::MacroRegistry.cleanup_remote_macros!
@@ -141,13 +141,12 @@ class ProconBypassMan::Procon
           GC.start # NOTE: extend_run_on_this_process = true するとGCされなくなるので手動で呼び出す
           ProconBypassMan::PostCompletedRemoteMacroJob.perform_async(task.uuid)
         end
-      when ProconBypassMan::RemoteMacro::Task::TYPE_ACTION
-        ProconBypassMan::RunRemotePbmActionDispatchCommand.execute(
+      when ProconBypassMan::RemoteAction::Task::TYPE_ACTION
+        ProconBypassMan::RemoteAction::RemotePbmJob::RunRemotePbmJobDispatchCommand.execute(
           action: task.action,
           uuid: task.uuid,
           job_args: task.job_args,
         )
-        ProconBypassMan::PostCompletedRemoteMacroJob.perform_async(task.uuid)
       else
         ProconBypassMan::SendErrorCommand.execute(error: 'unknown type of remote pbm action')
       end

@@ -1,5 +1,5 @@
 module ProconBypassMan
-  class UpdateRemotePbmActionStatusCommand
+  class UpdateRemotePbmJobStatusCommand
     # @param [String] pbm_job_uuid
     def initialize(pbm_job_uuid: )
       @pbm_job_uuid = pbm_job_uuid
@@ -8,7 +8,7 @@ module ProconBypassMan
     # @param [String] to_status
     # @return [void]
     def execute(to_status: )
-      ProconBypassMan::UpdateRemotePbmActionStatusHttpClient.new(
+      ProconBypassMan::UpdateRemotePbmJobStatusHttpClient.new(
         path: path,
         server: ProconBypassMan.config.api_server,
       ).put(to_status: to_status)

@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe ProconBypassMan::RemoteMacro::TaskQueue do
+describe ProconBypassMan::RemoteAction::TaskQueue do
   let(:queue) { described_class.new }
 
   describe '.non_blocking_shift' do

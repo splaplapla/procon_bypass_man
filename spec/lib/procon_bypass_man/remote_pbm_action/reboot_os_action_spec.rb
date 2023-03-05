@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe ProconBypassMan::RemotePbmAction::RebootOsAction do
+describe ProconBypassMan::RemoteAction::RemotePbmJob::RebootOsAction do
   describe '#run!' do
     let(:action) { described_class.new(pbm_job_uuid: "a") }
     subject { action.run!(job_args: {}) }

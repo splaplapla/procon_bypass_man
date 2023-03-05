@@ -1,4 +1,4 @@
-class ProconBypassMan::RemoteMacro::TaskQueue < ::Queue
+class ProconBypassMan::RemoteAction::TaskQueue < ::Queue
   def present?
     not empty?
   end

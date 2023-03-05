@@ -1,4 +1,4 @@
-class ProconBypassMan::RemoteMacro::QueueOverProcess
+class ProconBypassMan::RemoteAction::QueueOverProcess
   extend ProconBypassMan::CanOverProcess
 
   include Singleton
@@ -7,7 +7,7 @@ class ProconBypassMan::RemoteMacro::QueueOverProcess
 
   # @override
   def self.enable?
-    ProconBypassMan.config.enable_remote_macro?
+    ProconBypassMan.config.enable_remote_action?
   end
 
   # @override

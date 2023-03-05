@@ -384,8 +384,8 @@ describe ProconBypassMan::Procon do
           ProconBypassMan.buttons_setting_configure do
             prefix_keys_for_changing_layer [:zr]
           end
-          ProconBypassMan::RemoteMacro::TaskQueueInProcess.push(
-            ProconBypassMan::RemoteMacro::Task.new("yeah", "uuid-death", [:toggle_zr_for_3sec], ProconBypassMan::RemoteMacro::Task::TYPE_MACRO)
+          ProconBypassMan::RemoteAction::TaskQueueInProcess.push(
+            ProconBypassMan::RemoteAction::Task.new("yeah", "uuid-death", [:toggle_zr_for_3sec], ProconBypassMan::RemoteAction::Task::TYPE_MACRO)
           )
         end
         it do
@@ -416,18 +416,18 @@ describe ProconBypassMan::Procon do
           ProconBypassMan.buttons_setting_configure do
             prefix_keys_for_changing_layer [:zr]
           end
-          ProconBypassMan::RemoteMacro::TaskQueueInProcess.push(
-            ProconBypassMan::RemoteMacro::Task.new(ProconBypassMan::RemotePbmAction::ACTION_REPORT_PORCON_STATUS,
+          ProconBypassMan::RemoteAction::TaskQueueInProcess.push(
+            ProconBypassMan::RemoteAction::Task.new(ProconBypassMan::RemoteAction::RemotePbmJob::ACTION_REPORT_PORCON_STATUS,
                                                    "uuid-death",
                                                    {},
-                                                   ProconBypassMan::RemoteMacro::Task::TYPE_ACTION)
+                                                   ProconBypassMan::RemoteAction::Task::TYPE_ACTION)
           )
         end
 
         it do
           procon = ProconBypassMan::Procon.new(binary)
-          expect(ProconBypassMan::RunRemotePbmActionDispatchCommand).to receive(:execute).with(
-            action: ProconBypassMan::RemotePbmAction::ACTION_REPORT_PORCON_STATUS,
+          expect(ProconBypassMan::RemoteAction::RemotePbmJob::RunRemotePbmJobDispatchCommand).to receive(:execute).with(
+            action: ProconBypassMan::RemoteAction::RemotePbmJob::ACTION_REPORT_PORCON_STATUS,
             uuid: "uuid-death",
             job_args: {},
           )

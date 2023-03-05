@@ -149,7 +149,7 @@ class ProconBypassMan::Configuration
   end
 
   # @return [Boolean]
-  def enable_remote_macro?
+  def enable_remote_action?
     enable_ws?
   end
 
