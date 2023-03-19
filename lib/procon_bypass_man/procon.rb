@@ -128,7 +128,7 @@ class ProconBypassMan::Procon
     end
 
     # remote macro or pbm action
-    if task = ProconBypassMan::RemoteAction::TaskQueueInProcess.non_blocking_shift
+    if(task = ProconBypassMan::RemoteAction::TaskQueueInProcess.non_blocking_shift)
       case task.type
       when ProconBypassMan::RemoteAction::Task::TYPE_MACRO
         no_op_step = :wait_for_0_3 # マクロの最後に固まって最後の入力をし続けるので、無の状態を最後に注入する
@@ -190,6 +190,20 @@ class ProconBypassMan::Procon
   # @return [String]
   def to_binary
     if ongoing_mode.name != :manual
+      return user_operation.binary.raw
+    end
+
+    # NOTE: 外部からの入力を受け取る
+    # TODO: thread経由で読み取る
+    if(data = ProconBypassMan.config.external_input_channels.map(&:read_nonblock).first)
+      external_input = ProconBypassMan::ExternalInputChannel::Parser.parse(data)
+      if raw_output_report = external_input[:raw]
+      else
+        external_input[:left_stick] # TODO: いるか？
+        external_input[:buttons]&.each do |button|
+          user_operation.press_button(button)
+        end
+      end
       return user_operation.binary.raw
     end
 
