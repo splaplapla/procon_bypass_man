@@ -68,7 +68,7 @@ require_relative "procon_bypass_man/worker"
 require_relative "procon_bypass_man/websocket/client"
 require_relative "procon_bypass_man/websocket/watchdog"
 require_relative "procon_bypass_man/websocket/forever"
-require_relative "procon_bypass_man/external_input_channel"
+require_relative "procon_bypass_man/external_input"
 require_relative "procon_bypass_man/remote_action"
 
 STDOUT.sync = true

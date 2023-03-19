@@ -195,7 +195,7 @@ class ProconBypassMan::Configuration
     end
   end
 
-  # @return [Array<ProconBypassMan::ExternalInputChannel::TCPIP, ProconBypassMan::ExternalInputChannel::SerialPort>]
+  # @return [Array<ProconBypassMan::ExternalInput::Channel::TCPIP, ProconBypassMan::ExternalInput::Channel::SerialPort>]
   def external_input_channels
     @external_input_channels || []
   end
