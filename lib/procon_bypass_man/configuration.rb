@@ -54,6 +54,7 @@ class ProconBypassMan::Configuration
 
   attr_accessor :enable_critical_error_logging
   attr_writer :verbose_bypass_log, :raw_setting, :never_exit_accidentally, :enable_home_led_on_connect
+  attr_writer :serial_port_device
   # 削除予定
   attr_writer :enable_reporting_pressed_buttons
 
@@ -192,5 +193,12 @@ class ProconBypassMan::Configuration
     else
       true
     end
+  end
+
+  # @return [String, NilClass]
+  def serial_port_device
+    Rails.logger.warn('serialportが読み込まれていません。') unless defined?(SerialPort)
+    return @serial_port_device if defined?(@serial_port_device)
+    return nil
   end
 end
