@@ -57,8 +57,12 @@ ProconBypassMan.configure do |config|
   # 接続に成功したらコントローラーのHOME LEDを光らせるか
   config.enable_home_led_on_connect = true
 
-  # シリアル通信時に使うデバイスファイルを指定してください. 環境によって異なります
-  config.serial_port_device = '/dev/serial0'
+  # シリアル通信やTCP/IP経由で入力するときに設定してください
+  # config.external_input_channels = [
+  #   ProconBypassMan::ExternalInputChannel::SerialPort.instance(device_part: '/dev/serial0', baud_rate: 9600),
+  <%-# ProconBypassMan::ExternalInputChannel::TCPIP.new(port: 9000), # TODO: まだ実装していない -%>
+  # ]
+]
 end
 
 ProconBypassMan.run(setting_path: "/usr/share/pbm/current/setting.yml")
