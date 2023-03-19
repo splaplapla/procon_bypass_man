@@ -59,8 +59,8 @@ ProconBypassMan.configure do |config|
 
   # シリアル通信やTCP/IP経由で入力するときに設定してください
   # config.external_input_channels = [
-  #   ProconBypassMan::ExternalInputChannel::SerialPort.instance(device_part: '/dev/serial0', baud_rate: 9600),
-  <%-# ProconBypassMan::ExternalInputChannel::TCPIP.new(port: 9000), # TODO: まだ実装していない -%>
+  #   ProconBypassMan::ExternalInput::Channel::SerialPort.instance(device_part: '/dev/serial0', baud_rate: 9600),
+  <%-# ProconBypassMan::ExternalInput::Channel::TCPIP.new(port: 9000), # TODO: まだ実装していない -%>
   # ]
 ]
 end
