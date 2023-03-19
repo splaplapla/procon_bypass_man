@@ -13,6 +13,11 @@ require "ext/module"
 require "resolv-replace"
 require "pbmenv"
 require "blue_green_process"
+begin
+  require 'serialport'
+rescue LoadError
+  # NOTE: シリアル通信をするときだけ必要なのでLoadErrorが起きた時は不要扱いとする
+end
 
 require_relative "procon_bypass_man/version"
 
