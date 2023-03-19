@@ -13,6 +13,8 @@ begin
     source 'https://rubygems.org'
     git_source(:github) {|repo_name| "https://github.com/#{repo_name}" }
     gem 'procon_bypass_man', '0.3.6'
+    # If you want to communicate through serial communication, please uncomment.
+    # gem "serialport"
   end
 rescue Bundler::Source::Git::GitCommandError => e
   retry_count_on_git_command_error = retry_count_on_git_command_error + 1
