@@ -195,16 +195,21 @@ class ProconBypassMan::Procon
 
     # NOTE: 外部からの入力を受け取る
     # TODO: thread経由で読み取る
+    # TODO: channelごとにthreadを作って、ブロッキングリードをする
     if(data = ProconBypassMan.config.external_input_channels.map(&:read_nonblock).first)
-      external_input = ProconBypassMan::ExternalInputChannel::Parser.parse(data)
-      if raw_output_report = external_input[:raw]
-      else
-        external_input[:left_stick] # TODO: いるか？
-        external_input[:buttons]&.each do |button|
-          user_operation.press_button(button)
+      begin
+        external_data = ProconBypassMan::ExternalInput::Parser.parse!(data)
+        if(raw_binary = external_data.raw_binary)
+          self.user_operation.merge([raw_binary].pack("H*"))
+        else
+          external_data.buttons&.each do |button|
+            self.user_operation.press_button(button)
+          end
         end
+        return self.user_operation.binary.raw
+      rescue ProconBypassMan::ExternalInput::ParseError => e
+        ProconBypassMan.logger.error "[#{e}] #{data} をparseできませんでした"
       end
-      return user_operation.binary.raw
     end
 
     if ongoing_macro.ongoing? && (step = ongoing_macro.next_step)
