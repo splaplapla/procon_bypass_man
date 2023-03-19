@@ -1,5 +1,3 @@
-require 'singleton'
-
 class ProconBypassMan::ProconDisplay::Status
   include Singleton
 
