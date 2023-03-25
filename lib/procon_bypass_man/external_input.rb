@@ -13,17 +13,20 @@ module ProconBypassMan
 
     # @return [void]
     def self.prepare_channels
-      @@channels = ProconBypassMan.config.external_input_channels.map { |external_input_channel|
-        ProconBypassMan::ExternalInput::Channel.new(external_input_channel)
-      }
+      @@channels = ProconBypassMan.config.external_input_channels
     end
 
     # @return [NilClass, String]
+    # NOTE: 外部入力からのreadがボトルネックになるなら、Concurrent::Futureを使ってプロコンからの読み出しと並列化することを検討する
     def self.read
-      raise '外部入力が見初期化です' if @@channels.nil? # NOTE: エラーにした方がいいかも
+      raise '外部入力が未初期化です' if @@channels.nil?
 
-      # ProconBypassMan.config.external_input_channels.map(&:read_nonblock)
-      @@channels.map(&:read).reject(&:nil?).first
+      value = nil
+      @@channels.each do |channel|
+        value = channel.read
+        break if value
+      end
+      value
     end
   end
 end
