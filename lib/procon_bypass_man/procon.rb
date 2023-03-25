@@ -198,7 +198,7 @@ class ProconBypassMan::Procon
     # TODO: channelごとにthreadを作って、ブロッキングリードをする
     if(data = ProconBypassMan::ExternalInput.read)
       begin
-        external_data = ProconBypassMan::ExternalInput::Parser.parse!(data)
+        external_data = ProconBypassMan::ExternalInput::ExternalData.parse!(data)
         if(raw_binary = external_data.raw_binary)
           self.user_operation.merge([raw_binary].pack("H*"))
         else

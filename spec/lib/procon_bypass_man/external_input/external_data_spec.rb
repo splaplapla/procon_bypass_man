@@ -8,23 +8,23 @@ describe ProconBypassMan::ExternalInput::ExternalData do
       let(:data) { {}.to_json }
 
       it 'returns data instance' do
-        expect(subject).to have_attributes(raw_binary: nil, buttons: [])
+        expect(subject).to have_attributes(hex: nil, buttons: [])
       end
     end
 
-    context 'raw_binaryがあるとき' do
-      let(:data) { { raw_binary: 'a' }.to_json }
+    context 'hexがあるとき' do
+      let(:data) { { hex: 'a' }.to_json }
 
       it 'returns data instance' do
-        expect(subject).to have_attributes(raw_binary: 'a', buttons: [])
+        expect(subject).to have_attributes(hex: 'a', buttons: [])
       end
     end
 
     context 'buttonsがあるとき' do
-      let(:data) { { raw_binary: 'a', buttons: [:a, :b] }.to_json }
+      let(:data) { { hex: 'a', buttons: [:a, :b] }.to_json }
 
       it 'returns data instance' do
-        expect(subject).to have_attributes(raw_binary: 'a', buttons: ['a', 'b'])
+        expect(subject).to have_attributes(hex: 'a', buttons: ['a', 'b'])
       end
     end
   end
