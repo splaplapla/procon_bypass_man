@@ -2,7 +2,7 @@
 module ProconBypassMan
   module ExternalInput
     module Channels
-      class TCPIP
+      class TCPIP < ::ProconBypassMan::ExternalInput::Channels::Base
       end
     end
   end

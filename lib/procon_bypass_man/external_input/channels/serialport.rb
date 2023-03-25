@@ -1,10 +1,11 @@
 module ProconBypassMan
   module ExternalInput
     module Channels
-      class SerialPort
+      class SerialPort < ::ProconBypassMan::ExternalInput::Channels::Base
         # @param [String] device_path
         # @param [Integer] baud_rate
         def initialize(device_path: , baud_rate: 9600)
+          super
           data_bits = nil
           stop_bits = nil
           parity = nil
