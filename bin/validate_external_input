@@ -1,0 +1,18 @@
+#!/usr/bin/env ruby
+
+# Usage:
+#   NOTE: JSON形式の文字列がどういう形で読み込まれるかを確認できます
+#   $ echo '{"hex":"hogehoge", "buttons": ["a","b", "zr"]}' | bin/validate_external_input
+#   => 読み取った値: {:hex=>"hogehoge", :buttons=>["a", "b", "zr"]}
+
+require "bundler/setup"
+require "json"
+require "procon_bypass_man/external_input"
+
+begin
+  json_str = ARGF.read
+  external_data = ProconBypassMan::ExternalInput::ExternalData.parse!(json_str)
+  puts("読み取った値: #{{ hex: external_data.hex, buttons: external_data.buttons }}")
+rescue JSON::ParserError => e
+  puts "failed to parse JSON: #{e.message}"
+end
