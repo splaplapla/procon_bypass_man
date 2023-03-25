@@ -56,7 +56,6 @@ ProconBypassMan.configure do |config|
   # config.external_input_channels = [
   #   ProconBypassMan::ExternalInput::Channel::SerialPort.new(device_part: '/dev/serial0', baud_rate: 9600),
   # ]
-]
 end
 
 ProconBypassMan.run(setting_path: "/usr/share/pbm/current/setting.yml")
