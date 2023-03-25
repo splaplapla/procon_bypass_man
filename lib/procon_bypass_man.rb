@@ -129,6 +129,8 @@ module ProconBypassMan
       return
     end
 
+    ProconBypassMan::ExternalInput.prepare_channels
+
     ready_pbm
     Runner.new(gadget: gadget, procon: procon).run # ここでblockingする
     terminate_pbm

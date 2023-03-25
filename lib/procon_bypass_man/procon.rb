@@ -196,7 +196,7 @@ class ProconBypassMan::Procon
     # NOTE: 外部からの入力を受け取る
     # TODO: thread経由で読み取る
     # TODO: channelごとにthreadを作って、ブロッキングリードをする
-    if(data = ProconBypassMan.config.external_input_channels.map(&:read_nonblock).first)
+    if(data = ProconBypassMan::ExternalInput.read)
       begin
         external_data = ProconBypassMan::ExternalInput::Parser.parse!(data)
         if(raw_binary = external_data.raw_binary)

@@ -41,6 +41,7 @@ RSpec.configure do |config|
     allow_any_instance_of(Net::HTTP).to receive(:post) { double(:x).as_null_object }
     allow(ProconBypassMan::UsbDeviceController).to receive(:init)
     allow(ProconBypassMan::UsbDeviceController).to receive(:reset)
+    ProconBypassMan::ExternalInput.prepare_channels # 呼び出さないと見初期化エラーになるのでとりあえず呼び出しておく
 
     ProconBypassMan.worker = nil
   end
