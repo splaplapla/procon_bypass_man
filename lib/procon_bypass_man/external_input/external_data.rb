@@ -2,21 +2,21 @@ module ProconBypassMan
   module ExternalInput
     class ExternalData
 
-      attr_accessor :raw_binary, :buttons
+      attr_accessor :hex, :buttons
 
       # @raise [ParseError]
       # @return [ExternalData]
       def self.parse!(raw_data)
         json = JSON.parse(raw_data)
-        new(raw: json['raw_binary'], buttons: json['buttons'])
+        new(hex: json['hex'], buttons: json['buttons'])
       rescue JSON::ParserError
         raise ParseError
       end
 
-      # @param [String, NilClass] raw
+      # @param [String, NilClass] hex
       # @param [Array<String>, NilClass] buttons
-      def initialize(raw: , buttons: )
-        @raw_binary = raw
+      def initialize(hex: , buttons: )
+        @hex = hex
         @buttons = buttons || []
       end
     end
