@@ -5,4 +5,9 @@ class ProconBypassMan::Procon
       user_operation.public_send(method_name)
     end
   end
+
+  # @return [Array<Symbol>]
+  def pressing
+    ProconBypassMan::ProconReader.new(binary: to_binary).pressing
+  end
 end
