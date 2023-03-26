@@ -24,7 +24,7 @@ describe ProconBypassMan::ExternalInput::ExternalData do
       let(:data) { { hex: 'a', buttons: [:a, :b] }.to_json }
 
       it 'returns data instance' do
-        expect(subject).to have_attributes(hex: 'a', buttons: ['a', 'b'])
+        expect(subject).to have_attributes(hex: 'a', buttons: [:a, :b])
       end
     end
   end
