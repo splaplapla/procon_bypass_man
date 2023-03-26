@@ -2,7 +2,7 @@ module ProconBypassMan
   module ExternalInput
     class ExternalData
 
-      attr_accessor :hex, :buttons
+      attr_accessor :hex
 
       # @raise [ParseError]
       # @return [ExternalData]
@@ -18,6 +18,19 @@ module ProconBypassMan
       def initialize(hex: , buttons: )
         @hex = hex
         @buttons = buttons || []
+      end
+
+      # @return [String, NilClass]
+      def to_binary
+        return nil if @hex.nil?
+        [@hex].pack('H*')
+      end
+
+      # @return [Array<String>]
+      def buttons
+        @buttons.map(&:to_sym).each do |button|
+          ProconBypassMan::Procon::ButtonCollection::BUTTONS_MAP[button] or ProconBypassMan.logger.error("[ExternalInput] #{button}は定義にないボタンです")
+        end
       end
     end
   end
