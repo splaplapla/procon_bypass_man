@@ -6,7 +6,7 @@ module ProconBypassMan
 
     @@channels = nil
 
-    # @return [Array<ProconBypassMan::ExternalInput::Channel>]
+    # @return [Array<ProconBypassMan::ExternalInput::Channels::Base>]
     def self.channels
       @@channels
     end
