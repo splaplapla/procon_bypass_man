@@ -7,6 +7,8 @@ module ProconBypassMan
         # @param [String] device_path
         # @param [Integer] baud_rate
         def initialize(device_path: , baud_rate: 9600)
+          require 'serialport'
+
           super()
           # data_bitsあたりは必要があれば設定ができるようにしたいがよくわからないのでとりあえずnilを入れる
           data_bits = nil
