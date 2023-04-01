@@ -13,7 +13,9 @@ begin
     source 'https://rubygems.org'
     git_source(:github) {|repo_name| "https://github.com/#{repo_name}" }
     gem 'procon_bypass_man', '0.3.6'
-    # If you want to communicate through serial communication, please uncomment.
+    # uncomment if you want to use master branch
+    # gem 'procon_bypass_man', github: 'splaplapla/procon_bypass_man', branch: 'master'
+    # uncomment if you want to use serial communication feature
     # gem "serialport"
   end
 rescue Bundler::Source::Git::GitCommandError => e
