@@ -11,9 +11,9 @@ module ProconBypassMan
 
           super()
           # data_bitsあたりは必要があれば設定ができるようにしたいがよくわからないのでとりあえずnilを入れる
-          data_bits = nil
-          stop_bits = nil
-          parity = nil
+          data_bits = 8
+          stop_bits = 1
+          parity = SerialPort::NONE
           @serial_port= SerialPort.new(device_path, baud_rate, data_bits, stop_bits, parity)
         end
 
