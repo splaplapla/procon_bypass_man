@@ -139,6 +139,8 @@ module ProconBypassMan
   # 実行ファイル(app.rb)から呼び出している
   # @return [void]
   def self.configure(&block)
+    require_relative "procon_bypass_man/external_input"
+
     @@configuration = ProconBypassMan::Configuration.new
     @@configuration.instance_eval(&block)
     nil
