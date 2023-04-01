@@ -17,7 +17,8 @@ module ProconBypassMan
 
         # @return [String, NilClass]
         def read
-          @serial_port.read_nonblock
+          # NOTE: 改行コードが来るまでバッファリングが必要？
+          @serial_port.read_nonblock(1024)
         rescue ::IO::EAGAINWaitReadable
           nil
         end
