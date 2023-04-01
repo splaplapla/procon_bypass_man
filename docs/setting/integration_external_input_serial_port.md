@@ -19,7 +19,7 @@ TODO: 何か書く
     source 'https://rubygems.org'
     git_source(:github) {|repo_name| "https://github.com/#{repo_name}" }
 -    gem 'procon_bypass_man', '0.3.6'
-+    gem 'procon_bypass_man', github: 'splaplapla/procon_bypass_man', branch: 'master' # TODO: 本機能がリリース前はこれが必要です
++    gem 'procon_bypass_man', github: 'splaplapla/procon_bypass_man', branch: 'injectable-output-report'
 +    gem "serialport"
   end
 ```
@@ -49,7 +49,7 @@ ProconBypassMan.configure do |config|
   config.enable_home_led_on_connect = true
 
 + config.external_input_channels = [
-+   ProconBypassMan::ExternalInput::Channel::SerialPort.new(device_part: '/dev/serial0', baud_rate: 9600),
++   ProconBypassMan::ExternalInput::Channels::SerialPortChannel.new(device_path: '/dev/serial0', baud_rate: 9600),
 + ]
 end
 ```
