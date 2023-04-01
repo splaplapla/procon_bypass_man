@@ -34,6 +34,7 @@ class ProconBypassMan::PrintBootMessageCommand
       ProconBypassMan::VERSION: #{@table[:pbm_version]}
       RUBY_VERSION: #{@table[:ruby_version]}
       Pbmenv::VERSION: #{@table[:pbmenv_version]}
+      PBM-Cloud Integration: #{ProconBypassMan::WebConnectivityChecker.new(ProconBypassMan.config.api_server)}
       pid: #{@table[:pid]}
       root: #{@table[:root_path]}
       pid_path: #{@table[:pid_path]}
