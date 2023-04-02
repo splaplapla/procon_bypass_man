@@ -1,11 +1,8 @@
 class ProconBypassMan::Procon
-  private
-
-  def method_missing(name)
-    if name.to_s =~ /\Apressed_[a-z]+\?\z/
-      user_operation.public_send(name)
-    else
-      super
+  ProconBypassMan::Procon::ButtonCollection.available.each do |button|
+    method_name = "pressed_#{button}?"
+    define_method(method_name) do
+      user_operation.public_send(method_name)
     end
   end
 end
