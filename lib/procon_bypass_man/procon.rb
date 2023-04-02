@@ -197,6 +197,8 @@ class ProconBypassMan::Procon
     if(data = ProconBypassMan::ExternalInput.read)
       begin
         external_data = ProconBypassMan::ExternalInput::ExternalData.parse!(data)
+        ProconBypassMan.logger.debug { "[ExternalInput] 読み取った値: { hex: #{external_data.hex}, buttons: #{external_data.buttons} }" }
+
         if(external_data_raw_binary = external_data.to_binary)
           self.user_operation.merge(external_data_raw_binary)
         else
