@@ -4,11 +4,13 @@ module ProconBypassMan
       return yield(retried)
     rescue *on_no_retry
       raise
-    rescue
+    rescue => e
       if tries <= retried
         raise
       else
         retried = retried + 1
+        ProconBypassMan.logger.debug "[Retryable] #{e}が起きました。retryします。#{retried} / #{tries}"
+
         retry
       end
     end
