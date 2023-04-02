@@ -7,6 +7,8 @@ module ProconBypassMan
       # @raise [ParseError]
       # @return [ExternalData] JSON か カンマ区切りのbuttons
       def self.parse!(raw_data)
+        raise ParseError unless raw_data.ascii_only?
+
         if is_json(raw_data)
           begin
             json = JSON.parse(raw_data)

@@ -37,12 +37,17 @@ describe ProconBypassMan::Bypass::ProconToSwitch do
         allow(ProconBypassMan.config).to receive(:enable_procon_performance_measurement?) { true }
       end
 
-      context 'switchへの書き込みが成功するとき' do
-        it { expect(subject).to eq(true) }
-        it { expect{ subject }.to change { ProconBypassMan::Procon::PerformanceMeasurement::SpanTransferBuffer.instance.send(:spans).size }.by(1) }
+      context 'external_input_dataがあるとき' do
+        before do
+          allow(ProconBypassMan::ExternalInput).to receive(:read) { external_input_json }
+        end
 
-        context 'wrap blue green process' do
-          it do
+        context 'external_input_dataにゴミが入ってくるとき' do
+          let(:external_input_json) {
+            252.chr # NOTE: a, bを押している
+          }
+          it { expect(subject).to eq(true) }
+          it 'blue green process上で成功すること' do
             BlueGreenProcess.config.logger = ProconBypassMan.logger
             process = BlueGreenProcess.new(
               worker_instance: instance,
@@ -52,6 +57,40 @@ describe ProconBypassMan::Bypass::ProconToSwitch do
             process.work
             process.shutdown
           end
+        end
+
+        context 'external_input_dataに想定した文字列が入ってくるとき' do
+          let(:external_input_json) {
+            { hex: '30f2810c800078c77448287509550274ff131029001b0022005a0271ff191028001e00210064027cff1410280020002100000000000000000000000000000000' }.to_json # NOTE: a, bを押している
+          }
+
+          it { expect(subject).to eq(true) }
+          it 'blue green process上で成功すること' do
+            BlueGreenProcess.config.logger = ProconBypassMan.logger
+            process = BlueGreenProcess.new(
+              worker_instance: instance,
+              max_work: 4,
+            )
+            process.work
+            process.work
+            process.shutdown
+          end
+        end
+      end
+
+      context 'switchへの書き込みが成功するとき' do
+        it { expect(subject).to eq(true) }
+        it { expect{ subject }.to change { ProconBypassMan::Procon::PerformanceMeasurement::SpanTransferBuffer.instance.send(:spans).size }.by(1) }
+
+        it 'blue green process上で成功すること' do
+          BlueGreenProcess.config.logger = ProconBypassMan.logger
+          process = BlueGreenProcess.new(
+            worker_instance: instance,
+            max_work: 4,
+          )
+          process.work
+          process.work
+          process.shutdown
         end
       end
 

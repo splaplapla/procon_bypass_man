@@ -54,11 +54,12 @@ class ProconBypassMan::Bypass::ProconToSwitch
         # TODO: measurement.record_read_external_input_time doみたいに測定できるようにする
         external_input_data = nil
         if(data = ProconBypassMan::ExternalInput.read)
+          ProconBypassMan.logger.debug { "[ExternalInput] data.codepoints: #{data.force_encoding('ASCII-8BIT').codepoints}" }
           begin
             external_input_data = ProconBypassMan::ExternalInput::ExternalData.parse!(data)
             ProconBypassMan.logger.debug { "[ExternalInput] 読み取った値: { hex: #{external_input_data.hex}, buttons: #{external_input_data.buttons} }" }
           rescue ProconBypassMan::ExternalInput::ParseError => e
-            ProconBypassMan.logger.error "[ExternalInput][#{e}] #{data} をparseできませんでした"
+            ProconBypassMan.logger.error "[ExternalInput][#{e}] #{data.force_encoding('UTF-8').scrub}, #{data.force_encoding('ASCII-8BIT').codepoints} をparseできませんでした"
           end
         end
 
