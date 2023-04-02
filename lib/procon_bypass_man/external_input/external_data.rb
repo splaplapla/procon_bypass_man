@@ -39,7 +39,8 @@ module ProconBypassMan
         end
       end
 
-      # @return [String]
+      # @param [String] raw_data
+      # @return [Boolean]
       def self.is_json(raw_data)
         raw_data.start_with?('{')
       end
