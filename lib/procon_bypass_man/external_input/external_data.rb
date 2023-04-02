@@ -5,12 +5,18 @@ module ProconBypassMan
       attr_accessor :hex
 
       # @raise [ParseError]
-      # @return [ExternalData]
+      # @return [ExternalData] JSON か カンマ区切りのbuttons
       def self.parse!(raw_data)
-        json = JSON.parse(raw_data)
-        new(hex: json['hex'], buttons: json['buttons'])
-      rescue JSON::ParserError
-        raise ParseError
+        if is_json(raw_data)
+          begin
+            json = JSON.parse(raw_data)
+            return new(hex: json['hex'], buttons: json['buttons'])
+          rescue JSON::ParserError
+            raise ParseError
+          end
+        end
+
+        return new(hex: nil, buttons: raw_data.split(','))
       end
 
       # @param [String, NilClass] hex
@@ -31,6 +37,11 @@ module ProconBypassMan
         @buttons.map(&:to_sym).each do |button|
           ProconBypassMan::Procon::ButtonCollection::BUTTONS_MAP[button] or ProconBypassMan.logger.error("[ExternalInput] #{button}は定義にないボタンです")
         end
+      end
+
+      # @return [String]
+      def self.is_json(raw_data)
+        raw_data.start_with?('{')
       end
     end
   end
