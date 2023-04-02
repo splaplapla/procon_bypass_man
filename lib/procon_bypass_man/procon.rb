@@ -187,29 +187,22 @@ class ProconBypassMan::Procon
     status
   end
 
+  # @param [ProconBypassMan::ExternalInput::ExternalData, NilClass] external_input_data
   # @return [String]
-  def to_binary
+  def to_binary(external_input_data: nil)
     if ongoing_mode.name != :manual
       return user_operation.binary.raw
     end
 
-    # NOTE: 外部からの入力を受け取る
-    if(data = ProconBypassMan::ExternalInput.read)
-      begin
-        external_data = ProconBypassMan::ExternalInput::ExternalData.parse!(data)
-        ProconBypassMan.logger.debug { "[ExternalInput] 読み取った値: { hex: #{external_data.hex}, buttons: #{external_data.buttons} }" }
-
-        if(external_data_raw_binary = external_data.to_binary)
-          self.user_operation.merge(external_data_raw_binary)
-        else
-          external_data.buttons&.each do |button|
-            self.user_operation.press_button(button)
-          end
+    if external_input_data
+      if(external_input_data_raw_binary = external_input_data.to_binary)
+        self.user_operation.merge(external_input_data_raw_binary)
+      else
+        external_input_data.buttons&.each do |button|
+          self.user_operation.press_button(button)
         end
-        return self.user_operation.binary.raw
-      rescue ProconBypassMan::ExternalInput::ParseError => e
-        ProconBypassMan.logger.error "[ExternalInput][#{e}] #{data} をparseできませんでした"
       end
+      return self.user_operation.binary.raw
     end
 
     if ongoing_macro.ongoing? && (step = ongoing_macro.next_step)
