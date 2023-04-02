@@ -50,21 +50,21 @@ class ProconBypassMan::Bypass::ProconToSwitch
         # 後続処理で入力値を取得できるように詰めておく
         ProconBypassMan::ProconDisplay::Status.instance.current = bypass_value.binary.to_procon_reader.to_hash
 
-        # NOTE: 外部からの入力を受け取る
-        # TODO: measurement.record_read_external_input_time doみたいに測定できるようにする
-        external_input_data = nil
-        if(data = ProconBypassMan::ExternalInput.read)
-          begin
-            external_input_data = ProconBypassMan::ExternalInput::ExternalData.parse!(data)
-            ProconBypassMan.logger.debug { "[ExternalInput] 読み取った値: { hex: #{external_input_data.hex}, buttons: #{external_input_data.buttons} }" }
-          rescue ProconBypassMan::ExternalInput::ParseError => e
-            ProconBypassMan.logger.error "[ExternalInput][#{e}] #{data} をparseできませんでした"
-          end
-        end
-
         result = measurement.record_write_time do
           begin
             ProconBypassMan::Retryable.retryable(tries: 5, on_no_retry: [Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError, Errno::ESHUTDOWN, Errno::ETIMEDOUT]) do
+              # NOTE: 外部からの入力を受け取る
+              # TODO: measurement.record_read_external_input_time doみたいに測定できるようにする
+              external_input_data = nil
+              if(data = ProconBypassMan::ExternalInput.read)
+                begin
+                  external_input_data = ProconBypassMan::ExternalInput::ExternalData.parse!(data)
+                  ProconBypassMan.logger.debug { "[ExternalInput] 読み取った値: { hex: #{external_input_data.hex}, buttons: #{external_input_data.buttons} }" }
+                rescue ProconBypassMan::ExternalInput::ParseError => e
+                  ProconBypassMan.logger.error "[ExternalInput][#{e}] #{data} をparseできませんでした"
+                end
+              end
+
               begin
                 # 終了処理を希望されているのでブロックを無視してメソッドを抜けてOK
                 return(false) if will_terminate? # rubocop:disable Lint/NoReturnInBeginEndBlocks
