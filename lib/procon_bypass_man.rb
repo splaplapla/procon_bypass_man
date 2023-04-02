@@ -41,6 +41,7 @@ require_relative "procon_bypass_man/support/cycle_sleep"
 require_relative "procon_bypass_man/support/can_over_process"
 require_relative "procon_bypass_man/support/retryable"
 require_relative "procon_bypass_man/support/renice_command"
+require_relative "procon_bypass_man/support/web_connectivity_checker"
 require_relative "procon_bypass_man/procon_display"
 require_relative "procon_bypass_man/background"
 require_relative "procon_bypass_man/commands"
@@ -62,9 +63,8 @@ require_relative "procon_bypass_man/worker"
 require_relative "procon_bypass_man/websocket/client"
 require_relative "procon_bypass_man/websocket/watchdog"
 require_relative "procon_bypass_man/websocket/forever"
-require_relative "procon_bypass_man/external_input"
-
 require_relative "procon_bypass_man/remote_action"
+require_relative "procon_bypass_man/external_input"
 
 STDOUT.sync = true
 Thread.abort_on_exception = true
