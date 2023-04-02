@@ -8,6 +8,12 @@ describe ProconBypassMan::Retryable do
       }.to raise_error(RuntimeError)
     end
 
+    it do
+      expect {
+        ProconBypassMan::Retryable.retryable(tries: 3, log_label: 'BYPASS') { raise }
+      }.to raise_error(RuntimeError)
+    end
+
     context '2回目で成功するとき' do
       it do
         expect {
