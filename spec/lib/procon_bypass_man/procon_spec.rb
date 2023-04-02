@@ -709,11 +709,11 @@ describe ProconBypassMan::Procon do
           expect(procon.pressing).to eq([])
         }.to_binary
 
-        allow(ProconBypassMan::ExternalInput).to receive(:read) { external_input_json }
+        external_input_data = ProconBypassMan::ExternalInput::ExternalData.parse!(external_input_json)
 
         ProconBypassMan::Procon.new(next_binary).tap { |procon|
           procon.apply!
-          procon.to_binary
+          procon.to_binary(external_input_data: external_input_data)
           expect(procon.pressing.sort).to eq([:a, :b])
         }
       end
@@ -732,11 +732,11 @@ describe ProconBypassMan::Procon do
           expect(procon.pressing).to eq([])
         }.to_binary
 
-        allow(ProconBypassMan::ExternalInput).to receive(:read) { external_input_json }
+        external_input_data = ProconBypassMan::ExternalInput::ExternalData.parse!(external_input_json)
 
         ProconBypassMan::Procon.new(next_binary).tap { |procon|
           procon.apply!
-          procon.to_binary
+          procon.to_binary(external_input_data: external_input_data)
           expect(procon.pressing.sort).to eq([:a, :b])
         }
       end
