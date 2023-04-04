@@ -9,7 +9,7 @@ describe ProconBypassMan::ExternalInput::ExternalData do
         let(:data) { 'a,una,unb,c,' }
 
         it 'returns data instance' do
-          expect(subject).to have_attributes(hex: nil, press_buttons: [:a], unpress_buttons: [:una, :unb])
+          expect(subject).to have_attributes(hex: nil, press_buttons: [:a], unpress_buttons: [:a, :b])
         end
       end
 

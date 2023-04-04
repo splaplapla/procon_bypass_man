@@ -50,9 +50,10 @@ module ProconBypassMan
 
       # @return [Array<Symbol>]
       def unpress_buttons
-        buttons.select do |button|
+        # TODO: unlizeとかの処理をメソッドにする
+        buttons.select { |button|
           UNPRESS_BUTTONS.include?(button)
-        end
+        }.map { |b| b.to_s.sub(/^un/, '').to_sym }
       end
 
       # @param [String] raw_data
