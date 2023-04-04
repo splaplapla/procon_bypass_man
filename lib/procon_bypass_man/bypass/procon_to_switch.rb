@@ -51,15 +51,16 @@ class ProconBypassMan::Bypass::ProconToSwitch
         ProconBypassMan::ProconDisplay::Status.instance.current = bypass_value.binary.to_procon_reader.to_hash
 
         # NOTE: 外部からの入力を受け取る
-        # TODO: measurement.record_read_external_input_time doみたいに測定できるようにする
         external_input_data = nil
-        # TODO: 252.chrを読み取ってしまう可能性がある（Encoding::UndefinedConversionError)、発生したら上限までretryした方がいいかも
-        if(data = ProconBypassMan::ExternalInput.read)
-          begin
-            external_input_data = ProconBypassMan::ExternalInput::ExternalData.parse!(data)
-            ProconBypassMan.logger.debug { "[ExternalInput] 読み取った値: { hex: #{external_input_data.hex}, raw_data: '#{external_input_data.raw_data}', buttons: #{external_input_data.buttons} }" }
-          rescue ProconBypassMan::ExternalInput::ParseError => e
-            ProconBypassMan.logger.error "[ExternalInput][#{e}] #{data.force_encoding('UTF-8').scrub}, #{data.force_encoding('ASCII-8BIT').codepoints} をparseできませんでした"
+        measurement.record_external_input_time do
+          # TODO: シリアルぽーとから読み取ると252.chrみたいなゴミデータを受け取ってEncoding::UndefinedConversionErrorが発生する可能性がある. 発生したら上限までretryした方がいいかも
+          if(data = ProconBypassMan::ExternalInput.read)
+            begin
+              external_input_data = ProconBypassMan::ExternalInput::ExternalData.parse!(data)
+              ProconBypassMan.logger.debug { "[ExternalInput] 読み取った値: { hex: #{external_input_data.hex}, raw_data: '#{external_input_data.raw_data}', buttons: #{external_input_data.buttons} }" }
+            rescue ProconBypassMan::ExternalInput::ParseError => e
+              ProconBypassMan.logger.error "[ExternalInput][#{e}] #{data.force_encoding('UTF-8').scrub}, #{data.force_encoding('ASCII-8BIT').codepoints} をparseできませんでした"
+            end
           end
         end
 

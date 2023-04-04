@@ -21,6 +21,7 @@ class ProconBypassMan::ReportProconPerformanceMeasurementsJob < ProconBypassMan:
       time_taken_p50: metric.time_taken_p50,
       time_taken_p95: metric.time_taken_p95,
       time_taken_p99: metric.time_taken_p99,
+      external_input_time_max: metric.external_input_time_max,
       read_error_count: metric.read_error_count,
       write_error_count: metric.write_error_count,
       gc_count: metric.gc_count,

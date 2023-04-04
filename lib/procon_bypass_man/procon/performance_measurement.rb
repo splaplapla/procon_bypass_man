@@ -12,7 +12,7 @@ require 'procon_bypass_man/procon/performance_measurement/last_bypass_at'
 module ProconBypassMan::Procon::PerformanceMeasurement
   class PerformanceSpan
     attr_accessor :time_taken, :succeed, :interval_from_previous_succeed, :gc_count, :gc_time
-    attr_reader :write_error_count, :read_error_count, :write_time, :read_time
+    attr_reader :write_error_count, :read_error_count, :write_time, :read_time, :external_input_time
 
     def initialize
       @write_error_count = 0
@@ -40,8 +40,14 @@ module ProconBypassMan::Procon::PerformanceMeasurement
       return result
     end
 
+    # @return [void]
     def record_read_time(&block)
       @read_time = Benchmark.realtime { block.call }
+    end
+
+    # @return [void]
+    def record_external_input_time(&block)
+      @external_input_time = Benchmark.realtime { block.call }
     end
   end
 

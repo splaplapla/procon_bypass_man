@@ -9,6 +9,7 @@ class ProconBypassMan::Procon::PerformanceMeasurement::MeasurementsSummarizer
                                        :time_taken_p95,
                                        :time_taken_p99,
                                        :time_taken_max,
+                                       :external_input_time_max,
                                        :read_error_count,
                                        :write_error_count,
                                        :gc_count,
@@ -26,6 +27,7 @@ class ProconBypassMan::Procon::PerformanceMeasurement::MeasurementsSummarizer
     write_time_max = 0
     read_time_max = 0
     time_taken_max = 0
+    external_input_time_max = 0
     interval_from_previous_succeed_max = 0
     @spans.each do |span|
       # NOTE @spans.map(&:write_time).sort.last と同じことだけど、処理コストを軽くするためにループを共通化する
@@ -33,6 +35,7 @@ class ProconBypassMan::Procon::PerformanceMeasurement::MeasurementsSummarizer
       read_time_max = span.read_time if write_time_max < span.read_time
       time_taken_max = span.time_taken if span.succeed && time_taken_max < span.time_taken
       interval_from_previous_succeed_max = span.interval_from_previous_succeed if span.succeed && interval_from_previous_succeed_max < span.interval_from_previous_succeed
+      external_input_time_max = span.external_input_time if span.succeed && external_input_time_max < span.external_input_time
     end
 
     # NOTE 今はGCを無効にしており、集計するまでもないのでコメントアウトにする. 今後GCを有効にしたバイパスをするかもしれないので残しておく
@@ -79,6 +82,7 @@ class ProconBypassMan::Procon::PerformanceMeasurement::MeasurementsSummarizer
                           time_taken_p95,
                           time_taken_p99,
                           time_taken_max,
+                          external_input_time_max,
                           total_read_error_count,
                           total_write_error_count,
                           gc_count,
