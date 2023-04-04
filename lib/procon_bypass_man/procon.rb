@@ -198,8 +198,11 @@ class ProconBypassMan::Procon
       if(external_input_data_raw_binary = external_input_data.to_binary)
         self.user_operation.merge(external_input_data_raw_binary)
       else
-        external_input_data.buttons&.each do |button|
+        external_input_data.press_buttons.each do |button|
           self.user_operation.press_button(button)
+        end
+        external_input_data.unpress_buttons.each do |button|
+          self.user_operation.unpress_button(button)
         end
       end
       return self.user_operation.binary.raw

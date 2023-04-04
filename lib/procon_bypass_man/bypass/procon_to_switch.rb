@@ -55,7 +55,6 @@ class ProconBypassMan::Bypass::ProconToSwitch
         external_input_data = nil
         # TODO: 252.chrを読み取ってしまう可能性がある（Encoding::UndefinedConversionError)、発生したら上限までretryした方がいいかも
         if(data = ProconBypassMan::ExternalInput.read)
-          ProconBypassMan.logger.debug { "[ExternalInput] data.codepoints: #{data.force_encoding('ASCII-8BIT').codepoints}" }
           begin
             external_input_data = ProconBypassMan::ExternalInput::ExternalData.parse!(data)
             ProconBypassMan.logger.debug { "[ExternalInput] 読み取った値: { hex: #{external_input_data.hex}, buttons: #{external_input_data.buttons} }" }

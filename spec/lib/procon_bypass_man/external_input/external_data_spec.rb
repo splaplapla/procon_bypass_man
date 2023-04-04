@@ -5,11 +5,19 @@ describe ProconBypassMan::ExternalInput::ExternalData do
     subject { described_class.parse!(data) }
 
     context 'not jsonのとき' do
+      context 'unpressな文字を含むカンマ区切り' do
+        let(:data) { 'a,una,unb,c,' }
+
+        it 'returns data instance' do
+          expect(subject).to have_attributes(hex: nil, press_buttons: [:a], unpress_buttons: [:una, :unb])
+        end
+      end
+
       context '無効な文字を含むカンマ区切り' do
         let(:data) { 'a,b,c,' }
 
         it 'returns data instance' do
-          expect(subject).to have_attributes(hex: nil, buttons: [:a, :b, :c])
+          expect(subject).to have_attributes(hex: nil, press_buttons: [:a, :b], unpress_buttons: [])
         end
       end
 
@@ -17,7 +25,7 @@ describe ProconBypassMan::ExternalInput::ExternalData do
         let(:data) { 'a,b,' }
 
         it 'returns data instance' do
-          expect(subject).to have_attributes(hex: nil, buttons: [:a, :b])
+          expect(subject).to have_attributes(hex: nil, press_buttons: [:a, :b], unpress_buttons: [])
         end
       end
 
@@ -25,7 +33,7 @@ describe ProconBypassMan::ExternalInput::ExternalData do
         let(:data) { 'a,b' }
 
         it 'returns data instance' do
-          expect(subject).to have_attributes(hex: nil, buttons: [:a])
+          expect(subject).to have_attributes(hex: nil, press_buttons: [:a], unpress_buttons: [])
         end
       end
 
@@ -33,7 +41,7 @@ describe ProconBypassMan::ExternalInput::ExternalData do
         let(:data) { '' }
 
         it 'returns data instance' do
-          expect(subject).to have_attributes(hex: nil, buttons: [])
+          expect(subject).to have_attributes(hex: nil, press_buttons: [], unpress_buttons: [])
         end
       end
     end
@@ -43,7 +51,7 @@ describe ProconBypassMan::ExternalInput::ExternalData do
         let(:data) { {}.to_json }
 
         it 'returns data instance' do
-          expect(subject).to have_attributes(hex: nil, buttons: [])
+          expect(subject).to have_attributes(hex: nil, press_buttons: [], unpress_buttons: [])
         end
       end
 
@@ -51,7 +59,7 @@ describe ProconBypassMan::ExternalInput::ExternalData do
         let(:data) { { hex: 'a' }.to_json }
 
         it 'returns data instance' do
-          expect(subject).to have_attributes(hex: 'a', buttons: [])
+          expect(subject).to have_attributes(hex: 'a', press_buttons: [], unpress_buttons: [])
         end
       end
 
@@ -59,7 +67,7 @@ describe ProconBypassMan::ExternalInput::ExternalData do
         let(:data) { { hex: 'a', buttons: [:a, :b] }.to_json }
 
         it 'returns data instance' do
-          expect(subject).to have_attributes(hex: 'a', buttons: [:a, :b])
+          expect(subject).to have_attributes(hex: 'a', press_buttons: [:a, :b], unpress_buttons: [])
         end
       end
     end

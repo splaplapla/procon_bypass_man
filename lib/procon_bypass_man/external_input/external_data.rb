@@ -1,6 +1,7 @@
 module ProconBypassMan
   module ExternalInput
     class ExternalData
+      UNPRESS_BUTTONS = Set.new(ProconBypassMan::Procon::ButtonCollection.available.map { |x| "un#{x}".to_sym })
 
       attr_accessor :hex
 
@@ -19,7 +20,7 @@ module ProconBypassMan
         end
 
         # NOTE: カンマを含めた `a,` を1セットとして扱う
-        return new(hex: nil, buttons: raw_data.scan(/\w,/).map { |x| x.gsub(',', '') })
+        return new(hex: nil, buttons: raw_data.scan(/\w+,/).map { |x| x.gsub(',', '') })
       end
 
       # @param [String, NilClass] hex
@@ -35,10 +36,22 @@ module ProconBypassMan
         [@hex].pack('H*')
       end
 
-      # @return [Array<String>]
+      # @return [Array<Symbol>]
       def buttons
-        @buttons.map(&:to_sym).each do |button|
-          ProconBypassMan::Procon::ButtonCollection::BUTTONS_MAP[button] or ProconBypassMan.logger.error("[ExternalInput] #{button}は定義にないボタンです")
+        @buttons.map(&:to_sym)
+      end
+
+      # @return [Array<Symbol>]
+      def press_buttons
+        buttons.select do |button|
+          ProconBypassMan::Procon::ButtonCollection::BUTTONS_MAP[button]
+        end
+      end
+
+      # @return [Array<Symbol>]
+      def unpress_buttons
+        buttons.select do |button|
+          UNPRESS_BUTTONS.include?(button)
         end
       end
 
