@@ -20,20 +20,27 @@ module ProconBypassMan
         end
 
         # NOTE: カンマを含めた `a,` を1セットとして扱う
-        return new(hex: nil, buttons: raw_data.scan(/\w+,/).map { |x| x.gsub(',', '') })
+        return new(hex: nil, buttons: raw_data.scan(/\w+,/).map { |x| x.gsub(',', '') }, raw_data: raw_data)
       end
 
       # @param [String, NilClass] hex
       # @param [Array<String>, NilClass] buttons
-      def initialize(hex: , buttons: )
+      # @param [String, NilClass] raw_data
+      def initialize(hex: , buttons: , raw_data: nil)
         @hex = hex
         @buttons = buttons || []
+        @raw_data = raw_data
       end
 
       # @return [String, NilClass]
       def to_binary
         return nil if @hex.nil?
         [@hex].pack('H*')
+      end
+
+      # @return [String, NilClass]
+      def raw_data
+        @raw_data
       end
 
       # @return [Array<Symbol>]

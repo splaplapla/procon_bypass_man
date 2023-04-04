@@ -57,7 +57,7 @@ class ProconBypassMan::Bypass::ProconToSwitch
         if(data = ProconBypassMan::ExternalInput.read)
           begin
             external_input_data = ProconBypassMan::ExternalInput::ExternalData.parse!(data)
-            ProconBypassMan.logger.debug { "[ExternalInput] 読み取った値: { hex: #{external_input_data.hex}, buttons: #{external_input_data.buttons} }" }
+            ProconBypassMan.logger.debug { "[ExternalInput] 読み取った値: { hex: #{external_input_data.hex}, raw_data: '#{external_input_data.raw_data}', buttons: #{external_input_data.buttons} }" }
           rescue ProconBypassMan::ExternalInput::ParseError => e
             ProconBypassMan.logger.error "[ExternalInput][#{e}] #{data.force_encoding('UTF-8').scrub}, #{data.force_encoding('ASCII-8BIT').codepoints} をparseできませんでした"
           end
