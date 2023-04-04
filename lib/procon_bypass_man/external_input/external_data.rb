@@ -18,7 +18,8 @@ module ProconBypassMan
           end
         end
 
-        return new(hex: nil, buttons: raw_data.split(','))
+        # NOTE: カンマを含めた `a,` を1セットとして扱う
+        return new(hex: nil, buttons: raw_data.scan(/\w,/).map { |x| x.gsub(',', '') })
       end
 
       # @param [String, NilClass] hex

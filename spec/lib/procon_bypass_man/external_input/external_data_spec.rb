@@ -6,10 +6,18 @@ describe ProconBypassMan::ExternalInput::ExternalData do
 
     context 'not jsonのとき' do
       context '無効な文字を含むカンマ区切り' do
-        let(:data) { 'a,b,c' }
+        let(:data) { 'a,b,c,' }
 
         it 'returns data instance' do
           expect(subject).to have_attributes(hex: nil, buttons: [:a, :b, :c])
+        end
+      end
+
+      context '複数のカンマ区切り' do
+        let(:data) { 'a,b,' }
+
+        it 'returns data instance' do
+          expect(subject).to have_attributes(hex: nil, buttons: [:a, :b])
         end
       end
 
@@ -17,7 +25,7 @@ describe ProconBypassMan::ExternalInput::ExternalData do
         let(:data) { 'a,b' }
 
         it 'returns data instance' do
-          expect(subject).to have_attributes(hex: nil, buttons: [:a, :b])
+          expect(subject).to have_attributes(hex: nil, buttons: [:a])
         end
       end
 
