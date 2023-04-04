@@ -53,6 +53,7 @@ class ProconBypassMan::Bypass::ProconToSwitch
         # NOTE: 外部からの入力を受け取る
         # TODO: measurement.record_read_external_input_time doみたいに測定できるようにする
         external_input_data = nil
+        # TODO: 252.chrを読み取ってしまう可能性がある（Encoding::UndefinedConversionError)、発生したら上限までretryした方がいいかも
         if(data = ProconBypassMan::ExternalInput.read)
           ProconBypassMan.logger.debug { "[ExternalInput] data.codepoints: #{data.force_encoding('ASCII-8BIT').codepoints}" }
           begin
