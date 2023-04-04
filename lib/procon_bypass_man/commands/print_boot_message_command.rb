@@ -57,6 +57,7 @@ class ProconBypassMan::PrintBootMessageCommand
   def self.execute
     message = BootMessage.new
     ProconBypassMan::ReportBootJob.perform_async(message.to_hash)
+    ProconBypassMan.logger.info message.to_s
     puts message.to_s
   end
 end
