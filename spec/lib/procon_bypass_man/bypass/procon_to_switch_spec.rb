@@ -43,9 +43,7 @@ describe ProconBypassMan::Bypass::ProconToSwitch do
         end
 
         context 'external_input_dataにゴミが入ってくるとき' do
-          let(:external_input_json) {
-            252.chr # NOTE: a, bを押している
-          }
+          let(:external_input_json) { 252.chr }
           it { expect(subject).to eq(true) }
           it 'blue green process上で成功すること' do
             BlueGreenProcess.config.logger = ProconBypassMan.logger
@@ -59,10 +57,26 @@ describe ProconBypassMan::Bypass::ProconToSwitch do
           end
         end
 
-        context 'external_input_dataに想定した文字列が入ってくるとき' do
+        context 'external_input_dataに想定したjson文字列が入ってくるとき' do
           let(:external_input_json) {
             { hex: '30f2810c800078c77448287509550274ff131029001b0022005a0271ff191028001e00210064027cff1410280020002100000000000000000000000000000000' }.to_json # NOTE: a, bを押している
           }
+
+          it { expect(subject).to eq(true) }
+          it 'blue green process上で成功すること' do
+            BlueGreenProcess.config.logger = ProconBypassMan.logger
+            process = BlueGreenProcess.new(
+              worker_instance: instance,
+              max_work: 4,
+            )
+            process.work
+            process.work
+            process.shutdown
+          end
+        end
+
+        context 'external_input_dataに想定した命令文字列が入ってくるとき' do
+          let(:external_input_json) { 'unzr,a,' }
 
           it { expect(subject).to eq(true) }
           it 'blue green process上で成功すること' do
