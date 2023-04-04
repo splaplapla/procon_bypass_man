@@ -23,6 +23,12 @@ module ProconBypassMan
         return new(hex: nil, buttons: raw_data.scan(/\w+,/).map { |x| x.gsub(',', '') }, raw_data: raw_data)
       end
 
+      # @param [String] raw_data
+      # @return [Boolean]
+      def self.is_json(raw_data)
+        raw_data.start_with?('{')
+      end
+
       # @param [String, NilClass] hex
       # @param [Array<String>, NilClass] buttons
       # @param [String, NilClass] raw_data
@@ -57,16 +63,16 @@ module ProconBypassMan
 
       # @return [Array<Symbol>]
       def unpress_buttons
-        # TODO: unlizeとかの処理をメソッドにする
         buttons.select { |button|
           UNPRESS_BUTTONS.include?(button)
-        }.map { |b| b.to_s.sub(/^un/, '').to_sym }
+        }.map { |b| to_button(b.to_s).to_sym }
       end
 
-      # @param [String] raw_data
-      # @return [Boolean]
-      def self.is_json(raw_data)
-        raw_data.start_with?('{')
+      private
+
+      # NOTE: un#{button} って名前をbuttonに変換する
+      def to_button(button)
+        button.sub(/^un/, '')
       end
     end
   end
