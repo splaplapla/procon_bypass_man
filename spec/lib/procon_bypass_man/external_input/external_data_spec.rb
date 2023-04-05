@@ -5,32 +5,32 @@ describe ProconBypassMan::ExternalInput::ExternalData do
     subject { described_class.parse!(data) }
 
     context 'not jsonのとき' do
-      context 'unpressな文字を含むカンマ区切り' do
-        let(:data) { 'a,una,unb,c,' }
+      context 'unpressな文字を含む区切り文字入り' do
+        let(:data) { ':a::una::unb::c:' }
 
         it 'returns data instance' do
           expect(subject).to have_attributes(hex: nil, press_buttons: [:a], unpress_buttons: [:a, :b])
         end
       end
 
-      context '無効な文字を含むカンマ区切り' do
-        let(:data) { 'a,b,c,' }
+      context '無効な文字を含む区切り文字入り' do
+        let(:data) { ':a::b::c:' }
 
         it 'returns data instance' do
           expect(subject).to have_attributes(hex: nil, press_buttons: [:a, :b], unpress_buttons: [])
         end
       end
 
-      context '複数のカンマ区切り' do
-        let(:data) { 'a,b,' }
+      context '複数の区切り文字' do
+        let(:data) { ':a::b:,' }
 
         it 'returns data instance' do
           expect(subject).to have_attributes(hex: nil, press_buttons: [:a, :b], unpress_buttons: [])
         end
       end
 
-      context 'カンマ区切り' do
-        let(:data) { 'a,b' }
+      context '区切り文字が不完全なとき' do
+        let(:data) { ':a::b' }
 
         it 'returns data instance' do
           expect(subject).to have_attributes(hex: nil, press_buttons: [:a], unpress_buttons: [])

@@ -19,8 +19,7 @@ module ProconBypassMan
           end
         end
 
-        # NOTE: カンマを含めた `a,` を1セットとして扱う
-        return new(hex: nil, buttons: raw_data.scan(/\w+,/).map { |x| x.gsub(',', '') }, raw_data: raw_data)
+        return new(hex: nil, buttons: raw_data.scan(/:\w+:/).map { |x| x.gsub(':', '') }, raw_data: raw_data)
       end
 
       # @param [String] raw_data

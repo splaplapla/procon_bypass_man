@@ -721,7 +721,7 @@ describe ProconBypassMan::Procon do
 
     context 'ExternalDataのbuttons' do
       let(:data) { '30f28100800078c77448287509550274ff131029001b0022005a0271ff191028001e00210064027cff1410280020002100000000000000000000000000000000' } # NOTE: 何も押していない
-      let(:raw_external_input_data) { 'a,b,' }
+      let(:raw_external_input_data) { ':a::b:' }
 
       it '出力に影響を与えること' do
         next_binary = ProconBypassMan::Procon.new(binary).tap { |procon|
@@ -742,7 +742,7 @@ describe ProconBypassMan::Procon do
 
     context 'ExternalDataのbuttons' do
       let(:data) { '30f28180800078c77448287509550274ff131029001b0022005a0271ff191028001e00210064027cff1410280020002100000000000000000000000000000000' } # NOTE: ZRを押している
-      let(:raw_external_input_data) { 'a,unzr,' }
+      let(:raw_external_input_data) { ':a::unzr:' }
 
       it '出力に影響を与えること' do
         next_binary = ProconBypassMan::Procon.new(binary).tap { |procon|
