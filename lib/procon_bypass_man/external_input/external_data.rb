@@ -3,7 +3,11 @@ module ProconBypassMan
     class ExternalData
       UNPRESS_BUTTONS = Set.new(ProconBypassMan::Procon::ButtonCollection.available.map { |x| "un#{x}".to_sym })
 
-      attr_accessor :hex
+      # @return [String, NilClass] 16進数表現のデータ
+      attr_reader :hex
+
+      # @return [String, NilClass] ログに表示する用
+      attr_reader :raw_data
 
       # @raise [ParseError]
       # @return [ExternalData] JSON か カンマ区切りのbuttons
@@ -43,16 +47,6 @@ module ProconBypassMan
         [@hex].pack('H*')
       end
 
-      # @return [String, NilClass]
-      def raw_data
-        @raw_data
-      end
-
-      # @return [Array<Symbol>]
-      def buttons
-        @buttons.map(&:to_sym)
-      end
-
       # @return [Array<Symbol>]
       def press_buttons
         buttons.select do |button|
@@ -67,8 +61,15 @@ module ProconBypassMan
         }.map { |b| to_button(b.to_s).to_sym }
       end
 
+      # NOTE: ログに表示する用
+      # @return [Array<Symbol>]
+      def buttons
+        @buttons.map(&:to_sym)
+      end
+
       private
 
+      # @return [String]
       # NOTE: un#{button} って名前をbuttonに変換する
       def to_button(button)
         button.sub(/^un/, '')
