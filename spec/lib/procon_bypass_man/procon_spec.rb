@@ -695,6 +695,73 @@ describe ProconBypassMan::Procon do
     end
   end
 
+  context 'ExternalInput.readがExternalDataを返すとき' do
+    context 'ExternalDataのhexに値が含まれているとき' do
+      let(:data) { '30f28100800078c77448287509550274ff131029001b0022005a0271ff191028001e00210064027cff1410280020002100000000000000000000000000000000' } # NOTE: 何も押していない
+      let(:external_input_json) {
+        { hex: '30f2810c800078c77448287509550274ff131029001b0022005a0271ff191028001e00210064027cff1410280020002100000000000000000000000000000000' }.to_json # NOTE: a, bを押している
+      }
+
+      it '出力に影響を与えること' do
+        next_binary = ProconBypassMan::Procon.new(binary).tap { |procon|
+          expect(procon.pressing).to eq([])
+          procon.apply!
+          expect(procon.pressing).to eq([])
+        }.to_binary
+
+        external_input_data = ProconBypassMan::ExternalInput::ExternalData.parse!(external_input_json)
+
+        ProconBypassMan::Procon.new(next_binary).tap { |procon|
+          procon.apply!
+          procon.to_binary(external_input_data: external_input_data)
+          expect(procon.pressing.sort).to eq([:a, :b])
+        }
+      end
+    end
+
+    context 'ExternalDataのbuttons' do
+      let(:data) { '30f28100800078c77448287509550274ff131029001b0022005a0271ff191028001e00210064027cff1410280020002100000000000000000000000000000000' } # NOTE: 何も押していない
+      let(:raw_external_input_data) { ':a::b:' }
+
+      it '出力に影響を与えること' do
+        next_binary = ProconBypassMan::Procon.new(binary).tap { |procon|
+          expect(procon.pressing).to eq([])
+          procon.apply!
+          expect(procon.pressing).to eq([])
+        }.to_binary
+
+        external_input_data = ProconBypassMan::ExternalInput::ExternalData.parse!(raw_external_input_data)
+
+        ProconBypassMan::Procon.new(next_binary).tap { |procon|
+          procon.apply!
+          procon.to_binary(external_input_data: external_input_data)
+          expect(procon.pressing.sort).to eq([:a, :b])
+        }
+      end
+    end
+
+    context 'ExternalDataのbuttons' do
+      let(:data) { '30f28180800078c77448287509550274ff131029001b0022005a0271ff191028001e00210064027cff1410280020002100000000000000000000000000000000' } # NOTE: ZRを押している
+      let(:raw_external_input_data) { ':a::unzr:' }
+
+      it '出力に影響を与えること' do
+        next_binary = ProconBypassMan::Procon.new(binary).tap { |procon|
+          expect(procon.pressing).to eq([:zr])
+          procon.apply!
+          expect(procon.pressing).to eq([:zr])
+        }.to_binary
+
+        external_input_data = ProconBypassMan::ExternalInput::ExternalData.parse!(raw_external_input_data)
+
+        ProconBypassMan::Procon.new(next_binary).tap { |procon|
+          procon.apply!
+          procon.to_binary(external_input_data: external_input_data)
+          expect(procon.pressing.sort).to eq([:a])
+        }
+      end
+    end
+  end
+
   context '色々詰め込んでいる' do
     before do
       class AModePlugin

@@ -54,6 +54,7 @@ class ProconBypassMan::Configuration
 
   attr_accessor :enable_critical_error_logging
   attr_writer :verbose_bypass_log, :raw_setting, :never_exit_accidentally, :enable_home_led_on_connect
+  attr_writer :external_input_channels
   # 削除予定
   attr_writer :enable_reporting_pressed_buttons
 
@@ -192,5 +193,10 @@ class ProconBypassMan::Configuration
     else
       true
     end
+  end
+
+  # @return [Array<ProconBypassMan::ExternalInput::Channel::TCPIP, ProconBypassMan::ExternalInput::Channel::SerialPort>]
+  def external_input_channels
+    @external_input_channels || []
   end
 end

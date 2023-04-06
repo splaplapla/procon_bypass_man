@@ -12,7 +12,11 @@ begin
   gemfile do
     source 'https://rubygems.org'
     git_source(:github) {|repo_name| "https://github.com/#{repo_name}" }
-    gem 'procon_bypass_man', '0.3.6'
+    gem 'procon_bypass_man', '0.3.7'
+    # uncomment if you want to use master branch
+    # gem 'procon_bypass_man', github: 'splaplapla/procon_bypass_man', branch: 'master'
+    # uncomment if you want to use serial communication feature
+    # gem "serialport"
   end
 rescue Bundler::Source::Git::GitCommandError => e
   retry_count_on_git_command_error = retry_count_on_git_command_error + 1
@@ -54,6 +58,12 @@ ProconBypassMan.configure do |config|
 
   # 接続に成功したらコントローラーのHOME LEDを光らせるか
   config.enable_home_led_on_connect = true
+
+  # シリアル通信やTCP/IP経由で入力するときに設定してください
+  # config.external_input_channels = [
+  #   ProconBypassMan::ExternalInput::Channels::SerialPortChannel.new(device_path: '/dev/serial0', baud_rate: 9600),
+  <%-# ProconBypassMan::ExternalInput::Channels::TCPIP.new(port: 9000), # TODO: まだ実装していない -%>
+  # ]
 end
 
 ProconBypassMan.run(setting_path: "/usr/share/pbm/current/setting.yml")

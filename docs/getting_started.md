@@ -18,6 +18,7 @@
 * [設定ファイルの書き方がわからない、エラーが起きるとき](#設定ファイルの書き方がわからない、エラーが起きるとき)
 * [procon_bypass_manのアップグレード方法](#procon_bypass_manのアップグレード方法)
 * [procon_bypass_man_cloudについて](#procon_bypass_man_cloudについて)
+* [シリアルポート・GPIOから読み取る](#シリアルポートから読み取る)
 * [最適化について](#最適化について)
 
 ## はじめに
@@ -250,6 +251,10 @@ procon_bypass_man_cloudとの接続が完了後、Raspberry Piを起動時にpro
 セットアップ方法などでわからないことがあればdiscordで質問してみてください。  
   
 セットアップ方法は https://pbm-cloud.jiikko.com/faq に書いています。
+
+## シリアルポートから読み取る
+* [ラズベリーパイのシリアルポート(GPIO)へ書き込んでPBM経由してSwitchへ入力をする方法](/docs/setting/integration_external_input_serial_port.md)
+* [ラズベリーパイのシリアルポート(GPIO)に書き込むフォーマットについて](/docs/setting/integration_external_input_serial_port_format.md)
 
 ## 最適化について
 本稿では、Rubyの最適化について書きます。上級者向けです。適用しなくても普通に動きますが、逆に適用したことで何らかのケースで遅くなる場合があるかもしれません。

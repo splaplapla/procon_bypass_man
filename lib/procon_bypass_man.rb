@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'singleton'
 require "logger"
 require 'yaml'
 require "json"
@@ -62,6 +63,7 @@ require_relative "procon_bypass_man/worker"
 require_relative "procon_bypass_man/websocket/client"
 require_relative "procon_bypass_man/websocket/watchdog"
 require_relative "procon_bypass_man/websocket/forever"
+require_relative "procon_bypass_man/external_input"
 require_relative "procon_bypass_man/remote_action"
 
 STDOUT.sync = true
@@ -122,6 +124,8 @@ module ProconBypassMan
       return
     end
 
+    ProconBypassMan::ExternalInput.prepare_channels
+
     ready_pbm
     Runner.new(gadget: gadget, procon: procon).run # ここでblockingする
     terminate_pbm
@@ -130,6 +134,8 @@ module ProconBypassMan
   # 実行ファイル(app.rb)から呼び出している
   # @return [void]
   def self.configure(&block)
+    require_relative "procon_bypass_man/external_input"
+
     @@configuration = ProconBypassMan::Configuration.new
     @@configuration.instance_eval(&block)
     nil

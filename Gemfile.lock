@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    procon_bypass_man (0.3.6)
+    procon_bypass_man (0.3.7)
       action_cable_client
       blue_green_process (= 0.1.4.2)
       pbmenv (>= 0.1.11)
@@ -80,6 +80,7 @@ GEM
       parser (>= 3.0.1.1)
     ruby-progressbar (1.11.0)
     ruby2_keywords (0.0.5)
+    serialport (1.3.2)
     set (1.0.3)
     sinatra (2.2.0)
       mustermann (~> 1.0)
@@ -134,6 +135,7 @@ DEPENDENCIES
   rbs
   rspec
   rubocop
+  serialport
   sinatra
   stackprof
   steep
