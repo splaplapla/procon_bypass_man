@@ -53,4 +53,4 @@ end
 ```
 
 以上で設定は完了です。PBMを起動し、連携ツールからGPIOへ書き込んでください。  
-書き込みフォーマットについては [ラズベリーパイのシリアルポート(GPIO)に書き込むフォーマットについて](/docs/setting/integration_external_input.md) を参照してください。
+書き込みフォーマットについては [ラズベリーパイのシリアルポート(GPIO)に書き込むフォーマットについて](/docs/setting/integration_external_input_serial_port_format.md) を参照してください。
