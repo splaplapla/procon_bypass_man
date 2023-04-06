@@ -1,26 +1,24 @@
 # ラズベリーパイのシリアルポート(GPIO)へ書き込んでPBM経由してSwitchへ入力をする方法
-
-* procon_bypass_man: 0.3.X以上が必要です
+* procon_bypass_man: 0.3.7以上が必要です
 * GPIOからSwitchへ入力できます。本テキストでは設定方法を記載します
 
 ## 1. シリアルポートへ書き込みができるようにラズベリーパイのセットアップする
-TODO: 参考記事のURLを貼る
+https://toki-blog.com/pi-serial/ の「汎用シリアルとして使う」 を実施してください
 
 ## 2. GPIOへケーブルを挿す
-TODO: 何か書く
+対応しているケーブルをGPIOとPCに接続してください。
 
 ## 3. PBMのapp.rbを編集し、シリアルポートから読み出せるようにPBMのapp.rbを編集する
 `gemの追加`と`デバイスファイルを指す修正` の2つ必要です。
 
-* 1) シリアルポートから読み出すために追加でgemが必要です。`gem "serialport"` を追加してください。
+* 1) シリアルポートから読み出すために追加でgemが必要です。 `app.rb` に `gem "serialport"` を追加してください。
 
 ```diff
   gemfile do
     source 'https://rubygems.org'
     git_source(:github) {|repo_name| "https://github.com/#{repo_name}" }
--    gem 'procon_bypass_man', '0.3.6'
-+    gem 'procon_bypass_man', github: 'splaplapla/procon_bypass_man', branch: 'injectable-output-report'
-+    gem "serialport"
+    gem 'procon_bypass_man', '0.3.7'
++   gem "serialport"
   end
 ```
 
@@ -55,4 +53,4 @@ end
 ```
 
 以上で設定は完了です。PBMを起動し、連携ツールからGPIOへ書き込んでください。  
-書き込みフォーマットについては [ラズベリーパイのシリアルポート(GPIO)に書き込むフォーマットについて](/docs/setting/integration_external_input_serial_port.md) を参照してください。
+書き込みフォーマットについては [ラズベリーパイのシリアルポート(GPIO)に書き込むフォーマットについて](/docs/setting/integration_external_input.md) を参照してください。
