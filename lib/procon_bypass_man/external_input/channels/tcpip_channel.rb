@@ -66,7 +66,8 @@ module ProconBypassMan
           when /EMPTY/
             return nil
           else
-            ProconBypassMan.logger.debug { "[ExternalInput][TCPIPChannel] Unknown response" }
+            ProconBypassMan.logger.debug { "[ExternalInput][TCPIPChannel] Unknown response(#{response})" }
+            return nil
           end
         rescue Errno::EPIPE => e
           @socket = nil
