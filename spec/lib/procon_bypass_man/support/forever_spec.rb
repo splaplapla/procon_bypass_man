@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe ProconBypassMan::Websocket::Forever do
+describe ProconBypassMan::Forever do
   let(:instance) { described_class.new }
 
   describe '#work_one' do

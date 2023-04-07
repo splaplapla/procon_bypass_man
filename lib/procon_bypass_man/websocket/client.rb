@@ -7,7 +7,7 @@ module ProconBypassMan
         return unless ProconBypassMan.config.enable_ws?
 
         Thread.start do
-          Forever.run { run }
+          ProconBypassMan::Forever.run { run }
         end
       end
 
