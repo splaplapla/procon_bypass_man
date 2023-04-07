@@ -1,6 +1,7 @@
 module ProconBypassMan
   class Watchdog
-    def initialize
+    def initialize(timeout: 100)
+      @timeout = timeout
       active!
     end
 
@@ -16,7 +17,7 @@ module ProconBypassMan
 
     # @return [void]
     def active!
-      @time = Time.now + 100
+      @time = Time.now + @timeout
     end
   end
 end

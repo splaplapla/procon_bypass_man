@@ -10,7 +10,7 @@ describe ProconBypassMan::Forever do
 
     it do
       expect(block).to receive(:call)
-      thread = subject
+      thread, _watchdog = subject
       thread.join
     end
   end
@@ -19,22 +19,23 @@ describe ProconBypassMan::Forever do
     let(:thread) { double(:thread) }
     let(:watchdog) { ProconBypassMan::Watchdog.new }
 
-    subject { instance.wait_and_kill_if_outdated(thread) }
+    subject { instance.wait_and_kill_if_outdated(thread, watchdog) }
 
     before do
       allow(watchdog).to receive(:outdated?) { true }
-      allow(ProconBypassMan::Watchdog).to receive(:new) { watchdog }
       thread.as_null_object
     end
 
-    it 'should kill the thread' do
-      expect(thread).to receive(:kill)
-      subject
-    end
+    context 'when outdated' do
+      it 'should kill the thread' do
+        expect(thread).to receive(:kill)
+        subject
+      end
 
-    it 'refresh Watchdog' do
-      expect(watchdog).to receive(:active!)
-      subject
+      it 'refresh Watchdog' do
+        expect(watchdog).to receive(:active!)
+        subject
+      end
     end
   end
 end
