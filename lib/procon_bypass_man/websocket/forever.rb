@@ -31,9 +31,10 @@ module ProconBypassMan
       end
 
       def wait_and_kill_if_outdated(thread)
+        watchdog = ProconBypassMan::Watchdog.new
         loop do
-          if Watchdog.outdated?
-            Watchdog.active!
+          if watchdog.outdated?
+            watchdog.active!
             ProconBypassMan.logger.error("watchdog timeout!!")
             thread.kill
             return

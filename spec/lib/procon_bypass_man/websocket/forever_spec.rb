@@ -17,11 +17,13 @@ describe ProconBypassMan::Websocket::Forever do
 
   describe '#wait_and_kill_if_outdated' do
     let(:thread) { double(:thread) }
+    let(:watchdog) { ProconBypassMan::Watchdog.new }
 
     subject { instance.wait_and_kill_if_outdated(thread) }
 
     before do
-      allow(ProconBypassMan::Websocket::Watchdog).to receive(:outdated?) { true }
+      allow(watchdog).to receive(:outdated?) { true }
+      allow(ProconBypassMan::Watchdog).to receive(:new) { watchdog }
       thread.as_null_object
     end
 
@@ -31,7 +33,7 @@ describe ProconBypassMan::Websocket::Forever do
     end
 
     it 'refresh Watchdog' do
-      expect(ProconBypassMan::Websocket::Watchdog).to receive(:active!)
+      expect(watchdog).to receive(:active!)
       subject
     end
   end
