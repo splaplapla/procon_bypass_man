@@ -58,7 +58,7 @@ module ProconBypassMan
           read_command = "\r\n"
           @socket.write(read_command)
           response = @socket.gets
-          ProconBypassMan.logger.debug { "Received: #{response}" }
+          # ProconBypassMan.logger.debug { "Received: #{response}" }
 
           case response
           when /^{/
