@@ -9,6 +9,11 @@ module ProconBypassMan
             attr_accessor :command_queue
           end
 
+          def initialize(watchdog)
+            watchdog.active!
+            super
+          end
+
           def post_init
             ProconBypassMan.logger.debug { "A client has connected" }
           end
@@ -43,9 +48,9 @@ module ProconBypassMan
 
           # NOTE: masterプロセスで起動する
           Thread.start do
-            ProconBypassMan::Forever.run do
+            ProconBypassMan::Forever.run do |watchdog|
               EventMachine.run do
-                EventMachine.start_server '0.0.0.0', @port, AppHandler
+                EventMachine.start_server '0.0.0.0', @port, AppHandler, watchdog
               end
             end
           end
