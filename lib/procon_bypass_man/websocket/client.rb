@@ -7,11 +7,13 @@ module ProconBypassMan
         return unless ProconBypassMan.config.enable_ws?
 
         Thread.start do
-          Forever.run { run }
+          ProconBypassMan::Forever.run do |watchdog|
+            run(watchdog: watchdog)
+          end
         end
       end
 
-      def self.run
+      def self.run(watchdog: )
         EventMachine.run do
           client = ActionCableClient.new(
             ProconBypassMan.config.current_ws_server_url, {
@@ -47,7 +49,7 @@ module ProconBypassMan
             sleep 2
           }
           client.pinged { |msg|
-            Watchdog.active!
+            watchdog.active!
 
             ProconBypassMan.cache.fetch key: 'ws_pinged', expires_in: 10 do
               ProconBypassMan.logger.info('websocket client: pinged!!')
