@@ -65,13 +65,13 @@ module ProconBypassMan
           when /^EMPTY/, ''
             return nil
           else
-            ProconBypassMan.logger.debug { "[ExternalInput][TCPIPChannel] Unknown response(#{response})" }
+            ProconBypassMan.logger.warn { "[ExternalInput][TCPIPChannel] Unknown response(#{response})" }
             return nil
           end
         rescue Errno::EPIPE => e
           @socket = nil
           sleep(10)
-          ProconBypassMan.logger.debug { "[ExternalInput][TCPIPChannel] Broken pipe!!!!!!!(e)" }
+          ProconBypassMan.logger.error { "[ExternalInput][TCPIPChannel] Broken pipe!!!!!!!(e)" }
           retry
         end
       end
