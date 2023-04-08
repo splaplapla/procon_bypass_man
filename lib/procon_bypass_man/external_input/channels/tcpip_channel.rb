@@ -56,13 +56,13 @@ module ProconBypassMan
           @socket ||= TCPSocket.new('0.0.0.0', @port)
           read_command = "\r\n"
           @socket.write(read_command)
-          response = @socket.gets
+          response = @socket.gets&.strip
           # ProconBypassMan.logger.debug { "Received: #{response}" }
 
           case response
           when /^{/
             return response
-          when /EMPTY/
+          when /^EMPTY/, ''
             return nil
           else
             ProconBypassMan.logger.debug { "[ExternalInput][TCPIPChannel] Unknown response(#{response})" }
