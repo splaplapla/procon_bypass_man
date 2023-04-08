@@ -1,5 +1,4 @@
 require "spec_helper"
-require "serialport"
 
 describe ProconBypassMan::ExternalInput::Channels::TCPIPChannel do
   let(:port) { 9999 }
