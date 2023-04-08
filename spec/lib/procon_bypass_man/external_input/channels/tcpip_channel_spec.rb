@@ -10,8 +10,7 @@ describe ProconBypassMan::ExternalInput::Channels::TCPIPChannel do
 
     socket = TCPSocket.new('0.0.0.0', port)
     # write
-    json = { buttons: [:a] }.to_json
-    message = "#{json}\r\n"
+    message = { buttons: [:a] }.to_json
     socket.write(message)
     response = socket.gets
 
@@ -20,13 +19,6 @@ describe ProconBypassMan::ExternalInput::Channels::TCPIPChannel do
     socket.write(message)
     response = socket.gets
     expect(response).to start_with({ buttons: [:a] }.to_json)
-
-    # read
-    # FIXME: なぜか"\r\n"が返ってくる
-    message = "\r\n"
-    socket.write(message)
-    response = socket.gets
-    expect(response).to start_with("\r\n")
 
     # read
     message = "\r\n"
