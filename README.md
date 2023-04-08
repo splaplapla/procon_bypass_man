@@ -11,7 +11,7 @@
 
 https://user-images.githubusercontent.com/1664497/171327108-f12f56a5-fc36-48da-95a5-65e976553a20.mov
 
-## 使うハードウェア
+## 必要なハードウェア
 * Nintendo Switch Proコントローラー
 * Switch本体とドック
 * Raspberry Pi4 (Raspberry Pi OS)
@@ -38,7 +38,7 @@ https://user-images.githubusercontent.com/1664497/171327108-f12f56a5-fc36-48da-9
 * レイヤーを切り替える方法は？
     * 設定ファイルに記述している `prefix_keys_for_changing_layer`の後ろにあるキーを同時押しながら、十字キーのどれかを押すことで任意のレイヤーに切り替わります
 * このツールでできることは？
-    * キーリマップ, 連射, マクロ
+    * キーリマップ, 連射, マクロ, 外部ツールからの入力
         * リマップは1つのキーを別のキーに割り当てます
     * 連射中には特定のキーの入力を無視したり、複数のキーをトリガーに連射することができます
 * どうしてsudoが必要なの？
