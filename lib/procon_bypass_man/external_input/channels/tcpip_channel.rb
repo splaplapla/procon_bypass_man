@@ -73,6 +73,8 @@ module ProconBypassMan
           sleep(10)
           ProconBypassMan.logger.error { "[ExternalInput][TCPIPChannel] Broken pipe!!!!!!!(e)" }
           retry
+        rescue => e
+          ProconBypassMan.logger.error { "[ExternalInput][TCPIPChannel] #{e} が起きました" }
         end
       end
     end
