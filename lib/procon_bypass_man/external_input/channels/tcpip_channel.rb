@@ -10,11 +10,11 @@ module ProconBypassMan
           end
 
           def post_init
-            ProconBypassMan.logger.debug { "A client has connected" }
+            ProconBypassMan.logger.info { "[ExternalInput][TCPIPChannel] A client has connected" }
           end
 
           def unbind
-            ProconBypassMan.logger.debug { "A client has disconnected" }
+            ProconBypassMan.logger.info { "[ExternalInput][TCPIPChannel] A client has disconnected" }
           end
 
           # @return [String]
