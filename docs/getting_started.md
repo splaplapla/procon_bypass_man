@@ -18,7 +18,8 @@
 * [設定ファイルの書き方がわからない、エラーが起きるとき](#設定ファイルの書き方がわからない、エラーが起きるとき)
 * [procon_bypass_manのアップグレード方法](#procon_bypass_manのアップグレード方法)
 * [procon_bypass_man_cloudについて](#procon_bypass_man_cloudについて)
-* [シリアルポート・GPIOから読み取る](#シリアルポートから読み取る)
+* [シリアルポート連携](#シリアルポート連携)
+* [TCPIP連携](#TCPIP連携)
 * [最適化について](#最適化について)
 
 ## はじめに
@@ -252,9 +253,31 @@ procon_bypass_man_cloudとの接続が完了後、Raspberry Piを起動時にpro
   
 セットアップ方法は https://pbm-cloud.jiikko.com/faq に書いています。
 
-## シリアルポートから読み取る
+## シリアルポート連携
 * [ラズベリーパイのシリアルポート(GPIO)へ書き込んでPBM経由してSwitchへ入力をする方法](/docs/setting/integration_external_input_serial_port.md)
 * [ラズベリーパイのシリアルポート(GPIO)に書き込むフォーマットについて](/docs/setting/integration_external_input_serial_port_format.md)
+
+## TCPIP連携
+procon_bypass_man: 0.3.8 からTCP/IP経由で入力ができるようになりました。  
+書き込みフォーマットはJSONのみに対応しています。JSONの詳細な仕様については  [ラズベリーパイのシリアルポート(GPIO)に書き込むフォーマットについて](/docs/setting/integration_external_input_serial_port_format.md) を参照してください。  
+
+次は、PBM側の設定方法についてです。app.rbに以下の行を追加すると、連携するためのTCPサーバを起動するようになります。
+
+```diff
++ config.external_input_channels = [
++   ProconBypassMan::ExternalInput::Channels::TCPIPChannel.new(port: 9000),
++ ]
+```
+
+クライアント側のサンプル実装は次の通りです。これを実行するとAボタンを入力します。
+
+```ruby
+socket = TCPSocket.new('ras1.local', 9000)
+json = { buttons: [:a] }.to_json
+message = "#{json}\r\n"
+socket.write(message)
+puts socket.gets
+```
 
 ## 最適化について
 本稿では、Rubyの最適化について書きます。上級者向けです。適用しなくても普通に動きますが、逆に適用したことで何らかのケースで遅くなる場合があるかもしれません。
