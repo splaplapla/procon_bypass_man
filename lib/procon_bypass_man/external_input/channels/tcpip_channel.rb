@@ -43,9 +43,17 @@ module ProconBypassMan
 
           # NOTE: masterプロセスで起動する
           Thread.start do
-            # TODO: foreverが必要かも
-            EventMachine.run do
-              EventMachine.start_server '0.0.0.0', @port, AppHandler
+            # foreverを使いたいけど、watchdog.active!が発動しなくて諦めた
+            loop do
+              begin
+                EventMachine.run do
+                  EventMachine.start_server '0.0.0.0', @port, AppHandler
+                end
+              rescue EOFError => e
+                ProconBypassMan::SendErrorCommand.execute(error: "[ExternalInput][TCPIPChannel] #{e.full_message}")
+                EventMachine.stop
+                sleep(10)
+              end
             end
           end
         end
@@ -68,10 +76,10 @@ module ProconBypassMan
             ProconBypassMan.logger.warn { "[ExternalInput][TCPIPChannel] Unknown response(#{response})" }
             return nil
           end
-        rescue Errno::EPIPE => e
+        rescue Errno::EPIPE, EOFError => e
           @socket = nil
           sleep(10)
-          ProconBypassMan.logger.error { "[ExternalInput][TCPIPChannel] Broken pipe!!!!!!!(e)" }
+          ProconBypassMan.logger.error { "[ExternalInput][TCPIPChannel] #{e.message}!!!!!!!(#{e})" }
           retry
         rescue => e
           ProconBypassMan.logger.error { "[ExternalInput][TCPIPChannel] #{e} が起きました" }
