@@ -37,11 +37,8 @@ module ProconBypassMan
           end
         end
 
-        # @param [Integer] port
-        # @param [Boolean] need_reply
-        def initialize(port: , need_reply: false)
+        def initialize(port: )
           @port = port
-          @need_reply = need_reply
           super()
 
           # NOTE: masterプロセスで起動する
@@ -66,7 +63,7 @@ module ProconBypassMan
         def read
           @socket ||= TCPSocket.new('0.0.0.0', @port)
           read_command = "\r\n"
-          @socket.write(read_command) if @need_reply
+          @socket.write(read_command)
           response = @socket.gets&.strip
           # ProconBypassMan.logger.debug { "Received: #{response}" }
 
