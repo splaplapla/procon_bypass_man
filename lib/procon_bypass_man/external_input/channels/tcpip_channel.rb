@@ -2,6 +2,8 @@ module ProconBypassMan
   module ExternalInput
     module Channels
       class TCPIPChannel < Base
+        class ShutdownSignal < StandardError; end
+
         class AppHandler < EventMachine::Connection
           @command_queue = Queue.new
 
@@ -42,18 +44,24 @@ module ProconBypassMan
           super()
 
           # NOTE: masterプロセスで起動する
-          Thread.start do
+          @server_thread = Thread.start do
             # foreverを使いたいけど、watchdog.active!が発動しなくて諦めた
             loop do
               EventMachine.run do
-                begin
-                  EventMachine.start_server '0.0.0.0', @port, AppHandler
-                rescue => e
-                  ProconBypassMan::SendErrorCommand.execute(error: "[ExternalInput][TCPIPChannel] #{e.message}(#{e})")
-                  sleep(5)
-                  retry
-                end
+                EventMachine.start_server '0.0.0.0', @port, AppHandler
               end
+            rescue ShutdownSignal
+              begin
+                EventMachine.stop
+              rescue EventMachine::Error => e
+                ProconBypassMan.logger.error { "Failed to stop EventMachine: #{e.message}" }
+              end
+
+              break
+            rescue => e
+              ProconBypassMan::SendErrorCommand.execute(error: "[ExternalInput][TCPIPChannel] #{e.message}(#{e})")
+              sleep(5)
+              retry
             end
           end
         end
@@ -84,6 +92,10 @@ module ProconBypassMan
         rescue => e
           ProconBypassMan.logger.error { "[ExternalInput][TCPIPChannel] #{e.message} が起きました(#{e})" }
           return nil
+        end
+
+        def shutdown
+          @server_thread.raise(ShutdownSignal)
         end
       end
     end

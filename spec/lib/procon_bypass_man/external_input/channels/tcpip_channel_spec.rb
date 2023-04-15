@@ -5,7 +5,7 @@ describe ProconBypassMan::ExternalInput::Channels::TCPIPChannel do
 
   describe '.new' do
     it do
-      ProconBypassMan::ExternalInput::Channels::TCPIPChannel.new(port: port)
+      channel = ProconBypassMan::ExternalInput::Channels::TCPIPChannel.new(port: port)
       sleep 1 # NOTE: sleepしないとクライアントから繋げれない
 
       socket = TCPSocket.new('0.0.0.0', port)
@@ -32,7 +32,8 @@ describe ProconBypassMan::ExternalInput::Channels::TCPIPChannel do
       response = socket.gets
       expect(response).to start_with('EMPTY')
 
-      EventMachine::stop_event_loop
+      channel.shutdown
+      expect { TCPSocket.new('0.0.0.0', port) }.to raise_error(Errno::ECONNREFUSED)
     end
   end
 end

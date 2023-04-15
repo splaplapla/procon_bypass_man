@@ -124,8 +124,6 @@ module ProconBypassMan
       return
     end
 
-    ProconBypassMan::ExternalInput.prepare_channels
-
     ready_pbm
     Runner.new(gadget: gadget, procon: procon).run # ここでblockingする
     terminate_pbm
@@ -211,6 +209,7 @@ module ProconBypassMan
     ProconBypassMan::RemoteAction::QueueOverProcess.shutdown
     ProconBypassMan::Procon::PerformanceMeasurement::QueueOverProcess.shutdown
     self.worker&.shutdown
+    ProconBypassMan::ExternalInput.shutdown
   end
 
   # @return [void]

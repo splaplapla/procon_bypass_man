@@ -42,6 +42,10 @@ module ProconBypassMan
           end
           chunks.first
         end
+
+        def shutdown
+          # no-op
+        end
       end
     end
   end
