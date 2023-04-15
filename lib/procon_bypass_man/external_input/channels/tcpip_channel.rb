@@ -45,16 +45,13 @@ module ProconBypassMan
           Thread.start do
             # foreverを使いたいけど、watchdog.active!が発動しなくて諦めた
             loop do
-              begin
-                EventMachine.run do
-                  EventMachine.start_server '0.0.0.0', @port, AppHandler
-                end
-              rescue => e
-                ProconBypassMan::SendErrorCommand.execute(error: "[ExternalInput][TCPIPChannel] #{e.message}(#{e})")
-                sleep(10)
+              EventMachine.run do
                 begin
-                  EventMachine.stop
-                rescue EventMachine::Error
+                  EventMachine.start_server '0.0.0.0', @port, AppHandler
+                rescue => e
+                  ProconBypassMan::SendErrorCommand.execute(error: "[ExternalInput][TCPIPChannel] #{e.message}(#{e})")
+                  sleep(5)
+                  retry
                 end
               end
             end
