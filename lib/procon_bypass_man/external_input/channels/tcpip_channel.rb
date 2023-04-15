@@ -52,7 +52,10 @@ module ProconBypassMan
               rescue => e
                 ProconBypassMan::SendErrorCommand.execute(error: "[ExternalInput][TCPIPChannel] #{e.message}(#{e})")
                 sleep(10)
-                EventMachine.stop
+                begin
+                  EventMachine.stop
+                rescue EventMachine::Error
+                end
               end
             end
           end
