@@ -33,6 +33,14 @@ describe ProconBypassMan::ExternalInput::Channels::TCPIPChannel do
       expect(response).to start_with('EMPTY')
 
       channel.shutdown
+      # NOTE: threadが実際に停止するまで待機する
+      timer = ProconBypassMan::SafeTimeout.new
+      loop do
+        raise if timer.timeout?
+        break if not channel.alive_server?
+        sleep 0.5
+      end
+
       expect { TCPSocket.new('0.0.0.0', port) }.to raise_error(Errno::ECONNREFUSED)
     end
   end

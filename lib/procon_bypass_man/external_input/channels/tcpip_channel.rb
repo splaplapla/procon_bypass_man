@@ -53,6 +53,7 @@ module ProconBypassMan
             rescue ShutdownSignal
               begin
                 EventMachine.stop
+                EventMachine.release_machine
               rescue EventMachine::Error => e
                 ProconBypassMan.logger.error { "Failed to stop EventMachine: #{e.message}" }
               end
@@ -96,6 +97,18 @@ module ProconBypassMan
 
         def shutdown
           @server_thread.raise(ShutdownSignal)
+        end
+
+        def alive_server?
+          return false if not @server_thread.alive?
+
+          begin
+            TCPSocket.new('0.0.0.0', @port).close
+          rescue Errno::ECONNREFUSED
+            return false
+          end
+
+          true
         end
       end
     end
