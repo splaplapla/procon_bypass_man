@@ -49,10 +49,10 @@ module ProconBypassMan
                 EventMachine.run do
                   EventMachine.start_server '0.0.0.0', @port, AppHandler
                 end
-              rescue EOFError => e
-                ProconBypassMan::SendErrorCommand.execute(error: "[ExternalInput][TCPIPChannel] #{e.full_message}")
-                EventMachine.stop
+              rescue => e
+                ProconBypassMan::SendErrorCommand.execute(error: "[ExternalInput][TCPIPChannel] #{e.message}(#{e})")
                 sleep(10)
+                EventMachine.stop
               end
             end
           end
