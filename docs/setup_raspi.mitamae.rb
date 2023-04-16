@@ -44,11 +44,11 @@ end
 # ruby
 execute "Install ruby" do
   user "pi"
-  not_if "rbenv versions | grep 3.0.1"
+  not_if "rbenv versions | grep 3.2.2"
   command <<~EOH
     mkdir -p "$(rbenv root)"/plugins
     git clone https://github.com/rbenv/ruby-build.git --depth 1 "$(rbenv root)"/plugins/ruby-build
-    rbenv install 3.0.1
+    rbenv install 3.2.2
   EOH
 end
 
