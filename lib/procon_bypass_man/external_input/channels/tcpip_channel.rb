@@ -50,19 +50,19 @@ module ProconBypassMan
               EventMachine.run do
                 EventMachine.start_server '0.0.0.0', @port, AppHandler
               end
-            rescue ShutdownSignal
+            rescue Errno::EPIPE, EOFError => e
+              ProconBypassMan::SendErrorCommand.execute(error: "[ExternalInput][TCPIPChannel] #{e.message}(#{e})")
+              sleep(5)
+              retry
+            rescue => e
+              ProconBypassMan::SendErrorCommand.execute(error: "[ExternalInput][TCPIPChannel] #{e.message}(#{e})")
               begin
                 EventMachine.stop
-                EventMachine.release_machine
               rescue EventMachine::Error => e
                 ProconBypassMan.logger.error { "Failed to stop EventMachine: #{e.message}" }
               end
 
               break
-            rescue => e
-              ProconBypassMan::SendErrorCommand.execute(error: "[ExternalInput][TCPIPChannel] #{e.message}(#{e})")
-              sleep(5)
-              retry
             end
           end
         end
