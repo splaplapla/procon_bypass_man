@@ -91,6 +91,7 @@ module ProconBypassMan
           ProconBypassMan.logger.error { "[ExternalInput][TCPIPChannel] #{e.message}!!!!!!!(#{e})" }
           retry
         rescue => e
+          @socket = nil
           ProconBypassMan.logger.error { "[ExternalInput][TCPIPChannel] #{e.message} が起きました(#{e})" }
           return nil
         end
