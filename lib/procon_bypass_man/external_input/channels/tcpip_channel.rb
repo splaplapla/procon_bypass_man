@@ -56,11 +56,6 @@ module ProconBypassMan
               retry
             rescue => e
               ProconBypassMan::SendErrorCommand.execute(error: "[ExternalInput][TCPIPChannel] #{e.message}(#{e})")
-              begin
-                EventMachine.stop
-              rescue EventMachine::Error => e
-                ProconBypassMan.logger.error { "Failed to stop EventMachine: #{e.message}" }
-              end
 
               break
             end
