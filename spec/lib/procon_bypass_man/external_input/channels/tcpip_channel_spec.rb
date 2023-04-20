@@ -10,24 +10,26 @@ describe ProconBypassMan::ExternalInput::Channels::TCPIPChannel do
 
       socket = TCPSocket.new('0.0.0.0', port)
       # write
-      message = { buttons: [:a] }.to_json
+      message = { buttons: [:a] }.to_json + "\n"
       socket.write(message)
       response = socket.gets
+      expect(response).to eq("OK\n")
 
       # read
-      message = "\r\n"
+      message = "\n"
       socket.write(message)
       response = socket.gets
       expect(response).to start_with({ buttons: [:a] }.to_json)
 
       # read
-      message = "\r\n"
+      message = "\n"
       socket.write(message)
+      response = socket.gets # FIXME: \n だけが返ってくるので仕方なく読み出す. これ消したい
       response = socket.gets
       expect(response).to start_with('EMPTY')
 
       # read
-      message = "\r\n"
+      message = "\n"
       socket.write(message)
       response = socket.gets
       expect(response).to start_with('EMPTY')

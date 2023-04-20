@@ -4,7 +4,7 @@ module ProconBypassMan
       class TCPIPChannel < Base
         class ShutdownSignal < StandardError; end
 
-        class AppHandler < EventMachine::Connection
+        class AppServer < SimpleTCPServer
           @command_queue = Queue.new
 
           class << self
@@ -20,21 +20,24 @@ module ProconBypassMan
           end
 
           # @return [String]
-          def receive_data(data)
+          def receive_data(client, data)
             case data
             when /^{/
               self.class.command_queue.push(data)
-              send_data "OK\r\n"
-            when /^\r\n/
+              client.write("OK\n")
+              return
+            when /^\n/
               if self.class.command_queue.empty?
-                send_data "EMPTY\r\n"
+                client.write("EMPTY\n")
                 return
               end
 
               data = self.class.command_queue.pop
-              send_data "#{data}\r\n"
+              client.write("#{data}\n")
+              return
             else
-              send_data "Unknown command\r\n"
+              client.write("Unknown command\n")
+              return
             end
           end
         end
@@ -43,20 +46,24 @@ module ProconBypassMan
           @port = port
           super()
 
+          @server = AppServer.new('0.0.0.0', @port)
+
           # NOTE: masterプロセスで起動する
           @server_thread = Thread.start do
-            # foreverを使いたいけど、watchdog.active!が発動しなくて諦めた
             loop do
-              EventMachine.run do
-                EventMachine.start_server '0.0.0.0', @port, AppHandler
-              end
+              @server.start_server
+              @server.run
             rescue Errno::EPIPE, EOFError => e
               ProconBypassMan::SendErrorCommand.execute(error: "[ExternalInput][TCPIPChannel] #{e.message}(#{e})")
               sleep(5)
+
+              @server.shutdown
               retry
+            rescue ShutdownSignal => e
+              @server.shutdown
+              break
             rescue => e
               ProconBypassMan::SendErrorCommand.execute(error: "[ExternalInput][TCPIPChannel] #{e.message}(#{e})")
-
               break
             end
           end
@@ -66,7 +73,7 @@ module ProconBypassMan
         # @return [String, NilClass]
         def read
           @socket ||= TCPSocket.new('0.0.0.0', @port)
-          read_command = "\r\n"
+          read_command = "\n"
           @socket.write(read_command)
           response = @socket.gets&.strip
           # ProconBypassMan.logger.debug { "Received: #{response}" }
@@ -77,7 +84,7 @@ module ProconBypassMan
           when /^EMPTY/, ''
             return nil
           else
-            ProconBypassMan.logger.warn { "[ExternalInput][TCPIPChannel] Unknown response(#{response})" }
+            ProconBypassMan.logger.warn { "[ExternalInput][TCPIPChannel] Unknown response(#{response}, codepoints: #{response.codepoints})" }
             return nil
           end
         rescue Errno::EPIPE, EOFError => e

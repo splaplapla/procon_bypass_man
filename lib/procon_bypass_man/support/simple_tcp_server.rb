@@ -1,12 +1,14 @@
 require 'socket'
 
 class SimpleTCPServer
-  def initialize
-    @connections = []
+  def initialize(host, port)
+    @host = host
+    @port = port
   end
 
-  def start_server(host, port)
-    @server = TCPServer.new(host, port)
+  def start_server
+    @connections = []
+    @server = TCPServer.new(@host, @port)
   end
 
   def run
@@ -15,7 +17,7 @@ class SimpleTCPServer
       readable.each do |socket|
         if socket == @server
           client = @server.accept
-          post_init(client)
+          post_init
           @connections << client
         else
           data = socket.gets
@@ -44,11 +46,11 @@ class SimpleTCPServer
     @connections.size
   end
 
-  def post_init(client)
+  def post_init
     # Override this method
   end
 
-  def receive_data(client, data)
+  def receive_data(data)
     # Override this method
   end
 

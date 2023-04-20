@@ -4,11 +4,11 @@ require 'procon_bypass_man/support/simple_tcp_server'
 describe SimpleTCPServer do
   let(:host) { 'localhost' }
   let(:port) { 8000 }
-  let(:server) { SimpleTCPServer.new }
+  let(:server) { SimpleTCPServer.new(host, port) }
   let(:server_thread) { Thread.new { server.run } }
 
   before do
-    server.start_server(host, port)
+    server.start_server
     server_thread
   end
 
