@@ -50,7 +50,7 @@ class SimpleTCPServer
     # Override this method
   end
 
-  def receive_data(data)
+  def receive_data(socket, data)
     # Override this method
   end
 
