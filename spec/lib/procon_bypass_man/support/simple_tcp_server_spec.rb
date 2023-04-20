@@ -55,9 +55,21 @@ describe SimpleTCPServer do
     end
 
     it 'should call receive_data' do
-      expect(server).to receive(:receive_data).once
+      # receive_dataが呼ばれるまで処理をブロックするためのmutex
+      mutex = Mutex.new
+      condition = ConditionVariable.new
+
+      expect(server).to receive(:receive_data).once do
+        mutex.synchronize do
+          condition.signal
+        end
+      end
+
       client_socket.puts('test data')
-      sleep 0.1 # サーバーの処理が完了するまで待つ
+
+      mutex.synchronize do
+        condition.wait(mutex)
+      end
     end
   end
 
