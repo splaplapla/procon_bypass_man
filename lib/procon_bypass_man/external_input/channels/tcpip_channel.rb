@@ -107,7 +107,7 @@ module ProconBypassMan
 
           begin
             TCPSocket.new('0.0.0.0', @port).close
-          rescue Errno::ECONNREFUSED
+          rescue Errno::ECONNREFUSED, Errno::ECONNRESET
             return false
           end
 
