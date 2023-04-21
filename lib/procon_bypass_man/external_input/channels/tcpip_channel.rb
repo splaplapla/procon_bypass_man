@@ -60,6 +60,7 @@ module ProconBypassMan
               @server.shutdown
               retry
             rescue ShutdownSignal => e
+              ProconBypassMan::SendErrorCommand.execute(error: "[ExternalInput][TCPIPChannel] ShutdownSignalを受け取りました。終了します。")
               @server.shutdown
               break
             rescue => e
@@ -99,6 +100,7 @@ module ProconBypassMan
         end
 
         def shutdown
+          ProconBypassMan.logger.info { "[ExternalInput][TCPIPChannel] shutdown" }
           @server_thread.raise(ShutdownSignal)
         end
 
