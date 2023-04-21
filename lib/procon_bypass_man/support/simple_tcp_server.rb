@@ -15,12 +15,14 @@ class SimpleTCPServer
     loop do
       readable, _ = IO.select(@connections + [@server])
       readable.each do |socket|
+        ProconBypassMan.logger.debug { "[SimpleTCPServer] in readable.each" }
         if socket == @server
           client = @server.accept
           post_init
           @connections << client
         else
           data = socket.gets
+          ProconBypassMan.logger.debug { "[SimpleTCPServer] received #{data}" }
           if data.nil?
             @connections.delete(socket)
             unbind
