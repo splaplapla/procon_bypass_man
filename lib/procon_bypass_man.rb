@@ -44,6 +44,7 @@ require_relative "procon_bypass_man/support/renice_command"
 require_relative "procon_bypass_man/support/web_connectivity_checker"
 require_relative "procon_bypass_man/support/watchdog"
 require_relative "procon_bypass_man/support/forever"
+require_relative "procon_bypass_man/support/simple_tcp_server"
 require_relative "procon_bypass_man/procon_display"
 require_relative "procon_bypass_man/background"
 require_relative "procon_bypass_man/commands"
@@ -123,8 +124,6 @@ module ProconBypassMan
       eternal_sleep
       return
     end
-
-    ProconBypassMan::ExternalInput.prepare_channels
 
     ready_pbm
     Runner.new(gadget: gadget, procon: procon).run # ここでblockingする
@@ -211,6 +210,7 @@ module ProconBypassMan
     ProconBypassMan::RemoteAction::QueueOverProcess.shutdown
     ProconBypassMan::Procon::PerformanceMeasurement::QueueOverProcess.shutdown
     self.worker&.shutdown
+    ProconBypassMan::ExternalInput.shutdown
   end
 
   # @return [void]

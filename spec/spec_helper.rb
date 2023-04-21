@@ -5,6 +5,7 @@ require "bundler/setup"
 require "support/setting"
 require "support/background_job_inline_perform"
 require "support/enable_job_queue_on_drb"
+require "support/pbm_helper"
 require "support/ext/procon_bypass_man"
 require "support/ext/procon_user_operation"
 require "support/ext/procon"
@@ -41,7 +42,6 @@ RSpec.configure do |config|
     allow_any_instance_of(Net::HTTP).to receive(:post) { double(:x).as_null_object }
     allow(ProconBypassMan::UsbDeviceController).to receive(:init)
     allow(ProconBypassMan::UsbDeviceController).to receive(:reset)
-    ProconBypassMan::ExternalInput.prepare_channels # 呼び出さないと未初期化エラーになるのでとりあえず呼び出しておく
 
     ProconBypassMan.worker = nil
   end

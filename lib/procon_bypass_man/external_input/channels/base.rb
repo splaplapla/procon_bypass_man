@@ -6,6 +6,10 @@ module ProconBypassMan
         def read
           raise NotImplementedError
         end
+
+        def shutdown
+          raise NotImplementedError
+        end
       end
     end
   end

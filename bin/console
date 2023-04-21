@@ -14,9 +14,6 @@ require "pry"
 
 require "irb"
 
-# TODO: replのときチェックが入らないので、書く詳細な実装に触れないようにする。PBM_ENVを参照するなどをする
-ProconBypassMan::ExternalInput.prepare_channels
-
 ProconBypassMan.config.logger = Logger.new($stdout)
 
 IRB.start(__FILE__)

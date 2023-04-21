@@ -23,13 +23,7 @@ describe ProconBypassMan::ExternalInput do
       }
 
       before do
-        ProconBypassMan.config.external_input_channels = [blank_channel, channel]
-        ProconBypassMan::ExternalInput.prepare_channels
-      end
-
-      after do
-        ProconBypassMan.config.external_input_channels = []
-        ProconBypassMan::ExternalInput.prepare_channels
+        allow(ProconBypassMan::ExternalInput).to receive(:channels) { [blank_channel, channel] }
       end
 
       it '値のあるchannelを先に返す' do

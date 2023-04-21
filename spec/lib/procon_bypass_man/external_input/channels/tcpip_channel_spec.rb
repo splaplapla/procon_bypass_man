@@ -3,34 +3,46 @@ require "spec_helper"
 describe ProconBypassMan::ExternalInput::Channels::TCPIPChannel do
   let(:port) { 9999 }
 
-  it do
-    ProconBypassMan::ExternalInput::Channels::TCPIPChannel.new(port: port)
-    sleep 1 # NOTE: sleepしないとクライアントから繋げれない
+  describe '.new' do
+    it do
+      channel = ProconBypassMan::ExternalInput::Channels::TCPIPChannel.new(port: port)
 
-    socket = TCPSocket.new('0.0.0.0', port)
-    # write
-    message = { buttons: [:a] }.to_json
-    socket.write(message)
-    response = socket.gets
+      socket = nil
+      ProconBypassMan::Retryable.retryable(tries: 5, on_no_retry: [Errno::ECONNRESET], interval_on_retry: 1) do
+        socket = TCPSocket.new('0.0.0.0', port)
+      end
 
-    # read
-    message = "\r\n"
-    socket.write(message)
-    response = socket.gets
-    expect(response).to start_with({ buttons: [:a] }.to_json)
+      # write
+      message = { buttons: [:a] }.to_json + "\n"
+      socket.write(message)
+      response = socket.gets
+      expect(response).to eq("OK\n")
 
-    # read
-    message = "\r\n"
-    socket.write(message)
-    response = socket.gets
-    expect(response).to start_with('EMPTY')
+      # read
+      message = "\n"
+      socket.write(message)
+      response = socket.gets
+      expect(response).to start_with({ buttons: [:a] }.to_json)
 
-    # read
-    message = "\r\n"
-    socket.write(message)
-    response = socket.gets
-    expect(response).to start_with('EMPTY')
+      # read
+      message = "\n"
+      socket.write(message)
+      response = socket.gets # FIXME: \n だけが返ってくるので仕方なく読み出す. これ消したい
+      response = socket.gets
+      expect(response).to start_with('EMPTY')
 
-    EventMachine::stop_event_loop
+      # read
+      message = "\n"
+      socket.write(message)
+      response = socket.gets
+      expect(response).to start_with('EMPTY')
+
+      channel.shutdown
+      PBMHelper.wait_until do
+        not channel.alive_server?
+      end
+
+      expect { TCPSocket.new('0.0.0.0', port) }.to raise_error(Errno::ECONNREFUSED)
+    end
   end
 end

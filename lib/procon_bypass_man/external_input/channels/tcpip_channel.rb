@@ -2,7 +2,9 @@ module ProconBypassMan
   module ExternalInput
     module Channels
       class TCPIPChannel < Base
-        class AppHandler < EventMachine::Connection
+        class ShutdownSignal < StandardError; end
+
+        class AppServer < SimpleTCPServer
           @command_queue = Queue.new
 
           class << self
@@ -18,21 +20,24 @@ module ProconBypassMan
           end
 
           # @return [String]
-          def receive_data(data)
+          def receive_data(client, data)
             case data
             when /^{/
               self.class.command_queue.push(data)
-              send_data "OK\r\n"
-            when /^\r\n/
+              client.write("OK\n")
+              return
+            when /^\n/
               if self.class.command_queue.empty?
-                send_data "EMPTY\r\n"
+                client.write("EMPTY\n")
                 return
               end
 
               data = self.class.command_queue.pop
-              send_data "#{data}\r\n"
+              client.write("#{data}\n")
+              return
             else
-              send_data "Unknown command\r\n"
+              client.write("Unknown command\n")
+              return
             end
           end
         end
@@ -41,11 +46,26 @@ module ProconBypassMan
           @port = port
           super()
 
+          @server = AppServer.new('0.0.0.0', @port)
+
           # NOTE: masterプロセスで起動する
-          Thread.start do
-            # TODO: foreverが必要かも
-            EventMachine.run do
-              EventMachine.start_server '0.0.0.0', @port, AppHandler
+          @server_thread = Thread.start do
+            loop do
+              @server.start_server
+              @server.run
+            rescue Errno::EPIPE, EOFError => e
+              ProconBypassMan::SendErrorCommand.execute(error: "[ExternalInput][TCPIPChannel] #{e.message}(#{e})")
+              sleep(5)
+
+              @server.shutdown
+              retry
+            rescue ShutdownSignal => e
+              ProconBypassMan::SendErrorCommand.execute(error: "[ExternalInput][TCPIPChannel] ShutdownSignalを受け取りました。終了します。")
+              @server.shutdown
+              break
+            rescue => e
+              ProconBypassMan::SendErrorCommand.execute(error: "[ExternalInput][TCPIPChannel] #{e.message}(#{e})")
+              break
             end
           end
         end
@@ -54,7 +74,7 @@ module ProconBypassMan
         # @return [String, NilClass]
         def read
           @socket ||= TCPSocket.new('0.0.0.0', @port)
-          read_command = "\r\n"
+          read_command = "\n"
           @socket.write(read_command)
           response = @socket.gets&.strip
           # ProconBypassMan.logger.debug { "Received: #{response}" }
@@ -65,16 +85,35 @@ module ProconBypassMan
           when /^EMPTY/, ''
             return nil
           else
-            ProconBypassMan.logger.warn { "[ExternalInput][TCPIPChannel] Unknown response(#{response})" }
+            ProconBypassMan.logger.warn { "[ExternalInput][TCPIPChannel] Unknown response(#{response}, codepoints: #{response.codepoints})" }
             return nil
           end
-        rescue Errno::EPIPE => e
+        rescue Errno::EPIPE, EOFError => e
           @socket = nil
           sleep(10)
-          ProconBypassMan.logger.error { "[ExternalInput][TCPIPChannel] Broken pipe!!!!!!!(e)" }
+          ProconBypassMan.logger.error { "[ExternalInput][TCPIPChannel] #{e.message}!!!!!!!(#{e})" }
           retry
         rescue => e
-          ProconBypassMan.logger.error { "[ExternalInput][TCPIPChannel] #{e} が起きました" }
+          @socket = nil
+          ProconBypassMan.logger.error { "[ExternalInput][TCPIPChannel] #{e.message} が起きました(#{e})" }
+          return nil
+        end
+
+        def shutdown
+          ProconBypassMan.logger.info { "[ExternalInput][TCPIPChannel] shutdown" }
+          @server_thread.raise(ShutdownSignal)
+        end
+
+        def alive_server?
+          return false if not @server_thread.alive?
+
+          begin
+            TCPSocket.new('0.0.0.0', @port).close
+          rescue Errno::ECONNREFUSED, Errno::ECONNRESET
+            return false
+          end
+
+          true
         end
       end
     end
