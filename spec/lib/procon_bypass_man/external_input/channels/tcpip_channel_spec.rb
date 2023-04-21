@@ -6,9 +6,12 @@ describe ProconBypassMan::ExternalInput::Channels::TCPIPChannel do
   describe '.new' do
     it do
       channel = ProconBypassMan::ExternalInput::Channels::TCPIPChannel.new(port: port)
-      sleep 1 # NOTE: sleepしないとクライアントから繋げれない
 
-      socket = TCPSocket.new('0.0.0.0', port)
+      socket = nil
+      ProconBypassMan::Retryable.retryable(tries: 5, on_no_retry: [Errno::ECONNRESET], interval_on_retry: 1) do
+        socket = TCPSocket.new('0.0.0.0', port)
+      end
+
       # write
       message = { buttons: [:a] }.to_json + "\n"
       socket.write(message)
