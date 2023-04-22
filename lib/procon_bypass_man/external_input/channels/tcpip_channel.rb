@@ -53,7 +53,7 @@ module ProconBypassMan
             loop do
               @server.start_server
               @server.run
-            rescue Errno::EPIPE, EOFError => e
+            rescue Errno::EPIPE, EOFError, Errno::ECONNRESET => e
               ProconBypassMan::SendErrorCommand.execute(error: "[ExternalInput][TCPIPChannel] #{e.message}(#{e})")
               sleep(5)
 
