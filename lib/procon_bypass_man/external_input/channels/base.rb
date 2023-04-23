@@ -7,7 +7,13 @@ module ProconBypassMan
           raise NotImplementedError
         end
 
+        # @return [void]
         def shutdown
+          raise NotImplementedError
+        end
+
+        # @return [String]
+        def display_name_for_boot_message
           raise NotImplementedError
         end
       end

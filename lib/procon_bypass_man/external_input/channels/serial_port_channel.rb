@@ -14,7 +14,7 @@ module ProconBypassMan
           data_bits = 8
           stop_bits = 1
           parity = SerialPort::NONE
-          @serial_port= SerialPort.new(device_path, baud_rate, data_bits, stop_bits, parity)
+          @serial_port = SerialPort.new(device_path, baud_rate, data_bits, stop_bits, parity)
         end
 
         # @return [String, NilClass]
@@ -45,6 +45,10 @@ module ProconBypassMan
 
         def shutdown
           # no-op
+        end
+
+        def display_name_for_boot_message
+          'SerialPort'
         end
       end
     end

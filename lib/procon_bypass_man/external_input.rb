@@ -28,3 +28,4 @@ end
 
 require "procon_bypass_man/external_input/external_data"
 require "procon_bypass_man/external_input/channels.rb"
+require "procon_bypass_man/external_input/boot_message"

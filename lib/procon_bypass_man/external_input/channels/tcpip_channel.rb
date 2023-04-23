@@ -115,6 +115,10 @@ module ProconBypassMan
 
           true
         end
+
+        def display_name_for_boot_message
+          "TCPIP(port: #{@port})"
+        end
       end
     end
   end
