@@ -50,9 +50,11 @@ module ProconBypassMan
 
           # NOTE: masterプロセスで起動する
           @server_thread = Thread.start do
-            loop do
-              @server.start_server
-              @server.run
+            begin
+              loop do
+                @server.start_server
+                @server.run
+              end
             rescue Errno::EPIPE, EOFError, Errno::ECONNRESET => e
               ProconBypassMan::SendErrorCommand.execute(error: "[ExternalInput][TCPIPChannel] #{e.message}(#{e})")
               sleep(5)
@@ -62,10 +64,8 @@ module ProconBypassMan
             rescue ShutdownSignal => e
               ProconBypassMan::SendErrorCommand.execute(error: "[ExternalInput][TCPIPChannel] ShutdownSignalを受け取りました。終了します。")
               @server.shutdown
-              break
             rescue => e
               ProconBypassMan::SendErrorCommand.execute(error: "[ExternalInput][TCPIPChannel] #{e.message}(#{e})")
-              break
             end
           end
         end
