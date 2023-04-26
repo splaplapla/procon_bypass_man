@@ -130,14 +130,17 @@ class ProconBypassMan::Configuration
 
   # @return [String, NilClass]
   def current_ws_server_url
+    return @current_ws_server_url if defined?(@current_ws_server_url)
     return unless api_server
+
     response_json = ProconBypassMan::HttpClient.new(server: api_server, path: '/api/v1/configuration').get
     ws_server_url = response_json&.fetch("ws_server_url", nil)
 
     begin
       uri = URI.parse(ws_server_url)
       if uri.scheme == 'ws' or uri.scheme == 'wss'
-        return uri.to_s
+        @current_ws_server_url = uri.to_s
+        return @current_ws_server_url
       else
         ProconBypassMan.logger.warn { "#{ws_server_url} is invalid." }
         return nil
