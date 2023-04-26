@@ -45,6 +45,7 @@ require_relative "procon_bypass_man/support/web_connectivity_checker"
 require_relative "procon_bypass_man/support/watchdog"
 require_relative "procon_bypass_man/support/forever"
 require_relative "procon_bypass_man/support/simple_tcp_server"
+require_relative "procon_bypass_man/support/proccess_cheacker"
 require_relative "procon_bypass_man/procon_display"
 require_relative "procon_bypass_man/background"
 require_relative "procon_bypass_man/commands"
@@ -160,6 +161,11 @@ module ProconBypassMan
 
   # @return [void]
   def self.initialize_pbm
+    if ProconBypassMan.pid && ProconBypassMan::ProcessChecker.running?(ProconBypassMan.pid)
+      ProconBypassMan::SendErrorCommand.execute(error: "別のプロセスでPBMがすでに起動中なので処理を停止します。")
+      exit 1
+    end
+
     ProconBypassMan::ReniceCommand.change_priority(to: :low, pid: $$)
     ProconBypassMan::Background::JobQueue.start!
     ProconBypassMan::Websocket::Client.start!

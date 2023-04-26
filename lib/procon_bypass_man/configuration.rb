@@ -19,9 +19,11 @@ class ProconBypassMan::Configuration
       @@pid_path ||= File.expand_path("#{root}/pbm_pid", __dir__).freeze
     end
 
-    # @return [Integer]
+    # @return [Integer, nil]
     def pid
       File.read(pid_path).to_i
+    rescue Errno::ENOENT
+      nil
     end
 
     def digest_path
@@ -70,6 +72,7 @@ class ProconBypassMan::Configuration
     if defined?(@root)
       @root
     else
+      ProconBypassMan.logger.warn 'root pathが未設定です'
       File.expand_path('..', __dir__ || ".").freeze
     end
   end
