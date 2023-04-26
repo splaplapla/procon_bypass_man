@@ -41,25 +41,6 @@ describe ProconBypassMan::Configuration do
     end
   end
 
-  describe '#current_ws_server' do
-    let(:config) { described_class.new }
-    subject { config.current_ws_server }
-
-    context 'http://localhost:3000をセットするとき' do
-      it do
-        config.api_servers = ["http://localhost:3000"]
-        expect(subject).to eq("ws://localhost:3000")
-      end
-    end
-
-    context 'https://foo.herokuapp.comをセットするとき' do
-      it do
-        config.api_servers = ["https://foo.herokuapp.com"]
-        expect(subject).to eq("ws://foo.herokuapp.com")
-      end
-    end
-  end
-
   describe '#enable_home_led_on_connect' do
     let(:config) { described_class.new }
     subject { config.enable_home_led_on_connect }

@@ -210,7 +210,7 @@ class ProconBypassMan::Configuration
 
   def current_ws_server: () -> (String | nil)
 
-  def current_ws_server_url: () -> ::String
+  def current_ws_server_url: () -> (String | nil)
 
   def enable_ws?: () -> bool
 

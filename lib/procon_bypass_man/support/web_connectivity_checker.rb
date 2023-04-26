@@ -1,7 +1,9 @@
 class ProconBypassMan::WebConnectivityChecker
   # @param [String, NilClass] url
-  def initialize(url)
+  # @param [String, NilClass] ws_url
+  def initialize(url, ws_url)
     @url = url
+    @ws_url = ws_url
   end
 
   # @return [String]
@@ -11,7 +13,7 @@ class ProconBypassMan::WebConnectivityChecker
     end
 
     if alive?
-      return "ENABLE (#{@url})"
+      return "ENABLE (#{@url}, #{@ws_url})"
     else
      return "UNREACHABLE (#{@url})"
     end

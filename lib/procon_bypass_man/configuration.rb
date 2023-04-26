@@ -129,20 +129,6 @@ class ProconBypassMan::Configuration
   end
 
   # @return [String, NilClass]
-  # TODO: サーバから取得するので削除予定
-  def current_ws_server
-    if (uri = URI.parse(api_server))
-      if uri.port == 443
-        return "ws://#{uri.host}"
-      else
-        return "ws://#{uri.host}:#{uri.port}"
-      end
-    end
-  rescue URI::InvalidURIError
-    nil
-  end
-
-  # @return [String, NilClass]
   def current_ws_server_url
     return unless api_server
     response_json = ProconBypassMan::HttpClient.new(server: api_server, path: '/api/v1/configuration').get
