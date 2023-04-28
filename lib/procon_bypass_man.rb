@@ -163,6 +163,7 @@ module ProconBypassMan
   def self.initialize_pbm
     if ProconBypassMan.pid && ProconBypassMan::ProcessChecker.running?(ProconBypassMan.pid)
       ProconBypassMan::SendErrorCommand.execute(error: "別のプロセスでPBMがすでに起動中なので処理を停止します。")
+      raise 'テスト実行中でここに入ると調査が面倒なのでエラーにします' if ENV['PBM_ENV'] == 'test'
       exit 1
     end
 

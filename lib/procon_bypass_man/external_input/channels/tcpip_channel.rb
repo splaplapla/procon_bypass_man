@@ -46,7 +46,13 @@ module ProconBypassMan
           @port = port
           super()
 
-          @server = AppServer.new('0.0.0.0', @port)
+          begin
+            @server = AppServer.new('0.0.0.0', @port)
+          rescue Errno::EADDRINUSE # NOTE: Address already in use - bind(2) for "0.0.0.0" port XXXX
+            ProconBypassMan::SendErrorCommand.execute(error: "[ExternalInput][TCPIPChannel] 起動に失敗しました。#{e.message}")
+            @server_thread = Thread.start {}
+            return
+          end
 
           # NOTE: masterプロセスで起動する
           @server_thread = Thread.start do

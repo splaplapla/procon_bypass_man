@@ -108,6 +108,7 @@ describe ProconBypassMan do
 
         it do
           allow(ProconBypassMan).to receive(:eternal_sleep)
+          allow(ProconBypassMan).to receive(:pid)
           expect(Kernel).to receive(:trap).exactly(3).times
           subject
         end
