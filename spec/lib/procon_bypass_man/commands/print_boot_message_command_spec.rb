@@ -11,17 +11,36 @@ describe ProconBypassMan::PrintBootMessageCommand do
   end
 
   describe ProconBypassMan::PrintBootMessageCommand::BootMessage do
-
     let(:bm) { described_class.new }
+
     describe '#to_s' do
+      subject { bm.to_s }
+      
       it do
         expect(bm.to_s).to be_a(String)
       end
     end
 
     describe '#to_hash' do
+      subject { bm.to_hash }
+
       it do
         expect(bm.to_hash).to be_a(Hash)
+      end
+
+      context 'ProconBypassMan.rootが/tmp' do
+        it do
+          allow(ProconBypassMan).to receive(:root) { '/tmp' } 
+          expect(subject[:use_pbmenv]).to eq(false)
+        end
+      end
+
+      context 'ProconBypassMan.rootが/usr/share/pbm' do
+        it do
+          allow(ProconBypassMan).to receive(:device_id) # ProconBypassMan.root以下に対して書き込みしてしまうのでワークアラウンド
+          allow(ProconBypassMan).to receive(:root) { '/usr/share/pbm' } 
+          expect(subject[:use_pbmenv]).to eq(true)
+        end
       end
     end
   end
