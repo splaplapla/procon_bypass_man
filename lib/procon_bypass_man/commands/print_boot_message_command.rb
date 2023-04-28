@@ -10,7 +10,7 @@ class ProconBypassMan::PrintBootMessageCommand
       @table[:pid_path] = ProconBypassMan.pid_path
       @table[:setting_path] = ProconBypassMan::ButtonsSettingConfiguration.instance.setting_path
       @table[:uptime_from_boot] = ProconBypassMan::Uptime.from_boot
-      @table[:use_pbmenv] = !(!!`which pbmenv`.empty?)
+      @table[:use_pbmenv] = ProconBypassMan.root.start_with?(Pbmenv::PBM_DIR)
       @table[:session_id] = ProconBypassMan.session_id
       @table[:device_id] = ProconBypassMan.device_id
       @table[:never_exit_accidentally] = ProconBypassMan.config.never_exit_accidentally
