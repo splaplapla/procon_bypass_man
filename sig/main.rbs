@@ -210,7 +210,7 @@ class ProconBypassMan::Configuration
 
   def current_ws_server: () -> (String | nil)
 
-  def current_ws_server_url: () -> ::String
+  def current_ws_server_url: () -> (String | nil)
 
   def enable_ws?: () -> bool
 
@@ -577,7 +577,7 @@ module ProconBypassMan
     @retry_on_connection_error: false
 
     def initialize: (path: String, server: untyped, ?retry_on_connection_error: false) -> void
-    def get: -> nil
+    def get: -> Hash[untyped, untyped]?
     def post: (request_body: untyped) -> nil
     def put: (request_body: untyped) -> nil
 

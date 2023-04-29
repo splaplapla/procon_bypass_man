@@ -129,22 +129,30 @@ class ProconBypassMan::Configuration
   end
 
   # @return [String, NilClass]
-  def current_ws_server
-    if (uri = URI.parse(api_server))
-      if uri.port == 443
-        return "ws://#{uri.host}"
-      else
-        return "ws://#{uri.host}:#{uri.port}"
-      end
-    end
-  rescue URI::InvalidURIError
-    nil
-  end
-
-  # @return [String, NilClass]
   def current_ws_server_url
-    return unless current_ws_server
-    "#{current_ws_server}/websocket/"
+    return @current_ws_server_url if defined?(@current_ws_server_url)
+    return unless api_server
+
+    response_json = ProconBypassMan::HttpClient.new(server: api_server, path: '/api/v1/configuration').get
+    ws_server_url = response_json&.fetch("ws_server_url", nil)
+
+    begin
+      uri = URI.parse(ws_server_url)
+      if uri.scheme == 'ws'
+        @current_ws_server_url = uri.to_s
+        return @current_ws_server_url
+      elsif uri.scheme == 'wss' # NOTE:  SSL_CTX_use_certificate: ee key too small (OpenSSL::SSL::SSLError) が起きるので
+        uri.scheme = 'ws'
+        @current_ws_server_url = uri.to_s
+        return @current_ws_server_url
+      else
+        ProconBypassMan.logger.warn { "#{ws_server_url} is invalid." }
+        return nil
+      end
+    rescue URI::InvalidURIError => e
+      ProconBypassMan.logger.warn { "#{ws_server_url} is invalid. #{e}" }
+      nil
+    end
   end
 
   # @return [Boolean]
