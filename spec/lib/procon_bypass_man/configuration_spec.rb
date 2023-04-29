@@ -145,6 +145,18 @@ describe ProconBypassMan::Configuration do
           end
         end
 
+        context 'ws_server_urlのprotocolがwss' do
+          before do
+            http_client = double(:http_client)
+            expect(http_client).to receive(:get) { { 'ws_server_url' => "wss://pbm-cloud.jiikko.com/websocket" } }
+            allow(ProconBypassMan::HttpClient).to receive(:new).with(server: api_server, path: '/api/v1/configuration') { http_client }
+          end
+
+          it '文字列を返す' do
+            expect(subject).to eq("ws://pbm-cloud.jiikko.com/websocket")
+          end
+        end
+
         context 'ws_server_urlがnot uri' do
           before do
             http_client = double(:http_client)

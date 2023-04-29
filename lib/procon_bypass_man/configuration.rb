@@ -138,7 +138,11 @@ class ProconBypassMan::Configuration
 
     begin
       uri = URI.parse(ws_server_url)
-      if uri.scheme == 'ws' or uri.scheme == 'wss'
+      if uri.scheme == 'ws'
+        @current_ws_server_url = uri.to_s
+        return @current_ws_server_url
+      elsif uri.scheme == 'wss' # NOTE:  SSL_CTX_use_certificate: ee key too small (OpenSSL::SSL::SSLError) が起きるので
+        uri.scheme = 'ws'
         @current_ws_server_url = uri.to_s
         return @current_ws_server_url
       else
