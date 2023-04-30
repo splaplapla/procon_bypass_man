@@ -2,6 +2,7 @@
 * TCP/IP経由でPBMに入力ができるようになりました
 * 多重起動ができないようにしました
 * pbm-cloudとの連携時に、pbmenvを使っているかの判定を修正しました
+* actioncable(websocket)serverのURLをpbm-cloudから取得するようにしました
 
 ## [0.3.7] 2023-04-06
 * PBM-Cloudと連携しているかをbootメッセージに表示ようになりました
