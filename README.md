@@ -41,6 +41,10 @@ https://user-images.githubusercontent.com/1664497/171327108-f12f56a5-fc36-48da-9
     * キーリマップ, 連射, マクロ, 外部ツールからの入力
         * リマップは1つのキーを別のキーに割り当てます
     * 連射中には特定のキーの入力を無視したり、複数のキーをトリガーに連射することができます
+    * スプラ2, 3の自動ドット打ち
+        * https://zenn.dev/jiikko/articles/fcec13200487d5
+    * オートトリガー
+        * https://zenn.dev/jiikko/articles/e794f89afe8896
 * どうしてsudoが必要なの？
     * 操作するdeviceファイルの所有者がrootだからです
 * 市販されているサードパーティ製連射機との違いは？
