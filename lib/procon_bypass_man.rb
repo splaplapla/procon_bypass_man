@@ -116,6 +116,8 @@ module ProconBypassMan
     rescue ProconBypassMan::DeviceConnection::TimeoutError
       ProconBypassMan::SendErrorCommand.execute(error: "接続に失敗しました。プロコンとRaspberry Piのケーブルを差し直して、再実行してください。\n改善しない場合は、app.logの中身を添えて不具合報告をお願いします。")
       ProconBypassMan::DeviceStatus.change_to_connected_but_sleeping!
+      FileUtils.rm_rf(ProconBypassMan.pid_path) # NOTE: この状態になったときに手動で起動できるようにする(多重起動禁止回避)
+
       %w(TERM INT).each do |sig|
         Kernel.trap(sig) { exit 0 }
       end
