@@ -13,6 +13,7 @@ require "ext/em_pure_ruby"
 require "ext/module"
 require "resolv-replace"
 require "pbmenv"
+require 'socket'
 require "blue_green_process"
 
 require_relative "procon_bypass_man/version"

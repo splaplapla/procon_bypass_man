@@ -1,5 +1,3 @@
-require 'socket'
-
 module ProconBypassMan::ProconDisplay
   class Server
     PORT = 9900

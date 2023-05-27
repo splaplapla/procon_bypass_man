@@ -22,7 +22,12 @@ class ProconBypassMan::Runner
         ProconBypassMan.logger.info "[BYPASS] BYPASSプロセスを起動します"
         $will_terminate_token = false
         ProconBypassMan.run_on_after_fork_of_bypass_process
-        ProconBypassMan::BypassCommand.new(gadget: @gadget, procon: @procon).execute # ここでblockingする
+
+        read_pipe, write_pipe = IO.pipe
+        Thread.start { ProconBypassMan::ProconDisplay::Server2.run(read_pipe) }
+
+        ProconBypassMan::BypassCommand.new(gadget: @gadget, procon: @procon, write_pipe: write_pipe).execute # ここでblockingする
+
         next
       end
 

@@ -3,10 +3,8 @@
 require "procon_bypass_man/bypass/bypass_command"
 
 class ProconBypassMan::Bypass::ProconToSwitch
-  extend ProconBypassMan::CallbacksRegisterable
   include ProconBypassMan::Callbacks
 
-  class CouldNotReadFromProconError < StandardError; end
   class CouldNotWriteToSwitchError < StandardError; end
 
   define_callbacks :work
@@ -15,11 +13,12 @@ class ProconBypassMan::Bypass::ProconToSwitch
   # マルチプロセス化したので一旦無効にする
   # register_callback_module(ProconBypassMan::ProconDisplay::BypassHook)
 
-  attr_accessor :gadget, :procon, :bypass_value
+  attr_accessor :gadget, :procon, :bypass_value, :display_input_pipe
 
-  def initialize(gadget: , procon: )
+  def initialize(gadget: , procon: , pipe: )
     self.gadget = gadget
     self.procon = procon
+    self.display_input_pipe = pipe
   end
 
   # @raise [Errno::EIO, Errno::ENODEV, Errno::EPROTO, IOError, Errno::ESHUTDOWN, Errno::ETIMEDOUT]
@@ -36,6 +35,12 @@ class ProconBypassMan::Bypass::ProconToSwitch
           begin
             return(false) if will_terminate?
             raw_output = self.procon.read_nonblock(64)
+
+            begin
+              display_input_pipe.write_nonblock("#{raw_output}\n") if display_input_pipe
+            rescue IO::EAGAINWaitWritable # pipeのバッファが溢れたらこれが発生する
+            end
+
           rescue IO::EAGAINWaitReadable
             sleep(0.002)
             retry

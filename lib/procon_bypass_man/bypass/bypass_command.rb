@@ -5,9 +5,10 @@ class ProconBypassMan::BypassCommand
     RESTART = :restart
   end
 
-  def initialize(gadget: , procon: )
+  def initialize(gadget: , procon: , write_pipe: )
     @gadget = gadget
     @procon = procon
+    @write_pipe = write_pipe
   end
 
   def execute
@@ -51,7 +52,7 @@ class ProconBypassMan::BypassCommand
     # procon => gadget
     # シビア
     t2 = Thread.new do
-      bypass = ProconBypassMan::Bypass::ProconToSwitch.new(gadget: @gadget, procon: @procon)
+      bypass = ProconBypassMan::Bypass::ProconToSwitch.new(gadget: @gadget, procon: @procon, pipe: @write_pipe)
       process = BlueGreenProcess.new(worker_instance: bypass, max_work: 1000)
       loop do
         if $will_terminate_token

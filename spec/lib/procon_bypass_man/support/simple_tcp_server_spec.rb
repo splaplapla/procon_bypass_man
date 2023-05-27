@@ -1,5 +1,4 @@
-require 'socket'
-require 'procon_bypass_man/support/simple_tcp_server'
+require "spec_helper"
 
 describe SimpleTCPServer do
   let(:host) { 'localhost' }
