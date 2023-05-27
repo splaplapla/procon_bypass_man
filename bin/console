@@ -12,8 +12,7 @@ require "pry"
 # require "pry"
 # Pry.start
 
-require "irb"
-
 ProconBypassMan.config.logger = Logger.new($stdout)
 
-IRB.start(__FILE__)
+opts = Pry::CLI.parse_options
+Pry::CLI.start(opts)
