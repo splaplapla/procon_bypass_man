@@ -89,7 +89,7 @@ sudo kill -USR2 `cat ./pbm_pid`
 * procon_bypassの運営・開発・サーバー費用に充てさせていただきます。また、問い合わせに優先して対応します。
 
 ## Links
-* https://discord.gg/bEcRNKf4ep
+* https://discord.gg/EfC7yvr6
   * 質問などご意見をdiscordでも受け付けています
 
 ## License
