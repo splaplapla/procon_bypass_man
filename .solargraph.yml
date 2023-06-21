@@ -5,7 +5,7 @@ exclude:
 - test/**/*
 - vendor/**/*
 - ".bundle/**/*"
-require: 
+require:
   - pbmenv
   - resolv-replace
 domains: []
