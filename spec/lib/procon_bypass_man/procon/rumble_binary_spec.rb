@@ -13,9 +13,9 @@ describe ProconBypassMan::RumbleBinary do
 
   describe '#raw' do
   let(:data) { "100d0001404000014040" }
-    it do
-      expect(instance.raw).to eq(binary)
-    end
+  it do
+    expect(instance.raw).to eq(binary)
+  end
   end
 
   describe 'noop!' do

@@ -12,8 +12,8 @@ describe ProconBypassMan::Procon::AnalogStick do
 
     subject { described_class.new(binary: binary).relative_hypotenuse }
 
-     it do
-       expect(subject).to eq(182.200439)
-     end
+    it do
+      expect(subject).to eq(182.200439)
+    end
   end
 end

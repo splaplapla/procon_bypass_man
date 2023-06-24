@@ -35,6 +35,6 @@ describe ProconBypassMan::DeviceConnection::PreBypass do
       allow(instance).to receive(:send_switch)
     end
 
-      it { expect { subject }.not_to raise_error }
+    it { expect { subject }.not_to raise_error }
   end
 end

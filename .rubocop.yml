@@ -16,6 +16,12 @@ Layout:
 Naming:
   Enabled: false
 
+Layout/AccessModifierIndentation:
+  Enabled: true
+
+Layout/IndentationConsistency:
+  Enabled: true
+
 Lint/ConstantDefinitionInBlock:
     Enabled: true
     Exclude:
