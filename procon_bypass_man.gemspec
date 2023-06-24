@@ -28,10 +28,10 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   # Uncomment to register a new dependency of your gem
-  spec.add_dependency "pbmenv", ">= 0.1.11" # enable_pbm_cloud連携機能でPbmenv.install, .cleanを使っている.
   spec.add_dependency "action_cable_client"
-  spec.add_dependency "sorted_set"
   spec.add_dependency "blue_green_process", '0.1.4.2'
+  spec.add_dependency "pbmenv", ">= 0.1.11" # enable_pbm_cloud連携機能でPbmenv.install, .cleanを使っている.
+  spec.add_dependency "sorted_set"
 
   # For more information and examples about making a new gem, checkout our
   # guide at: https://bundler.io/guides/creating_gem.html
