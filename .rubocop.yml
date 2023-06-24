@@ -17,7 +17,9 @@ Naming:
   Enabled: false
 
 Lint/ConstantDefinitionInBlock:
-    Enabled: false
+    Enabled: true
+    Exclude:
+      - 'spec/**/*.rb'
 Lint/UselessAssignment:
     Enabled: false
 Lint/EmptyBlock:
