@@ -8,6 +8,6 @@ class ProconBypassMan::Procon
 
   # @return [Array<Symbol>]
   def pressing
-    ProconBypassMan::ProconReader.new(binary: to_binary).pressing
+    ProconBypassMan::ProconReader.new(binary: user_operation.binary.binary).pressing
   end
 end
