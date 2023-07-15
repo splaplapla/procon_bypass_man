@@ -52,7 +52,7 @@ describe ProconBypassMan::Procon do
 
   context 'with left_analog_stick_caps' do
     let(:data) { "30f28100800078c77448287509550274ff131029001b0022005a0271ff191028001e00210064027cff1410280020002100000000000000000000000000000000" } # no_action
-    it do
+    it 'aを押したら発動すること' do
       ProconBypassMan.buttons_setting_configure do
         prefix_keys_for_changing_layer [:zr]
         layer :up do
@@ -63,6 +63,46 @@ describe ProconBypassMan::Procon do
       procon.user_operation.press_button(:a)
       expect(procon.user_operation).to receive(:apply_left_analog_stick_cap).once
       ProconBypassMan::Procon.new(procon.to_binary)
+    end
+  end
+
+  context 'with left_analog_stick_caps and combined_press_is_pressed' do
+    let(:data) { "30f28100800078c77448287509550274ff131029001b0022005a0271ff191028001e00210064027cff1410280020002100000000000000000000000000000000" } # no_action
+    it 'aを押したらbを押すこと' do
+      ProconBypassMan.buttons_setting_configure do
+        prefix_keys_for_changing_layer [:zr]
+        layer :up do
+          left_analog_stick_cap cap: 1000, if_pressed: [:a], combined_press_is_pressed: [:b]
+        end
+      end
+
+      ProconBypassMan::Procon.new(binary).tap do |procon|
+        procon.user_operation.press_button(:a)
+        expect(procon.user_operation).to receive(:apply_left_analog_stick_cap).once
+        procon.to_binary
+        expect(procon.user_operation).to be_pressed_a
+        expect(procon.user_operation).to be_pressed_b # 明示的に押していないが、combined_press_is_pressedのため押されている
+      end
+    end
+  end
+
+  context 'with left_analog_stick_caps and combined_press_is_pressed' do
+    let(:data) { "30f28100800078c77448287509550274ff131029001b0022005a0271ff191028001e00210064027cff1410280020002100000000000000000000000000000000" } # no_action
+    it 'aを押したらbを押すこと' do
+      ProconBypassMan.buttons_setting_configure do
+        prefix_keys_for_changing_layer [:zr]
+        layer :up do
+          left_analog_stick_cap cap: 1000, if_pressed: [:a], combined_press_is_pressed: []
+        end
+      end
+
+      ProconBypassMan::Procon.new(binary).tap do |procon|
+        procon.user_operation.press_button(:a)
+        expect(procon.user_operation).to receive(:apply_left_analog_stick_cap).once
+        procon.to_binary
+        expect(procon.user_operation).to be_pressed_a
+        expect(procon.user_operation).not_to be_pressed_b
+      end
     end
   end
 

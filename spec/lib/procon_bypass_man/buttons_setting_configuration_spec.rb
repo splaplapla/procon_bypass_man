@@ -81,6 +81,24 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
             ])
           end
         end
+        context 'with force_neutral' do
+          let(:setting_content) do
+            <<~EOH
+          version: 1.0
+          setting: |-
+            prefix_keys_for_changing_layer [:zr, :r, :zl, :l]
+            layer :up do
+              left_analog_stick_cap cap: 1000, if_pressed: [:a], force_neutral: [:a], combined_press_is_pressed: [:b]
+            end
+            EOH
+          end
+          it do
+            ProconBypassMan::ButtonsSettingConfiguration::Loader.load(setting_path: setting.path)
+            expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].left_analog_stick_caps).to eq([
+              {:cap=>1000, :force_neutral=> [:a], if_pressed: [:a], combined_press_is_pressed: [:b] }
+            ])
+          end
+        end
         context 'provide array' do
           let(:setting_content) do
             <<~EOH
