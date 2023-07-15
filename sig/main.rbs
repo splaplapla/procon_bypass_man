@@ -340,12 +340,6 @@ class ProconBypassMan::Procon::ButtonCollection
 end
 
 class ProconBypassMan::Procon
-  module Data
-    NO_ACTION: untyped
-  end
-end
-
-class ProconBypassMan::Procon
   class FlipCache
     def self.fetch: (key: untyped key, expires_in: untyped expires_in) { () -> untyped } -> untyped
 

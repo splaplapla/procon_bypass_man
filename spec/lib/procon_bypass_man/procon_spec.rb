@@ -8,7 +8,7 @@ describe ProconBypassMan::Procon do
   end
 
   context 'prefix_keys_for_changing_layerが未設定のとき' do
-    let(:pressed_y_and_b) { "30778105800099277344e86b0a7909f4f5a8f4b500c5ff8dff6c09cdf5b8f49a00c5ff92ff6a0979f5eef46500d5ff9bff000000000000000000000000000000" }
+    let(:pressed_y_and_b) { OutputReportGenerator.new([:y, :b]).execute }
     let(:data) { pressed_y_and_b }
     it do
       ProconBypassMan.buttons_setting_configure do
@@ -18,7 +18,7 @@ describe ProconBypassMan::Procon do
   end
 
   context 'apply!しまくるとき' do
-    let(:pressed_y_and_b) { "30778105800099277344e86b0a7909f4f5a8f4b500c5ff8dff6c09cdf5b8f49a00c5ff92ff6a0979f5eef46500d5ff9bff000000000000000000000000000000" }
+    let(:pressed_y_and_b) { OutputReportGenerator.new([:y, :b]).execute }
     let(:data) { pressed_y_and_b }
     it do
       ProconBypassMan.buttons_setting_configure do
@@ -31,7 +31,7 @@ describe ProconBypassMan::Procon do
   end
 
   context 'with disable' do
-    let(:pressed_y_and_b) { "30778105800099277344e86b0a7909f4f5a8f4b500c5ff8dff6c09cdf5b8f49a00c5ff92ff6a0979f5eef46500d5ff9bff000000000000000000000000000000" }
+    let(:pressed_y_and_b) { OutputReportGenerator.new([:y, :b]).execute }
     let(:data) { pressed_y_and_b }
     it do
       ProconBypassMan.buttons_setting_configure do
@@ -51,7 +51,7 @@ describe ProconBypassMan::Procon do
   end
 
   context 'with left_analog_stick_caps' do
-    let(:data) { "30f28100800078c77448287509550274ff131029001b0022005a0271ff191028001e00210064027cff1410280020002100000000000000000000000000000000" } # no_action
+    let(:data) { OutputReportGenerator.new.execute }
     it 'aを押したら発動すること' do
       ProconBypassMan.buttons_setting_configure do
         prefix_keys_for_changing_layer [:zr]
@@ -67,7 +67,7 @@ describe ProconBypassMan::Procon do
   end
 
   context 'with left_analog_stick_caps and combined_press_is_pressed' do
-    let(:data) { "30f28100800078c77448287509550274ff131029001b0022005a0271ff191028001e00210064027cff1410280020002100000000000000000000000000000000" } # no_action
+    let(:data) { OutputReportGenerator.new.execute }
     it 'aを押したらbを押すこと' do
       ProconBypassMan.buttons_setting_configure do
         prefix_keys_for_changing_layer [:zr]
@@ -87,7 +87,7 @@ describe ProconBypassMan::Procon do
   end
 
   context 'with left_analog_stick_caps and combined_press_is_pressed' do
-    let(:data) { "30f28100800078c77448287509550274ff131029001b0022005a0271ff191028001e00210064027cff1410280020002100000000000000000000000000000000" } # no_action
+    let(:data) { OutputReportGenerator.new.execute }
     it 'aを押したらbを押すこと' do
       ProconBypassMan.buttons_setting_configure do
         prefix_keys_for_changing_layer [:zr]
@@ -107,7 +107,7 @@ describe ProconBypassMan::Procon do
   end
 
   context 'with flip_interval' do
-    let(:data) { "30f28100800078c77448287509550274ff131029001b0022005a0271ff191028001e00210064027cff1410280020002100000000000000000000000000000000" } # no_action
+    let(:data) { OutputReportGenerator.new.execute }
     it do
       Timecop.freeze(Time.parse("2011-11-11 10:00:00 +09:00")) do
         ProconBypassMan::Procon::FlipCache.reset!
@@ -135,9 +135,9 @@ describe ProconBypassMan::Procon do
   end
 
   context 'with mode' do
-    let(:data) { "30f28100800078c77448287509550274ff131029001b0022005a0271ff191028001e00210064027cff1410280020002100000000000000000000000000000000" } # no_action
-    let(:pressed_y_and_b) { "30778105800099277344e86b0a7909f4f5a8f4b500c5ff8dff6c09cdf5b8f49a00c5ff92ff6a0979f5eef46500d5ff9bff000000000000000000000000000000" }
-    let(:not_pressed_y_and_b) { "30f28100800078c77448287509550274ff131029001b0022005a0271ff191028001e00210064027cff1410280020002100000000000000000000000000000000" }
+    let(:data) { OutputReportGenerator.new.execute }
+    let(:pressed_y_and_b) { OutputReportGenerator.new([:y, :b]).execute }
+    let(:not_pressed_y_and_b) { OutputReportGenerator.new.execute }
     it 'modeのbinariesを繰り返すこと' do
       module G
         def self.name
@@ -252,7 +252,7 @@ describe ProconBypassMan::Procon do
       end
 
       context 'y, bを押しているとき' do
-        let(:data) { "30778105800099277344e86b0a7909f4f5a8f4b500c5ff8dff6c09cdf5b8f49a00c5ff92ff6a0979f5eef46500d5ff9bff000000000000000000000000000000" }
+        let(:data) { OutputReportGenerator.new(:y, :b).execute }
         before do
           module FastReturn
             def self.steps
@@ -302,7 +302,7 @@ describe ProconBypassMan::Procon do
     end
     context 'v2' do
       context 'y, bを押しているとき' do
-        let(:data) { "30778105800099277344e86b0a7909f4f5a8f4b500c5ff8dff6c09cdf5b8f49a00c5ff92ff6a0979f5eef46500d5ff9bff000000000000000000000000000000" }
+        let(:data) { OutputReportGenerator.new([:y, :b]).execute }
         context 'shake_left_stick' do
           before do
             ProconBypassMan.buttons_setting_configure do
@@ -324,7 +324,7 @@ describe ProconBypassMan::Procon do
         end
       end
       context 'y, bを押しているとき' do
-        let(:data) { "30778105800099277344e86b0a7909f4f5a8f4b500c5ff8dff6c09cdf5b8f49a00c5ff92ff6a0979f5eef46500d5ff9bff000000000000000000000000000000" }
+        let(:data) { OutputReportGenerator.new([:y, :b]).execute }
         context 'shake_left_stick and toggle_b' do
           before do
             ProconBypassMan.buttons_setting_configure do
@@ -351,7 +351,7 @@ describe ProconBypassMan::Procon do
         end
       end
       context 'y, bを押しているとき' do
-        let(:data) { "30778105800099277344e86b0a7909f4f5a8f4b500c5ff8dff6c09cdf5b8f49a00c5ff92ff6a0979f5eef46500d5ff9bff000000000000000000000000000000" }
+        let(:data) { OutputReportGenerator.new([:y, :b]).execute }
         context '定義にないボタンを使うとき' do
           before do
             ProconBypassMan.buttons_setting_configure do
@@ -380,7 +380,7 @@ describe ProconBypassMan::Procon do
         end
       end
       context 'y, bを押しているとき' do
-        let(:data) { "30778105800099277344e86b0a7909f4f5a8f4b500c5ff8dff6c09cdf5b8f49a00c5ff92ff6a0979f5eef46500d5ff9bff000000000000000000000000000000" }
+        let(:data) { OutputReportGenerator.new([:y, :b]).execute }
         before do
           ProconBypassMan.buttons_setting_configure do
             prefix_keys_for_changing_layer [:zr]
@@ -419,7 +419,7 @@ describe ProconBypassMan::Procon do
       end
 
       context 'remote macro' do
-        let(:data) { "30778105800099277344e86b0a7909f4f5a8f4b500c5ff8dff6c09cdf5b8f49a00c5ff92ff6a0979f5eef46500d5ff9bff000000000000000000000000000000" }
+        let(:data) { OutputReportGenerator.new(:y, :b).execute }
         before do
           ProconBypassMan.buttons_setting_configure do
             prefix_keys_for_changing_layer [:zr]
@@ -451,7 +451,7 @@ describe ProconBypassMan::Procon do
       end
 
       context 'remote action' do
-        let(:data) { "30778105800099277344e86b0a7909f4f5a8f4b500c5ff8dff6c09cdf5b8f49a00c5ff92ff6a0979f5eef46500d5ff9bff000000000000000000000000000000" }
+        let(:data) { OutputReportGenerator.new(:y, :b).execute }
         before do
           ProconBypassMan.buttons_setting_configure do
             prefix_keys_for_changing_layer [:zr]
@@ -481,7 +481,7 @@ describe ProconBypassMan::Procon do
       context '条件なし' do
         context 'すべてのマクロを無効にするとき' do
           context 'y, bを押しているとき' do
-            let(:data) { "30778105800099277344e86b0a7909f4f5a8f4b500c5ff8dff6c09cdf5b8f49a00c5ff92ff6a0979f5eef46500d5ff9bff000000000000000000000000000000" }
+            let(:data) { OutputReportGenerator.new(:y, :b).execute }
             before do
               ProconBypassMan.buttons_setting_configure do
                 prefix_keys_for_changing_layer [:zr]
@@ -508,7 +508,7 @@ describe ProconBypassMan::Procon do
         context '無効対象のマクロ名を指定するとき' do
           describe 'Symbol' do
             context 'y, bを押しているとき' do
-              let(:data) { "30778105800099277344e86b0a7909f4f5a8f4b500c5ff8dff6c09cdf5b8f49a00c5ff92ff6a0979f5eef46500d5ff9bff000000000000000000000000000000" }
+              let(:data) { OutputReportGenerator.new(:y, :b).execute }
               before do
                 ProconBypassMan.buttons_setting_configure do
                   prefix_keys_for_changing_layer [:zr]
@@ -533,7 +533,7 @@ describe ProconBypassMan::Procon do
           end
           describe 'クラス' do
             context 'y, bを押しているとき' do
-              let(:data) { "30778105800099277344e86b0a7909f4f5a8f4b500c5ff8dff6c09cdf5b8f49a00c5ff92ff6a0979f5eef46500d5ff9bff000000000000000000000000000000" }
+              let(:data) { OutputReportGenerator.new(:y, :b).execute }
               module TheMacro
                 def self.steps
                   [:pressing_thumbr_and_toggle_zr_for_2sec, :a]
@@ -569,7 +569,7 @@ describe ProconBypassMan::Procon do
         describe 'すべてのマクロを無効' do
           context '条件に一致するとき' do
             context 'y, bを押しているとき' do
-              let(:data) { "30778105800099277344e86b0a7909f4f5a8f4b500c5ff8dff6c09cdf5b8f49a00c5ff92ff6a0979f5eef46500d5ff9bff000000000000000000000000000000" }
+              let(:data) { OutputReportGenerator.new(:y, :b).execute }
               before do
                 ProconBypassMan.buttons_setting_configure do
                   prefix_keys_for_changing_layer [:zr]
@@ -595,7 +595,7 @@ describe ProconBypassMan::Procon do
 
           context '条件に一致しないとき' do
             context 'y, bを押しているとき' do
-              let(:data) { "30778105800099277344e86b0a7909f4f5a8f4b500c5ff8dff6c09cdf5b8f49a00c5ff92ff6a0979f5eef46500d5ff9bff000000000000000000000000000000" }
+              let(:data) { OutputReportGenerator.new(:y, :b).execute }
               before do
                 ProconBypassMan.buttons_setting_configure do
                   prefix_keys_for_changing_layer [:zr]
@@ -623,7 +623,7 @@ describe ProconBypassMan::Procon do
         context '無効対象のマクロ名を指定するとき' do
           describe 'Symbol' do
             context 'y, bを押しているとき' do
-              let(:data) { "30778105800099277344e86b0a7909f4f5a8f4b500c5ff8dff6c09cdf5b8f49a00c5ff92ff6a0979f5eef46500d5ff9bff000000000000000000000000000000" }
+              let(:data) { OutputReportGenerator.new(:y, :b).execute }
               before do
                 ProconBypassMan.buttons_setting_configure do
                   prefix_keys_for_changing_layer [:zr]
@@ -649,7 +649,7 @@ describe ProconBypassMan::Procon do
 
           describe 'クラス' do
             context 'y, bを押しているとき' do
-              let(:data) { "30778105800099277344e86b0a7909f4f5a8f4b500c5ff8dff6c09cdf5b8f49a00c5ff92ff6a0979f5eef46500d5ff9bff000000000000000000000000000000" }
+              let(:data) { OutputReportGenerator.new(:y, :b).execute }
               module TheMacro
                 def self.steps
                   [:pressing_thumbr_and_toggle_zr_for_2sec, :a]
@@ -691,14 +691,15 @@ describe ProconBypassMan::Procon do
           remap :l, to: :zr
         end
       end
-      no_action_binary = ["30f28100800078c77448287509550274ff131029001b0022005a0271ff191028001e00210064027cff1410280020002100000000000000000000000000000000"].pack("H*")
+
+      no_action_binary = [OutputReportGenerator.new.execute].pack("H*")
       procon = ProconBypassMan::Procon.new(no_action_binary)
       procon.user_operation.press_button(:l)
       procon.user_operation.press_button(:zr)
       procon.apply!
       b = procon.to_binary
       expect(b.unpack "H*").to eq([
-        "30f28180800078c77448287509550274ff131029001b0022005a0271ff191028001e00210064027cff1410280020002100000000000000000000000000000000"
+        OutputReportGenerator.new(:zr).execute
       ])
     end
   end
@@ -716,7 +717,7 @@ describe ProconBypassMan::Procon do
       end
     end
     context 'y, bを押しているとき' do
-      let(:data) { "30778105800099277344e86b0a7909f4f5a8f4b500c5ff8dff6c09cdf5b8f49a00c5ff92ff6a0979f5eef46500d5ff9bff000000000000000000000000000000" }
+      let(:data) { OutputReportGenerator.new(:y, :b).execute }
       it 'bは押していない' do
         procon = ProconBypassMan::Procon.new(binary)
         expect(procon.pressed_y?).to eq(true)
@@ -737,9 +738,9 @@ describe ProconBypassMan::Procon do
 
   context 'ExternalInput.readがExternalDataを返すとき' do
     context 'ExternalDataのhexに値が含まれているとき' do
-      let(:data) { '30f28100800078c77448287509550274ff131029001b0022005a0271ff191028001e00210064027cff1410280020002100000000000000000000000000000000' } # NOTE: 何も押していない
+      let(:data) { OutputReportGenerator.new.execute }
       let(:external_input_json) {
-        { hex: '30f2810c800078c77448287509550274ff131029001b0022005a0271ff191028001e00210064027cff1410280020002100000000000000000000000000000000' }.to_json # NOTE: a, bを押している
+        { hex: OutputReportGenerator.new(:a, :b).execute }.to_json # NOTE: a, bを押している
       }
 
       it '出力に影響を与えること' do
@@ -760,7 +761,7 @@ describe ProconBypassMan::Procon do
     end
 
     context 'ExternalDataのbuttons' do
-      let(:data) { '30f28100800078c77448287509550274ff131029001b0022005a0271ff191028001e00210064027cff1410280020002100000000000000000000000000000000' } # NOTE: 何も押していない
+      let(:data) { OutputReportGenerator.new.execute }
       let(:raw_external_input_data) { ':a::b:' }
 
       it '出力に影響を与えること' do
@@ -781,7 +782,7 @@ describe ProconBypassMan::Procon do
     end
 
     context 'ExternalDataのbuttons' do
-      let(:data) { '30f28180800078c77448287509550274ff131029001b0022005a0271ff191028001e00210064027cff1410280020002100000000000000000000000000000000' } # NOTE: ZRを押している
+      let(:data) { OutputReportGenerator.new(:zr).execute }
       let(:raw_external_input_data) { ':a::unzr:' }
 
       it '出力に影響を与えること' do
@@ -827,8 +828,8 @@ describe ProconBypassMan::Procon do
     end
 
     describe 'change_layer?' do
-      context 'zr, r, zl, l, :rightを押しているとき' do
-        let(:data) { "306991c080c4c987734758740af2011c03ef0f5bffe2ffedffe8013403e00f70fff0fff4ffe8014a03cb0f6effeefff2ff000000000000000000000000000000" }
+      context 'r, zl, l, :rightを押しているとき' do
+        let(:data) { OutputReportGenerator.new(:r, :right, :l, :zl, :zr).execute }
         it 'ニュートラルになる' do
           procon = ProconBypassMan::Procon.new(binary)
           expect(procon.current_layer_key).to eq(:up)
@@ -907,11 +908,11 @@ describe ProconBypassMan::Procon do
     describe '#pressed_zr?' do
       subject { ProconBypassMan::Procon.new(binary).pressed_zr? }
       context 'zr押している' do
-        let(:data) { "3012818a8000b0377246f8750988f5c70bfb011400e9ff180083f5d00bf9011100ecff190088f5d10bf9011000f1ff1c00000000000000000000000000000000" }
+        let(:data) { OutputReportGenerator.new(:zr).execute }
         it { expect(subject).to eq(true) }
       end
       context 'zr押していない' do
-        let(:data) { "30f28100800078c77448287509550274ff131029001b0022005a0271ff191028001e00210064027cff1410280020002100000000000000000000000000000000" }
+        let(:data) { OutputReportGenerator.new.execute }
         it { expect(subject).to eq(false) }
       end
     end
@@ -919,18 +920,18 @@ describe ProconBypassMan::Procon do
     describe '#pressed_down?' do
       subject { ProconBypassMan::Procon.new(binary).pressed_down? }
       context 'zr押していない' do
-        let(:data) { "30f28100800078c77448287509550274ff131029001b0022005a0271ff191028001e00210064027cff1410280020002100000000000000000000000000000000" }
+        let(:data) { OutputReportGenerator.new.execute }
         it { expect(subject).to eq(false) }
       end
       context 'zr押している' do
-        let(:data) { "3012818a8000b0377246f8750988f5c70bfb011400e9ff180083f5d00bf9011100ecff190088f5d10bf9011000f1ff1c00000000000000000000000000000000" }
+        let(:data) { OutputReportGenerator.new(:zr).execute }
         it { expect(subject).to eq(false) }
       end
     end
 
     context 'if_tilted_left_stick option' do
       context 'provide true' do
-        let(:data) { "30778105800099277344e86b0a7909f4f5a8f4b500c5ff8dff6c09cdf5b8f49a00c5ff92ff6a0979f5eef46500d5ff9bff000000000000000000000000000000" }
+        let(:data) { OutputReportGenerator.new(:y, :b).execute }
         before do
           ProconBypassMan.buttons_setting_configure do
             prefix_keys_for_changing_layer [:zr]
@@ -952,7 +953,7 @@ describe ProconBypassMan::Procon do
         end
       end
       context 'provide Hash' do
-        let(:data) { "30778105800099277344e86b0a7909f4f5a8f4b500c5ff8dff6c09cdf5b8f49a00c5ff92ff6a0979f5eef46500d5ff9bff000000000000000000000000000000" }
+        let(:data) { OutputReportGenerator.new(:y, :b).execute }
         before do
           ProconBypassMan.buttons_setting_configure do
             prefix_keys_for_changing_layer [:zr]
@@ -977,7 +978,7 @@ describe ProconBypassMan::Procon do
 
     describe 'ZRを押しっぱなしのときは出力をトグルすること' do
       context 'zr押している' do
-        let(:data) { "3012818a8000b0377246f8750988f5c70bfb011400e9ff180083f5d00bf9011100ecff190088f5d10bf9011000f1ff1c00000000000000000000000000000000".freeze }
+        let(:data) { OutputReportGenerator.new(:zr).execute }
         it do
           procon = ProconBypassMan::Procon.new(binary)
           procon.apply!
@@ -999,7 +1000,7 @@ describe ProconBypassMan::Procon do
         end
       end
       context 'a, zr押していない' do
-        let(:data) { "30f28100800078c77448287509550274ff131029001b0022005a0271ff191028001e00210064027cff1410280020002100000000000000000000000000000000" }
+        let(:data) { OutputReportGenerator.new.execute }
         it do
           procon = ProconBypassMan::Procon.new(binary)
           procon.apply!
@@ -1028,7 +1029,7 @@ describe ProconBypassMan::Procon do
         end
       end
       context 'zr押していない' do
-        let(:data) { "30f28100800078c77448287509550274ff131029001b0022005a0271ff191028001e00210064027cff1410280020002100000000000000000000000000000000" }
+        let(:data) { OutputReportGenerator.new.execute }
         it do
           procon = ProconBypassMan::Procon.new(binary)
           procon.apply!

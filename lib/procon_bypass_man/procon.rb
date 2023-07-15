@@ -9,7 +9,6 @@ class ProconBypassMan::Procon
   require "procon_bypass_man/procon/value_objects/rumble_binary"
   require "procon_bypass_man/procon/value_objects/binary"
   require "procon_bypass_man/procon/value_objects/bypass_mode"
-  require "procon_bypass_man/procon/consts"
   require "procon_bypass_man/procon/performance_measurement"
   require "procon_bypass_man/procon/performance_measurement/queue_over_process"
   require "procon_bypass_man/procon/mode_registry"

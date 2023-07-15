@@ -8,11 +8,4 @@ require "pry"
 # Usage:
 #  $ `generate_output_report x zl y` のように、引数にボタン名を渡す
 
-no_action_binary = ["30f28100800078c77448287509550274ff131029001b0022005a0271ff191028001e00210064027cff1410280020002100000000000000000000000000000000"].pack("H*")
-user_operation = ProconBypassMan::Procon::UserOperation.new(no_action_binary)
-
-ARGV.map { |x| x.to_sym }.each do |button|
-  user_operation.press_button(button)
-end
-
-puts user_operation.binary.unpack.first
+puts OutputReportGenerator.new(ARGV).execute
