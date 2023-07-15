@@ -4,7 +4,7 @@ class ProconBypassMan::Domains::Binary::Base
     @binary = binary
   end
 
-  # @return [String] バイナリ
+  # @return [String]
   def binary
     raise NotImplementedError
   end
