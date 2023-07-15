@@ -172,7 +172,7 @@ module ProconBypassMan
         end
       end
 
-      def left_analog_stick_cap(cap: nil, if_pressed: nil, force_neutral: nil)
+      def left_analog_stick_cap(cap: nil, if_pressed: nil, force_neutral: nil, combined_press_is_pressed: nil)
         case cap
         when Integer
           # OK
@@ -200,6 +200,15 @@ module ProconBypassMan
           end
         rescue ParamNormalizer::UnSupportValueError
           Kernel.warn "設定ファイルに記述ミスがあります. left_analog_stick_capのforce_neutralにはボタンを渡してください."
+          return
+        end
+
+        begin
+          if(combined_press_is_pressed = ParamNormalizer::IfPressedAllowsFalsy.new(combined_press_is_pressed).to_value!)
+            hash[:combined_press_is_pressed] = combined_press_is_pressed
+          end
+        rescue ParamNormalizer::UnSupportValueError
+          Kernel.warn "設定ファイルに記述ミスがあります. left_analog_stick_capのcombined_press_is_pressedにはボタンを渡してください."
           return
         end
 

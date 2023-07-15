@@ -226,6 +226,9 @@ class ProconBypassMan::Procon
         config[:force_neutral]&.each do |force_neutral_button|
           user_operation.unpress_button(force_neutral_button)
         end
+        config[:combined_press_is_pressed]&.each do |combined_press_is_pressed|
+          combined_press_is_pressed.each { |button| user_operation.press_button(button) }
+        end
         user_operation.apply_left_analog_stick_cap(cap: config[:cap])
       end
     end
