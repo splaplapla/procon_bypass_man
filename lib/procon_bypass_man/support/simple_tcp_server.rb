@@ -1,5 +1,3 @@
-require 'socket'
-
 class SimpleTCPServer
   def initialize(host, port)
     @host = host
