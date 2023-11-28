@@ -214,6 +214,8 @@ class ProconBypassMan::Procon
       end
       user_operation.press_button_only_or_tilt_sticks(step)
       return user_operation.binary.raw
+    else
+      BlueGreenProcess::SharedVariable.extend_run_on_this_process = false
     end
 
     current_layer.disables.each do |button|
