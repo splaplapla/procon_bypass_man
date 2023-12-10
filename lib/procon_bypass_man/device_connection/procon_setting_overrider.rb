@@ -2,7 +2,6 @@ class ProconBypassMan::DeviceConnection::ProconSettingOverrider
   attr_accessor :procon, :output_report_watcher, :output_report_generator
 
   SUB_COMMAND_HOME_LED_ON = "38"
-  SUB_COMMAND_VIBRATION = "48"
 
   SUB_COMMAND_ARG_HOME_LED_ON = "1FF0FF"
 
