@@ -74,7 +74,6 @@ Thread.abort_on_exception = true
 
 module ProconBypassMan
   extend ProconBypassMan::Configuration::ClassMethods
-  extend ProconBypassMan::NeverExitAccidentally
 
   class CouldNotLoadConfigError < StandardError; end
   class NotFoundProconError < StandardError; end
