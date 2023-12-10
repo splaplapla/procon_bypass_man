@@ -1,3 +1,7 @@
+## unrelease
+* 起動時の安定性向上
+* systemd unit pbm.serviceのRestart=noにしました
+
 ## [0.3.10] 2023-11-30
 * マクロを実行するとメモリ使用率が増え続ける不具合を修正しました
 
