@@ -113,6 +113,7 @@ class ProconBypassMan::DeviceConnection::Executer
     end
   rescue ProconBypassMan::SafeTimeout::Timeout, Timeout::Error => e
     ProconBypassMan.logger.error "timeoutになりました(#{e.message})"
+    procon.write_nonblock(['8006'].pack("H*")) # 再実行時のケーブルの再接続を不要にするワークアラウンド. リセットしているらしい
     compressed_buffer_text = ProconBypassMan::CompressArray.new(debug_log_buffer).compress.join("\n")
     ProconBypassMan::SendErrorCommand.execute(error: compressed_buffer_text, stdout: false)
     raise ProconBypassMan::SafeTimeout::Timeout if @throw_error_if_timeout
