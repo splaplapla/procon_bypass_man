@@ -6,7 +6,7 @@ After=network.target
 Type=simple
 WorkingDirectory=/usr/share/pbm/current
 ExecStart=/bin/bash -c "/home/pi/.rbenv/versions/3.0.1/bin/ruby /usr/share/pbm/current/app.rb"
-Restart=always
+Restart=no
 Nice=-20
 
 [Install]
