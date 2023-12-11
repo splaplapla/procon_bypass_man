@@ -69,6 +69,7 @@ class ProconBypassMan::DeviceConnection::Executer
       init_devices
     end
 
+    procon.write_nonblock(['8006'].pack("H*")) # 再実行時のケーブルの再接続を不要にするワークアラウンド. リセットしているらしい
     while(item = @queue.shift)
       item.values.each do |value|
         raw_data = nil
