@@ -33,10 +33,6 @@ Gem::Specification.new do |spec|
   spec.add_dependency "pbmenv", ">= 0.1.11" # enable_pbm_cloud連携機能でPbmenv.install, .cleanを使っている.
   spec.add_dependency "sorted_set"
 
-  # NOTE: https://github.com/splaplapla/procon_bypass_man/issues/275
-  # NOTE: set(1.0.4) は ruby 2.7.0以上を要求してしまう、2.5をサポートしているつもりなので1.0.3に固定しておく.
-  spec.add_dependency "set", "1.0.3"
-
   # For more information and examples about making a new gem, checkout our
   # guide at: https://bundler.io/guides/creating_gem.html
 end
