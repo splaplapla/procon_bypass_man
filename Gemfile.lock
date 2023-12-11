@@ -1,10 +1,11 @@
 PATH
   remote: .
   specs:
-    procon_bypass_man (0.3.10)
+    procon_bypass_man (0.3.11)
       action_cable_client
       blue_green_process (= 0.1.4.2)
       pbmenv (>= 0.1.11)
+      set (= 1.0.3)
       sorted_set
 
 GEM
