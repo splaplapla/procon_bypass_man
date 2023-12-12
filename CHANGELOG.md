@@ -1,4 +1,4 @@
-## unrelease
+## [0.3.11] 2023-12-13
 * 起動時の安定性向上
 * systemd unit pbm.serviceのRestart=noにしました
 
