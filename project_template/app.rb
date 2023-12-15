@@ -2,35 +2,47 @@
 
 require 'bundler/inline'
 
-retry_count_on_git_command_error = 0
-begin
-  if retry_count_on_git_command_error > 10
-    STDOUT.puts "Stopped the procon_bypass_man program because could not download any source codes."
-    exit 1
-  end
+module RetryHandler
+  def self.retryable
+    retry_count = 0
+    max_retries = 10
 
+    begin
+      yield
+    rescue Gem::LoadError => e
+      if /^You have already activated/ =~ e.message
+        STDOUT.puts "I encountered an issue with https://github.com/splaplapla/procon_bypass_man/issues/275, so I'll retry."
+        retry_count += 1
+        retry if retry_count < max_retries
+      end
+      raise
+    rescue Bundler::Source::Git::GitCommandError => e
+      # install中に強制終了するとgitの管理ファイルが不正状態になり、次のエラーが起きるので発生したらcache directoryを削除する
+      #"Git error: command `git fetch --force --quiet --tags https://github.com/splaplapla/procon_bypass_man refs/heads/\\*:refs/heads/\\*` in directory /home/pi/.rbenv/versions/3.0.1/lib/ruby/gems/3.0.0/cache/bundler/git/procon_bypass_man-ae4c9016d76b667658c8ba66f3bbd2eebf2656af has failed.\n\nIf this error persists you could try removing the cache directory '/home/pi/.rbenv/versions/3.0.1/lib/ruby/gems/3.0.0/cache/bundler/git/procon_bypass_man-ae4c9016d76b667658c8ba66f3bbd2eebf2656af'"
+      if /try removing the cache directory '([^']+)'/ =~ e.message && $1&.start_with?('/home/pi/.rbenv')
+        require 'fileutils'
+        FileUtils.rm_rf($1)
+        STDOUT.puts "Deleted #{$1}"
+      end
+
+      sleep(5) # サービスの起動順によっては、まだoffline状態なので待機する
+      retry_count += 1
+      retry if retry_count < max_retries
+    end
+  end
+end
+
+RetryHandler.retryable do
   gemfile do
     source 'https://rubygems.org'
     git_source(:github) {|repo_name| "https://github.com/#{repo_name}" }
     gem 'procon_bypass_man', '0.3.11'
+
     # uncomment if you want to use master branch
     # gem 'procon_bypass_man', github: 'splaplapla/procon_bypass_man', branch: 'master'
     # uncomment if you want to use serial communication feature
     # gem "serialport"
   end
-rescue Bundler::Source::Git::GitCommandError => e
-  retry_count_on_git_command_error = retry_count_on_git_command_error + 1
-  sleep(5) # サービスの起動順によっては、まだoffline状態なので待機する
-
-  # install中に強制終了するとgitの管理ファイルが不正状態になり、次のエラーが起きるので発生したらcache directoryを削除する
-  #"Git error: command `git fetch --force --quiet --tags https://github.com/splaplapla/procon_bypass_man refs/heads/\\*:refs/heads/\\*` in directory /home/pi/.rbenv/versions/3.0.1/lib/ruby/gems/3.0.0/cache/bundler/git/procon_bypass_man-ae4c9016d76b667658c8ba66f3bbd2eebf2656af has failed.\n\nIf this error persists you could try removing the cache directory '/home/pi/.rbenv/versions/3.0.1/lib/ruby/gems/3.0.0/cache/bundler/git/procon_bypass_man-ae4c9016d76b667658c8ba66f3bbd2eebf2656af'"
-  if /try removing the cache directory '([^']+)'/ =~ e.message && $1&.start_with?('/home/pi/.rbenv')
-    require 'fileutils'
-    FileUtils.rm_rf($1)
-    STDOUT.puts "Deleted #{$1}"
-  end
-
-  retry
 end
 
 ProconBypassMan.configure do |config|
