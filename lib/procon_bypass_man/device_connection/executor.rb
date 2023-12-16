@@ -156,8 +156,11 @@ class ProconBypassMan::DeviceConnection::Executer
     end
     ProconBypassMan::UsbDeviceController.init
     ProconBypassMan::UsbDeviceController.reset
+    ProconBypassMan.logger.info('sudo chmod 777 -R /sys/kernel/config/usb_gadget/procon')
+    ProconBypassMan.logger.info('sudo chmod 777 /dev/hidg0')
 
     if path = ProconBypassMan::DeviceProconFinder.find
+      ProconBypassMan.logger.info("sudo chmod 777 #{path}")
       @procon = File.open(path, "w+b")
       ProconBypassMan.logger.info "proconのデバイスファイルは#{path}を使います"
     else
