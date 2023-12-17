@@ -1,9 +1,13 @@
-require 'socket'
-require 'procon_bypass_man/support/simple_tcp_server'
+require 'spec_helper'
 
 describe SimpleTCPServer do
   let(:host) { '0.0.0.0' }
-  let(:port) { 8000 }
+  let(:port) {
+    server = TCPServer.new(host, 0)
+    port = server.addr[1]
+    server.close
+    port
+  }
   let(:server) { SimpleTCPServer.new(host, port) }
   let(:server_thread) { Thread.new { server.run } }
 
