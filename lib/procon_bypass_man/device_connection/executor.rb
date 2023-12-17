@@ -151,6 +151,10 @@ class ProconBypassMan::DeviceConnection::Executer
   end
 
   def init_devices
+    unless SudoNeedPasswordChecker.execute!
+      raise ProconBypassMan::DeviceConnection::SetupIncompleteError
+    end
+
     if @initialized_devices
       return
     end

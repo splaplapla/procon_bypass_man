@@ -84,6 +84,17 @@ describe ProconBypassMan do
         end
       end
 
+      context 'SetupIncompleteErrorが起きるとき' do
+        before do
+          allow(ProconBypassMan::DeviceConnection::Command).to receive(:execute!) { raise ProconBypassMan::DeviceConnection::SetupIncompleteError }
+        end
+
+        it do
+          expect{ subject }.to raise_error(SystemExit)
+          expect(ProconBypassMan::DeviceStatus.current).to eq(ProconBypassMan::DeviceStatus::PROCON_NOT_FOUND_ERROR)
+        end
+      end
+
       context 'NotFoundProconErrorが起きるとき' do
         before do
           allow(ProconBypassMan::DeviceConnection::Command).to receive(:execute!) { raise ProconBypassMan::DeviceConnection::NotFoundProconError }

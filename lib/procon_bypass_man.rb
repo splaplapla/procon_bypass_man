@@ -47,6 +47,7 @@ require_relative "procon_bypass_man/support/forever"
 require_relative "procon_bypass_man/support/simple_tcp_server"
 require_relative "procon_bypass_man/support/proccess_cheacker"
 require_relative "procon_bypass_man/support/output_report_generator"
+require_relative "procon_bypass_man/support/sudo_need_password_checker"
 require_relative "procon_bypass_man/procon_display"
 require_relative "procon_bypass_man/background"
 require_relative "procon_bypass_man/commands"
@@ -105,6 +106,13 @@ module ProconBypassMan
     # デバイスの接続フェーズ
     begin
       gadget, procon = ProconBypassMan::DeviceConnection::Command.execute!
+    rescue ProconBypassMan::DeviceConnection::SetupIncompleteError
+      ProconBypassMan::SendErrorCommand.execute(error: "The program is terminating because it encountered a request for the sudo password. Please review your sudo settings.", stdout: true)
+      ProconBypassMan::DeviceStatus.change_to_procon_not_found_error!
+      ProconBypassMan::NeverExitAccidentally.exit_if_allow_at_config do
+        terminate_pbm
+      end
+      return
     rescue ProconBypassMan::DeviceConnection::NotFoundProconError
       ProconBypassMan::SendErrorCommand.execute(error: "プロコンが見つかりませんでした。")
       ProconBypassMan::DeviceStatus.change_to_procon_not_found_error!

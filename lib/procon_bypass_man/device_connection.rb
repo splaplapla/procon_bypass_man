@@ -3,6 +3,7 @@ module ProconBypassMan::DeviceConnection
   class NotFoundProconError < StandardError; end
   class TimeoutErrorInConditionalRoute < StandardError; end
   class TimeoutError < StandardError; end
+  class SetupIncompleteError < StandardError; end
 end
 
 require_relative "device_connection/executor"
