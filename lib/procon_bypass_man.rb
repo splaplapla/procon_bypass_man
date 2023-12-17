@@ -108,7 +108,7 @@ module ProconBypassMan
       gadget, procon = ProconBypassMan::DeviceConnection::Command.execute!
     rescue ProconBypassMan::DeviceConnection::SetupIncompleteError
       ProconBypassMan::SendErrorCommand.execute(error: "The program is terminating because it encountered a request for the sudo password. Please review your sudo settings.", stdout: true)
-      ProconBypassMan::DeviceStatus.change_to_procon_not_found_error!
+      ProconBypassMan::DeviceStatus.change_to_procon_not_found_error! # NOTE: procon_not_found_errorではないけど、めんどいのでこのステータスにする
       ProconBypassMan::NeverExitAccidentally.exit_if_allow_at_config do
         terminate_pbm
       end
