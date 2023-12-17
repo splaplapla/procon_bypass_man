@@ -150,6 +150,7 @@ class ProconBypassMan::DeviceConnection::Executer
     @procon
   end
 
+  GADGET_PATH = '/dev/hidg0'
   def init_devices
     unless SudoNeedPasswordChecker.execute!
       raise ProconBypassMan::DeviceConnection::SetupIncompleteError
@@ -160,11 +161,9 @@ class ProconBypassMan::DeviceConnection::Executer
     end
     ProconBypassMan::UsbDeviceController.init
     ProconBypassMan::UsbDeviceController.reset
-    ProconBypassMan.logger.info('sudo chmod 777 -R /sys/kernel/config/usb_gadget/procon')
-    ProconBypassMan.logger.info('sudo chmod 777 /dev/hidg0')
 
     if path = ProconBypassMan::DeviceProconFinder.find
-      ProconBypassMan.logger.info("sudo chmod 777 #{path}")
+      ShellRunner.execute("sudo chmod 777 #{path}")
       @procon = File.open(path, "w+b")
       ProconBypassMan.logger.info "proconのデバイスファイルは#{path}を使います"
     else
@@ -172,7 +171,9 @@ class ProconBypassMan::DeviceConnection::Executer
     end
 
     begin
-      @gadget = File.open('/dev/hidg0', "w+b")
+      ShellRunner.execute('sudo chmod 777 -R /sys/kernel/config/usb_gadget/procon')
+      ShellRunner.execute("sudo chmod 777 #{GADGET_PATH}")
+      @gadget = File.open(GADGET_PATH, "w+b")
     rescue Errno::ENXIO => e
       # /dev/hidg0 をopenできないときがある
       ProconBypassMan::SendErrorCommand.execute(error: "Errno::ENXIOが起きたのでresetします.\n #{e.full_message}", stdout: false)
