@@ -33,6 +33,7 @@ RSpec.configure do |config|
     allow(ProconBypassMan::RemoteAction::QueueOverProcess).to receive(:enable?) { false }
     allow(ProconBypassMan::Procon::PerformanceMeasurement::QueueOverProcess).to receive(:enable?) { false }
     allow(SudoNeedPasswordChecker).to receive(:execute!) { true }
+    allow(ProconBypassMan::ReniceCommand).to receive(:change_priority)
 
     allow(ProconBypassMan::HttpClient::HttpRequest::Get).to receive(:new)
     allow(ProconBypassMan::HttpClient::HttpRequest::Post).to receive(:new)
