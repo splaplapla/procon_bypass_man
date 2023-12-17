@@ -15,7 +15,7 @@ class ProconBypassMan::DeviceConnection::Command
 
       retry_count = retry_count + 1
       retry
-    rescue ProconBypassMan::DeviceConnection::NotFoundProconError => e
+    rescue ProconBypassMan::DeviceConnection::NotFoundProconError, ProconBypassMan::DeviceConnection::SetupIncompleteError => e
       raise
     end
 

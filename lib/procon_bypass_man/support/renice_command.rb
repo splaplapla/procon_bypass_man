@@ -11,7 +11,7 @@ module ProconBypassMan
           raise "unknown priority"
         end
       ProconBypassMan.logger.debug { "[SHELL] #{cmd}" }
-      `#{cmd}`
+      `sudo #{cmd}`
     end
   end
 end

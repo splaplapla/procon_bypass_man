@@ -46,7 +46,6 @@ class ProconBypassMan::UsbDeviceController
       EOH
 
       `bash -c '#{shell}'`
-      sleep(1)
     end
 
     def initialized?
