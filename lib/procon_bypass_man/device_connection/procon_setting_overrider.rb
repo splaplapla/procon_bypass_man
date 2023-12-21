@@ -17,7 +17,7 @@ class ProconBypassMan::DeviceConnection::ProconSettingOverrider
   def initialize(procon: )
     use_steps = {}
     if ProconBypassMan.config.enable_home_led_on_connect
-      use_steps.merge!(ALL_SETTINGS)
+      use_steps.merge!(home_led_on: ALL_SETTINGS[:home_led_on])
     end
 
     @setting_steps = use_steps.keys
