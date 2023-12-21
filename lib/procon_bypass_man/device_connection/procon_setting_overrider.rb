@@ -2,23 +2,28 @@ class ProconBypassMan::DeviceConnection::ProconSettingOverrider
   attr_accessor :procon, :output_report_watcher, :output_report_generator
 
   SUB_COMMAND_HOME_LED_ON = "38"
-
   SUB_COMMAND_ARG_HOME_LED_ON = "1FF0FF"
+
+  SUB_COMMAND_GRIP_COLOR = "10"
+  SUB_COMMAND_ARG_GRIP_COLOR = '5060' + 'bc114 275a928 ffffff ffffff ff'.gsub(" ", "") # Raspberry Color
 
   ALL_SETTINGS = {
     home_led_on: [SUB_COMMAND_HOME_LED_ON, SUB_COMMAND_ARG_HOME_LED_ON],
+    grip_color: [SUB_COMMAND_GRIP_COLOR, SUB_COMMAND_ARG_GRIP_COLOR],
   }
 
   # TODO 自動生成する
   SPECIAL_SUB_COMMAND_ARGS =  {
     SUB_COMMAND_HOME_LED_ON => SUB_COMMAND_ARG_HOME_LED_ON,
+    SUB_COMMAND_GRIP_COLOR => SUB_COMMAND_ARG_GRIP_COLOR,
   }
 
   def initialize(procon: )
     use_steps = {}
     if ProconBypassMan.config.enable_home_led_on_connect
-      use_steps.merge!(ALL_SETTINGS)
+      use_steps.merge!(home_led_on: ALL_SETTINGS[:home_led_on])
     end
+    use_steps.merge!(grip_color: ALL_SETTINGS[:grip_color])
 
     @setting_steps = use_steps.keys
     self.procon = ProconBypassMan::DeviceModel.new(procon)
