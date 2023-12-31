@@ -45,7 +45,7 @@ class ProconBypassMan::UsbDeviceController
         ls /sys/class/udc > UDC
       EOH
 
-      `bash -c '#{shell}'`
+      `sudo bash -c '#{shell}'`
     end
 
     def initialized?
