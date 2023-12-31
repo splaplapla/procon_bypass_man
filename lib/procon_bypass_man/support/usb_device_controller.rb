@@ -46,6 +46,7 @@ class ProconBypassMan::UsbDeviceController
       EOH
 
       `sudo bash -c '#{shell}'`
+      ShellRunner.execute('sudo chmod 777 -R /sys/kernel/config/usb_gadget/procon')
     end
 
     def initialized?

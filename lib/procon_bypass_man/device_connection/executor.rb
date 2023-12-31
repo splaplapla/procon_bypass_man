@@ -159,6 +159,7 @@ class ProconBypassMan::DeviceConnection::Executer
     if @initialized_devices
       return
     end
+
     ProconBypassMan::UsbDeviceController.init
     ProconBypassMan::UsbDeviceController.reset
 
@@ -171,7 +172,6 @@ class ProconBypassMan::DeviceConnection::Executer
     end
 
     begin
-      ShellRunner.execute('sudo chmod 777 -R /sys/kernel/config/usb_gadget/procon')
       ShellRunner.execute("sudo chmod 777 #{GADGET_PATH}")
       @gadget = File.open(GADGET_PATH, "w+b")
     rescue Errno::ENXIO => e
