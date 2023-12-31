@@ -52,8 +52,8 @@ module ProconBypassMan
             watchdog.active!
 
             ProconBypassMan.cache.fetch key: 'ws_pinged', expires_in: 10 do
-              ProconBypassMan.logger.info('[WebsocketClient] pinged!!')
-              ProconBypassMan.logger.info(msg)
+              ProconBypassMan.logger.debug('[WebsocketClient] pinged!!')
+              ProconBypassMan.logger.debug(msg)
             end
           }
         end
