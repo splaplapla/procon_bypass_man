@@ -54,6 +54,8 @@ class ProconBypassMan::BypassCommand
       bypass = ProconBypassMan::Bypass::ProconToSwitch.new(gadget: @gadget, procon: @procon)
       process = BlueGreenProcess.new(worker_instance: bypass, max_work: 1000)
       loop do
+        GC.disable
+
         if $will_terminate_token
           if $will_terminate_token == WILL_TERMINATE_TOKEN::TERMINATE
             bypass.direct_connect_switch_via_bluetooth
