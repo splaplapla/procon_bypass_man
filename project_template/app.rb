@@ -54,6 +54,9 @@ ProconBypassMan.configure do |config|
   # 接続に成功したらコントローラーのHOME LEDを光らせるか
   config.enable_home_led_on_connect = true
 
+  # available colors: :red, :blue, :yellow, :green, :pink, :cyan, :white
+  config.controller_color = :red
+
   # シリアル通信やTCP/IP経由で入力するときに設定してください
   # config.external_input_channels = [
   #   ProconBypassMan::ExternalInput::Channels::SerialPortChannel.new(device_path: '/dev/serial0', baud_rate: 9600),
