@@ -10,6 +10,8 @@ class ProconBypassMan::DeviceConnection::ProconColor
     white:  ['ff ff ff', '00 00 00', 'ff ff ff', 'ff ff ff'],
   }
 
+  BYTE_POSITION = 20...(20+(3*4))
+
   attr_accessor :name
 
   # @param [Symbol] color_name
@@ -20,12 +22,12 @@ class ProconBypassMan::DeviceConnection::ProconColor
 
   # @return [String]
   def to_bytes
-    COLOR_TABLE[self.name].join.gsub(/[,\s]/, '').pack('H*')
+    [COLOR_TABLE[self.name].join.gsub(/[,\s]/, '')].pack('H*')
   end
 
   # @return [Range]
   def byte_position
-    20...(20+(3*4))
+    BYTE_POSITION
   end
 
   # @return [Boolean]
