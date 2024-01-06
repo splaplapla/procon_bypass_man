@@ -16,7 +16,7 @@ module ProconBypassMan
         end
 
         ProconBypassMan::ButtonsSettingConfiguration.switch_new_context(:validation) do |new_instance|
-          yaml = YAML.load_file(setting_path) or raise "読み込みに失敗しました"
+          yaml = ProconBypassMan::YamlLoader.load(path: setting_path)
           new_instance.instance_eval(yaml["setting"])
           validator = Validator.new(new_instance)
           if validator.valid?
