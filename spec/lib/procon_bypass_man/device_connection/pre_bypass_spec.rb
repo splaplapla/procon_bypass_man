@@ -47,7 +47,17 @@ describe ProconBypassMan::DeviceConnection::PreBypass do
         allow(instance).to receive(:send_switch)
       end
 
-      it { expect { subject }.not_to raise_error }
+      context 'プロコンカラーの変更をしない' do
+        it { expect { subject }.not_to raise_error }
+      end
+
+      context 'プロコンカラーの変更をする' do
+        before do
+          ProconBypassMan.ephemeral_config.recognized_procon_color = ProconBypassMan::DeviceConnection::ProconColor.new(:red)
+        end
+
+        it { expect { subject }.not_to raise_error }
+      end
     end
   end
 end
