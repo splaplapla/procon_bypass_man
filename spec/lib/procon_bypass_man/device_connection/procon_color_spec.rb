@@ -47,7 +47,7 @@ describe ProconBypassMan::DeviceConnection::ProconColor do
     context 'when color is red' do
       subject(:byte_position) { described_class.new(:red).byte_position }
 
-      it { expect(subject).to eq (20...(20+(3*4))) }
+      it { expect(subject).to eq(20...(20+(3*4))) }
     end
   end
 end
