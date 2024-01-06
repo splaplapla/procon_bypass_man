@@ -39,9 +39,7 @@ class ProconBypassMan::DeviceConnection::PreBypass
           first_data_part = raw_data[0].unpack1("H*")
           sub_command = raw_data[15..16].unpack1("H*")
           if first_data_part == '21' && sub_command == "5060"
-            # new_color_bytes = ['ff 00 00, ff ff ff, ff 00 00, ff 00 00'.gsub(/[,\s]/, '')].pack('H*') # new color
-            new_color_bytes = recognized_procon_color.to_bytes
-            raw_data[recognized_procon_color.byte_position] = new_color_bytes
+            raw_data[recognized_procon_color.byte_position] = recognized_procon_color.to_bytes
           end
         end
 
