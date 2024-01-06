@@ -33,7 +33,16 @@ class ProconBypassMan::DeviceConnection::PreBypass
       begin
         raw_data = non_blocking_read_procon
         output_report_watcher.mark_as_receive(raw_data)
-        ProconBypassMan.logger.info "[pre_bypass] <<< #{raw_data.unpack("H*").first}"
+        ProconBypassMan.logger.info "[pre_bypass] <<< #{raw_data.unpack1("H*")}"
+
+        if(recognized_procon_color = ProconBypassMan.ephemeral_config.recognized_procon_color)
+          first_data_part = raw_data[0].unpack1("H*")
+          sub_command = raw_data[15..16].unpack1("H*")
+          if first_data_part == '21' && sub_command == "5060"
+            raw_data[recognized_procon_color.byte_position] = recognized_procon_color.to_bytes
+          end
+        end
+
         send_switch(raw_data)
       rescue IO::EAGAINWaitReadable
         # no-op

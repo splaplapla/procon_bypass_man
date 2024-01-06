@@ -28,13 +28,36 @@ describe ProconBypassMan::DeviceConnection::PreBypass do
 
     subject { instance.run_once }
 
-    before do
-      allow(instance).to receive(:non_blocking_read_switch) { "01030000000000000000480000000000000000" }
-      allow(instance).to receive(:send_procon)
-      allow(instance).to receive(:non_blocking_read_procon) { "01030000000000000000480000000000000000" }
-      allow(instance).to receive(:send_switch)
+    context 'when provides "01030000000000000000480000000000000000"' do
+      before do
+        allow(instance).to receive(:non_blocking_read_switch) { "01030000000000000000480000000000000000" }
+        allow(instance).to receive(:send_procon)
+        allow(instance).to receive(:non_blocking_read_procon) { "01030000000000000000480000000000000000" }
+        allow(instance).to receive(:send_switch)
+      end
+
+      it { expect { subject }.not_to raise_error }
     end
 
-    it { expect { subject }.not_to raise_error }
+    context 'when provides "216f81008000911870a54771049010506000000d323232ffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000"' do
+      before do
+        allow(instance).to receive(:non_blocking_read_switch) { "01030000000000000000480000000000000000" }
+        allow(instance).to receive(:send_procon)
+        allow(instance).to receive(:non_blocking_read_procon) { ["216f81008000911870a54771049010506000000d323232ffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000"].pack('H*') }
+        allow(instance).to receive(:send_switch)
+      end
+
+      context 'プロコンカラーの変更をしない' do
+        it { expect { subject }.not_to raise_error }
+      end
+
+      context 'プロコンカラーの変更をする' do
+        before do
+          ProconBypassMan.ephemeral_config.recognized_procon_color = ProconBypassMan::DeviceConnection::ProconColor.new(:red)
+        end
+
+        it { expect { subject }.not_to raise_error }
+      end
+    end
   end
 end

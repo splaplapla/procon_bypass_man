@@ -99,11 +99,21 @@ module ProconBypassMan
     end
 
     # @param [Symbol, String] setting_name
+    # @param [Array<any>] args
     # @return [void]
-    def enable(setting_name)
+    def enable(setting_name, *args)
       case setting_name.to_sym
       when :rumble_on_layer_change
         ProconBypassMan.ephemeral_config.enable_rumble_on_layer_change = true
+      when :procon_color
+        color_name = args.first
+        return if color_name.nil? || color_name == :default || color_name == 'default'
+        color = ProconBypassMan::DeviceConnection::ProconColor.new(color_name)
+        if color.valid?
+          ProconBypassMan.ephemeral_config.recognized_procon_color = ProconBypassMan::DeviceConnection::ProconColor.new(color_name)
+        else
+          warn "recognized_procon_colorに存在しないcolor(#{color_name})が呼び出されました。"
+        end
       else
         warn "存在しないenable(#{setting_name.to_sym})が呼び出されました。"
       end

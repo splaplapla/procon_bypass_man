@@ -168,6 +168,7 @@ module ProconBypassMan
     ProconBypassMan::Procon::ModeRegistry.reset!
     ProconBypassMan::Procon.reset!
     ProconBypassMan::ButtonsSettingConfiguration.instance.reset!
+    ProconBypassMan.ephemeral_config.reset!
   end
 
   # @return [void]

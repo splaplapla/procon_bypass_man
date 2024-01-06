@@ -1,7 +1,10 @@
 version: 1.0
 setting: |-
-  # レイヤー変更時にコントローラーが振動する。有効にすると稀に、コントローラーが数秒間固まることがあります。
+  # 1) レイヤー変更時にコントローラーが振動する。※有効にすると稀に、コントローラーが数秒間固まることがあります。
   # enable(:rumble_on_layer_change)
+  #
+  # 2) available colors: :default, :red, :blue, :yellow, :green, :pink, :cyan, :white
+  enable(:procon_color, :red)
 
   prefix_keys_for_changing_layer [:zr, :zl, :l]
 
