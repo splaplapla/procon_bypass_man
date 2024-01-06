@@ -89,7 +89,7 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
                 enable(:rumble_on_layer_change)
 
                 prefix_keys_for_changing_layer [:zr, :r, :zl, :l]
-                EOH
+            EOH
           end
 
           it 'それぞれの値を保存すること' do
@@ -103,10 +103,10 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
       context 'with neutral_position' do
         let(:setting_content) do
           <<~EOH
-          version: 1.0
-          setting: |-
-            prefix_keys_for_changing_layer [:zr, :r, :zl, :l]
-            set_neutral_position 1000, 1000
+            version: 1.0
+            setting: |-
+              prefix_keys_for_changing_layer [:zr, :r, :zl, :l]
+              set_neutral_position 1000, 1000
           EOH
         end
         it do
