@@ -1,9 +1,15 @@
-
 # setting.yamlから設定される値。設定ファイルを再読み込みするとすべて消える
 class ProconBypassMan::EphemeralConfiguration
-  attr_accessor :enable_rumble_on_layer_change
+  KEYS = [
+    :enable_rumble_on_layer_change,
+    :recognized_procon_color,
+  ].freeze
+
+  attr_accessor(*KEYS)
 
   def reset!
-    self.enable_rumble_on_layer_change = false
+    KEYS.each do |key|
+      self.send("#{key}=", nil)
+    end
   end
 end

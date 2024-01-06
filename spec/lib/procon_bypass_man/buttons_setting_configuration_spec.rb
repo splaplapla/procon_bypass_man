@@ -2,43 +2,100 @@ require "spec_helper"
 
 describe ProconBypassMan::ButtonsSettingConfiguration do
   before(:each) do
+    # TODO: 全体のbefore(:each)に移動するべきでは？
     ProconBypassMan.reset!
   end
+
   let(:setting) { Setting.new(setting_content).to_file }
 
   describe 'Loader' do
     describe '.load' do
       context 'with enable' do
-        context '想定していないキーを与えるとき' do
+        context 'enableの引数に想定していないキーを与えるとき' do
           let(:setting_content) do
             <<~EOH
-          version: 1.0
-          setting: |-
-            enable(:hogehoge)
+              version: 1.0
+              setting: |-
+                enable(:hogehoge)
 
-            prefix_keys_for_changing_layer [:zr, :r, :zl, :l]
+                prefix_keys_for_changing_layer [:zr, :r, :zl, :l]
             EOH
           end
-          it do
+
+          it 'エラーにならない' do
             ProconBypassMan::ButtonsSettingConfiguration::Loader.load(setting_path: setting.path)
+            expect(ProconBypassMan.ephemeral_config.enable_rumble_on_layer_change).to eq(nil)
+            expect(ProconBypassMan.ephemeral_config.recognized_procon_color).to eq(nil)
           end
         end
+
         context '想定しているキーを与えるとき' do
           let(:setting_content) do
             <<~EOH
-          version: 1.0
-          setting: |-
-            enable(:rumble_on_layer_change)
+              version: 1.0
+              setting: |-
+                enable(:rumble_on_layer_change)
 
-            prefix_keys_for_changing_layer [:zr, :r, :zl, :l]
+                prefix_keys_for_changing_layer [:zr, :r, :zl, :l]
             EOH
           end
-          before do
-            ProconBypassMan.ephemeral_config.enable_rumble_on_layer_change = false
-          end
-          it do
+
+          it 'ProconBypassMan.ephemeral_config.enable_rumble_on_layer_changeに値をセットすること' do
             ProconBypassMan::ButtonsSettingConfiguration::Loader.load(setting_path: setting.path)
             expect(ProconBypassMan.ephemeral_config.enable_rumble_on_layer_change).to eq(true)
+          end
+        end
+
+        context 'enable(:procon_color, :red)が書いているとき' do
+          let(:setting_content) do
+            <<~EOH
+              version: 1.0
+              setting: |-
+                enable(:procon_color, :red)
+
+                prefix_keys_for_changing_layer [:zr, :r, :zl, :l]
+            EOH
+          end
+
+          it 'ProconBypassMan.ephemeral_config.recognized_procon_colorに:redが設定されること' do
+            ProconBypassMan::ButtonsSettingConfiguration::Loader.load(setting_path: setting.path)
+            expect(ProconBypassMan.ephemeral_config.recognized_procon_color.name).to eq(:red)
+          end
+        end
+
+        context 'enable(:procon_color, :not_found)が書いているとき' do
+          let(:setting_content) do
+            <<~EOH
+              version: 1.0
+              setting: |-
+                enable(:procon_color, :not_found)
+
+                prefix_keys_for_changing_layer [:zr, :r, :zl, :l]
+            EOH
+          end
+
+          it 'ProconBypassMan.ephemeral_config.recognized_procon_colorに:redが設定されること' do
+            ProconBypassMan::ButtonsSettingConfiguration::Loader.load(setting_path: setting.path)
+            expect(ProconBypassMan.ephemeral_config.recognized_procon_color).to eq(nil)
+          end
+        end
+
+        context 'enableを複数書くとき' do
+          let(:setting_content) do
+            <<~EOH
+              version: 1.0
+              setting: |-
+                enable(:procon_color, :blue)
+                enable(:rumble_on_layer_change)
+
+                prefix_keys_for_changing_layer [:zr, :r, :zl, :l]
+                EOH
+          end
+
+          it 'それぞれの値を保存すること' do
+            ProconBypassMan::ButtonsSettingConfiguration::Loader.load(setting_path: setting.path)
+            expect(ProconBypassMan.ephemeral_config.enable_rumble_on_layer_change).to eq(true)
+            expect(ProconBypassMan.ephemeral_config.recognized_procon_color.name).to eq(:blue)
           end
         end
       end

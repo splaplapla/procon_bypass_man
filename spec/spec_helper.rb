@@ -45,6 +45,8 @@ RSpec.configure do |config|
     allow(ProconBypassMan::UsbDeviceController).to receive(:init)
     allow(ProconBypassMan::UsbDeviceController).to receive(:reset)
 
+    ProconBypassMan.ephemeral_config.reset!
+
     ProconBypassMan.worker = nil
   end
 

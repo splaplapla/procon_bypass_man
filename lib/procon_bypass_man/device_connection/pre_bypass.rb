@@ -35,23 +35,13 @@ class ProconBypassMan::DeviceConnection::PreBypass
         output_report_watcher.mark_as_receive(raw_data)
         ProconBypassMan.logger.info "[pre_bypass] <<< #{raw_data.unpack1("H*")}"
 
-        if(first_data_part = raw_data[0].unpack1("H*"))
+        if(recognized_procon_color = ProconBypassMan.ephemeral_config.recognized_procon_color)
+          first_data_part = raw_data[0].unpack1("H*")
           sub_command = raw_data[15..16].unpack1("H*")
-          if first_data_part == '21' && sub_command == "5060" # Controller Color
-            # new_color_bytes = ['bc 11 42, 75 a9 28, ff ff ff, ff ff ff'.gsub(/[,\s]/, "")].pack('H*') # new color
-            new_color_bytes = ['ff 00 00, ff ff ff, ff 00 00, ff 00 00'.gsub(/[,\s]/, '')].pack('H*') # new color
-            new_color_bytes = ['bc 11 42, 75 a9 28, ff ff ff, ff ff ff'.gsub(/[,\s]/, '')].pack('H*') # new color
-
-            # 216f81008000911870a54771049010  5060  00 00 0d, 32 32 32, ff ff ff, ff ff ff, ff ff f
-            # 216f81008000911870a54771049010  5060  00 00 0d, 32 32 32, ff ff ff, ff ff ff, ff ff f
-            # 210781008000f8d77a22c87b0c9010, 5060, 00,00,10, bc 11 42, 75 a9 28, ffffffffffffff00000000000000000000000000000000000000000000000000000000000000
-            # 216f81008000911870a54771049010, 5060, 00,00,0d, 32 32 32, ffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000
-            # 216f81008000911870a54771049010  5060, 00,00,0d, 323232ffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000000
-
-            # 0103000000000000000010506000000d000000000000000000000000000000000000000000000000000000000000000000
-            # 216f81008000911870a54771049010506000000d,323232, ff ff ff, ff ff ff ff ffff0000000000000000000000000000000000000000000000000000000000000000
-            raw_data[20...(20+(3*4))] = new_color_bytes
-            # raw_data.unpack1("H*")
+          if first_data_part == '21' && sub_command == "5060"
+            # new_color_bytes = ['ff 00 00, ff ff ff, ff 00 00, ff 00 00'.gsub(/[,\s]/, '')].pack('H*') # new color
+            new_color_bytes = recognized_procon_color.to_bytes
+            raw_data[recognized_procon_color.byte_position] = new_color_bytes
           end
         end
 
