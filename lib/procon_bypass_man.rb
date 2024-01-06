@@ -59,8 +59,8 @@ require_relative "procon_bypass_man/processor"
 require_relative "procon_bypass_man/configuration"
 require_relative "procon_bypass_man/ephemeral_configuration"
 require_relative "procon_bypass_man/buttons_setting_configuration"
-require_relative "procon_bypass_man/procon"
 require_relative "procon_bypass_man/device_model"
+require_relative "procon_bypass_man/procon"
 require_relative "procon_bypass_man/procon/button"
 require_relative "procon_bypass_man/procon/analog_stick_cap"
 require_relative "procon_bypass_man/procon/analog_stick_manipulator"
@@ -152,22 +152,35 @@ module ProconBypassMan
     nil
   end
 
+  # NOTE: app.rbみたいな実行ファイルに書き込まれている設定を管理する
   # @return [ProconBypassMan::Configuration]
   def self.config
     @@configuration ||= ProconBypassMan::Configuration.new
   end
 
+  # NOTE: setting.ymlから読み込んだ一部の値を管理する
   # @return [ProconBypassMan::EphemeralConfiguration]
   def self.ephemeral_config
     @@ephemeral_configuration ||= ProconBypassMan::EphemeralConfiguration.new
   end
 
+  # NOTE: setting.ymlから読み込んだボタンに関する値を管理する
+  # @return [ProconBypassMan::SettingConfiguration]
+  def self.setting_config
+    @@setting_configuration ||= ProconBypassMan::SettingConfiguration.instance
+  end
+
+  # @deprecated
+  def self.buttons_setting_configuration
+    ProconBypassMan::ButtonsSettingConfiguration.instance
+  end
+
   # @return [void]
   def self.reset!
-    ProconBypassMan::Procon::MacroRegistry.reset!
-    ProconBypassMan::Procon::ModeRegistry.reset!
     ProconBypassMan::Procon.reset!
-    ProconBypassMan::ButtonsSettingConfiguration.instance.reset!
+    buttons_setting_configuration.reset!
+    buttons_setting_configuration.mode_registry.reset!
+    buttons_setting_configuration.macro_registry.reset!
     ProconBypassMan.ephemeral_config.reset!
   end
 

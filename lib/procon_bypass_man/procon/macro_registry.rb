@@ -28,12 +28,13 @@ class ProconBypassMan::Procon::MacroRegistry
     end
   end
 
+  # TODO: シングルトンをやめたらこれを削除する
   def self.reset!
-    ProconBypassMan::ButtonsSettingConfiguration.instance.macro_plugins = ProconBypassMan::Procon::MacroPluginMap.new
+    ProconBypassMan.buttons_setting_configuration.macro_plugins = ProconBypassMan::Procon::MacroPluginMap.new
   end
 
   def self.plugins
-    ProconBypassMan::ButtonsSettingConfiguration.instance.macro_plugins
+    ProconBypassMan.buttons_setting_configuration.macro_plugins
   end
 
   def self.cleanup_remote_macros!
@@ -43,6 +44,4 @@ class ProconBypassMan::Procon::MacroRegistry
     end
     ProconBypassMan::Procon::MacroRegistry.plugins
   end
-
-  reset!
 end

@@ -8,7 +8,7 @@ module ProconBypassMan
 
       # @return [ProconBypassMan::ButtonsSettingConfiguration]
       def self.load(setting_path: )
-        ProconBypassMan::ButtonsSettingConfiguration.instance.setting_path = setting_path
+        ProconBypassMan.buttons_setting_configuration.setting_path = setting_path
 
         metadata_loader = ProconBypassMan::ButtonsSettingConfiguration::MetadataLoader.load(setting_path: setting_path)
         if(Gem::Version.new(metadata_loader.required_pbm_version) >= Gem::Version.new(ProconBypassMan::VERSION))
@@ -35,17 +35,17 @@ module ProconBypassMan
           raise ProconBypassMan::CouldNotLoadConfigError, "yamlのシンタックスエラーです"
         end
 
-        ProconBypassMan::ButtonsSettingConfiguration.instance.reset!
+        ProconBypassMan.buttons_setting_configuration.reset!
         ProconBypassMan.reset!
 
         yaml = ProconBypassMan::YamlLoader.load(path: setting_path)
         ProconBypassMan.config.raw_setting = yaml.dup
         case yaml["version"]
         when 1.0, nil
-          ProconBypassMan::ButtonsSettingConfiguration.instance.instance_eval(yaml["setting"])
+          ProconBypassMan.buttons_setting_configuration.instance_eval(yaml["setting"])
         else
           ProconBypassMan.logger.warn "不明なバージョンです。failoverします"
-          ProconBypassMan::ButtonsSettingConfiguration.instance.instance_eval(yaml["setting"])
+          ProconBypassMan.buttons_setting_configuration.instance_eval(yaml["setting"])
         end
 
         File.write(ProconBypassMan.digest_path, Digest::MD5.hexdigest(yaml["setting"]))
@@ -54,12 +54,12 @@ module ProconBypassMan
           FileUtils.rm_rf(ProconBypassMan.fallback_setting_path)
         end
 
-        ProconBypassMan::ButtonsSettingConfiguration.instance
+        ProconBypassMan.buttons_setting_configuration
       end
 
       def self.reload_setting
         ProconBypassMan.ephemeral_config.reset!
-        self.load(setting_path: ProconBypassMan::ButtonsSettingConfiguration.instance.setting_path)
+        self.load(setting_path: ProconBypassMan.buttons_setting_configuration.setting_path)
       end
 
       def self.fallback_setting_if_has_backup(current_setting_path: )

@@ -27,14 +27,13 @@ class ProconBypassMan::Procon
 
   def self.reset!
     @@status = {
-      ongoing_macro: MacroRegistry.load(:null),
-      ongoing_mode: ModeRegistry.load(:manual), # 削除予定
+      ongoing_macro: ProconBypassMan.buttons_setting_configuration.macro_registry.load(:null),
+      ongoing_mode: ProconBypassMan.buttons_setting_configuration.mode_registry.load(:manual), # 削除予定
     }
     BlueGreenProcess::SharedVariable.instance.data["buttons"] = {}
     BlueGreenProcess::SharedVariable.instance.data["current_layer_key"] = :up
     BlueGreenProcess::SharedVariable.instance.data["recent_left_stick_hypotenuses"] = []
   end
-  reset!
 
   # @param [string] binary
   def initialize(binary)
@@ -74,7 +73,7 @@ class ProconBypassMan::Procon
   def ongoing_mode; @@status[:ongoing_mode]; end
 
   def current_layer
-    ProconBypassMan::ButtonsSettingConfiguration.instance.layers[current_layer_key]
+    ProconBypassMan.buttons_setting_configuration.layers[current_layer_key]
   end
 
   # 内部ステータスを書き換えるフェーズ
@@ -112,7 +111,7 @@ class ProconBypassMan::Procon
         if(if_tilted_left_stick_value = options[:if_tilted_left_stick])
           threshold = (if_tilted_left_stick_value.is_a?(Hash) && if_tilted_left_stick_value[:threshold]) || ProconBypassMan::AnalogStickTiltingPowerScaler::DEFAULT_THRESHOLD
           if dumped_tilting_power.tilting?(threshold: threshold, current_position_x: analog_stick.relative_x, current_position_y: analog_stick.relative_y) && user_operation.pressing_all_buttons?(options[:if_pressed])
-            @@status[:ongoing_macro] = MacroRegistry.load(macro_name)
+            @@status[:ongoing_macro] = ProconBypassMan.buttons_setting_configuration.macro_registry.load(macro_name)
             break
           end
 
@@ -120,7 +119,8 @@ class ProconBypassMan::Procon
         end
 
         if user_operation.pressing_all_buttons?(options[:if_pressed])
-          @@status[:ongoing_macro] = MacroRegistry.load(macro_name, force_neutral_buttons: options[:force_neutral])
+          @@status[:ongoing_macro] = ProconBypassMan.buttons_setting_configuration.macro_registry.load(macro_name, force_neutral_buttons: options[:force_neutral])
+
           break
         end
       end
@@ -132,11 +132,11 @@ class ProconBypassMan::Procon
       when ProconBypassMan::RemoteAction::Task::TYPE_MACRO
         no_op_step = :wait_for_0_3 # マクロの最後に固まって最後の入力をし続けるので、無の状態を最後に注入する
         BlueGreenProcess::SharedVariable.extend_run_on_this_process = true
-        ProconBypassMan::Procon::MacroRegistry.cleanup_remote_macros!
+        ProconBypassMan.buttons_setting_configuration.macro_registry.cleanup_remote_macros!
         macro_name = task.name || "RemoteMacro-#{task.steps.join}".to_sym
         task.steps << no_op_step
-        ProconBypassMan::Procon::MacroRegistry.install_plugin(macro_name, steps: task.steps, macro_type: :remote)
-        @@status[:ongoing_macro] = MacroRegistry.load(macro_name, macro_type: :remote) do
+        ProconBypassMan.buttons_setting_configuration.macro_registry.install_plugin(macro_name, steps: task.steps, macro_type: :remote)
+        @@status[:ongoing_macro] = ProconBypassMan.buttons_setting_configuration.macro_registry.load(macro_name, macro_type: :remote) do
           GC.start # NOTE: extend_run_on_this_process = true するとGCされなくなるので手動で呼び出す
           ProconBypassMan::PostCompletedRemoteMacroJob.perform_async(task.uuid)
         end
@@ -153,7 +153,7 @@ class ProconBypassMan::Procon
 
     case current_layer.mode
     when :manual
-      @@status[:ongoing_mode] = ModeRegistry.load(:manual)
+      @@status[:ongoing_mode] = ProconBypassMan.buttons_setting_configuration.mode_registry.load(:manual)
       current_layer.flip_buttons.each do |button, options|
         if !options[:if_pressed]
           # FIXME マルチプロセス化したので、クラス変数に状態を保持するFlipCacheは意図した挙動にならない. BlueGreenProcess.shared_variables を使って状態をプロセス間で共有すれば動く
@@ -175,7 +175,7 @@ class ProconBypassMan::Procon
       end
     else
       unless ongoing_mode.name == current_layer.mode
-        @@status[:ongoing_mode] = ProconBypassMan::Procon::ModeRegistry.load(current_layer.mode)
+        @@status[:ongoing_mode] = ProconBypassMan.buttons_setting_configuration.mode_registry.load(current_layer.mode)
       end
       if(binary = ongoing_mode.next_binary)
         self.user_operation.merge([binary].pack("H*"))
