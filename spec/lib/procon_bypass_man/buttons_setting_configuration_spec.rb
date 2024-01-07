@@ -897,6 +897,57 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
     end
   end
 
+  describe 'metadata-required_pbm_versionの読み取り' do
+    context 'metadata-required_pbm_versionの記載がない' do
+      let(:setting_content) do
+        <<~EOH
+            version: 1.0
+            setting: |
+              prefix_keys_for_changing_layer [:zr, :zl, :l]
+        EOH
+      end
+
+      it 'ProconBypassMan::SendErrorCommandを実行しない' do
+        expect(ProconBypassMan::SendErrorCommand).not_to receive(:execute).with(error: '起動中のPBMが設定ファイルのバージョンを満たしていません。設定ファイルが意図した通り動かない可能性があります。PBMのバージョンをあげてください。')
+        ProconBypassMan::ButtonsSettingConfiguration::Loader.load(setting_path: setting.path)
+      end
+    end
+
+    context 'metadata-required_pbm_versionの記載がある' do
+      context 'metadata-required_pbm_versionが足りる' do
+        let(:setting_content) do
+          <<~EOH
+            version: 1.0
+            setting: |
+              # metadata-required_pbm_version: 0.0.0
+              prefix_keys_for_changing_layer [:zr, :zl, :l]
+          EOH
+        end
+
+        it 'ProconBypassMan::SendErrorCommandを実行しない' do
+          expect(ProconBypassMan::SendErrorCommand).not_to receive(:execute).with(error: '起動中のPBMが設定ファイルのバージョンを満たしていません。設定ファイルが意図した通り動かない可能性があります。PBMのバージョンをあげてください。')
+          ProconBypassMan::ButtonsSettingConfiguration::Loader.load(setting_path: setting.path)
+        end
+      end
+
+      context 'metadata-required_pbm_versionが足りない' do
+        let(:setting_content) do
+          <<~EOH
+            version: 1.0
+            setting: |
+              # metadata-required_pbm_version: 9.0.0
+              prefix_keys_for_changing_layer [:zr, :zl, :l]
+          EOH
+        end
+
+        it 'ProconBypassMan::SendErrorCommandを実行する' do
+          expect(ProconBypassMan::SendErrorCommand).to receive(:execute).with(error: '起動中のPBMが設定ファイルのバージョンを満たしていません。設定ファイルが意図した通り動かない可能性があります。PBMのバージョンをあげてください。')
+          ProconBypassMan::ButtonsSettingConfiguration::Loader.load(setting_path: setting.path)
+        end
+      end
+    end
+  end
+
   describe 'validations' do
     describe '設定構文として不正だけど警告だけを出す' do
       context 'installしていないpluginを使うとき' do
