@@ -13,6 +13,8 @@ module ProconBypassMan
           ProconBypassMan::SendErrorCommand.execute(error: '起動中のPBMが設定ファイルのバージョンを満たしていません。設定ファイルが意図した通り動かない可能性があります。PBMのバージョンをあげてください。')
         end
 
+        ProconBypassMan::Procon.reset! # TODO: ここでresetするのは微妙な気がする
+
         new_instance, yaml =
           begin
             new_instance = ProconBypassMan::ButtonsSettingConfiguration.new
