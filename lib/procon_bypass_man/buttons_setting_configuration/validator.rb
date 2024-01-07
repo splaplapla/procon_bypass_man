@@ -3,7 +3,7 @@ module ProconBypassMan
     class Validator
       def initialize(config)
         @macro_plugins = config.macro_registry.plugins
-        @mode_plugins = config.mode_plugins
+        @mode_plugins = config.mode_registry.plugins
         @layers = config.layers
         @prefix_keys = config.prefix_keys
       end

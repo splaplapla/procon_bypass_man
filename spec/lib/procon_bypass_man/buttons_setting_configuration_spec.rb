@@ -742,8 +742,8 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
           install_mode_plugin(AModePlugin)
           layer :up, mode: AModePlugin
         end
-        expect(ProconBypassMan::Procon::ModeRegistry.plugins.keys).to eq([:AModePlugin])
-        expect(ProconBypassMan::Procon::ModeRegistry.plugins[:AModePlugin].call).to eq(['a'])
+        expect(ProconBypassMan.buttons_setting_configuration.mode_registry.plugins.keys).to eq([:AModePlugin])
+        expect(ProconBypassMan.buttons_setting_configuration.mode_registry.plugins[:AModePlugin].call).to eq(['a'])
       end
     end
 
@@ -918,7 +918,8 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
             ProconBypassMan.buttons_setting_configure do
               layer :up, mode: AModePlugin
             end
-            expect(ProconBypassMan::Procon::ModeRegistry.plugins.keys).to eq([])
+
+            expect(ProconBypassMan.buttons_setting_configuration.mode_registry.plugins.keys).to eq([])
           end
         end
       end

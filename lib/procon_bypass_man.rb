@@ -179,7 +179,6 @@ module ProconBypassMan
   def self.reset!
     ProconBypassMan::Procon.reset!
     buttons_setting_configuration.reset!
-    buttons_setting_configuration.mode_registry.reset!
     ProconBypassMan.ephemeral_config.reset!
   end
 

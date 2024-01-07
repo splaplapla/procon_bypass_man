@@ -1,4 +1,4 @@
-class ProconBypassMan::Procon::ModeRegistry
+class ProconBypassMan::Procon::ModeRegistry2
   class Mode
     attr_accessor :name, :binaries, :source_binaries
 
@@ -18,31 +18,29 @@ class ProconBypassMan::Procon::ModeRegistry
     end
   end
 
+  attr_accessor :plugins
+
   PRESETS = {
     manual: [],
   }
 
-  def self.install_plugin(klass)
+  def initialize
+    self.plugins = {}
+  end
+
+  def install_plugin(klass)
     if plugins[klass.to_s.to_sym]
       raise "#{klass} mode is already registered"
     end
     plugins[klass.to_s.to_sym] = ->{ klass.binaries }
   end
 
-  def self.load(name)
+  def load(name)
     b = PRESETS[name] || plugins[name]&.call || raise("#{name} is unknown mode")
     Mode.new(name: name, binaries: b.dup)
   end
 
-  def self.reset!
-    ProconBypassMan.buttons_setting_configuration.mode_plugins = {}
-  end
-
-  def self.plugins
-    ProconBypassMan.buttons_setting_configuration.mode_plugins
-  end
-
-  def self.presets
+  def presets
     PRESETS
   end
 end
