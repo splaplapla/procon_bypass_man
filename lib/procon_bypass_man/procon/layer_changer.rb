@@ -31,7 +31,6 @@ class ProconBypassMan::Procon::LayerChanger
       end
       return false
     end
-    
     ProconBypassMan.buttons_setting_configuration.prefix_keys.map { |b| pressed?(button: b) }.all?
   end
 
