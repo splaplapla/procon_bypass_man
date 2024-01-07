@@ -111,8 +111,8 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
         end
         it do
           ProconBypassMan::ButtonsSettingConfiguration::Loader.load(setting_path: setting.path)
-          expect(ProconBypassMan::ButtonsSettingConfiguration.instance.neutral_position.x).to eq(1000)
-          expect(ProconBypassMan::ButtonsSettingConfiguration.instance.neutral_position.y).to eq(1000)
+          expect(ProconBypassMan.buttons_setting_configuration.neutral_position.x).to eq(1000)
+          expect(ProconBypassMan.buttons_setting_configuration.neutral_position.y).to eq(1000)
         end
         it do
           ProconBypassMan::ButtonsSettingConfiguration::Loader.load(setting_path: setting.path)
@@ -133,7 +133,7 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
           end
           it do
             ProconBypassMan::ButtonsSettingConfiguration::Loader.load(setting_path: setting.path)
-            expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].left_analog_stick_caps).to eq([
+            expect(ProconBypassMan.buttons_setting_configuration.layers[:up].left_analog_stick_caps).to eq([
               {:cap=>1000, :force_neutral=> [:a], if_pressed: [:a] }
             ])
           end
@@ -151,7 +151,7 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
           end
           it do
             ProconBypassMan::ButtonsSettingConfiguration::Loader.load(setting_path: setting.path)
-            expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].left_analog_stick_caps).to eq([
+            expect(ProconBypassMan.buttons_setting_configuration.layers[:up].left_analog_stick_caps).to eq([
               {:cap=>1000, :force_neutral=> [:a], if_pressed: [:a], combined_press_is_pressed: [:b] }
             ])
           end
@@ -169,7 +169,7 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
           end
           it do
             ProconBypassMan::ButtonsSettingConfiguration::Loader.load(setting_path: setting.path)
-            expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].left_analog_stick_caps).to eq([
+            expect(ProconBypassMan.buttons_setting_configuration.layers[:up].left_analog_stick_caps).to eq([
               {:cap=>1000, if_pressed: [:a], }
             ])
           end
@@ -187,7 +187,7 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
           end
           it do
             ProconBypassMan::ButtonsSettingConfiguration::Loader.load(setting_path: setting.path)
-            expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].left_analog_stick_caps).to eq([{:cap=>1000, :if_pressed=>[:a]}])
+            expect(ProconBypassMan.buttons_setting_configuration.layers[:up].left_analog_stick_caps).to eq([{:cap=>1000, :if_pressed=>[:a]}])
           end
         end
         context 'provide a nil' do
@@ -203,7 +203,7 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
           end
           it do
             ProconBypassMan::ButtonsSettingConfiguration::Loader.load(setting_path: setting.path)
-            expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].left_analog_stick_caps).to eq([{:cap=>1000}])
+            expect(ProconBypassMan.buttons_setting_configuration.layers[:up].left_analog_stick_caps).to eq([{:cap=>1000}])
           end
         end
         context 'do not provide' do
@@ -219,7 +219,7 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
           end
           it do
             ProconBypassMan::ButtonsSettingConfiguration::Loader.load(setting_path: setting.path)
-            expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].left_analog_stick_caps).to eq([
+            expect(ProconBypassMan.buttons_setting_configuration.layers[:up].left_analog_stick_caps).to eq([
               cap: 1000
             ])
           end
@@ -451,11 +451,11 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
           EOH
 
           instance = ProconBypassMan::ButtonsSettingConfiguration.new
-          ProconBypassMan::ButtonsSettingConfiguration.instance = instance
+          ProconBypassMan.buttons_setting_configuration = instance
           instance.instance_eval(c)
           expect {
             instance = ProconBypassMan::ButtonsSettingConfiguration.new
-            ProconBypassMan::ButtonsSettingConfiguration.instance = instance
+            ProconBypassMan.buttons_setting_configuration = instance
             instance.instance_eval(c)
           }.not_to raise_error
         end
@@ -515,11 +515,11 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
           first_setting = Setting.new(first_setting_content).to_file
           second_setting = Setting.new(second_setting_content).to_file
           ProconBypassMan::ButtonsSettingConfiguration::Loader.load(setting_path: first_setting.path)
-          expect(ProconBypassMan::ButtonsSettingConfiguration.instance.prefix_keys).to eq([:zr, :r, :zl, :l])
-          expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].flip_buttons).to eq(zr: { if_pressed: [:zr] })
+          expect(ProconBypassMan.buttons_setting_configuration.prefix_keys).to eq([:zr, :r, :zl, :l])
+          expect(ProconBypassMan.buttons_setting_configuration.layers[:up].flip_buttons).to eq(zr: { if_pressed: [:zr] })
           ProconBypassMan::ButtonsSettingConfiguration::Loader.load(setting_path: second_setting.path)
-          expect(ProconBypassMan::ButtonsSettingConfiguration.instance.prefix_keys).to eq([:a])
-          expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].flip_buttons).to eq(b: { if_pressed: [:b] })
+          expect(ProconBypassMan.buttons_setting_configuration.prefix_keys).to eq([:a])
+          expect(ProconBypassMan.buttons_setting_configuration.layers[:up].flip_buttons).to eq(b: { if_pressed: [:b] })
         end
       end
     end
@@ -539,10 +539,10 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
       end
       it do
         ProconBypassMan.buttons_setting_configure(setting_path: setting.path)
-        expect(ProconBypassMan::ButtonsSettingConfiguration.instance.prefix_keys).to eq([:zr, :r, :zl, :l])
-        expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].flip_buttons).to eq(zr: { if_pressed: [:zr] })
-        expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:down].flips).to eq({})
-        expect(ProconBypassMan::ButtonsSettingConfiguration.instance.setting_path).to eq(setting.path)
+        expect(ProconBypassMan.buttons_setting_configuration.prefix_keys).to eq([:zr, :r, :zl, :l])
+        expect(ProconBypassMan.buttons_setting_configuration.layers[:up].flip_buttons).to eq(zr: { if_pressed: [:zr] })
+        expect(ProconBypassMan.buttons_setting_configuration.layers[:down].flips).to eq({})
+        expect(ProconBypassMan.buttons_setting_configuration.setting_path).to eq(setting.path)
       end
     end
 
@@ -555,7 +555,7 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
             disable [:b]
           end
         end
-        expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].disables.sort).to eq([:a, :b, :l].sort)
+        expect(ProconBypassMan.buttons_setting_configuration.layers[:up].disables.sort).to eq([:a, :b, :l].sort)
       end
     end
 
@@ -573,7 +573,7 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
         end
         expect(ProconBypassMan.buttons_setting_configuration.macro_registry.plugins.keys).to eq([:AMacroPlugin])
         expect(ProconBypassMan.buttons_setting_configuration.macro_registry.plugins[:AMacroPlugin].call).to eq([:a, :b])
-        expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].macros).to eq(
+        expect(ProconBypassMan.buttons_setting_configuration.layers[:up].macros).to eq(
           {:AMacroPlugin=>{:if_pressed=>[:a, :y]}}
         )
       end
@@ -590,7 +590,7 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
         end
         expect(ProconBypassMan.buttons_setting_configuration.macro_registry.plugins.keys).to eq([:AMacroPlugin])
         expect(ProconBypassMan.buttons_setting_configuration.macro_registry.plugins[:AMacroPlugin].call).to eq([:a, :b])
-        expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].macros).to eq(
+        expect(ProconBypassMan.buttons_setting_configuration.layers[:up].macros).to eq(
           {:AMacroPlugin=>{:if_pressed=>[:a, :y]}}
         )
       end
@@ -606,7 +606,7 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
         end
         expect(ProconBypassMan.buttons_setting_configuration.macro_registry.plugins.keys).to eq([:AMacroPlugin])
         expect(ProconBypassMan.buttons_setting_configuration.macro_registry.plugins[:AMacroPlugin].call).to eq([:a, :b])
-        expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].macros).to eq(
+        expect(ProconBypassMan.buttons_setting_configuration.layers[:up].macros).to eq(
           {:AMacroPlugin=>{:if_pressed=>[:a, :y], if_tilted_left_stick: true }}
         )
       end
@@ -622,7 +622,7 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
           end
           expect(ProconBypassMan.buttons_setting_configuration.macro_registry.plugins[:SaiHuu].call).to eq([:x, :y])
           expect(ProconBypassMan.buttons_setting_configuration.macro_registry.plugins[:SpecialCommand].call).to eq([:up, :down])
-          expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].macros).to eq(
+          expect(ProconBypassMan.buttons_setting_configuration.layers[:up].macros).to eq(
             {"SaiHuu"=>{:if_pressed=>[:x]}, "SpecialCommand"=>{:if_pressed=>[:y]}}
           )
         end
@@ -642,7 +642,7 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
               :r,
               :none,
             ])
-          expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].macros).to eq(
+          expect(ProconBypassMan.buttons_setting_configuration.layers[:up].macros).to eq(
             { :sokuwari => {:if_pressed=>[:zr, :down]} }
           )
         end
@@ -656,7 +656,7 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
             expect(ProconBypassMan.buttons_setting_configuration.macro_registry.plugins[:dacan].call).to eq(
               [{:continue_for=>0.3, :steps=>[:r, :r]}, [:r, :zl], [:r, :none]]
             )
-            expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].macros).to eq(
+            expect(ProconBypassMan.buttons_setting_configuration.layers[:up].macros).to eq(
               { dacan: { if_pressed: [:zr], if_tilted_left_stick: true } }
             )
           end
@@ -667,7 +667,7 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
               end
             end
             expect(ProconBypassMan.buttons_setting_configuration.macro_registry.plugins[:dacan].call).to eq([[:r, :zr], [:r, :none]])
-            expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].macros).to eq(
+            expect(ProconBypassMan.buttons_setting_configuration.layers[:up].macros).to eq(
               { dacan: { if_pressed: [:zr], if_tilted_left_stick: true } }
             )
           end
@@ -678,7 +678,7 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
               end
             end
             expect(ProconBypassMan.buttons_setting_configuration.macro_registry.plugins[:dacan].call).to eq([[:r, :zr], [:r, :none]])
-            expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].macros).to eq(
+            expect(ProconBypassMan.buttons_setting_configuration.layers[:up].macros).to eq(
               { dacan: { if_pressed: [:zr], if_tilted_left_stick: { threshold: 600 } } }
             )
           end
@@ -689,7 +689,7 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
               end
             end
             expect(ProconBypassMan.buttons_setting_configuration.macro_registry.plugins[:dacan].call).to eq([[:r, :zr], [:r, :none]])
-            expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].macros).to eq(
+            expect(ProconBypassMan.buttons_setting_configuration.layers[:up].macros).to eq(
               { dacan: { if_pressed: [:zr], if_tilted_left_stick: true } }
             )
           end
@@ -700,7 +700,7 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
               end
             end
             expect(ProconBypassMan.buttons_setting_configuration.macro_registry.plugins[:shake_stick].call).to eq([{:continue_for=>0.65, :steps=>[:tilt_left_stick_completely_to_left, :tilt_left_stick_completely_to_right]}])
-            expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].macros).to eq(
+            expect(ProconBypassMan.buttons_setting_configuration.layers[:up].macros).to eq(
               { shake_stick: { if_pressed: [:zr] } }
             )
           end
@@ -711,7 +711,7 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
               end
             end
             expect(ProconBypassMan.buttons_setting_configuration.macro_registry.plugins[:shake_stick].call).to eq([{:continue_for=>0.1, :steps=>[[:tilt_left_stick_completely_to_left, :b], [:tilt_left_stick_completely_to_right, :none]]}])
-            expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].macros).to eq(
+            expect(ProconBypassMan.buttons_setting_configuration.layers[:up].macros).to eq(
               { shake_stick: { force_neutral: [:b], if_pressed: [:b, :r] } }
             )
           end
@@ -725,7 +725,7 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
             expect(
               ProconBypassMan.buttons_setting_configuration.macro_registry.plugins[ProconBypassMan::Plugin::Splatoon2::Macro::ChargeTansanBomb.to_s.to_sym].call
             ).to eq([{:continue_for=>0.1, :steps=>[[:tilt_left_stick_completely_to_left, :b], [:tilt_left_stick_completely_to_right, :none]]}])
-            expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].macros).to eq({
+            expect(ProconBypassMan.buttons_setting_configuration.layers[:up].macros).to eq({
               :"ProconBypassMan::Plugin::Splatoon2::Macro::ChargeTansanBomb" => {:force_neutral=>[:b], :if_pressed=>[:b, :r]},
             })
           end
@@ -754,7 +754,7 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
             disable_macro :all
           end
         end
-        expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].disable_macros).to eq([
+        expect(ProconBypassMan.buttons_setting_configuration.layers[:up].disable_macros).to eq([
           {:name=>:all, :if_pressed=>[true]},
         ])
       end
@@ -766,7 +766,7 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
             disable_macro :sokuwari, if_pressed: :x
           end
         end
-        expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].disable_macros).to eq([
+        expect(ProconBypassMan.buttons_setting_configuration.layers[:up].disable_macros).to eq([
           {:name=>:all, :if_pressed=>[:b, :y]},
           {:name=>:all, :if_pressed=>[:zr]},
           {:if_pressed=>[:x], :name=>:sokuwari},
@@ -781,8 +781,8 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
             flip :l, if_pressed: [:y, :b], force_neutral: :y
           end
         end
-        expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].flip_buttons[:l]).to eq(if_pressed: [:y, :b], force_neutral: [:y])
-        expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].flip_buttons.keys).to eq([:l])
+        expect(ProconBypassMan.buttons_setting_configuration.layers[:up].flip_buttons[:l]).to eq(if_pressed: [:y, :b], force_neutral: [:y])
+        expect(ProconBypassMan.buttons_setting_configuration.layers[:up].flip_buttons.keys).to eq([:l])
       end
     end
 
@@ -793,7 +793,7 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
             remap :l, to: :zr
           end
         end
-        expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].remaps).to eq(:l=>{ to: [:zr] })
+        expect(ProconBypassMan.buttons_setting_configuration.layers[:up].remaps).to eq(:l=>{ to: [:zr] })
       end
       it  'with remap' do
         ProconBypassMan.buttons_setting_configure do
@@ -801,7 +801,7 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
             remap :l, to: [:zr]
           end
         end
-        expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].remaps).to eq(:l=>{ to: [:zr] })
+        expect(ProconBypassMan.buttons_setting_configuration.layers[:up].remaps).to eq(:l=>{ to: [:zr] })
       end
     end
 
@@ -823,17 +823,17 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
           layer :right, mode: AModePlugin
           layer :left
         end
-        expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].flip_buttons[:l]).to eq(if_pressed: [:l])
-        expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].flip_buttons[:r]).to eq(if_pressed: false)
-        expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].flip_buttons.keys).to eq([:l, :r])
-        expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].mode).to eq(:manual)
-        expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:down].flip_buttons.keys).to eq([:r])
-        expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:down].flip_buttons[:r]).to eq(if_pressed: [:zr, :zl])
-        expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:down].mode).to eq(:AModePlugin)
-        expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:right].flip_buttons.keys).to eq([])
-        expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:right].mode).to eq(:AModePlugin)
-        expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:left].flip_buttons.keys).to eq([])
-        expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:left].mode).to eq(:manual)
+        expect(ProconBypassMan.buttons_setting_configuration.layers[:up].flip_buttons[:l]).to eq(if_pressed: [:l])
+        expect(ProconBypassMan.buttons_setting_configuration.layers[:up].flip_buttons[:r]).to eq(if_pressed: false)
+        expect(ProconBypassMan.buttons_setting_configuration.layers[:up].flip_buttons.keys).to eq([:l, :r])
+        expect(ProconBypassMan.buttons_setting_configuration.layers[:up].mode).to eq(:manual)
+        expect(ProconBypassMan.buttons_setting_configuration.layers[:down].flip_buttons.keys).to eq([:r])
+        expect(ProconBypassMan.buttons_setting_configuration.layers[:down].flip_buttons[:r]).to eq(if_pressed: [:zr, :zl])
+        expect(ProconBypassMan.buttons_setting_configuration.layers[:down].mode).to eq(:AModePlugin)
+        expect(ProconBypassMan.buttons_setting_configuration.layers[:right].flip_buttons.keys).to eq([])
+        expect(ProconBypassMan.buttons_setting_configuration.layers[:right].mode).to eq(:AModePlugin)
+        expect(ProconBypassMan.buttons_setting_configuration.layers[:left].flip_buttons.keys).to eq([])
+        expect(ProconBypassMan.buttons_setting_configuration.layers[:left].mode).to eq(:manual)
       end
     end
 
@@ -850,10 +850,10 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
           layer :right
           layer :left
         end
-        expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].flip_buttons.keys).to eq([:l, :r])
-        expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:down].flip_buttons.keys).to eq([:r])
-        expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:right].flip_buttons.keys).to eq([])
-        expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:left].flip_buttons.keys).to eq([])
+        expect(ProconBypassMan.buttons_setting_configuration.layers[:up].flip_buttons.keys).to eq([:l, :r])
+        expect(ProconBypassMan.buttons_setting_configuration.layers[:down].flip_buttons.keys).to eq([:r])
+        expect(ProconBypassMan.buttons_setting_configuration.layers[:right].flip_buttons.keys).to eq([])
+        expect(ProconBypassMan.buttons_setting_configuration.layers[:left].flip_buttons.keys).to eq([])
       end
     end
 
@@ -869,10 +869,10 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
           layer :left do
           end
         end
-        expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].flip_buttons.keys).to eq([])
-        expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:down].flip_buttons.keys).to eq([])
-        expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:right].flip_buttons.keys).to eq([])
-        expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:left].flip_buttons.keys).to eq([])
+        expect(ProconBypassMan.buttons_setting_configuration.layers[:up].flip_buttons.keys).to eq([])
+        expect(ProconBypassMan.buttons_setting_configuration.layers[:down].flip_buttons.keys).to eq([])
+        expect(ProconBypassMan.buttons_setting_configuration.layers[:right].flip_buttons.keys).to eq([])
+        expect(ProconBypassMan.buttons_setting_configuration.layers[:left].flip_buttons.keys).to eq([])
       end
     end
 
@@ -881,7 +881,7 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
         ProconBypassMan.buttons_setting_configure do
           prefix_keys_for_changing_layer [:zr]
         end
-        expect(ProconBypassMan::ButtonsSettingConfiguration.instance.prefix_keys).to eq([:zr])
+        expect(ProconBypassMan.buttons_setting_configuration.prefix_keys).to eq([:zr])
       end
     end
 
@@ -892,7 +892,7 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
             flip :zr, flip_interval: "8F"
           end
         end
-        expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].flip_buttons[:zr][:flip_interval]).to eq(0.13)
+        expect(ProconBypassMan.buttons_setting_configuration.layers[:up].flip_buttons[:zr][:flip_interval]).to eq(0.13)
       end
     end
   end
@@ -907,9 +907,10 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
                 macro ProconBypassMan::Plugin::Splatoon2::Macro::FastReturn, if_pressed: :a
               end
             end
-            expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].macros).to eq({})
+            expect(ProconBypassMan.buttons_setting_configuration.layers[:up].macros).to eq({})
           end
         end
+
         context 'mode' do
           it 'ロードしない' do
             class AModePlugin
@@ -934,7 +935,7 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
             prefix_keys_for_changing_layer [:zr, :r, :zl, :l]
             set_neutral_position 1000, 1000
         EOH
-        ProconBypassMan::ButtonsSettingConfiguration.instance.setting_path = nil
+        ProconBypassMan.buttons_setting_configuration.setting_path = nil
         setting = Setting.new(setting_content).to_file
 
         expect {
@@ -945,24 +946,24 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
 
     context 'シンタックスエラーが起きるとき' do
       context '初回で失敗する' do
-        it 'setting.pathは保存すること' do
-          setting_content = <<~EOH
+        it 'setting_pathはnilのままであること' do
+          invalid_setting_content = <<~EOH
           version: 1.0
           setting: |-
             prefix_keys_for_changing_layer [:zr, :r, :zl, :l]
             set_neutral_position 1000,, 1000
           EOH
-          ProconBypassMan::ButtonsSettingConfiguration.instance.setting_path = nil
-          setting = Setting.new(setting_content).to_file
+          ProconBypassMan.buttons_setting_configuration.setting_path = nil
+          invalid_setting = Setting.new(invalid_setting_content).to_file
           begin
-            ProconBypassMan::ButtonsSettingConfiguration::Loader.load(setting_path: setting.path)
+            ProconBypassMan::ButtonsSettingConfiguration::Loader.load(setting_path: invalid_setting.path)
           rescue ProconBypassMan::CouldNotLoadConfigError
-            expect(ProconBypassMan::ButtonsSettingConfiguration.instance.setting_path).to eq(setting.path)
+            expect(ProconBypassMan.buttons_setting_configuration.setting_path).to be_nil
           end
         end
       end
 
-      context '初回は成功する' do
+      context '初回は成功して、次に設定ファイルをロードするとき' do
         let(:setting_content) {
           <<~EOH
             version: 1.0
@@ -979,43 +980,50 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
               set_neutral_position 1000,, 1000
           EOH
         }
+
         before do
-          setting = Setting.new(setting_content).to_file
-          ProconBypassMan::ButtonsSettingConfiguration::Loader.load(setting_path: setting.path)
-          expect(ProconBypassMan::ButtonsSettingConfiguration.instance.prefix_keys).to eq([:zr, :r, :zl, :l])
-          expect(ProconBypassMan::ButtonsSettingConfiguration.instance.setting_path).to eq(setting.path)
+          valid_setting = Setting.new(setting_content).to_file
+          ProconBypassMan::ButtonsSettingConfiguration::Loader.load(setting_path: valid_setting.path)
+          expect(ProconBypassMan.buttons_setting_configuration.prefix_keys).to eq([:zr, :r, :zl, :l])
+          expect(ProconBypassMan.buttons_setting_configuration.setting_path).to eq(valid_setting.path)
         end
+
         context 'fallback_pathがある' do
           before { File.write(ProconBypassMan.fallback_setting_path, setting_content) }
-          it 'next_setting_contentの内容はファイルに保存されないこと' do
-            setting = Setting.new(error_setting_content).to_file
-            expect { ProconBypassMan::ButtonsSettingConfiguration::Loader.load(setting_path: setting.path) }.to raise_error ProconBypassMan::CouldNotLoadConfigError
-            expect(File.read(setting.path)).to eq(setting_content)
+          it 'invalid_setting_contentの内容はファイルに保存されないこと' do
+            invalid_setting = Setting.new(error_setting_content).to_file
+            expect { ProconBypassMan::ButtonsSettingConfiguration::Loader.load(setting_path: invalid_setting.path) }.to raise_error ProconBypassMan::CouldNotLoadConfigError
+            expect(File.read(invalid_setting.path)).to eq(setting_content)
             expect(File.exist?(ProconBypassMan.fallback_setting_path)).to eq(false)
           end
+
           it '変更はオブジェクトには反映されないこと' do
-            setting = Setting.new(error_setting_content).to_file
+            previous_configuration = ProconBypassMan.buttons_setting_configuration.dup
+            invalid_setting = Setting.new(error_setting_content).to_file
             begin
-              ProconBypassMan::ButtonsSettingConfiguration::Loader.load(setting_path: setting.path)
+              ProconBypassMan::ButtonsSettingConfiguration::Loader.load(setting_path: invalid_setting.path)
             rescue ProconBypassMan::CouldNotLoadConfigError
-              expect(ProconBypassMan::ButtonsSettingConfiguration.instance.prefix_keys).to eq([:zr, :r, :zl, :l])
-              expect(ProconBypassMan::ButtonsSettingConfiguration.instance.setting_path).to eq(setting.path)
+              expect(ProconBypassMan.buttons_setting_configuration.prefix_keys).to eq([:zr, :r, :zl, :l])
+              expect(ProconBypassMan.buttons_setting_configuration.setting_path).to eq(previous_configuration.setting_path)
             end
           end
         end
+
         context 'fallback_pathがない' do
-          it 'next_setting_contentの内容はファイルに保存されること' do
-            setting = Setting.new(error_setting_content).to_file
-            expect { ProconBypassMan::ButtonsSettingConfiguration::Loader.load(setting_path: setting.path) }.to raise_error ProconBypassMan::CouldNotLoadConfigError
-            expect(File.read(setting.path)).to eq(error_setting_content)
+          it 'invalid_setting_contentの内容はファイルに保存されること' do
+            invalid_setting = Setting.new(error_setting_content).to_file
+            expect { ProconBypassMan::ButtonsSettingConfiguration::Loader.load(setting_path: invalid_setting.path) }.to raise_error ProconBypassMan::CouldNotLoadConfigError
+            expect(File.read(invalid_setting.path)).to eq(error_setting_content)
           end
+
           it '変更はオブジェクトには反映されないこと' do
-            setting = Setting.new(error_setting_content).to_file
+            previous_configuration = ProconBypassMan.buttons_setting_configuration.dup
+            invalid_setting = Setting.new(error_setting_content).to_file
             begin
-              ProconBypassMan::ButtonsSettingConfiguration::Loader.load(setting_path: setting.path)
+              ProconBypassMan::ButtonsSettingConfiguration::Loader.load(setting_path: invalid_setting.path)
             rescue ProconBypassMan::CouldNotLoadConfigError
-              expect(ProconBypassMan::ButtonsSettingConfiguration.instance.prefix_keys).to eq([:zr, :r, :zl, :l])
-              expect(ProconBypassMan::ButtonsSettingConfiguration.instance.setting_path).to eq(setting.path)
+              expect(ProconBypassMan.buttons_setting_configuration.prefix_keys).to eq([:zr, :r, :zl, :l])
+              expect(ProconBypassMan.buttons_setting_configuration.setting_path).to eq(previous_configuration.setting_path)
             end
           end
         end
@@ -1039,10 +1047,10 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
         EOH
 
         instance = ProconBypassMan::ButtonsSettingConfiguration.new
-        ProconBypassMan::ButtonsSettingConfiguration.instance = instance
+        ProconBypassMan.buttons_setting_configuration = instance
         instance.instance_eval(c)
         validator = ProconBypassMan::ButtonsSettingConfiguration::Validator.new(
-          ProconBypassMan::ButtonsSettingConfiguration.instance
+          ProconBypassMan.buttons_setting_configuration
         )
         expect(validator.valid?).to eq(false)
         expect(validator.errors).to eq(:macro=>["マクロ ProconBypassMan::Plugin::SmashBrothers::Macro::FastFujinkenを読み込めませんでした。"])
@@ -1064,10 +1072,10 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
         EOH
 
         instance = ProconBypassMan::ButtonsSettingConfiguration.new
-        ProconBypassMan::ButtonsSettingConfiguration.instance = instance
-        ProconBypassMan::ButtonsSettingConfiguration.instance.instance_eval(c)
+        ProconBypassMan.buttons_setting_configuration = instance
+        ProconBypassMan.buttons_setting_configuration.instance_eval(c)
         validator = ProconBypassMan::ButtonsSettingConfiguration::Validator.new(
-          ProconBypassMan::ButtonsSettingConfiguration.instance
+          ProconBypassMan.buttons_setting_configuration
         )
         expect(validator.valid?).to eq(false)
         expect(validator.errors).to eq(:mode=>["モード ProconBypassMan::Plugin::SmashBrothers::Mode::EternalJumpを読み込めませんでした。"])
@@ -1086,9 +1094,9 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
         end
         }.not_to raise_error
         expect(ProconBypassMan::ButtonsSettingConfiguration::Validator.new(
-          ProconBypassMan::ButtonsSettingConfiguration.instance
+          ProconBypassMan.buttons_setting_configuration
         ).valid?).to eq(true)
-        expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].flips).to eq(:zr=>{:if_pressed=>[:x]})
+        expect(ProconBypassMan.buttons_setting_configuration.layers[:up].flips).to eq(:zr=>{:if_pressed=>[:x]})
       end
     end
 
@@ -1105,7 +1113,7 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
           end
         end
         validator = ProconBypassMan::ButtonsSettingConfiguration::Validator.new(
-          ProconBypassMan::ButtonsSettingConfiguration.instance
+          ProconBypassMan.buttons_setting_configuration
         )
         expect(validator.valid?).to eq(false)
         expect(validator.errors).to eq({:layers=>["レイヤーupで、連打とリマップの定義が重複しているボタンzrがあります"]})
@@ -1126,7 +1134,7 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
           end
         end
         validator = ProconBypassMan::ButtonsSettingConfiguration::Validator.new(
-          ProconBypassMan::ButtonsSettingConfiguration.instance
+          ProconBypassMan.buttons_setting_configuration
         )
         expect(validator.valid?).to eq(false)
         expect(validator.errors).to eq(:layers=>["upでmodeを設定しているのでボタンの設定はできません。"])

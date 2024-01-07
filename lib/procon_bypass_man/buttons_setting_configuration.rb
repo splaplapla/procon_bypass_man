@@ -3,41 +3,16 @@ require "procon_bypass_man/buttons_setting_configuration/loader"
 require "procon_bypass_man/buttons_setting_configuration/layer"
 
 module ProconBypassMan
-  class Position < Struct.new(:x, :y); end
-
   class ButtonsSettingConfiguration
+    class Position < Struct.new(:x, :y); end
+
     module ManualMode; def self.name; :manual; end; end
 
     attr_accessor :layers,
       :setting_path,
+      :macro_registry,
+      :mode_registry,
       :neutral_position
-
-    def self.instance
-      @@context ||= {}
-      @@context[current_context_key] ||= new
-    end
-
-    def self.current_context_key
-      @@current_context_key ||= :main
-    end
-
-    def self.instance=(val)
-      @@context[current_context_key] = val
-    end
-
-    def self.switch_new_context(new_context_key)
-      @@context[new_context_key] = new
-      previous_key = current_context_key
-      if block_given?
-        @@current_context_key = new_context_key
-        value = yield(@@context[new_context_key])
-        return value
-      else
-        @@current_context_key = new_context_key
-      end
-    ensure
-      @@current_context_key = previous_key
-    end
 
     def initialize
       reset!
@@ -59,11 +34,12 @@ module ProconBypassMan
                     end
       end
 
-      unless ([ManualMode.name] + ProconBypassMan.buttons_setting_configuration.mode_registry.plugins.keys).include?(mode_name)
+      unless ([ManualMode.name] + mode_registry.plugins.keys).include?(mode_name)
+        # TODO: strict modeが有効なときはエラーにする
         warn "#{mode_name}モードがinstallされていません"
       end
 
-      layer = Layer.new(mode: mode_name)
+      layer = Layer.new(self, mode: mode_name)
       layer.instance_eval(&block) if block_given?
       self.layers[direction] = layer
       self
@@ -82,14 +58,6 @@ module ProconBypassMan
     def prefix_keys_for_changing_layer(buttons)
       @prefix_keys_for_changing_layer = buttons
       self
-    end
-
-    def macro_registry
-      @macro_registry
-    end
-
-    def mode_registry
-      @mode_registry
     end
 
     def set_neutral_position(x, y)
@@ -128,10 +96,10 @@ module ProconBypassMan
       # self.setting_path = nil
       # どこかで初期化している気がするのでコメントアウト
       self.layers = {
-        up: Layer.new,
-        down: Layer.new,
-        left: Layer.new,
-        right: Layer.new,
+        up: Layer.new(self),
+        down: Layer.new(self),
+        left: Layer.new(self),
+        right: Layer.new(self),
       }
       @macro_registry = ProconBypassMan::Procon::MacroRegistry2.new
       @mode_registry = ProconBypassMan::Procon::ModeRegistry2.new
