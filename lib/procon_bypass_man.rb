@@ -170,7 +170,6 @@ module ProconBypassMan
     # ProconBypassMan::ButtonsSettingConfiguration.instance
   end
 
-  # テスト用？
   def self.buttons_setting_configuration=(instance)
     @@buttons_setting_configuration = instance
   end
