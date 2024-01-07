@@ -165,20 +165,20 @@ module ProconBypassMan
   end
 
   # NOTE: setting.ymlから読み込んだボタンに関する値を管理する
-  # @return [ProconBypassMan::SettingConfiguration]
-  def self.setting_config
-    @@setting_configuration ||= ProconBypassMan::SettingConfiguration.instance
+  def self.buttons_setting_configuration
+    @@buttons_setting_configuration ||= ProconBypassMan::ButtonsSettingConfiguration.new
+    # ProconBypassMan::ButtonsSettingConfiguration.instance
   end
 
-  # @deprecated
-  def self.buttons_setting_configuration
-    ProconBypassMan::ButtonsSettingConfiguration.instance
+  # テスト用？
+  def self.buttons_setting_configuration=(instance)
+    @@buttons_setting_configuration = instance
   end
 
   # @return [void]
   def self.reset!
     ProconBypassMan::Procon.reset!
-    buttons_setting_configuration.reset!
+    self.buttons_setting_configuration = nil
     ProconBypassMan.ephemeral_config.reset!
   end
 

@@ -25,7 +25,7 @@ describe ProconBypassMan::Procon::AnalogStickManipulator do
 
   describe 'method: tilt_left_stick_completely_to_(\d+)deg' do
     before do
-      allow(ProconBypassMan::ButtonsSettingConfiguration.instance).to receive(:neutral_position) { OpenStruct.new(x: 2124, y: 1808) }
+      allow(ProconBypassMan.buttons_setting_configuration).to receive(:neutral_position) { OpenStruct.new(x: 2124, y: 1808) }
     end
 
     it do

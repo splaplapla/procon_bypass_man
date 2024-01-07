@@ -4,7 +4,7 @@ describe ProconBypassMan::Procon::AnalogStick do
   let(:binary) { [data].pack("H*") }
 
   before do
-    ProconBypassMan::ButtonsSettingConfiguration.instance.reset!
+    ProconBypassMan.buttons_setting_configuration = ProconBypassMan::ButtonsSettingConfiguration.new
   end
 
   describe '#relative_hypotenuse' do

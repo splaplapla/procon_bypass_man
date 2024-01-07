@@ -11,7 +11,7 @@ describe ProconBypassMan::Procon::AnalogStickCap do
   end
 
   before do
-    ProconBypassMan::ButtonsSettingConfiguration.instance.set_neutral_position(2124, 1807)
+    ProconBypassMan.buttons_setting_configuration.set_neutral_position(2124, 1807)
   end
 
   context 'detail' do
