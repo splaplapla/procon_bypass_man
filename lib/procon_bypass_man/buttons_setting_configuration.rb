@@ -34,7 +34,8 @@ module ProconBypassMan
                     end
       end
 
-      unless ([ManualMode.name] + ProconBypassMan.buttons_setting_configuration.mode_registry.plugins.keys).include?(mode_name)
+      unless ([ManualMode.name] + mode_registry.plugins.keys).include?(mode_name)
+        # TODO: strict modeが有効なときはエラーにする
         warn "#{mode_name}モードがinstallされていません"
       end
 

@@ -910,6 +910,7 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
             expect(ProconBypassMan.buttons_setting_configuration.layers[:up].macros).to eq({})
           end
         end
+
         context 'mode' do
           it 'ロードしない' do
             class AModePlugin
