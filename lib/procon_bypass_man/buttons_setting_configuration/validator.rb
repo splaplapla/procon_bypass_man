@@ -83,8 +83,8 @@ module ProconBypassMan
               flip_option_target_button
             }
           }.compact.each { |b| unverified_buttons << b }
-          unless(nunsupport_buttons = (unverified_buttons - ProconBypassMan::Procon::ButtonCollection::BUTTONS)).length.zero?
-            @errors[:layers] << "#{layer_key}で存在しないボタン#{nunsupport_buttons.join(", ")}があります"
+          unless(unsupported_buttons = (unverified_buttons - ProconBypassMan::Procon::ButtonCollection::BUTTONS)).length.zero?
+            @errors[:layers] << "#{layer_key}で存在しないボタン#{unsupported_buttons.join(", ")}があります"
           end
         end
       end

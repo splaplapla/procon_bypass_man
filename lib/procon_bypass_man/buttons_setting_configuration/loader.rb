@@ -25,7 +25,7 @@ module ProconBypassMan
             if validator.valid?
               [new_instance, yaml]
             else
-              # TODO: fallbackが必要では？
+              fallback_setting_if_has_backup(current_setting_path: setting_path)
               raise ProconBypassMan::CouldNotLoadConfigError, validator.errors_to_s
             end
           rescue SyntaxError
