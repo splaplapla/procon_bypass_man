@@ -571,8 +571,8 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
             macro AMacroPlugin, if_pressed: [:a, :y]
           end
         end
-        expect(ProconBypassMan::Procon::MacroRegistry.plugins.keys).to eq([:AMacroPlugin])
-        expect(ProconBypassMan::Procon::MacroRegistry.plugins[:AMacroPlugin].call).to eq([:a, :b])
+        expect(ProconBypassMan.buttons_setting_configuration.macro_registry.plugins.keys).to eq([:AMacroPlugin])
+        expect(ProconBypassMan.buttons_setting_configuration.macro_registry.plugins[:AMacroPlugin].call).to eq([:a, :b])
         expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].macros).to eq(
           {:AMacroPlugin=>{:if_pressed=>[:a, :y]}}
         )
@@ -588,8 +588,8 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
             macro AMacroPlugin, if_pressed: [:a, :y]
           end
         end
-        expect(ProconBypassMan::Procon::MacroRegistry.plugins.keys).to eq([:AMacroPlugin])
-        expect(ProconBypassMan::Procon::MacroRegistry.plugins[:AMacroPlugin].call).to eq([:a, :b])
+        expect(ProconBypassMan.buttons_setting_configuration.macro_registry.plugins.keys).to eq([:AMacroPlugin])
+        expect(ProconBypassMan.buttons_setting_configuration.macro_registry.plugins[:AMacroPlugin].call).to eq([:a, :b])
         expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].macros).to eq(
           {:AMacroPlugin=>{:if_pressed=>[:a, :y]}}
         )
@@ -604,8 +604,8 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
             macro AMacroPlugin, if_pressed: [:a, :y], if_tilted_left_stick: true
           end
         end
-        expect(ProconBypassMan::Procon::MacroRegistry.plugins.keys).to eq([:AMacroPlugin])
-        expect(ProconBypassMan::Procon::MacroRegistry.plugins[:AMacroPlugin].call).to eq([:a, :b])
+        expect(ProconBypassMan.buttons_setting_configuration.macro_registry.plugins.keys).to eq([:AMacroPlugin])
+        expect(ProconBypassMan.buttons_setting_configuration.macro_registry.plugins[:AMacroPlugin].call).to eq([:a, :b])
         expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].macros).to eq(
           {:AMacroPlugin=>{:if_pressed=>[:a, :y], if_tilted_left_stick: true }}
         )
@@ -620,8 +620,8 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
               open_macro "SpecialCommand", steps: [:up, :down, :g], if_pressed: [:y]
             end
           end
-          expect(ProconBypassMan::Procon::MacroRegistry.plugins[:SaiHuu].call).to eq([:x, :y])
-          expect(ProconBypassMan::Procon::MacroRegistry.plugins[:SpecialCommand].call).to eq([:up, :down])
+          expect(ProconBypassMan.buttons_setting_configuration.macro_registry.plugins[:SaiHuu].call).to eq([:x, :y])
+          expect(ProconBypassMan.buttons_setting_configuration.macro_registry.plugins[:SpecialCommand].call).to eq([:up, :down])
           expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].macros).to eq(
             {"SaiHuu"=>{:if_pressed=>[:x]}, "SpecialCommand"=>{:if_pressed=>[:y]}}
           )
@@ -634,7 +634,7 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
               open_macro :sokuwari, steps: [:toggle_r, :toggle_thumbr_for_2sec, :toggle_zr_for_1sec, :toggle_r], if_pressed: [:zr, :down]
             end
           end
-          expect(ProconBypassMan::Procon::MacroRegistry.plugins[:sokuwari].call).to eq([
+          expect(ProconBypassMan.buttons_setting_configuration.macro_registry.plugins[:sokuwari].call).to eq([
               :r,
               :none,
               {:continue_for=>2, :steps=>[:thumbr, :none]},
@@ -653,7 +653,7 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
                 open_macro :dacan, steps: [:pressing_r_for_0_3sec, :pressing_r_and_toggle_zl], if_tilted_left_stick: true, if_pressed: [:zr]
               end
             end
-            expect(ProconBypassMan::Procon::MacroRegistry.plugins[:dacan].call).to eq(
+            expect(ProconBypassMan.buttons_setting_configuration.macro_registry.plugins[:dacan].call).to eq(
               [{:continue_for=>0.3, :steps=>[:r, :r]}, [:r, :zl], [:r, :none]]
             )
             expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].macros).to eq(
@@ -666,7 +666,7 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
                 open_macro :dacan, steps: [:pressing_r_and_toggle_zr], if_tilted_left_stick: true, if_pressed: [:zr]
               end
             end
-            expect(ProconBypassMan::Procon::MacroRegistry.plugins[:dacan].call).to eq([[:r, :zr], [:r, :none]])
+            expect(ProconBypassMan.buttons_setting_configuration.macro_registry.plugins[:dacan].call).to eq([[:r, :zr], [:r, :none]])
             expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].macros).to eq(
               { dacan: { if_pressed: [:zr], if_tilted_left_stick: true } }
             )
@@ -677,7 +677,7 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
                 open_macro :dacan, steps: [:pressing_r_and_toggle_zr], if_tilted_left_stick: { threshold: 600 }, if_pressed: [:zr]
               end
             end
-            expect(ProconBypassMan::Procon::MacroRegistry.plugins[:dacan].call).to eq([[:r, :zr], [:r, :none]])
+            expect(ProconBypassMan.buttons_setting_configuration.macro_registry.plugins[:dacan].call).to eq([[:r, :zr], [:r, :none]])
             expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].macros).to eq(
               { dacan: { if_pressed: [:zr], if_tilted_left_stick: { threshold: 600 } } }
             )
@@ -688,7 +688,7 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
                 open_macro :dacan, steps: [:pressing_r_and_toggle_zr], if_tilted_left_stick: true, if_pressed: [:zr]
               end
             end
-            expect(ProconBypassMan::Procon::MacroRegistry.plugins[:dacan].call).to eq([[:r, :zr], [:r, :none]])
+            expect(ProconBypassMan.buttons_setting_configuration.macro_registry.plugins[:dacan].call).to eq([[:r, :zr], [:r, :none]])
             expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].macros).to eq(
               { dacan: { if_pressed: [:zr], if_tilted_left_stick: true } }
             )
@@ -699,7 +699,7 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
                 open_macro :shake_stick, steps: [:shake_left_stick_for_0_65sec], if_pressed: [:zr]
               end
             end
-            expect(ProconBypassMan::Procon::MacroRegistry.plugins[:shake_stick].call).to eq([{:continue_for=>0.65, :steps=>[:tilt_left_stick_completely_to_left, :tilt_left_stick_completely_to_right]}])
+            expect(ProconBypassMan.buttons_setting_configuration.macro_registry.plugins[:shake_stick].call).to eq([{:continue_for=>0.65, :steps=>[:tilt_left_stick_completely_to_left, :tilt_left_stick_completely_to_right]}])
             expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].macros).to eq(
               { shake_stick: { if_pressed: [:zr] } }
             )
@@ -710,7 +710,7 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
                 open_macro :shake_stick, steps: [:shake_left_stick_and_toggle_b_for_0_1sec], if_pressed: [:b, :r], force_neutral: [:b]
               end
             end
-            expect(ProconBypassMan::Procon::MacroRegistry.plugins[:shake_stick].call).to eq([{:continue_for=>0.1, :steps=>[[:tilt_left_stick_completely_to_left, :b], [:tilt_left_stick_completely_to_right, :none]]}])
+            expect(ProconBypassMan.buttons_setting_configuration.macro_registry.plugins[:shake_stick].call).to eq([{:continue_for=>0.1, :steps=>[[:tilt_left_stick_completely_to_left, :b], [:tilt_left_stick_completely_to_right, :none]]}])
             expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].macros).to eq(
               { shake_stick: { force_neutral: [:b], if_pressed: [:b, :r] } }
             )
@@ -723,7 +723,7 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
               end
             end
             expect(
-              ProconBypassMan::Procon::MacroRegistry.plugins[ProconBypassMan::Plugin::Splatoon2::Macro::ChargeTansanBomb.to_s.to_sym].call
+              ProconBypassMan.buttons_setting_configuration.macro_registry.plugins[ProconBypassMan::Plugin::Splatoon2::Macro::ChargeTansanBomb.to_s.to_sym].call
             ).to eq([{:continue_for=>0.1, :steps=>[[:tilt_left_stick_completely_to_left, :b], [:tilt_left_stick_completely_to_right, :none]]}])
             expect(ProconBypassMan::ButtonsSettingConfiguration.instance.layers[:up].macros).to eq({
               :"ProconBypassMan::Plugin::Splatoon2::Macro::ChargeTansanBomb" => {:force_neutral=>[:b], :if_pressed=>[:b, :r]},
@@ -742,8 +742,8 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
           install_mode_plugin(AModePlugin)
           layer :up, mode: AModePlugin
         end
-        expect(ProconBypassMan::Procon::ModeRegistry.plugins.keys).to eq([:AModePlugin])
-        expect(ProconBypassMan::Procon::ModeRegistry.plugins[:AModePlugin].call).to eq(['a'])
+        expect(ProconBypassMan.buttons_setting_configuration.mode_registry.plugins.keys).to eq([:AModePlugin])
+        expect(ProconBypassMan.buttons_setting_configuration.mode_registry.plugins[:AModePlugin].call).to eq(['a'])
       end
     end
 
@@ -918,7 +918,8 @@ describe ProconBypassMan::ButtonsSettingConfiguration do
             ProconBypassMan.buttons_setting_configure do
               layer :up, mode: AModePlugin
             end
-            expect(ProconBypassMan::Procon::ModeRegistry.plugins.keys).to eq([])
+
+            expect(ProconBypassMan.buttons_setting_configuration.mode_registry.plugins.keys).to eq([])
           end
         end
       end

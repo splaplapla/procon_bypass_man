@@ -5,7 +5,7 @@ class ProconBypassMan::Procon::AnalogStick
   attr_writer :bin_x, :bin_y
 
   def initialize(binary: )
-    @neutral_position = ProconBypassMan::ButtonsSettingConfiguration.instance.neutral_position
+    @neutral_position = ProconBypassMan.buttons_setting_configuration.neutral_position
     bytes = binary[ProconBypassMan::Procon::ButtonCollection::LEFT_ANALOG_STICK.fetch(:byte_position)]
     byte6, byte7, byte8 = bytes.each_char.map { |x| x.unpack("C").first.to_s(2).rjust(8, "0") }
 

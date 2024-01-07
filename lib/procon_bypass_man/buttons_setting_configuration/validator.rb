@@ -2,8 +2,8 @@ module ProconBypassMan
   class ButtonsSettingConfiguration
     class Validator
       def initialize(config)
-        @macro_plugins = config.macro_plugins
-        @mode_plugins = config.mode_plugins
+        @macro_plugins = config.macro_registry.plugins
+        @mode_plugins = config.mode_registry.plugins
         @layers = config.layers
         @prefix_keys = config.prefix_keys
       end
@@ -46,7 +46,7 @@ module ProconBypassMan
 
       def validate_config_of_button_lonely
         @layers.each do |layer_key, value|
-          if ProconBypassMan::Procon::ModeRegistry::PRESETS.key?(value.mode)
+          if ProconBypassMan.buttons_setting_configuration.mode_registry.presets.key?(value.mode)
             next
           else
             if !value.flips.empty? || !value.macros.empty?

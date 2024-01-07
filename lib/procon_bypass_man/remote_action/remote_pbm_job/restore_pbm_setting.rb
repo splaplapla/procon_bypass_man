@@ -10,12 +10,12 @@ module ProconBypassMan
 
           # 復元に失敗したら戻せるように退避する
           FileUtils.copy(
-            ProconBypassMan::ButtonsSettingConfiguration.instance.setting_path,
+            ProconBypassMan.buttons_setting_configuration.setting_path,
             ProconBypassMan.fallback_setting_path,
           )
 
           ProconBypassMan::YamlWriter.write(
-            path: ProconBypassMan::ButtonsSettingConfiguration.instance.setting_path,
+            path: ProconBypassMan.buttons_setting_configuration.setting_path,
             content: setting,
           )
 
