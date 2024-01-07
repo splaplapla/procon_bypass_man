@@ -11,7 +11,6 @@ module ProconBypassMan
     attr_accessor :layers,
       :setting_path,
       :mode_plugins,
-      :macro_plugins,
       :neutral_position
 
     def self.instance
@@ -87,7 +86,7 @@ module ProconBypassMan
     end
 
     def macro_registry
-      ProconBypassMan::Procon::MacroRegistry
+      @macro_registry
     end
 
     def mode_registry
@@ -130,13 +129,13 @@ module ProconBypassMan
       # プロセスを一度起動するとsetting_pathは変わらない、という想定なので適当に扱う. resetでは初期化しない
       # self.setting_path = nil
       # どこかで初期化している気がするのでコメントアウト
-      self.macro_plugins = ProconBypassMan::Procon::MacroPluginMap.new # ProconBypassMan::Procon::MacroRegistry.reset!と重複している
       self.layers = {
         up: Layer.new,
         down: Layer.new,
         left: Layer.new,
         right: Layer.new,
       }
+      @macro_registry = ProconBypassMan::Procon::MacroRegistry2.new
       @neutral_position = Position.new(2124, 1808).freeze
     end
   end

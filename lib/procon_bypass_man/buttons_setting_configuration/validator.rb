@@ -2,7 +2,7 @@ module ProconBypassMan
   class ButtonsSettingConfiguration
     class Validator
       def initialize(config)
-        @macro_plugins = config.macro_plugins
+        @macro_plugins = config.macro_registry.plugins
         @mode_plugins = config.mode_plugins
         @layers = config.layers
         @prefix_keys = config.prefix_keys

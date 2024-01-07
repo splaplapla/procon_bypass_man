@@ -180,7 +180,6 @@ module ProconBypassMan
     ProconBypassMan::Procon.reset!
     buttons_setting_configuration.reset!
     buttons_setting_configuration.mode_registry.reset!
-    buttons_setting_configuration.macro_registry.reset!
     ProconBypassMan.ephemeral_config.reset!
   end
 

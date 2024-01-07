@@ -153,7 +153,7 @@ describe ProconBypassMan::ButtonsSettingConfiguration::Layer do
           it { expect(subject).to eq({:TheMacro => {:if_pressed=>[:x] }}) }
           it do
             subject
-            expect(ProconBypassMan::Procon::MacroRegistry.plugins[:TheMacro].call).not_to be_nil
+            expect(ProconBypassMan.buttons_setting_configuration.macro_registry.plugins[:TheMacro].call).not_to be_nil
           end
         end
         context 'is array' do
@@ -161,7 +161,7 @@ describe ProconBypassMan::ButtonsSettingConfiguration::Layer do
           it { expect(subject).to eq({:TheMacro => {:if_pressed=>[:x] } }) }
           it do
             subject
-            expect(ProconBypassMan::Procon::MacroRegistry.plugins[:TheMacro].call).not_to be_nil
+            expect(ProconBypassMan.buttons_setting_configuration.macro_registry.plugins[:TheMacro].call).not_to be_nil
           end
         end
         context 'is hash' do
@@ -256,7 +256,7 @@ describe ProconBypassMan::ButtonsSettingConfiguration::Layer do
         it { expect(subject).to eq({"name" => {:if_pressed=>[:x]}}) }
         it do
           subject
-          expect(ProconBypassMan::Procon::MacroRegistry.plugins[:name].call).to eq([:x])
+          expect(ProconBypassMan.buttons_setting_configuration.macro_registry.plugins[:name].call).to eq([:x])
         end
       end
       context 'is string' do
@@ -264,7 +264,7 @@ describe ProconBypassMan::ButtonsSettingConfiguration::Layer do
         it { expect(subject).to eq({"name" => {:if_pressed=>[:x]}}) }
         it do
           subject
-          expect(ProconBypassMan::Procon::MacroRegistry.plugins[:name].call).to eq([:x])
+          expect(ProconBypassMan.buttons_setting_configuration.macro_registry.plugins[:name].call).to eq([:x])
         end
       end
       context 'is array' do
@@ -272,7 +272,7 @@ describe ProconBypassMan::ButtonsSettingConfiguration::Layer do
         it { expect(subject).to eq({"name" => {:if_pressed=>[:x]}}) }
         it do
           subject
-          expect(ProconBypassMan::Procon::MacroRegistry.plugins[:name].call).to eq([:x, :x])
+          expect(ProconBypassMan.buttons_setting_configuration.macro_registry.plugins[:name].call).to eq([:x, :x])
         end
       end
     end

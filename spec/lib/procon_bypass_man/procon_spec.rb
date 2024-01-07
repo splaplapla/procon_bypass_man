@@ -313,7 +313,7 @@ describe ProconBypassMan::Procon do
             end
           end
           it do
-            expect(ProconBypassMan::Procon::MacroRegistry.plugins[:shake].call).to eq(
+            expect(ProconBypassMan.buttons_setting_configuration.macro_registry.plugins[:shake].call).to eq(
               [{:continue_for=>0.65, :steps=> [:tilt_left_stick_completely_to_left, :tilt_left_stick_completely_to_right]}]
             )
             procon = ProconBypassMan::Procon.new(binary)
@@ -335,7 +335,7 @@ describe ProconBypassMan::Procon do
             end
           end
           it do
-            expect(ProconBypassMan::Procon::MacroRegistry.plugins[:shake].call).to eq(
+            expect(ProconBypassMan.buttons_setting_configuration.macro_registry.plugins[:shake].call).to eq(
               [{:continue_for=>65, :steps=> [[:tilt_left_stick_completely_to_left, :b], [:tilt_left_stick_completely_to_right, :none]]}]
             )
             procon = ProconBypassMan::Procon.new(binary)
@@ -362,20 +362,20 @@ describe ProconBypassMan::Procon do
             end
           end
           it 'そのボタンは無視する' do
-            expect(ProconBypassMan::Procon::MacroRegistry.plugins[:single].call).to eq(
+          expect(ProconBypassMan.buttons_setting_configuration.macro_registry.plugins[:single].call).to eq(
               [{:continue_for=>2, :steps=>[]}]
             )
 
-            procon = ProconBypassMan::Procon.new(binary)
-            expect(procon.pressed_y?).to eq(true)
-            expect(procon.pressed_b?).to eq(true)
-            expect(procon.pressed_thumbr?).to eq(false)
-            procon.apply!
+          procon = ProconBypassMan::Procon.new(binary)
+          expect(procon.pressed_y?).to eq(true)
+          expect(procon.pressed_b?).to eq(true)
+          expect(procon.pressed_thumbr?).to eq(false)
+          procon.apply!
 
-            procon = ProconBypassMan::Procon.new(procon.to_binary)
-            expect(procon.pressed_thumbr?).to eq(false)
-            expect(procon.pressed_zr?).to eq(false)
-            procon.apply!
+          procon = ProconBypassMan::Procon.new(procon.to_binary)
+          expect(procon.pressed_thumbr?).to eq(false)
+          expect(procon.pressed_zr?).to eq(false)
+          procon.apply!
           end
         end
       end
@@ -391,7 +391,7 @@ describe ProconBypassMan::Procon do
           end
         end
         it do
-          expect(ProconBypassMan::Procon::MacroRegistry.plugins[:multi].call).to eq(
+          expect(ProconBypassMan.buttons_setting_configuration.macro_registry.plugins[:multi].call).to eq(
             [{:continue_for=>2, :steps=>[[:thumbr, :zr], [:thumbr, :none]]}, :a]
           )
 

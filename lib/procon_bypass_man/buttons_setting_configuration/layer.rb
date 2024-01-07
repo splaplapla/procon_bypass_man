@@ -83,7 +83,7 @@ module ProconBypassMan
         end
 
         macro_name = name.to_s.to_sym
-        if ProconBypassMan.buttons_setting_configuration.macro_plugins[macro_name]
+        if ProconBypassMan.buttons_setting_configuration.macro_registry.plugins[macro_name]
           self.macros[macro_name] = { if_pressed: if_pressed, if_tilted_left_stick: if_tilted_left_stick, force_neutral: force_neutral }.compact
         else
           warn "#{macro_name}マクロがinstallされていません"

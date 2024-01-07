@@ -95,7 +95,6 @@ module ProconBypassMan
       # プロセスを一度起動するとsetting_pathは変わらない、という想定なので適当に扱う. resetでは初期化しない
       # self.setting_path = nil
       # どこかで初期化している気がするのでコメントアウト
-      self.macro_plugins = ProconBypassMan::Procon::MacroPluginMap.new # ProconBypassMan::Procon::MacroRegistry.reset!と重複している
       self.layers = {
         up: Layer.new,
         down: Layer.new,
