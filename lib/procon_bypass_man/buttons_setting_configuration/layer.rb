@@ -3,7 +3,8 @@ module ProconBypassMan
     class Layer
       attr_accessor :mode, :flips, :macros, :disable_macros, :remaps, :left_analog_stick_caps, :disables
 
-      def initialize(mode: :manual)
+      def initialize(context, mode: :manual)
+        @context = context
         self.mode = mode
         self.flips = {}
         self.macros = {}
@@ -83,7 +84,7 @@ module ProconBypassMan
         end
 
         macro_name = name.to_s.to_sym
-        if ProconBypassMan.buttons_setting_configuration.macro_registry.plugins[macro_name]
+        if @context.macro_registry.plugins[macro_name]
           self.macros[macro_name] = { if_pressed: if_pressed, if_tilted_left_stick: if_tilted_left_stick, force_neutral: force_neutral }.compact
         else
           warn "#{macro_name}マクロがinstallされていません"
@@ -133,7 +134,7 @@ module ProconBypassMan
         end
 
         macro_name = name || "OpenMacro-#{steps.join}".to_sym
-        ProconBypassMan.buttons_setting_configuration.macro_registry.install_plugin(macro_name, steps: steps)
+        @context.macro_registry.install_plugin(macro_name, steps: steps)
         self.macros[macro_name] = { if_pressed: if_pressed, if_tilted_left_stick: if_tilted_left_stick, force_neutral: force_neutral }.compact
       end
 

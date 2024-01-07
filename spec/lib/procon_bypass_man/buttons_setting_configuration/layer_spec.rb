@@ -1,7 +1,8 @@
 require "spec_helper"
 
 describe ProconBypassMan::ButtonsSettingConfiguration::Layer do
-  let(:layer) { ProconBypassMan::ButtonsSettingConfiguration::Layer.new }
+  let(:buttons_setting_configuration) { ProconBypassMan::ButtonsSettingConfiguration.new }
+  let(:layer) { ProconBypassMan::ButtonsSettingConfiguration::Layer.new(buttons_setting_configuration) }
 
   before do
     ProconBypassMan.reset!
@@ -106,7 +107,7 @@ describe ProconBypassMan::ButtonsSettingConfiguration::Layer do
     context 'macroをインストール済み' do
       before do
         klass = macro_class
-        ProconBypassMan.buttons_setting_configure do
+        buttons_setting_configuration.instance_eval do
           install_macro_plugin klass
         end
       end
@@ -153,7 +154,7 @@ describe ProconBypassMan::ButtonsSettingConfiguration::Layer do
           it { expect(subject).to eq({:TheMacro => {:if_pressed=>[:x] }}) }
           it do
             subject
-            expect(ProconBypassMan.buttons_setting_configuration.macro_registry.plugins[:TheMacro].call).not_to be_nil
+            expect(buttons_setting_configuration.macro_registry.plugins[:TheMacro].call).not_to be_nil
           end
         end
         context 'is array' do
@@ -161,7 +162,7 @@ describe ProconBypassMan::ButtonsSettingConfiguration::Layer do
           it { expect(subject).to eq({:TheMacro => {:if_pressed=>[:x] } }) }
           it do
             subject
-            expect(ProconBypassMan.buttons_setting_configuration.macro_registry.plugins[:TheMacro].call).not_to be_nil
+            expect(buttons_setting_configuration.macro_registry.plugins[:TheMacro].call).not_to be_nil
           end
         end
         context 'is hash' do
@@ -256,7 +257,7 @@ describe ProconBypassMan::ButtonsSettingConfiguration::Layer do
         it { expect(subject).to eq({"name" => {:if_pressed=>[:x]}}) }
         it do
           subject
-          expect(ProconBypassMan.buttons_setting_configuration.macro_registry.plugins[:name].call).to eq([:x])
+          expect(buttons_setting_configuration.macro_registry.plugins[:name].call).to eq([:x])
         end
       end
       context 'is string' do
@@ -264,7 +265,7 @@ describe ProconBypassMan::ButtonsSettingConfiguration::Layer do
         it { expect(subject).to eq({"name" => {:if_pressed=>[:x]}}) }
         it do
           subject
-          expect(ProconBypassMan.buttons_setting_configuration.macro_registry.plugins[:name].call).to eq([:x])
+          expect(buttons_setting_configuration.macro_registry.plugins[:name].call).to eq([:x])
         end
       end
       context 'is array' do
@@ -272,7 +273,7 @@ describe ProconBypassMan::ButtonsSettingConfiguration::Layer do
         it { expect(subject).to eq({"name" => {:if_pressed=>[:x]}}) }
         it do
           subject
-          expect(ProconBypassMan.buttons_setting_configuration.macro_registry.plugins[:name].call).to eq([:x, :x])
+          expect(buttons_setting_configuration.macro_registry.plugins[:name].call).to eq([:x, :x])
         end
       end
     end

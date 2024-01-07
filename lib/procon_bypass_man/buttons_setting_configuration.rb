@@ -39,7 +39,7 @@ module ProconBypassMan
         warn "#{mode_name}モードがinstallされていません"
       end
 
-      layer = Layer.new(mode: mode_name)
+      layer = Layer.new(self, mode: mode_name)
       layer.instance_eval(&block) if block_given?
       self.layers[direction] = layer
       self
@@ -96,10 +96,10 @@ module ProconBypassMan
       # self.setting_path = nil
       # どこかで初期化している気がするのでコメントアウト
       self.layers = {
-        up: Layer.new,
-        down: Layer.new,
-        left: Layer.new,
-        right: Layer.new,
+        up: Layer.new(self),
+        down: Layer.new(self),
+        left: Layer.new(self),
+        right: Layer.new(self),
       }
       @macro_registry = ProconBypassMan::Procon::MacroRegistry2.new
       @mode_registry = ProconBypassMan::Procon::ModeRegistry2.new
