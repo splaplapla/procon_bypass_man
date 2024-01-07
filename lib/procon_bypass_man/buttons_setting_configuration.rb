@@ -2,7 +2,6 @@ require "procon_bypass_man/buttons_setting_configuration/validator"
 require "procon_bypass_man/buttons_setting_configuration/loader"
 require "procon_bypass_man/buttons_setting_configuration/layer"
 
-
 module ProconBypassMan
   class ButtonsSettingConfiguration
     class Position < Struct.new(:x, :y); end

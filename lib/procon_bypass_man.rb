@@ -167,7 +167,6 @@ module ProconBypassMan
   # NOTE: setting.ymlから読み込んだボタンに関する値を管理する
   def self.buttons_setting_configuration
     @@buttons_setting_configuration ||= ProconBypassMan::ButtonsSettingConfiguration.new
-    # ProconBypassMan::ButtonsSettingConfiguration.instance
   end
 
   def self.buttons_setting_configuration=(instance)
