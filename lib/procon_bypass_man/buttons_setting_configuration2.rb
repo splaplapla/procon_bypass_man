@@ -4,20 +4,21 @@ require "procon_bypass_man/buttons_setting_configuration/layer"
 
 
 module ProconBypassMan
-  class Position < Struct.new(:x, :y); end
+  class ButtonSettingConfiguration2
+    class Position < Struct.new(:x, :y); end
 
-  class SettingConfiguration
+    module ManualMode; def self.name; :manual; end; end
+
     attr_accessor :layers,
       :setting_path,
-      :mode_plugins,
-      :macro_plugins,
+      :macro_registry,
+      :mode_registry,
       :neutral_position
 
     def initialize
       reset!
     end
 
-    module ManualMode; def self.name; :manual; end; end
     def layer(direction, mode: ManualMode, &block)
       if ProconBypassMan::ButtonsSettingConfiguration::ManualMode == mode
         mode_name = mode.name
@@ -91,7 +92,6 @@ module ProconBypassMan
 
     def reset!
       @prefix_keys_for_changing_layer = []
-      self.mode_plugins = {}
       # プロセスを一度起動するとsetting_pathは変わらない、という想定なので適当に扱う. resetでは初期化しない
       # self.setting_path = nil
       # どこかで初期化している気がするのでコメントアウト
@@ -101,15 +101,9 @@ module ProconBypassMan
         left: Layer.new,
         right: Layer.new,
       }
+      @macro_registry = ProconBypassMan::Procon::MacroRegistry2.new
+      @mode_registry = ProconBypassMan::Procon::ModeRegistry2.new
       @neutral_position = Position.new(2124, 1808).freeze
-    end
-
-    def mode_registry
-      # TODO
-    end
-
-    def macro_registry
-      # TODO
     end
   end
 end
