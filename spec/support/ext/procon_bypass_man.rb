@@ -6,4 +6,10 @@ module ProconBypassMan
       ProconBypassMan::ButtonsSettingConfiguration::Loader.load(setting_path: setting_path)
     end
   end
+
+  def self.reset!
+    ProconBypassMan::Procon.reset!
+    self.buttons_setting_configuration = nil
+    ProconBypassMan.ephemeral_config.reset!
+  end
 end

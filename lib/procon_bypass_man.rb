@@ -174,13 +174,6 @@ module ProconBypassMan
   end
 
   # @return [void]
-  def self.reset!
-    ProconBypassMan::Procon.reset!
-    self.buttons_setting_configuration = nil
-    ProconBypassMan.ephemeral_config.reset!
-  end
-
-  # @return [void]
   def self.initialize_pbm
     if ProconBypassMan.pid && ProconBypassMan::ProcessChecker.running?(ProconBypassMan.pid)
       ProconBypassMan::SendErrorCommand.execute(error: "別のプロセスでPBMがすでに起動中なので処理を停止します。")
