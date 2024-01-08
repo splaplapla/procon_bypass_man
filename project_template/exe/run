@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+set -euo pipefail
+IFS=$'\n\t'
+set -vx
+
+
+# rootで起動していた影響で一般ユーザで起動するには権限を修正しないといけない
+EXECUINTG_USER="$(whoami)"
+if find /usr/share/pbm/ -user root | read; then
+  sudo chown "$EXECUINTG_USER:$EXECUINTG_USER" -R /usr/share/pbm
+  echo "We have recovered /usr/share/pbm/* permissions"
+fi
+
+if find /tmp/pbm_blue_green_process_pids -user root | read; then
+  sudo chown "$EXECUINTG_USER:$EXECUINTG_USER" /tmp/pbm_blue_green_process_pids
+  echo "We have recovered /tmp/pbm_blue_green_process_pids permissions"
+fi
+
+if find "/home/$EXECUINTG_USER/.rbenv/" -user root | read; then
+  sudo chown "$EXECUINTG_USER:$EXECUINTG_USER" "/home/$EXECUINTG_USER/.rbenv/"
+  echo "We have recovered /home/$EXECUINTG_USER/.rbenv/"
+fi
+
+bundle check || bundle install
+RUN_WITH_BUNDLE_EXEC=1 bundle exec app.rb

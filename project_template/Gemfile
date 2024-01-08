@@ -1,0 +1,7 @@
+# frozen_string_literal: true
+
+source "https://rubygems.org"
+
+# if you want to use the latest version, please use the following line.
+# gem 'procon_bypass_man', github: 'splaplapla/procon_bypass_man', branch: "master"
+gem 'procon_bypass_man', '0.3.11'
