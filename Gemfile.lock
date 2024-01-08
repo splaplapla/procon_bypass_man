@@ -1,9 +1,9 @@
 PATH
   remote: .
   specs:
-    procon_bypass_man (0.3.11)
+    procon_bypass_man (0.3.12)
       action_cable_client
-      blue_green_process (= 0.1.4.2)
+      blue_green_process (= 0.1.4.3)
       pbmenv (>= 0.1.11)
       sorted_set
 
@@ -21,7 +21,7 @@ GEM
     ast (2.4.2)
     backport (1.2.0)
     benchmark (0.2.1)
-    blue_green_process (0.1.4.2)
+    blue_green_process (0.1.4.3)
     coderay (1.1.3)
     concurrent-ruby (1.1.9)
     diff-lcs (1.4.4)
@@ -46,6 +46,12 @@ GEM
       ruby2_keywords (~> 0.0.1)
     nokogiri (1.15.5)
       mini_portile2 (~> 2.8.2)
+      racc (~> 1.4)
+    nokogiri (1.15.5-arm-linux)
+      racc (~> 1.4)
+    nokogiri (1.15.5-arm64-darwin)
+      racc (~> 1.4)
+    nokogiri (1.15.5-x86_64-linux)
       racc (~> 1.4)
     parallel (1.21.0)
     parser (3.0.3.2)
@@ -96,7 +102,7 @@ GEM
     ruby-progressbar (1.11.0)
     ruby2_keywords (0.0.5)
     serialport (1.3.2)
-    set (1.0.3)
+    set (1.1.0)
     sinatra (2.2.0)
       mustermann (~> 1.0)
       rack (~> 2.2)
