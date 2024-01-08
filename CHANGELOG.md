@@ -1,5 +1,5 @@
-## unrelease
-* sudoをつけずにPBMを起動できるようになりました
+## [0.3.12] 2024-1-8
+* sudoをつけずにPBMを起動できるようになりました。(なお周辺ファイルは未対応)
 * setting.ymlからコントローラーアイコンの色を変更できるようになりました
   * https://github.com/splaplapla/procon_bypass_man/pull/287
 
