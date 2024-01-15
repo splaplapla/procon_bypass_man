@@ -13,7 +13,7 @@ if !ENV['RUN_WITH_BUNDLE_EXEC']
     gemfile do
       source 'https://rubygems.org'
       git_source(:github) {|repo_name| "https://github.com/#{repo_name}" }
-      gem 'procon_bypass_man', '0.3.11'
+      gem 'procon_bypass_man', '0.3.12'
       # uncomment if you want to use master branch
       # gem 'procon_bypass_man', github: 'splaplapla/procon_bypass_man', branch: 'master'
       # uncomment if you want to use serial communication feature

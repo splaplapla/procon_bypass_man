@@ -29,7 +29,7 @@ Gem::Specification.new do |spec|
 
   # Uncomment to register a new dependency of your gem
   spec.add_dependency "action_cable_client"
-  spec.add_dependency "blue_green_process", '0.1.4.2'
+  spec.add_dependency "blue_green_process", '0.1.4.3'
   spec.add_dependency "pbmenv", ">= 0.1.11" # enable_pbm_cloud連携機能でPbmenv.install, .cleanを使っている.
   spec.add_dependency "sorted_set"
 
