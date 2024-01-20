@@ -22,4 +22,4 @@ if find "/home/$EXECUINTG_USER/.rbenv/" -user root | read; then
 fi
 
 bundle check || bundle install
-RUN_WITH_BUNDLE_EXEC=1 bundle exec app.rb
+RUN_WITH_BUNDLE_EXEC=1 bundle exec ruby app.rb
