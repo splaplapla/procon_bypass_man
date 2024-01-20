@@ -9,8 +9,7 @@
 * `wget https://raw.githubusercontent.com/splaplapla/procon_bypass_man/master/docs/setup_raspi.mitamae.rb -O setup_raspi.mitamae.rb`
 * `sudo ./mitamae-armhf-linux local setup_raspi.mitamae.rb -l debug`
 * `sudo reboot`
-* PCとRaspberry Pi4を接続し、プロコンとして認識していることを確認する
-* `gem i pbmenv`
+* `sudo gem i pbmenv`
 * `sudo pbmenv install latest`
 
 Raspberry Piのセットアップは以上です。  
