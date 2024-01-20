@@ -12,9 +12,14 @@ package 'git' do
   action :install
 end
 
+package 'libssl-dev' do
+  action :install
+end
+
 gem_package 'bundler' do
   action :install
 end
+
 
 # OTG
 execute "append dtoverlay=dwc2 to /boot/config.txt" do
@@ -40,6 +45,14 @@ execute "Install ruby" do
     mkdir -p "$(rbenv root)"/plugins
     git clone https://github.com/rbenv/ruby-build.git --depth 1 "$(rbenv root)"/plugins/ruby-build
     rbenv install 3.0.1
+  EOH
+end
+
+execute "Setup .bashrc for rbenv" do
+  user "pi"
+  not_if "grep 'rbenv init' ~/.bashrc"
+  command <<~EOH
+    echo 'eval "$(rbenv init -)"' >> ~/.bashrc
   EOH
 end
 
