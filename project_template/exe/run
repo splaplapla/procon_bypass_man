@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
 IFS=$'\n\t'
-set -vx
-
 
 # rootで起動していた影響で一般ユーザで起動するには権限を修正しないといけない
 EXECUINTG_USER="$(whoami)"
