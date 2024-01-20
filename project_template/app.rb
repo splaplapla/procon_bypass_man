@@ -33,6 +33,9 @@ if !ENV['RUN_WITH_BUNDLE_EXEC']
 
     retry
   end
+else
+  require 'bundler'
+  Bundler.require(:default)
 end
 
 ProconBypassMan.configure do |config|
@@ -61,9 +64,6 @@ ProconBypassMan.configure do |config|
   #   ProconBypassMan::ExternalInput::Channels::SerialPortChannel.new(device_path: '/dev/serial0', baud_rate: 9600),
   #   ProconBypassMan::ExternalInput::Channels::TCPIPChannel.new(port: 9000),
   # ]
-else
-  require 'bundler'
-  Bundler.require(:default)
 end
 
 ProconBypassMan.run(setting_path: "/usr/share/pbm/current/setting.yml")
