@@ -12,9 +12,14 @@ package 'git' do
   action :install
 end
 
+package 'libssl-dev' do
+  action :install
+end
+
 gem_package 'bundler' do
   action :install
 end
+
 
 # OTG
 execute "append dtoverlay=dwc2 to /boot/config.txt" do
@@ -32,15 +37,6 @@ execute "append libcomposite to /etc/modules" do
   command "echo libcomposite >> /etc/modules"
 end
 
-# PBM
-execute "Initialize PBM" do
-  command <<~SHELL
-    sudo mkdir -p /usr/share/pbm/shared
-    wget https://gist.githubusercontent.com/jiikko/3f9fb3194c0cc7685e31fbfcb5b5f9ff/raw/23ddee29d94350be80b79d290ac3c8ce8400bd88/add_procon_gadget.sh -O /usr/share/pbm/shared/add_procon_gadget.sh
-    chmod +x /usr/share/pbm/shared/add_procon_gadget.sh
- SHELL
-end
-
 # ruby
 execute "Install ruby" do
   user "pi"
@@ -49,6 +45,15 @@ execute "Install ruby" do
     mkdir -p "$(rbenv root)"/plugins
     git clone https://github.com/rbenv/ruby-build.git --depth 1 "$(rbenv root)"/plugins/ruby-build
     rbenv install 3.0.1
+  EOH
+end
+
+execute "Setup .bashrc for rbenv" do
+  user "pi"
+  not_if "grep 'rbenv init' ~/.bashrc"
+  command <<~EOH
+    echo 'eval "$(rbenv init -)"' >> ~/.bashrc
+    echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> ~/.bashrc
   EOH
 end
 
