@@ -53,6 +53,7 @@ execute "Setup .bashrc for rbenv" do
   not_if "grep 'rbenv init' ~/.bashrc"
   command <<~EOH
     echo 'eval "$(rbenv init -)"' >> ~/.bashrc
+    echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> ~/.bashrc
   EOH
 end
 
