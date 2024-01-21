@@ -13,8 +13,8 @@ gem "serialport" # シリアル通信をする時に必要。通常はいらな�
 gem "timecop"
 
 group :development do
-  gem "solargraph", "0.50.0", require: false
   gem "sinatra", require: false
+  gem "solargraph", "0.50.0", require: false
   gem "stackprof", require: false
   gem "webrick", require: false
 end
