@@ -9,9 +9,11 @@ if find /usr/share/pbm/ -user root | read; then
   echo "We have recovered /usr/share/pbm/* permissions"
 fi
 
-if find /tmp/pbm_blue_green_process_pids -user root | read; then
-  sudo chown "$EXECUINTG_USER:$EXECUINTG_USER" /tmp/pbm_blue_green_process_pids
-  echo "We have recovered /tmp/pbm_blue_green_process_pids permissions"
+if [ -e /tmp/pbm_blue_green_process_pids ]; then
+  if find /tmp/pbm_blue_green_process_pids -user root | read; then
+    sudo chown "$EXECUINTG_USER:$EXECUINTG_USER" /tmp/pbm_blue_green_process_pids
+    echo "We have recovered /tmp/pbm_blue_green_process_pids permissions"
+  fi
 fi
 
 if find "/home/$EXECUINTG_USER/.rbenv/" -user root | read; then
