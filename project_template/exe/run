@@ -21,5 +21,5 @@ if find "/home/$EXECUINTG_USER/.rbenv/" -user root | read; then
   echo "We have recovered /home/$EXECUINTG_USER/.rbenv/"
 fi
 
-bundle check || bundle install
+bundle check > /dev/null || bundle install
 RUN_WITH_BUNDLE_EXEC=1 bundle exec ruby app.rb
