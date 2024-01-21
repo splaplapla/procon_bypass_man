@@ -89,7 +89,7 @@ class ProconBypassMan::BypassCommand
       # TODO: 本当はいらないんだけど、なぜか反映されないのでここでも設定する
       BlueGreenProcess.config.logger = ProconBypassMan.logger
 
-      while(readable_io = IO.select([self_read]))
+      while(readable_io = self_read.wait_readable)
         signal = readable_io.first[0].gets.strip
         case signal
         when 'USR2'

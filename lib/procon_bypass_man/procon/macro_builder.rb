@@ -17,7 +17,7 @@ class ProconBypassMan::Procon::MacroBuilder
 
   class Subject
     def initialize(value)
-      if not /^shake_/ =~ value
+      if not (/^shake_/ =~ value)
         @button =
           if match = value.match(/_(\w+)\z/)
             match[1]
@@ -106,7 +106,7 @@ class ProconBypassMan::Procon::MacroBuilder
     end
 
     if /^rotation_left_stick/ =~ step
-      roll_left_stick_steps = 0.step(359, 17).map { |x| ["tilt_left_stick_completely_to_#{x}deg".to_sym] }
+      roll_left_stick_steps = 0.step(359, 17).map { |x| [:"tilt_left_stick_completely_to_#{x}deg"] }
       return { steps: roll_left_stick_steps }
     end
 
