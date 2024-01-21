@@ -19,7 +19,7 @@ https://user-images.githubusercontent.com/1664497/171327108-f12f56a5-fc36-48da-9
 * データ通信が可能なUSBケーブル
 
 ## 必要なソフトウェア
-* ruby 2.5 以上
+* ruby 3.0 以上
 
 ## プラグイン
 * https://github.com/splaplapla/procon_bypass_man-splatoon2
