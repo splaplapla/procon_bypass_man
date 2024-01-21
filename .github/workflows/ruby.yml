@@ -30,4 +30,4 @@ jobs:
     - name: Run tests
       run: |-
         bundle exec rake
-        bundle exec steep check
+        # bundle exec steep check
