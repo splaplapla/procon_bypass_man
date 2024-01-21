@@ -1,0 +1,20 @@
+#!/usr/bin/env ruby
+
+# build app.rb
+require "./project_template/lib/app_generator"
+AppGenerator.new(
+  prefix_path: "./project_template",
+  enable_integration_with_pbm_cloud: false,
+).generate
+
+puts "Created project_template/app.rb"
+
+
+# build Gemfile
+require "erb"
+match = (/=\s+?"([\d\.]*)"/).match(File.read('./lib/procon_bypass_man/version.rb'))
+body_erb = File.read('project_template/Gemfile.erb')
+pbm_version = pbm_version = match[1]
+body = ERB.new(body_erb, trim_mode: '-').result(binding)
+File.write('project_template/Gemfile', body)
+puts "Created project_template/Gemfile"
