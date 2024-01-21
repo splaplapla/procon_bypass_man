@@ -16,6 +16,10 @@ package 'libssl-dev' do
   action :install
 end
 
+package 'screen' do
+  action :install
+end
+
 gem_package 'bundler' do
   action :install
 end
