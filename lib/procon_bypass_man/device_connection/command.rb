@@ -15,7 +15,8 @@ class ProconBypassMan::DeviceConnection::Command
 
       retry_count = retry_count + 1
       retry
-    rescue ProconBypassMan::DeviceConnection::NotFoundProconError, ProconBypassMan::DeviceConnection::SetupIncompleteError => e
+    rescue ProconBypassMan::DeviceConnection::NotFoundProconError, ProconBypassMan::DeviceConnection::SetupIncompleteError => e # rubocop:disable Lint/UselessRescue
+      # TODO: エラークラスを作ってなげる
       raise
     end
 

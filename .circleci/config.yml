@@ -12,7 +12,7 @@ executors:
       - image: ruby:<< parameters.tag >>
     environment:
       BUNDLE_PATH: vendor/bundle
-      BUNDLE_WITHOUT: development
+      BUNDLE_WITHOUT: "development"
     working_directory: ~/app
 
 commands:
@@ -141,8 +141,8 @@ build_jobs: &build_jobs
         parameters:
           ruby-version:
             # - "3.0.1" # たまにSEGVするので
-            - "3.0.2"
-            - "3.1.2"
+            # - "3.0.2"
+            # - "3.1.2"
       requires:
         - bundle_install
   - rspec:

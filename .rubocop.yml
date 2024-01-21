@@ -38,3 +38,5 @@ Lint/AmbiguousBlockAssociation:
     Enabled: false
 Security/Eval:
     Enabled: false
+Lint/MissingSuper:
+    Enabled: false

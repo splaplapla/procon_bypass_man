@@ -28,7 +28,7 @@ class ProconBypassMan::Runner
 
       begin
         # TODO 子プロセスが消滅した時に、メインプロセスは生き続けてしまい、何もできなくなる問題がある
-        while(readable_io = IO.select([self_read]))
+        while(readable_io = IO.select([self_read])) # rubocop:disable Lint/IncompatibleIoSelectWithFiberScheduler # TODO後で直す
           signal = readable_io.first[0].gets.strip
           ProconBypassMan.logger.debug "[BYPASS] MASTERプロセスで#{signal}シグナルを受け取りました"
           case signal

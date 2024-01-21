@@ -133,7 +133,7 @@ module ProconBypassMan
           return
         end
 
-        macro_name = name || "OpenMacro-#{steps.join}".to_sym
+        macro_name = name || :"OpenMacro-#{steps.join}"
         @context.macro_registry.install_plugin(macro_name, steps: steps)
         self.macros[macro_name] = { if_pressed: if_pressed, if_tilted_left_stick: if_tilted_left_stick, force_neutral: force_neutral }.compact
       end

@@ -1,7 +1,7 @@
 module ProconBypassMan
   module ExternalInput
     class ExternalData
-      UNPRESS_BUTTONS = Set.new(ProconBypassMan::Procon::ButtonCollection.available.map { |x| "un#{x}".to_sym })
+      UNPRESS_BUTTONS = Set.new(ProconBypassMan::Procon::ButtonCollection.available.map { |x| :"un#{x}" })
 
       # @return [String, NilClass] 16進数表現のデータ
       attr_reader :hex
