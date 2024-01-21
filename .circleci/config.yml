@@ -12,7 +12,7 @@ executors:
       - image: ruby:<< parameters.tag >>
     environment:
       BUNDLE_PATH: vendor/bundle
-      BUNDLE_WITHOUT: development
+      BUNDLE_WITHOUT: "development"
     working_directory: ~/app
 
 commands:

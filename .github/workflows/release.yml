@@ -9,6 +9,8 @@ jobs:
     timeout-minutes: 5
     permissions:
       contents: write
+    env:
+      BUNDLE_WITHOUT: "development"
 
     steps:
     - uses: actions/checkout@v3

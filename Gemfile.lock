@@ -190,7 +190,6 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
-  nokogiri (= 1.15.5)
   procon_bypass_man!
   pry
   rake
