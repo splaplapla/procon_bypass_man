@@ -133,7 +133,7 @@ class ProconBypassMan::Procon
         no_op_step = :wait_for_0_3 # マクロの最後に固まって最後の入力をし続けるので、無の状態を最後に注入する
         BlueGreenProcess::SharedVariable.extend_run_on_this_process = true
         ProconBypassMan.buttons_setting_configuration.macro_registry.cleanup_remote_macros!
-        macro_name = task.name || "RemoteMacro-#{task.steps.join}".to_sym
+        macro_name = task.name || :"RemoteMacro-#{task.steps.join}"
         task.steps << no_op_step
         ProconBypassMan.buttons_setting_configuration.macro_registry.install_plugin(macro_name, steps: task.steps, macro_type: :remote)
         @@status[:ongoing_macro] = ProconBypassMan.buttons_setting_configuration.macro_registry.load(macro_name, macro_type: :remote) do

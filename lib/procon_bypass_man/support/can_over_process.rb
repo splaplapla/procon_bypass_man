@@ -13,7 +13,7 @@ module ProconBypassMan::CanOverProcess
   def start_distributed_object!
     return unless enable?
 
-    FileUtils.rm_rf(socket_file_path) if File.exist?(socket_file_path)
+    FileUtils.rm_rf(socket_file_path)
     begin
       self.drb_server = DRb.start_service(socket_path, distributed_class.new, safe_level: 1)
     rescue Errno::EADDRINUSE => e
