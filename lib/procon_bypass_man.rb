@@ -14,6 +14,7 @@ require "ext/module"
 require "resolv-replace"
 require "pbmenv"
 require "blue_green_process"
+require "switch_connection_manager"
 
 require_relative "procon_bypass_man/version"
 
