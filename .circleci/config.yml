@@ -53,6 +53,7 @@ jobs:
       - checkout
       - run: ruby -cw project_template/app.rb
       - run: ruby -cw project_template/web.rb
+      - run: cd project_template && bundle install
       - run: ruby -ryaml -e 'puts YAML.load_file("./project_template/setting.yml")["setting"]' > /tmp/content_of_setting.rb && ruby -cw /tmp/content_of_setting.rb
 
   outdated_app_checker:
