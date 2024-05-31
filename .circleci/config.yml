@@ -61,7 +61,7 @@ jobs:
       tag: 3.0.1
     steps:
       - checkout
-      - run: ruby bin/generate_default_app  && git diff --exit-code project_template/app.rb
+      - run: ruby bin/build_project_template && git diff --exit-code project_template/app.rb project_template/Gemfile
 
   bundle_install:
     parameters:
